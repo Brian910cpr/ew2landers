@@ -29,7 +29,6 @@
       --badge:#eef6ff; --brand:#0b66c3; --ok:#0a7d27; --err:#b00020;
       --bannerTop:#32415f; --bannerBot:#27354e; --bannerText:#f4f7fb;
     }
-    html,body{height:100%}
     body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
     .wrap{max-width:1100px;margin:auto;padding:20px}
     .status{margin:0 0 8px;padding:10px 16px;font-size:14px}
@@ -37,23 +36,17 @@
     .status.err{background:#fde9ec;color:var(--err);border:1px solid #f3c7cf}
     .muted{opacity:.7}
 
-    /* Top-level curtains */
     details.curtain{margin:12px 0;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.05);background:var(--card);border:1px solid var(--edge);overflow:hidden}
     details.curtain>summary{cursor:pointer;list-style:none;padding:0}
-    details.curtain[open]>summary .ph-head{filter:saturate(1.05) brightness(1.02)}
     .subgrid{padding:14px 18px}
 
-    /* Curtain header built from placeholder */
     .ph-head{
       display:block;padding:14px 18px;border-bottom:1px solid var(--edge);
       background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot)); color:var(--bannerText)
     }
     .ph-head .ph-title{font-weight:800}
     .ph-head .ph-sub{font-size:12px;opacity:.9;margin-top:6px}
-    .ph-inline{display:flex;align-items:center;gap:10px}
-    .ph-inline img{height:22px;width:auto}
 
-    /* Banner block (extra placeholders inside curtain body) */
     .placeholder{
       margin:14px 0;border-radius:12px;border:1px solid #c8d2ea;
       background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot)); color:var(--bannerText);
@@ -63,7 +56,6 @@
     .placeholder .ph-body{padding:12px 16px;border-top:1px solid rgba(255,255,255,.2);opacity:.92}
     .placeholder a{color:#fff;text-decoration:underline}
 
-    /* Course “card buttons” (sub details) */
     details.sub{margin:12px 0;border-radius:12px;border:1px solid var(--edge);background:var(--card);overflow:hidden}
     details.sub>summary{
       list-style:none;cursor:pointer;font-weight:700;padding:12px 16px;
@@ -73,13 +65,16 @@
     details.sub .body{padding:14px 16px}
     .ew-heading{display:flex;align-items:center;gap:8px}
     .ew-heading img{height:22px;width:auto}
+
+    .title-link{color:inherit;text-decoration:none}
+    .title-link:hover{text-decoration:underline}
+
     .badge{display:inline-block;background:var(--badge);color:var(--brand);
       border:1px solid #cfe2f9;border-radius:999px;padding:3px 9px;font-size:12px;margin-right:6px}
     .meta{font-size:12px;color:#466;margin:8px 0 0}
     .btn{display:inline-block;margin-top:10px;border:1px solid var(--edge);border-radius:8px;
       padding:8px 12px;text-decoration:none;color:#0b66c3;background:var(--card)}
 
-    /* Imported Enrollware class list */
     .enrclass-list{list-style:none;padding:0;margin:12px 0}
     .enrclass-list li{margin:6px 0}
     .enrclass-list a{display:flex;flex-direction:column;gap:4px;border:1px solid var(--edge);
@@ -92,8 +87,9 @@
 
   <script>
     const ENR_ORIGIN = 'https://coastalcprtraining.enrollware.com';
+    const ctHref = id => ENR_ORIGIN + '/schedule#' + encodeURIComponent(id);
+    const linkedTitle = (titleHTML,id) => `<a class="title-link" href="${ctHref(id)}">${titleHTML}</a>`;
 
-    // ---- Helpers ----
     function absolutizeUrls(fragment){
       fragment.querySelectorAll('img, a').forEach(el=>{
         const attr = el.tagName==='IMG' ? 'src' : 'href';
@@ -156,7 +152,6 @@
       return 'Other';
     }
 
-    // Placeholder = panel without dates list; we will use the FIRST as curtain header.
     function isPlaceholder(hasUl){ return !hasUl; }
 
     function wireCurtains(rootSel){
@@ -197,7 +192,6 @@
       return { html:null, url:null, tried };
     }
 
-    // ---- Main ----
     document.addEventListener('DOMContentLoaded', async()=>{
       const host = document.querySelector('.wrap');
       const status = document.createElement('div'); status.className='status';
@@ -214,11 +208,11 @@
       const dom = document.createElement('div'); dom.innerHTML = load.html;
       const panels = [...dom.querySelectorAll('.enrpanel')];
 
-      const items = []; // {kind:'placeholder'|'course', bucket, ...}
+      const items = [];
 
       for (const p of panels) {
         const anchor = p.querySelector('[id^="ct"],[name^="ct"]');
-        const id     = anchor?.id || anchor?.getAttribute('name') || '';
+        const id     = anchor?.id || anchor?.getAttribute('name') || ''; // <-- capture ct####
 
         const headingEl = p.querySelector('.enrpanel-heading,h1,h2,h3,h4');
         if(!headingEl) continue;
@@ -250,7 +244,6 @@
         items.push({kind:'course', bucket, id, titleHTML, descHTML, ul:trimmed.ul, kept: trimmed.kept, total: trimmed.total});
       }
 
-      // Split into headers/placeholders/courses per bucket
       const buckets = {};
       for(const it of items){
         if(!buckets[it.bucket]) buckets[it.bucket] = {header:null, banners:[], courses:[]};
@@ -261,19 +254,17 @@
         }
       }
 
-      // Render
       host.innerHTML = '<h1>910CPR Courses & Schedule</h1><p class="muted">Loaded snapshot '+(load.url||'')+'</p>';
 
       for(const [bucket,grp] of Object.entries(buckets)){
         const sec=document.createElement('details'); sec.className='curtain';
 
-        // Build header summary from first placeholder if present, else generic
         let summaryHTML = '';
         if(grp.header){
           const h = grp.header;
           summaryHTML = `
             <div class="ph-head">
-              <div class="ph-title"><span class="ph-inline">${h.titleHTML}</span></div>
+              <div class="ph-title">${h.titleHTML}</div>
               ${h.descHTML ? `<div class="ph-sub">${h.descHTML}</div>` : ''}
             </div>`;
         }else{
@@ -283,7 +274,6 @@
         sec.innerHTML = `<summary>${summaryHTML}</summary><div class="subgrid"></div>`;
         const grid = sec.querySelector('.subgrid');
 
-        // Render extra placeholders (banners)
         for(const b of grp.banners){
           const ph = document.createElement('div');
           ph.className = 'placeholder';
@@ -293,18 +283,21 @@
           grid.appendChild(ph);
         }
 
-        // Render courses
         for(const e of grp.courses){
           const sub=document.createElement('details'); sub.className='sub';
           const bodyLabel=detectBody(e.titleHTML,e.descHTML);
           const badge=bodyLabel?`<span class="badge">${bodyLabel}</span>`:'';
-          const src= ENR_ORIGIN + '/schedule#' + e.id;
+          const src= ctHref(e.id); // schedule#ct####
+
+          // Title now links to the CT-anchored schedule URL
+          const titleLinked = linkedTitle(e.titleHTML, e.id);
+
           const hint = (e.total>e.kept)
             ? `<div class="meta">Showing ${e.kept} of ${e.total} upcoming dates (~4 weeks). <a class="btn" href="${src}">See all dates</a></div>`
-            : `<div class="meta">All upcoming dates shown.</div>`;
+            : `<div class="meta">All upcoming dates shown. <a class="btn" href="${src}">See all dates</a></div>`;
 
           sub.innerHTML = `
-            <summary><div class="ew-heading">${e.titleHTML}</div></summary>
+            <summary><div class="ew-heading">${titleLinked}</div></summary>
             <div class="body">
               ${badge}
               <div class="desc">${e.descHTML}</div>
