@@ -1,0 +1,194 @@
+<!-- docs/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>910CPR – Courses & Schedule (Nested Curtains)</title>
+
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-45PBWBK7KR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date());
+    gtag('config', 'G-45PBWBK7KR');
+  </script>
+
+  <!-- GTM -->
+  <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K58Z4XD');
+  </script>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K58Z4XD" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f6f9fc;color:#0a1b2b}
+    .wrap{max-width:1000px;margin:auto;padding:20px}
+    details{margin:8px 0;border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,.05)}
+    details>summary{cursor:pointer;padding:10px 16px;font-weight:700;background:#fff}
+    details[open]>summary{background:#eaf3ff}
+    .subgrid{padding:10px 20px;background:#fff}
+    .badge{display:inline-block;background:#eef6ff;color:#0b66c3;border:1px solid #cfe2f9;border-radius:999px;padding:3px 9px;font-size:12px;margin-right:4px}
+    .enrclass-list{list-style:none;padding:0;margin:10px 0}
+    .enrclass-list li{margin:6px 0}
+    .enrclass-list a{display:flex;flex-direction:column;gap:4px;border:1px solid #dce9f7;border-radius:10px;padding:8px 10px;text-decoration:none;color:#0a1b2b;background:#fff}
+    .enrclass-list a:hover{background:#f3f8ff;border-color:#b9d6f9}
+    .actions{margin-top:8px}
+    .btn{display:inline-block;border:1px solid #dce9f7;border-radius:8px;padding:6px 10px;text-decoration:none}
+    .meta{font-size:12px;color:#466;margin:6px 0 0}
+  </style>
+
+  <script>
+    // --- helpers ---
+    function parseDateFromText(t){
+      if(!t) return null;
+      const line=String(t).split('\n')[0].replace(/^\s*[A-Za-z]+,\s*/, '').trim();
+      const d=Date.parse(line);
+      return isNaN(d)?null:new Date(d);
+    }
+    function limitUlToWindow(ul,maxDays=28,maxItems=10){
+      if(!ul) return ul;
+      const cutoff=new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
+      const lis=Array.from(ul.querySelectorAll(':scope>li'));
+      let kept=0;
+      for(const li of lis){
+        const a=li.querySelector('a');
+        const dt=parseDateFromText(a?.textContent||li.textContent||'');
+        if(dt && dt<=cutoff && kept<maxItems){ kept++; continue; }
+        li.remove();
+      }
+      return ul;
+    }
+    function textContains(s,...needles){
+      const n=(s||'').toLowerCase();
+      return needles.some(h=>n.includes(String(h).toLowerCase()));
+    }
+    function detectBody(title,desc){
+      const t=(title||'')+' '+(desc||'');
+      if(textContains(t,'american heart','aha'))return'AHA';
+      if(textContains(t,'red cross','arc'))return'ARC';
+      if(textContains(t,'hsi','health & safety institute'))return'HSI';
+      if(textContains(t,'uscg','coast guard'))return'USCG';
+      return'';
+    }
+    function detectSection(title,desc){
+      const s=(title+' '+(desc||'')).toLowerCase();
+      if(s.includes('bls'))return'BLS';
+      if(s.includes('acls'))return'ACLS';
+      if(s.includes('pals'))return'PALS';
+      if(s.includes('uscg')||s.includes('stop the bleed')||s.includes('osha')||s.includes('bleed'))return'OSHA/USCG/STB';
+      if(s.includes('first aid')||s.includes('cpr')||s.includes('aed')||s.includes('heartsaver'))return'CPR/AED/First Aid';
+      return'Other';
+    }
+
+    document.addEventListener('DOMContentLoaded',async()=>{
+      const host=document.querySelector('.wrap');
+
+      // Try multiple likely paths for the saved Enrollware HTML snapshot.
+      async function loadSnapshot(){
+        const candidates = [
+          '/ew2landers/data/enrollware-schedule.html', // GitHub Pages repo path
+          '/data/enrollware-schedule.html',
+          './data/enrollware-schedule.html',
+          (location.pathname.replace(/[^/]+$/, '') + 'data/enrollware-schedule.html')
+        ];
+        for(const url of candidates){
+          try{
+            const res=await fetch(url,{mode:'same-origin',credentials:'omit'});
+            if(res.ok){ window.__EW_SNAPSHOT_URL=url; return await res.text(); }
+          }catch(e){}
+        }
+        return null;
+      }
+
+      const html=await loadSnapshot();
+      if(!html){ host.insertAdjacentHTML('beforeend','<p>Could not load schedule snapshot. Put it at docs/data/enrollware-schedule.html.</p>'); return; }
+
+      const dom=document.createElement('div'); dom.innerHTML=html;
+
+      // Extract each Enrollware course panel
+      const panels=[...dom.querySelectorAll('.enrpanel')];
+      const courses=[];
+      for(const p of panels){
+        const anchor=p.querySelector('[id^="ct"],[name^="ct"]');
+        const id=anchor?.id||anchor?.getAttribute('name')||'';
+        const title=(p.querySelector('.enrpanel-heading,h1,h2,h3,h4')?.textContent||'').trim();
+        const body=p.querySelector('.enrpanel-body');
+
+        const descClone=body?body.cloneNode(true):null;
+        if(descClone){ const u=descClone.querySelector('ul.enrclass-list'); if(u) u.remove(); }
+        const descHTML=descClone?(descClone.innerHTML||'').trim():'';
+
+        const ul=p.querySelector('ul.enrclass-list');
+        if(!ul||!title) continue;
+
+        const ulClone=ul.cloneNode(true);
+        limitUlToWindow(ulClone,28,10);
+
+        courses.push({id,title,descHTML,ul:ulClone});
+      }
+
+      // Bucketize by type
+      const buckets={BLS:[],ACLS:[],PALS:[],"CPR/AED/First Aid":[],"OSHA/USCG/STB":[],Other:[]};
+      for(const c of courses){ buckets[detectSection(c.title,c.descHTML)].push(c); }
+
+      host.innerHTML='<h1>910CPR Courses & Schedule</h1>' + (window.__EW_SNAPSHOT_URL?('<p class="meta">Loaded snapshot: '+window.__EW_SNAPSHOT_URL+'</p>'):'');
+      for(const [section,list] of Object.entries(buckets)){
+        if(!list.length) continue;
+
+        const sec=document.createElement('details'); sec.className='curtain';
+        sec.innerHTML=`<summary>${section} <span class="chev">▼</span></summary><div class="subgrid"></div>`;
+        const grid=sec.querySelector('.subgrid');
+
+        for(const course of list){
+          const sub=document.createElement('details'); sub.className='sub';
+          const src='https://coastalcprtraining.enrollware.com/schedule#'+course.id;
+          const body=detectBody(course.title,course.descHTML);
+          const badge=body?`<span class="badge">${body}</span>`:'';
+
+          sub.innerHTML=
+            `<summary>${course.title} <span class="chev">▼</span></summary>
+             <div class="body">
+               <h4>${course.title}</h4>
+               ${badge}
+               <div class="desc">${course.descHTML}</div>
+               <ul class="enrclass-list"></ul>
+               <div class="actions"><a class="btn" href="${src}">See more dates</a></div>
+             </div>`;
+
+          // Inject dates (trimmed)
+          sub.querySelector('.enrclass-list').replaceWith(course.ul);
+
+          // Auto-scroll the active sub when opened
+          sub.addEventListener('toggle',()=>{
+            if(sub.open){
+              const top=sub.getBoundingClientRect().top + window.scrollY - 12;
+              window.scrollTo({top,behavior:'smooth'});
+            }
+          });
+
+          grid.appendChild(sub);
+        }
+
+        // Only one top-level curtain open at a time + scroll
+        sec.addEventListener('toggle',()=>{
+          if(sec.open){
+            document.querySelectorAll('details.curtain').forEach(d=>{if(d!==sec)d.open=false;});
+            const top=sec.getBoundingClientRect().top + window.scrollY - 12;
+            window.scrollTo({top,behavior:'smooth'});
+          }
+        });
+
+        host.appendChild(sec);
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="wrap"></div>
+</body>
+</html>
