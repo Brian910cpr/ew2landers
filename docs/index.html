@@ -42,7 +42,7 @@
     .enrclass-list li{margin:6px 0}
     .enrclass-list a{display:flex;flex-direction:column;gap:4px;border:1px solid var(--edge);border-radius:10px;padding:8px 10px;text-decoration:none;color:var(--ink);background:var(--card)}
     .enrclass-list a:hover{background:var(--hover);border-color:#b9d6f9}
-    .btn{display:inline-block;margin-top:8px;border:1px solid var(--edge);border-radius:8px;padding:6px 10px;text-decoration:none;color:var(--brand);background:var(--card)}
+    .btn{display:inline-block;margin-top:8px;border:1px solid var(--edge);border-radius:8px;padding:6px 10px;text-decoration:none;color:#0b66c3;background:var(--card)}
     .meta{font-size:12px;color:#466;margin:6px 0 0}
   </style>
 </head>
@@ -51,7 +51,7 @@
 
   <script>
     // ---------- Robust date parsing for Enrollware format ----------
-    // Example text: "Thursday, October 30, 2025 at 12:30 PM"
+    // Example: "Thursday, October 30, 2025 at 12:30 PM"
     function parseDateFromText(t){
       if(!t) return null;
       const s = String(t).replace(/\u00A0/g,' ').trim();
@@ -70,8 +70,8 @@
       return new Date(yyyy, mon, dd, hr, min);
     }
 
-    // Trim to ~4 weeks / max 10 items (tweak as needed).
-    // IMPORTANT: If a date cannot be parsed, we KEEP the item rather than removing it.
+    // Trim to ~4 weeks / max 10 items.
+    // If we fail to parse a date, KEEP the item (don’t trim it out).
     function limitUlToWindow(ul,maxDays=28,maxItems=10){
       if(!ul) return {ul,kept:0,total:0};
       const cutoff = new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
@@ -82,14 +82,13 @@
         const a = li.querySelector('a');
         const txt = (a?.textContent||li.textContent||'').trim();
         const dt = parseDateFromText(txt);
-        // Keep unknown dates (parser miss) and within window; otherwise drop
         const keep = (!dt) || (dt && dt<=cutoff && kept<maxItems);
         if(keep){ kept++; } else { li.remove(); }
       }
       return {ul, kept, total};
     }
 
-    // ---------- Bucketing helpers ----------
+    // ---------- Cert body + section bucketing ----------
     function textContains(s,...needles){ const n=(s||'').toLowerCase(); return needles.some(h=>n.includes(String(h).toLowerCase())); }
     function detectBody(title,desc){
       const t=(title||'')+' '+(desc||'');
@@ -114,7 +113,26 @@
       return 'Other';
     }
 
-    // One-curtain-open + auto-scroll
+    // ---------- Skip Enrollware layout separators (no class UL) ----------
+    function isLayoutSeparator(title, desc, hasUl){
+      const t = (title||'').trim().toLowerCase();
+      if (hasUl) return false;
+      const blockedExact = new Set([
+        'other programs',
+        'instructor programs',
+        'cpr / aed only',
+        'healthcare provider: pals course',
+        'healthcare provider: asls course'
+      ]);
+      if (blockedExact.has(t)) return true;
+      const d = (desc||'').toLowerCase();
+      if (t.includes('instructor program') || d.includes('become an instructor')) return true;
+      if (t.includes('other program')) return true;
+      if (t.includes('cpr / aed only')) return true;
+      return false;
+    }
+
+    // ---------- UX: one curtain open + auto-scroll ----------
     function wireCurtains(rootSel){
       document.querySelectorAll(rootSel).forEach(sec=>{
         sec.addEventListener('toggle',()=>{
@@ -135,10 +153,10 @@
       });
     }
 
-    // Robust snapshot loader (localhost + GH Pages)
+    // ---------- Robust snapshot loader (localhost + GH Pages) ----------
     async function loadSnapshotHTML(){
       const here = location.pathname;
-      const base = here.replace(/[^/]+$/,'');
+      const base = here.replace(/[^/]+$/,''); // directory of this page
       const tryPaths = [
         base + 'data/enrollware-schedule.html',
         '/ew2landers/data/enrollware-schedule.html'
@@ -154,11 +172,10 @@
       return { html:null, url:null, tried };
     }
 
+    // ---------- Main ----------
     document.addEventListener('DOMContentLoaded', async()=>{
       const host = document.querySelector('.wrap');
-
-      const status = document.createElement('div');
-      status.className='status';
+      const status = document.createElement('div'); status.className='status';
       host.parentNode.insertBefore(status, host);
 
       const load = await loadSnapshotHTML();
@@ -173,24 +190,30 @@
       const panels = [...dom.querySelectorAll('.enrpanel')];
 
       const courses = [];
-      let skippedNoTitle=0, skippedNoDates=0;
-      for(const p of panels){
-        const anchor=p.querySelector('[id^="ct"],[name^="ct"]');
-        const id=anchor?.id||anchor?.getAttribute('name')||'';
-        const title=(p.querySelector('.enrpanel-heading,h1,h2,h3,h4')?.textContent||'').trim();
-        const body=p.querySelector('.enrpanel-body');
-        if(!title){ skippedNoTitle++; continue; }
+      let skippedNoTitle=0, skippedNoDates=0, skippedSeparators=0;
 
-        const descClone=body?body.cloneNode(true):null;
-        if(descClone){ const u=descClone.querySelector('ul.enrclass-list'); if(u) u.remove(); }
-        const descHTML=descClone?(descClone.innerHTML||'').trim():'';
+      for (const p of panels) {
+        const anchor = p.querySelector('[id^="ct"],[name^="ct"]');
+        const id     = anchor?.id || anchor?.getAttribute('name') || '';
+        const title  = (p.querySelector('.enrpanel-heading,h1,h2,h3,h4')?.textContent || '').trim();
+        const bodyEl = p.querySelector('.enrpanel-body');
 
-        const ul=p.querySelector('ul.enrclass-list');
-        if(!ul){ skippedNoDates++; continue; }
+        if (!title){ skippedNoTitle++; continue; }
 
-        const ulClone=ul.cloneNode(true);
-        const trimmed = limitUlToWindow(ulClone,28,10);
-        courses.push({id,title,descHTML,ul:trimmed.ul, kept:trimmed.kept, total:trimmed.total});
+        const descClone = bodyEl ? bodyEl.cloneNode(true) : null;
+        if (descClone){ const u = descClone.querySelector('ul.enrclass-list'); if (u) u.remove(); }
+        const descHTML = descClone ? (descClone.innerHTML || '').trim() : '';
+
+        const ul = p.querySelector('ul.enrclass-list');
+        const hasUl = !!ul;
+
+        if (isLayoutSeparator(title, descHTML, hasUl)) { skippedSeparators++; continue; }
+        if (!hasUl) { skippedNoDates++; continue; }
+
+        const ulClone = ul.cloneNode(true);
+        const trimmed = limitUlToWindow(ulClone, 28, 10);
+
+        courses.push({ id, title, descHTML, ul: trimmed.ul, kept: trimmed.kept, total: trimmed.total });
       }
 
       const buckets={BLS:[],ACLS:[],PALS:[],"CPR/AED/First Aid":[],"OSHA/USCG/STB":[],Other:[]};
@@ -232,7 +255,8 @@
 
       status.className='status ok';
       const counts = Object.entries(buckets).map(([k,v])=>`${k}:${v.length}`).join(' • ');
-      status.innerHTML = `<strong>Status:</strong> Loaded ${courses.length} courses from ${panels.length} panels. Buckets → ${counts}.`;
+      status.innerHTML = `<strong>Status:</strong> Loaded ${courses.length} courses from ${panels.length} panels. `
+        + `Buckets → ${counts}. Skipped (separators:${skippedSeparators}, no title:${skippedNoTitle}, no dates:${skippedNoDates}).`;
 
       wireCurtains('details.curtain');
     });
