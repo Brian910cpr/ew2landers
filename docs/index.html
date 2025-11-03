@@ -1,4 +1,3 @@
-<!-- docs/index.html -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -26,169 +25,228 @@
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K58Z4XD" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#f6f9fc;color:#0a1b2b}
+    :root{--ink:#0a1b2b;--bg:#f6f9fc;--card:#fff;--edge:#dce9f7;--hover:#f3f8ff;--badge:#eef6ff;--brand:#0b66c3;--ok:#0a7d27;--err:#b00020}
+    html,body{height:100%}
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
     .wrap{max-width:1000px;margin:auto;padding:20px}
+
+    .status{margin:0;padding:10px 16px;font-size:14px}
+    .status.ok{background:#e8f7ee;color:var(--ok);border-bottom:1px solid #cfe8d7}
+    .status.err{background:#fde9ec;color:var(--err);border-bottom:1px solid #f3c7cf}
+    .muted{opacity:.7}
+
     details{margin:8px 0;border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,.05)}
-    details>summary{cursor:pointer;padding:10px 16px;font-weight:700;background:#fff}
+    details>summary{cursor:pointer;padding:10px 16px;font-weight:700;background:var(--card);list-style:none}
     details[open]>summary{background:#eaf3ff}
-    .subgrid{padding:10px 20px;background:#fff}
-    .badge{display:inline-block;background:#eef6ff;color:#0b66c3;border:1px solid #cfe2f9;border-radius:999px;padding:3px 9px;font-size:12px;margin-right:4px}
+    .subgrid{padding:10px 20px;background:var(--card)}
+    .badge{display:inline-block;background:var(--badge);color:var(--brand);border:1px solid #cfe2f9;border-radius:999px;padding:3px 9px;font-size:12px;margin-right:6px}
     .enrclass-list{list-style:none;padding:0;margin:10px 0}
     .enrclass-list li{margin:6px 0}
-    .enrclass-list a{display:flex;flex-direction:column;gap:4px;border:1px solid #dce9f7;border-radius:10px;padding:8px 10px;text-decoration:none;color:#0a1b2b;background:#fff}
-    .enrclass-list a:hover{background:#f3f8ff;border-color:#b9d6f9}
-    .actions{margin-top:8px}
-    .btn{display:inline-block;border:1px solid #dce9f7;border-radius:8px;padding:6px 10px;text-decoration:none}
+    .enrclass-list a{display:flex;flex-direction:column;gap:4px;border:1px solid var(--edge);border-radius:10px;padding:8px 10px;text-decoration:none;color:var(--ink);background:var(--card)}
+    .enrclass-list a:hover{background:var(--hover);border-color:#b9d6f9}
+    .btn{display:inline-block;margin-top:8px;border:1px solid var(--edge);border-radius:8px;padding:6px 10px;text-decoration:none;color:var(--brand);background:var(--card)}
     .meta{font-size:12px;color:#466;margin:6px 0 0}
   </style>
+</head>
+<body>
+  <!-- status banner injects above .wrap -->
+  <div class="wrap"></div>
 
   <script>
-    // --- helpers ---
+    // ---------- Helpers ----------
     function parseDateFromText(t){
       if(!t) return null;
-      const line=String(t).split('\n')[0].replace(/^\s*[A-Za-z]+,\s*/, '').trim();
-      const d=Date.parse(line);
-      return isNaN(d)?null:new Date(d);
+      const line = String(t).split('\n')[0].replace(/^\s*[A-Za-z]+,\s*/, '').trim();
+      const d = Date.parse(line);
+      return isNaN(d) ? null : new Date(d);
     }
+    // Trim each course's list to ~4 weeks / max 10 items (tweak numbers as needed)
     function limitUlToWindow(ul,maxDays=28,maxItems=10){
       if(!ul) return ul;
-      const cutoff=new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
-      const lis=Array.from(ul.querySelectorAll(':scope>li'));
-      let kept=0;
+      const cutoff = new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
+      const lis = Array.from(ul.querySelectorAll(':scope>li'));
+      let kept=0,total=0;
       for(const li of lis){
+        total++;
         const a=li.querySelector('a');
         const dt=parseDateFromText(a?.textContent||li.textContent||'');
         if(dt && dt<=cutoff && kept<maxItems){ kept++; continue; }
         li.remove();
       }
-      return ul;
+      return {ul, kept, total};
     }
-    function textContains(s,...needles){
-      const n=(s||'').toLowerCase();
-      return needles.some(h=>n.includes(String(h).toLowerCase()));
-    }
+    function textContains(s,...needles){ const n=(s||'').toLowerCase(); return needles.some(h=>n.includes(String(h).toLowerCase())); }
     function detectBody(title,desc){
       const t=(title||'')+' '+(desc||'');
-      if(textContains(t,'american heart','aha'))return'AHA';
-      if(textContains(t,'red cross','arc'))return'ARC';
-      if(textContains(t,'hsi','health & safety institute'))return'HSI';
-      if(textContains(t,'uscg','coast guard'))return'USCG';
-      return'';
+      if(textContains(t,'american heart','aha')) return 'AHA';
+      if(textContains(t,'red cross','arc')) return 'ARC';
+      if(textContains(t,'hsi','health & safety institute')) return 'HSI';
+      if(textContains(t,'uscg','coast guard')) return 'USCG';
+      return '';
     }
     function detectSection(title,desc){
       const s=(title+' '+(desc||'')).toLowerCase();
-      if(s.includes('bls'))return'BLS';
-      if(s.includes('acls'))return'ACLS';
-      if(s.includes('pals'))return'PALS';
-      if(s.includes('uscg')||s.includes('stop the bleed')||s.includes('osha')||s.includes('bleed'))return'OSHA/USCG/STB';
-      if(s.includes('first aid')||s.includes('cpr')||s.includes('aed')||s.includes('heartsaver'))return'CPR/AED/First Aid';
-      return'Other';
+      if(s.includes('bls')) return 'BLS';
+      if(s.includes('acls')) return 'ACLS';
+      if(s.includes('pals')) return 'PALS';
+      if(s.includes('uscg')||s.includes('stop the bleed')||s.includes('osha')||s.includes('bleed')) return 'OSHA/USCG/STB';
+      if(s.includes('first aid')||s.includes('cpr')||s.includes('aed')||s.includes('heartsaver')) return 'CPR/AED/First Aid';
+      return 'Other';
+    }
+    // One-curtain-open + auto-scroll UX
+    function wireCurtains(rootSel){
+      document.querySelectorAll(rootSel).forEach(sec=>{
+        sec.addEventListener('toggle',()=>{
+          if(sec.open){
+            document.querySelectorAll(rootSel).forEach(d=>{ if(d!==sec) d.open=false;});
+            const top=sec.getBoundingClientRect().top + window.scrollY - 12;
+            window.scrollTo({top,behavior:'smooth'});
+          }
+        });
+      });
+      document.querySelectorAll('.sub').forEach(sub=>{
+        sub.addEventListener('toggle',()=>{
+          if(sub.open){
+            const top=sub.getBoundingClientRect().top + window.scrollY - 12;
+            window.scrollTo({top,behavior:'smooth'});
+          }
+        });
+      });
+    }
+    // Load snapshot robustly (works locally and on GH Pages /ew2landers/)
+    async function loadSnapshotHTML(){
+      const here = location.pathname;
+      const base = here.replace(/[^/]+$/,'');                 // directory of this page
+      const tryPaths = [
+        base + 'data/enrollware-schedule.html',               // relative (GitHub Pages)
+        '/ew2landers/data/enrollware-schedule.html',          // absolute project base
+        './data/enrollware-schedule.html',                    // local (file://)
+        'data/enrollware-schedule.html'                       // local alt
+      ];
+      const tried = [];
+      for(const url of tryPaths){
+        try{
+          const res = await fetch(url,{mode:'same-origin',credentials:'omit',cache:'no-cache'});
+          if(res.ok){ return { html: await res.text(), url, tried }; }
+          tried.push(url+' ('+res.status+')');
+        }catch(e){ tried.push(url+' (fetch error)'); }
+      }
+      return { html:null, url:null, tried };
     }
 
-    document.addEventListener('DOMContentLoaded',async()=>{
-      const host=document.querySelector('.wrap');
+    document.addEventListener('DOMContentLoaded', async()=>{
+      const host = document.querySelector('.wrap');
 
-      // Try multiple likely paths for the saved Enrollware HTML snapshot.
-      async function loadSnapshot(){
-        const candidates = [
-          '/ew2landers/data/enrollware-schedule.html', // GitHub Pages repo path
-          '/data/enrollware-schedule.html',
-          './data/enrollware-schedule.html',
-          (location.pathname.replace(/[^/]+$/, '') + 'data/enrollware-schedule.html')
-        ];
-        for(const url of candidates){
-          try{
-            const res=await fetch(url,{mode:'same-origin',credentials:'omit'});
-            if(res.ok){ window.__EW_SNAPSHOT_URL=url; return await res.text(); }
-          }catch(e){}
-        }
-        return null;
+      // Status slot
+      const status = document.createElement('div');
+      status.className='status';
+      host.parentNode.insertBefore(status, host);
+
+      const load = await loadSnapshotHTML();
+      if(!load.html){
+        status.className='status err';
+        status.innerHTML = '<strong>Could not load schedule snapshot.</strong><br><span class="muted">Tried:</span> '+ (load.tried.join(' → '));
+        console.error('Enrollware snapshot load failed. Tried:', load.tried);
+        host.insertAdjacentHTML('beforeend','<p>Put the file at docs/data/enrollware-schedule.html in your repo.</p>');
+        return;
       }
 
-      const html=await loadSnapshot();
-      if(!html){ host.insertAdjacentHTML('beforeend','<p>Could not load schedule snapshot. Put it at docs/data/enrollware-schedule.html.</p>'); return; }
+      // Parse snapshot
+      const dom = document.createElement('div'); dom.innerHTML = load.html;
+      const panels = [...dom.querySelectorAll('.enrpanel')];
+      console.log('Panels found:', panels.length);
 
-      const dom=document.createElement('div'); dom.innerHTML=html;
-
-      // Extract each Enrollware course panel
-      const panels=[...dom.querySelectorAll('.enrpanel')];
-      const courses=[];
+      const courses = [];
+      let skippedNoTitle=0, skippedNoDates=0;
       for(const p of panels){
         const anchor=p.querySelector('[id^="ct"],[name^="ct"]');
         const id=anchor?.id||anchor?.getAttribute('name')||'';
         const title=(p.querySelector('.enrpanel-heading,h1,h2,h3,h4')?.textContent||'').trim();
         const body=p.querySelector('.enrpanel-body');
 
+        if(!title){ skippedNoTitle++; continue; }
+
         const descClone=body?body.cloneNode(true):null;
         if(descClone){ const u=descClone.querySelector('ul.enrclass-list'); if(u) u.remove(); }
         const descHTML=descClone?(descClone.innerHTML||'').trim():'';
 
         const ul=p.querySelector('ul.enrclass-list');
-        if(!ul||!title) continue;
+        if(!ul){ skippedNoDates++; continue; }
 
         const ulClone=ul.cloneNode(true);
-        limitUlToWindow(ulClone,28,10);
-
-        courses.push({id,title,descHTML,ul:ulClone});
+        const trimmed = limitUlToWindow(ulClone,28,10);
+        courses.push({id,title,descHTML,ul:trimmed.ul, kept:trimmed.kept, total:trimmed.total});
       }
 
-      // Bucketize by type
+      // Bucketize
       const buckets={BLS:[],ACLS:[],PALS:[],"CPR/AED/First Aid":[],"OSHA/USCG/STB":[],Other:[]};
       for(const c of courses){ buckets[detectSection(c.title,c.descHTML)].push(c); }
 
-      host.innerHTML='<h1>910CPR Courses & Schedule</h1>' + (window.__EW_SNAPSHOT_URL?('<p class="meta">Loaded snapshot: '+window.__EW_SNAPSHOT_URL+'</p>'):'');
+      // Build page
+      host.innerHTML = '<h1>910CPR Courses & Schedule</h1><p class="meta">Loaded snapshot: '
+        + (load.url||'(unknown)') + '</p>';
+
+      let totalShown=0;
       for(const [section,list] of Object.entries(buckets)){
         if(!list.length) continue;
-
+        totalShown += list.length;
         const sec=document.createElement('details'); sec.className='curtain';
-        sec.innerHTML=`<summary>${section} <span class="chev">▼</span></summary><div class="subgrid"></div>`;
+        sec.innerHTML=`<summary>${section} (${list.length}) <span class="chev">▼</span></summary><div class="subgrid"></div>`;
         const grid=sec.querySelector('.subgrid');
 
         for(const course of list){
           const sub=document.createElement('details'); sub.className='sub';
           const src='https://coastalcprtraining.enrollware.com/schedule#'+course.id;
-          const body=detectBody(course.title,course.descHTML);
-          const badge=body?`<span class="badge">${body}</span>`:'';
+          const bodyLabel=detectBody(course.title,course.descHTML);
+          const badge=bodyLabel?`<span class="badge">${bodyLabel}</span>`:'';
+          const hint = (course.total>course.kept)
+            ? `<div class="meta">Showing ${course.kept} of ${course.total} upcoming dates (~4 weeks). <a class="btn" href="${src}">See all dates</a></div>`
+            : `<div class="meta">All upcoming dates shown.</div>`;
 
-          sub.innerHTML=
-            `<summary>${course.title} <span class="chev">▼</span></summary>
-             <div class="body">
-               <h4>${course.title}</h4>
-               ${badge}
-               <div class="desc">${course.descHTML}</div>
-               <ul class="enrclass-list"></ul>
-               <div class="actions"><a class="btn" href="${src}">See more dates</a></div>
-             </div>`;
-
-          // Inject dates (trimmed)
+          sub.innerHTML = `
+            <summary>${course.title} <span class="chev">▼</span></summary>
+            <div class="body">
+              <h4>${course.title}</h4>
+              ${badge}
+              <div class="desc">${course.descHTML}</div>
+              <ul class="enrclass-list"></ul>
+              ${hint}
+            </div>`;
           sub.querySelector('.enrclass-list').replaceWith(course.ul);
-
-          // Auto-scroll the active sub when opened
-          sub.addEventListener('toggle',()=>{
-            if(sub.open){
-              const top=sub.getBoundingClientRect().top + window.scrollY - 12;
-              window.scrollTo({top,behavior:'smooth'});
-            }
-          });
-
           grid.appendChild(sub);
         }
 
-        // Only one top-level curtain open at a time + scroll
-        sec.addEventListener('toggle',()=>{
-          if(sec.open){
-            document.querySelectorAll('details.curtain').forEach(d=>{if(d!==sec)d.open=false;});
-            const top=sec.getBoundingClientRect().top + window.scrollY - 12;
-            window.scrollTo({top,behavior:'smooth'});
-          }
-        });
-
         host.appendChild(sec);
+      }
+
+      // Top status banner
+      status.className='status ok';
+      const counts = Object.entries(buckets).map(([k,v])=>`${k}:${v.length}`).join(' • ');
+      status.innerHTML = `<strong>Status:</strong> Loaded ${courses.length} courses from ${panels.length} panels. Buckets → ${counts}. Skipped (no title:${skippedNoTitle}, no dates:${skippedNoDates}).`;
+
+      // Wire UX behaviors
+      wireCurtains('details.curtain');
+
+      // Console diagnostics
+      console.log('Courses parsed:', courses.length, courses.map(c=>c.title));
+      if(skippedNoTitle||skippedNoDates){
+        console.warn('Skipped panels → no title:', skippedNoTitle, ' no dates:', skippedNoDates);
+      }
+
+      // Deep-link: if URL hash contains a ctXXXX, open the matching sub
+      if(location.hash && /ct\d+/.test(location.hash)){
+        const hash = location.hash.replace('#','');
+        const sub = [...document.querySelectorAll('details.sub')].find(d=>{
+          const sum = d.querySelector('summary'); return sum && sum.textContent.includes(hash);
+        });
+        if(sub){
+          const sec = sub.closest('details.curtain'); if(sec) sec.open=true;
+          sub.open=true;
+          const top=sub.getBoundingClientRect().top + window.scrollY - 12;
+          window.scrollTo({top,behavior:'smooth'});
+        }
       }
     });
   </script>
-</head>
-<body>
-  <div class="wrap"></div>
 </body>
 </html>
