@@ -70,8 +70,7 @@
       return new Date(yyyy, mon, dd, hr, min);
     }
 
-    // Trim to ~4 weeks / max 10 items.
-    // If we fail to parse a date, KEEP the item (don’t trim it out).
+    // Trim to ~4 weeks / max 10 items (keep unparsed items)
     function limitUlToWindow(ul,maxDays=28,maxItems=10){
       if(!ul) return {ul,kept:0,total:0};
       const cutoff = new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
@@ -261,5 +260,9 @@
       wireCurtains('details.curtain');
     });
   </script>
+
+  <!-- Voice widget -->
+  <embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
+  <script src="https://cdn.247aireceptionist.com/script.js"></script>
 </body>
 </html>
