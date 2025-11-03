@@ -50,28 +50,46 @@
   <div class="wrap"></div>
 
   <script>
-    // ---------- Helpers ----------
+    // ---------- Robust date parsing for Enrollware format ----------
+    // Example text: "Thursday, October 30, 2025 at 12:30 PM"
     function parseDateFromText(t){
       if(!t) return null;
-      const line = String(t).split('\n')[0].replace(/^\s*[A-Za-z]+,\s*/, '').trim();
-      const d = Date.parse(line);
-      return isNaN(d) ? null : new Date(d);
+      const s = String(t).replace(/\u00A0/g,' ').trim();
+      const re = /^(?:[A-Za-z]+,\s*)?([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})\s+at\s+(\d{1,2}):(\d{2})\s*(AM|PM)/i;
+      const m = s.match(re);
+      if(!m) return null;
+      const months = {january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
+      const mon = months[m[1].toLowerCase()];
+      if(mon==null) return null;
+      let hr = parseInt(m[4],10);
+      const min = parseInt(m[5],10);
+      const ampm = m[6].toUpperCase();
+      if(ampm==='PM' && hr<12) hr+=12;
+      if(ampm==='AM' && hr===12) hr=0;
+      const yyyy = parseInt(m[3],10), dd = parseInt(m[2],10);
+      return new Date(yyyy, mon, dd, hr, min);
     }
-    // Trim to ~4 weeks / max 10 items (tweak as needed)
+
+    // Trim to ~4 weeks / max 10 items (tweak as needed).
+    // IMPORTANT: If a date cannot be parsed, we KEEP the item rather than removing it.
     function limitUlToWindow(ul,maxDays=28,maxItems=10){
-      if(!ul) return ul;
+      if(!ul) return {ul,kept:0,total:0};
       const cutoff = new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
       const lis = Array.from(ul.querySelectorAll(':scope>li'));
       let kept=0,total=0;
       for(const li of lis){
         total++;
-        const a=li.querySelector('a');
-        const dt=parseDateFromText(a?.textContent||li.textContent||'');
-        if(dt && dt<=cutoff && kept<maxItems){ kept++; continue; }
-        li.remove();
+        const a = li.querySelector('a');
+        const txt = (a?.textContent||li.textContent||'').trim();
+        const dt = parseDateFromText(txt);
+        // Keep unknown dates (parser miss) and within window; otherwise drop
+        const keep = (!dt) || (dt && dt<=cutoff && kept<maxItems);
+        if(keep){ kept++; } else { li.remove(); }
       }
       return {ul, kept, total};
     }
+
+    // ---------- Bucketing helpers ----------
     function textContains(s,...needles){ const n=(s||'').toLowerCase(); return needles.some(h=>n.includes(String(h).toLowerCase())); }
     function detectBody(title,desc){
       const t=(title||'')+' '+(desc||'');
@@ -81,25 +99,22 @@
       if(textContains(t,'uscg','coast guard')) return 'USCG';
       return '';
     }
-    // NEW: stronger, ordered matching so ACLS/PALS win over BLS; title-first, word boundaries
     function hasWord(hay, word){ return new RegExp(`\\b${word}\\b`, 'i').test(hay || ''); }
     function detectSection(title, desc){
       const t = title || '';
       const d = desc  || '';
-      // Title priority
       if (hasWord(t,'ACLS')) return 'ACLS';
       if (hasWord(t,'PALS')) return 'PALS';
       if (hasWord(t,'BLS'))  return 'BLS';
-      // Fallback to description (same priority)
       if (hasWord(d,'ACLS')) return 'ACLS';
       if (hasWord(d,'PALS')) return 'PALS';
       if (hasWord(d,'BLS'))  return 'BLS';
-      // Other buckets
       if (/\b(USCG|Coast Guard|OSHA|Stop the Bleed)\b/i.test(t+d)) return 'OSHA/USCG/STB';
       if (/\b(Heartsaver|First Aid|CPR|AED)\b/i.test(t+d))         return 'CPR/AED/First Aid';
       return 'Other';
     }
-    // One-curtain-open + auto-scroll UX
+
+    // One-curtain-open + auto-scroll
     function wireCurtains(rootSel){
       document.querySelectorAll(rootSel).forEach(sec=>{
         sec.addEventListener('toggle',()=>{
@@ -119,10 +134,11 @@
         });
       });
     }
-    // Robust loader: works on localhost and GH Pages (/ew2landers/)
+
+    // Robust snapshot loader (localhost + GH Pages)
     async function loadSnapshotHTML(){
       const here = location.pathname;
-      const base = here.replace(/[^/]+$/,''); // directory of this page
+      const base = here.replace(/[^/]+$/,'');
       const tryPaths = [
         base + 'data/enrollware-schedule.html',
         '/ew2landers/data/enrollware-schedule.html'
@@ -141,7 +157,6 @@
     document.addEventListener('DOMContentLoaded', async()=>{
       const host = document.querySelector('.wrap');
 
-      // Status banner
       const status = document.createElement('div');
       status.className='status';
       host.parentNode.insertBefore(status, host);
@@ -150,15 +165,12 @@
       if(!load.html){
         status.className='status err';
         status.innerHTML = '<strong>Could not load schedule snapshot.</strong><br><span class="muted">Tried:</span> '+ (load.tried.join(' → '));
-        console.error('Enrollware snapshot load failed. Tried:', load.tried);
         host.insertAdjacentHTML('beforeend','<p>Put the file at docs/data/enrollware-schedule.html in your repo.</p>');
         return;
       }
 
-      // Parse snapshot
       const dom = document.createElement('div'); dom.innerHTML = load.html;
       const panels = [...dom.querySelectorAll('.enrpanel')];
-      console.log('Panels found:', panels.length);
 
       const courses = [];
       let skippedNoTitle=0, skippedNoDates=0;
@@ -167,7 +179,6 @@
         const id=anchor?.id||anchor?.getAttribute('name')||'';
         const title=(p.querySelector('.enrpanel-heading,h1,h2,h3,h4')?.textContent||'').trim();
         const body=p.querySelector('.enrpanel-body');
-
         if(!title){ skippedNoTitle++; continue; }
 
         const descClone=body?body.cloneNode(true):null;
@@ -182,11 +193,9 @@
         courses.push({id,title,descHTML,ul:trimmed.ul, kept:trimmed.kept, total:trimmed.total});
       }
 
-      // Bucketize with fixed logic
       const buckets={BLS:[],ACLS:[],PALS:[],"CPR/AED/First Aid":[],"OSHA/USCG/STB":[],Other:[]};
       for(const c of courses){ buckets[detectSection(c.title,c.descHTML)].push(c); }
 
-      // Build page
       host.innerHTML = '<h1>910CPR Courses & Schedule</h1><p class="meta">Loaded snapshot: '
         + (load.url||'(unknown)') + '</p>';
 
@@ -221,21 +230,11 @@
         host.appendChild(sec);
       }
 
-      // Status summary
       status.className='status ok';
       const counts = Object.entries(buckets).map(([k,v])=>`${k}:${v.length}`).join(' • ');
-      status.innerHTML = `<strong>Status:</strong> Loaded ${courses.length} courses from ${panels.length} panels. Buckets → ${counts}. Skipped (no title:${skippedNoTitle}, no dates:${skippedNoDates}).`;
+      status.innerHTML = `<strong>Status:</strong> Loaded ${courses.length} courses from ${panels.length} panels. Buckets → ${counts}.`;
 
-      // UX wiring
       wireCurtains('details.curtain');
-
-      // Console diagnostics for any mis-bucketed items
-      for (const c of courses) {
-        const sec = detectSection(c.title, c.descHTML);
-        if (sec === 'BLS' && /\bACLS\b/i.test(c.title + ' ' + c.descHTML)) {
-          console.warn('ACLS mentioned but bucketed as BLS →', c.title);
-        }
-      }
     });
   </script>
 </body>
