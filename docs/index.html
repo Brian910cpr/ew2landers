@@ -26,6 +26,7 @@
 
   <style>
     :root{--ink:#0a1b2b;--bg:#f6f9fc;--card:#fff;--edge:#dce9f7;--hover:#f3f8ff;--badge:#eef6ff;--brand:#0b66c3;--ok:#0a7d27;--err:#b00020}
+    html,body{height:100%}
     body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--ink)}
     .wrap{max-width:1000px;margin:auto;padding:20px}
     .status{margin:0;padding:10px 16px;font-size:14px}
@@ -33,7 +34,7 @@
     .status.err{background:#fde9ec;color:var(--err);border-bottom:1px solid #f3c7cf}
     .muted{opacity:.7}
     details{margin:8px 0;border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,.05)}
-    details>summary{cursor:pointer;padding:10px 16px;font-weight:700;background:var(--card)}
+    details>summary{cursor:pointer;padding:10px 16px;font-weight:700;background:var(--card);list-style:none}
     details[open]>summary{background:#eaf3ff}
     .subgrid{padding:10px 20px;background:var(--card)}
     .badge{display:inline-block;background:var(--badge);color:var(--brand);border:1px solid #cfe2f9;border-radius:999px;padding:3px 9px;font-size:12px;margin-right:6px}
@@ -49,16 +50,18 @@
   <div class="wrap"></div>
 
   <script>
+    // ---------- Helpers ----------
     function parseDateFromText(t){
       if(!t) return null;
-      const line=String(t).split('\n')[0].replace(/^\s*[A-Za-z]+,\s*/,'').trim();
-      const d=Date.parse(line);
-      return isNaN(d)?null:new Date(d);
+      const line = String(t).split('\n')[0].replace(/^\s*[A-Za-z]+,\s*/, '').trim();
+      const d = Date.parse(line);
+      return isNaN(d) ? null : new Date(d);
     }
+    // Trim to ~4 weeks / max 10 items (tweak as needed)
     function limitUlToWindow(ul,maxDays=28,maxItems=10){
       if(!ul) return ul;
-      const cutoff=new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
-      const lis=[...ul.querySelectorAll(':scope>li')];
+      const cutoff = new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
+      const lis = Array.from(ul.querySelectorAll(':scope>li'));
       let kept=0,total=0;
       for(const li of lis){
         total++;
@@ -67,32 +70,42 @@
         if(dt && dt<=cutoff && kept<maxItems){ kept++; continue; }
         li.remove();
       }
-      return {ul,kept,total};
+      return {ul, kept, total};
     }
-    function textContains(s,...needles){const n=(s||'').toLowerCase();return needles.some(h=>n.includes(String(h).toLowerCase()));}
+    function textContains(s,...needles){ const n=(s||'').toLowerCase(); return needles.some(h=>n.includes(String(h).toLowerCase())); }
     function detectBody(title,desc){
       const t=(title||'')+' '+(desc||'');
-      if(textContains(t,'american heart','aha'))return'AHA';
-      if(textContains(t,'red cross','arc'))return'ARC';
-      if(textContains(t,'hsi','health & safety institute'))return'HSI';
-      if(textContains(t,'uscg','coast guard'))return'USCG';
+      if(textContains(t,'american heart','aha')) return 'AHA';
+      if(textContains(t,'red cross','arc')) return 'ARC';
+      if(textContains(t,'hsi','health & safety institute')) return 'HSI';
+      if(textContains(t,'uscg','coast guard')) return 'USCG';
       return '';
     }
-    function detectSection(title,desc){
-      const s=(title+' '+(desc||'')).toLowerCase();
-      if(s.includes('bls'))return'BLS';
-      if(s.includes('acls'))return'ACLS';
-      if(s.includes('pals'))return'PALS';
-      if(s.includes('uscg')||s.includes('stop the bleed')||s.includes('osha')||s.includes('bleed'))return'OSHA/USCG/STB';
-      if(s.includes('first aid')||s.includes('cpr')||s.includes('aed')||s.includes('heartsaver'))return'CPR/AED/First Aid';
-      return'Other';
+    // NEW: stronger, ordered matching so ACLS/PALS win over BLS; title-first, word boundaries
+    function hasWord(hay, word){ return new RegExp(`\\b${word}\\b`, 'i').test(hay || ''); }
+    function detectSection(title, desc){
+      const t = title || '';
+      const d = desc  || '';
+      // Title priority
+      if (hasWord(t,'ACLS')) return 'ACLS';
+      if (hasWord(t,'PALS')) return 'PALS';
+      if (hasWord(t,'BLS'))  return 'BLS';
+      // Fallback to description (same priority)
+      if (hasWord(d,'ACLS')) return 'ACLS';
+      if (hasWord(d,'PALS')) return 'PALS';
+      if (hasWord(d,'BLS'))  return 'BLS';
+      // Other buckets
+      if (/\b(USCG|Coast Guard|OSHA|Stop the Bleed)\b/i.test(t+d)) return 'OSHA/USCG/STB';
+      if (/\b(Heartsaver|First Aid|CPR|AED)\b/i.test(t+d))         return 'CPR/AED/First Aid';
+      return 'Other';
     }
+    // One-curtain-open + auto-scroll UX
     function wireCurtains(rootSel){
       document.querySelectorAll(rootSel).forEach(sec=>{
         sec.addEventListener('toggle',()=>{
           if(sec.open){
-            document.querySelectorAll(rootSel).forEach(d=>{if(d!==sec)d.open=false;});
-            const top=sec.getBoundingClientRect().top+window.scrollY-12;
+            document.querySelectorAll(rootSel).forEach(d=>{ if(d!==sec) d.open=false;});
+            const top=sec.getBoundingClientRect().top + window.scrollY - 12;
             window.scrollTo({top,behavior:'smooth'});
           }
         });
@@ -100,52 +113,61 @@
       document.querySelectorAll('.sub').forEach(sub=>{
         sub.addEventListener('toggle',()=>{
           if(sub.open){
-            const top=sub.getBoundingClientRect().top+window.scrollY-12;
+            const top=sub.getBoundingClientRect().top + window.scrollY - 12;
             window.scrollTo({top,behavior:'smooth'});
           }
         });
       });
     }
+    // Robust loader: works on localhost and GH Pages (/ew2landers/)
     async function loadSnapshotHTML(){
-      const here=location.pathname;
-      const base=here.replace(/[^/]+$/,''); // directory of this page
-      const tryPaths=[
-        base+'data/enrollware-schedule.html',
+      const here = location.pathname;
+      const base = here.replace(/[^/]+$/,''); // directory of this page
+      const tryPaths = [
+        base + 'data/enrollware-schedule.html',
         '/ew2landers/data/enrollware-schedule.html'
       ];
-      const tried=[];
+      const tried = [];
       for(const url of tryPaths){
         try{
-          const res=await fetch(url,{mode:'same-origin',credentials:'omit',cache:'no-cache'});
-          if(res.ok){ return {html:await res.text(), url, tried}; }
+          const res = await fetch(url,{mode:'same-origin',credentials:'omit',cache:'no-cache'});
+          if(res.ok){ return { html: await res.text(), url, tried }; }
           tried.push(url+' ('+res.status+')');
         }catch(e){ tried.push(url+' (fetch error)'); }
       }
-      return {html:null,url:null,tried};
+      return { html:null, url:null, tried };
     }
 
-    document.addEventListener('DOMContentLoaded', async ()=>{
-      const host=document.querySelector('.wrap');
-      const status=document.createElement('div'); status.className='status';
+    document.addEventListener('DOMContentLoaded', async()=>{
+      const host = document.querySelector('.wrap');
+
+      // Status banner
+      const status = document.createElement('div');
+      status.className='status';
       host.parentNode.insertBefore(status, host);
 
-      const load=await loadSnapshotHTML();
+      const load = await loadSnapshotHTML();
       if(!load.html){
         status.className='status err';
-        status.innerHTML='<strong>Could not load schedule snapshot.</strong><br><span class="muted">Tried:</span> '+(load.tried.join(' → '));
+        status.innerHTML = '<strong>Could not load schedule snapshot.</strong><br><span class="muted">Tried:</span> '+ (load.tried.join(' → '));
+        console.error('Enrollware snapshot load failed. Tried:', load.tried);
+        host.insertAdjacentHTML('beforeend','<p>Put the file at docs/data/enrollware-schedule.html in your repo.</p>');
         return;
       }
 
-      const dom=document.createElement('div'); dom.innerHTML=load.html;
-      const panels=[...dom.querySelectorAll('.enrpanel')];
-      const courses=[];
-      let skippedNoTitle=0, skippedNoDates=0;
+      // Parse snapshot
+      const dom = document.createElement('div'); dom.innerHTML = load.html;
+      const panels = [...dom.querySelectorAll('.enrpanel')];
+      console.log('Panels found:', panels.length);
 
+      const courses = [];
+      let skippedNoTitle=0, skippedNoDates=0;
       for(const p of panels){
         const anchor=p.querySelector('[id^="ct"],[name^="ct"]');
         const id=anchor?.id||anchor?.getAttribute('name')||'';
         const title=(p.querySelector('.enrpanel-heading,h1,h2,h3,h4')?.textContent||'').trim();
         const body=p.querySelector('.enrpanel-body');
+
         if(!title){ skippedNoTitle++; continue; }
 
         const descClone=body?body.cloneNode(true):null;
@@ -154,15 +176,19 @@
 
         const ul=p.querySelector('ul.enrclass-list');
         if(!ul){ skippedNoDates++; continue; }
+
         const ulClone=ul.cloneNode(true);
-        const trimmed=limitUlToWindow(ulClone,28,10);
-        courses.push({id,title,descHTML,ul:trimmed.ul,kept:trimmed.kept,total:trimmed.total});
+        const trimmed = limitUlToWindow(ulClone,28,10);
+        courses.push({id,title,descHTML,ul:trimmed.ul, kept:trimmed.kept, total:trimmed.total});
       }
 
+      // Bucketize with fixed logic
       const buckets={BLS:[],ACLS:[],PALS:[],"CPR/AED/First Aid":[],"OSHA/USCG/STB":[],Other:[]};
       for(const c of courses){ buckets[detectSection(c.title,c.descHTML)].push(c); }
 
-      host.innerHTML='<h1>910CPR Courses & Schedule</h1><p class="meta">Loaded snapshot: '+(load.url||'(unknown)')+'</p>';
+      // Build page
+      host.innerHTML = '<h1>910CPR Courses & Schedule</h1><p class="meta">Loaded snapshot: '
+        + (load.url||'(unknown)') + '</p>';
 
       for(const [section,list] of Object.entries(buckets)){
         if(!list.length) continue;
@@ -175,10 +201,11 @@
           const src='https://coastalcprtraining.enrollware.com/schedule#'+course.id;
           const bodyLabel=detectBody(course.title,course.descHTML);
           const badge=bodyLabel?`<span class="badge">${bodyLabel}</span>`:'';
-          const hint=(course.total>course.kept)
-            ? `<div class="meta">Showing ${course.kept} of ${course.total} (~4 weeks). <a class="btn" href="${src}">See all dates</a></div>`
+          const hint = (course.total>course.kept)
+            ? `<div class="meta">Showing ${course.kept} of ${course.total} upcoming dates (~4 weeks). <a class="btn" href="${src}">See all dates</a></div>`
             : `<div class="meta">All upcoming dates shown.</div>`;
-          sub.innerHTML=`
+
+          sub.innerHTML = `
             <summary>${course.title} <span class="chev">▼</span></summary>
             <div class="body">
               <h4>${course.title}</h4>
@@ -190,14 +217,25 @@
           sub.querySelector('.enrclass-list').replaceWith(course.ul);
           grid.appendChild(sub);
         }
+
         host.appendChild(sec);
       }
 
+      // Status summary
       status.className='status ok';
-      const counts=Object.entries(buckets).map(([k,v])=>`${k}:${v.length}`).join(' • ');
-      status.innerHTML=`<strong>Status:</strong> Loaded ${courses.length} courses from ${panels.length} panels. Buckets → ${counts}. Skipped (no title:${skippedNoTitle}, no dates:${skippedNoDates}).`;
+      const counts = Object.entries(buckets).map(([k,v])=>`${k}:${v.length}`).join(' • ');
+      status.innerHTML = `<strong>Status:</strong> Loaded ${courses.length} courses from ${panels.length} panels. Buckets → ${counts}. Skipped (no title:${skippedNoTitle}, no dates:${skippedNoDates}).`;
 
+      // UX wiring
       wireCurtains('details.curtain');
+
+      // Console diagnostics for any mis-bucketed items
+      for (const c of courses) {
+        const sec = detectSection(c.title, c.descHTML);
+        if (sec === 'BLS' && /\bACLS\b/i.test(c.title + ' ' + c.descHTML)) {
+          console.warn('ACLS mentioned but bucketed as BLS →', c.title);
+        }
+      }
     });
   </script>
 </body>
