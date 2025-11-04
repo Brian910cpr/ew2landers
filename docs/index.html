@@ -10,12 +10,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','G-45PBWBK7KR');</script>
 
 <!-- GTM -->
-<script>
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-K58Z4XD');
-</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f)})(window,document,'script','dataLayer','GTM-K58Z4XD');</script>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K58Z4XD" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <style>
@@ -40,18 +35,17 @@ details.section>summary{cursor:pointer;list-style:none;padding:0}
   background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot));color:var(--bannerText)}
 .ph-head .ph-title{font-weight:800;font-size:1.1rem}
 .ph-head .ph-sub{font-size:12px;opacity:.9;margin-top:6px}
-/* belt & suspenders: even if an <a> slips in, disable link behavior */
+/* belt & suspenders: disable any accidental anchors in headers */
 .ph-head a{color:inherit;text-decoration:none;pointer-events:none;cursor:default}
 
-/* Mid-level courses */
+/* Mid-level courses (title summary is PLAIN TEXT) */
 details.course{margin:12px 0;border-radius:12px;border:1px solid var(--edge);
   background:var(--card);overflow:hidden}
 details.course>summary{list-style:none;cursor:pointer;font-weight:700;padding:12px 16px;
   background:linear-gradient(180deg,#ffffff,#f7fbff);border-bottom:1px solid var(--edge)}
 details.course[open]>summary{background:#f0f6ff}
 details.course .body{padding:14px 16px}
-.title-link{color:inherit;text-decoration:none}
-.title-link:hover{text-decoration:underline}
+.course-title a{pointer-events:none;text-decoration:none;color:inherit;cursor:default} /* if any slip in */
 .meta{font-size:12px;color:#466;margin:8px 0 0}
 .btn{display:inline-block;margin-top:10px;border:1px solid var(--edge);border-radius:8px;
   padding:8px 12px;text-decoration:none;color:#0b66c3;background:var(--card)}
@@ -74,7 +68,6 @@ const ENR_ORIGIN='https://coastalcprtraining.enrollware.com';
 const isCt=id=>typeof id==='string' && /^ct\d{3,}$/i.test(id);
 const ctHref=id=>`${ENR_ORIGIN}/schedule#${encodeURIComponent(id)}`;
 
-/* Replace all anchors inside a fragment with spans (keeps inner HTML) */
 function stripAllAnchors(frag){
   frag.querySelectorAll('a').forEach(a=>{
     const span=document.createElement('span');
@@ -83,8 +76,6 @@ function stripAllAnchors(frag){
   });
   return frag;
 }
-
-/* Absolutize relative links/imgs to Enrollware origin */
 function absolutizeUrls(frag){
   frag.querySelectorAll('img,a').forEach(el=>{
     const attr=el.tagName==='IMG'?'src':'href';
@@ -95,20 +86,6 @@ function absolutizeUrls(frag){
   });
   return frag;
 }
-
-/* Course title: strip any existing anchors, then link only if we have ct##### */
-function courseTitleHTMLToLinked(titleFragmentHTML, ctId){
-  const tmp=document.createElement('div');
-  tmp.innerHTML=titleFragmentHTML;
-  stripAllAnchors(tmp);               // remove Enrollware's built-in /ct#… or other anchors
-  const cleanHTML=tmp.innerHTML.trim();
-  if(isCt(ctId)){
-    return `<a class="title-link" href="${ctHref(ctId)}">${cleanHTML}</a>`;
-  }
-  return cleanHTML; // no link if no ct
-}
-
-/* Find ct##### for a panel */
 function getCtId(panel,root){
   let a=panel.querySelector('[id^="ct"],[name^="ct"]');
   if(a){ const id=a.id||a.getAttribute('name')||''; if(isCt(id)) return id; }
@@ -135,8 +112,6 @@ function getCtId(panel,root){
   }
   return last;
 }
-
-/* Date parsing + trim window */
 function parseDateFromText(t){
   if(!t) return null;
   const s=String(t).replace(/\u00A0/g,' ').trim();
@@ -163,25 +138,15 @@ function limitUlToWindow(ul,maxDays=28,maxItems=10){
   }
   return {ul,kept,total};
 }
-
-/* load snapshot */
 async function loadSnapshotHTML(){
   const here = location.pathname;
   const base = here.replace(/[^/]+$/,'');
-  const tryPaths = [
-    base + 'data/enrollware-schedule.html',
-    '/ew2landers/data/enrollware-schedule.html'
-  ];
+  const tryPaths = [ base + 'data/enrollware-schedule.html', '/ew2landers/data/enrollware-schedule.html' ];
   for(const url of tryPaths){
-    try{
-      const res=await fetch(url,{mode:'same-origin',credentials:'omit',cache:'no-cache'});
-      if(res.ok){ return { html: await res.text(), url }; }
-    }catch{}
+    try{ const res=await fetch(url,{cache:'no-cache'}); if(res.ok) return { html:await res.text(), url }; }catch{}
   }
   return { html:null, url:null };
 }
-
-/* UI behavior */
 function wireCurtains(){
   document.querySelectorAll('details.section').forEach(sec=>{
     sec.addEventListener('toggle',()=>{
@@ -200,36 +165,27 @@ function wireCurtains(){
   });
 }
 
-/* MAIN */
 document.addEventListener('DOMContentLoaded', async()=>{
   const dbg=document.getElementById('dbg');
   const host=document.querySelector('.wrap');
 
   const load=await loadSnapshotHTML();
-  if(!load.html){
-    dbg.className='status err';
-    dbg.textContent='Could not load schedule snapshot. Expected at docs/data/enrollware-schedule.html';
-    return;
-  }
+  if(!load.html){ dbg.className='status err'; dbg.textContent='Could not load schedule snapshot (docs/data/enrollware-schedule.html)'; return; }
 
   const root=document.createElement('div'); root.innerHTML=load.html;
   const panels=[...root.querySelectorAll('.enrpanel')];
-  if(!panels.length){
-    dbg.className='status err';
-    dbg.textContent='Found snapshot, but no .enrpanel elements.';
-    return;
-  }
+  if(!panels.length){ dbg.className='status err'; dbg.textContent='Found snapshot, but no .enrpanel elements.'; return; }
 
   const sections=[]; let current=null;
 
   for(const p of panels){
     const headingEl=p.querySelector('.enrpanel-heading,h1,h2,h3,h4'); if(!headingEl) continue;
 
-    // Build title fragment for both placeholder and course, but remove any anchors FIRST
+    // Build a clean, non-link heading fragment
     const headingFrag=headingEl.cloneNode(true);
     absolutizeUrls(headingFrag);
-    stripAllAnchors(headingFrag); // <— kill any built-in <a> so it can’t leak /ct# or click-outs
-    const titleHTMLClean = headingFrag.innerHTML.trim();
+    stripAllAnchors(headingFrag); // remove ANY <a> in headings (placeholder or course)
+    const cleanTitleHTML = `<span class="course-title">${headingFrag.innerHTML.trim()}</span>`;
 
     // Description (without the date list)
     const bodyEl=p.querySelector('.enrpanel-body');
@@ -242,29 +198,26 @@ document.addEventListener('DOMContentLoaded', async()=>{
     const hasDates=!!ul;
 
     if(!hasDates){
-      // New SECTION (placeholder). It will never link (anchors were stripped).
-      current={ header:{titleHTML:titleHTMLClean,descHTML}, courses:[] };
+      // New SECTION (placeholder) — header never clickable
+      current={ header:{titleHTML:cleanTitleHTML,descHTML}, courses:[] };
       sections.push(current);
       continue;
     }
 
     if(!current){
-      // Safety: if the file starts with a course, create a generic section
-      current={ header:{titleHTML:'Courses',descHTML:''}, courses:[] };
+      // Safety generic section
+      current={ header:{titleHTML:'<span class="course-title">Courses</span>',descHTML:''}, courses:[] };
       sections.push(current);
     }
 
     const ulClone=ul.cloneNode(true);
     absolutizeUrls(ulClone);
     const trimmed=limitUlToWindow(ulClone,28,10);
-    const ctId=getCtId(p, root);
-
-    // For COURSE titles: ensure we rebuild the anchor only if ct##### exists
-    const finalCourseTitle = courseTitleHTMLToLinked(titleHTMLClean, ctId);
+    const ctId=getCtId(p, root);  // may be '' if none
 
     current.courses.push({
       id: ctId,
-      titleHTML: finalCourseTitle,   // already linked or plain
+      titleHTML: cleanTitleHTML,  // IMPORTANT: plain text in the summary (no link)
       descHTML,
       ul: trimmed.ul,
       kept: trimmed.kept,
@@ -300,18 +253,20 @@ document.addEventListener('DOMContentLoaded', async()=>{
           <ul class="enrclass-list"></ul>
           ${hint}
         </div>`;
+      // final safety: remove any stray anchors that might have survived in the summary
+      stripAllAnchors(course.querySelector('summary'));
+
       course.querySelector('.enrclass-list').replaceWith(c.ul);
       body.appendChild(course);
     });
 
-    // safety: if anything slipped into header, strip anchors again after insertion
+    // safety for placeholder headers too
     stripAllAnchors(secEl.querySelector('.ph-head'));
-
     host.appendChild(secEl);
   });
 
   dbg.className='status ok';
-  dbg.textContent = `Rendered ${sections.length} top-level sections.`;
+  dbg.textContent = `Rendered ${sections.length} top-level sections (titles are plain text; links only on “See all dates”).`;
   wireCurtains();
 });
 </script>
