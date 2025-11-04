@@ -38,56 +38,35 @@ body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:
 .wrap{max-width:1120px;margin:auto;padding:20px}
 h1{margin:0 0 14px}
 
-/* Popular block (top, elevated) */
+/* Popular block (elevated, centered buttons 75% width) */
 .popular{
   background:var(--card); border:1px solid var(--edge); border-radius:16px;
   padding:18px; box-shadow:var(--shadow); margin:8px 0 22px;
 }
 .popular h2{margin:0 0 12px;font-size:22px}
-.popular .grid{
-  display:grid; grid-template-columns:1fr; gap:12px;
-}
-@media (min-width:900px){
-  .popular .grid{grid-template-columns:1fr 1fr}
-}
+.popular .grid{display:grid;grid-template-columns:1fr;gap:12px}
 .popbtn{
-  display:block; text-decoration:none; color:var(--btnText);
+  width:75%; margin:0 auto; display:block; text-decoration:none; color:var(--btnText);
   background:linear-gradient(180deg,#2f7ddf,var(--btn));
-  border-radius:14px; padding:12px 16px; box-shadow:0 6px 18px rgba(11,102,195,.28);
+  border-radius:14px; padding:12px 16px; box-shadow:0 6px 18px rgba(11,102,195,.28)
 }
 .popbtn .title{font-weight:800;letter-spacing:.2px}
 .popbtn .sub{display:block;font-size:12px;opacity:.95;margin-top:4px}
 
 /* Placeholder sections (full width, not clickable headers) */
-details.section{
-  margin:16px 0 28px; border-radius:14px; background:var(--card);
-  border:1px solid var(--edge); overflow:hidden; box-shadow:var(--shadow);
-}
+details.section{margin:16px 0 28px;border-radius:14px;background:var(--card);border:1px solid var(--edge);overflow:hidden;box-shadow:var(--shadow)}
 details.section>summary{cursor:pointer;list-style:none;padding:0}
-.ph-head{
-  display:block; padding:16px 18px; border-bottom:1px solid var(--edge);
-  background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot)); color:var(--bannerText)
-}
+.ph-head{display:block;padding:16px 18px;border-bottom:1px solid var(--edge);background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot));color:var(--bannerText)}
 .ph-title{font-weight:900;font-size:1.05rem}
 .ph-sub{font-size:12px;opacity:.9;margin-top:6px}
 .section-body{padding:16px}
 
 /* Courses grid (two columns on desktop) */
-.section-body .courses{
-  display:grid; grid-template-columns:1fr; gap:14px;
-}
-@media (min-width:900px){
-  .section-body .courses{grid-template-columns:1fr 1fr}
-}
+.section-body .courses{display:grid;grid-template-columns:1fr;gap:14px}
+@media (min-width:900px){ .section-body .courses{grid-template-columns:1fr 1fr} }
 
-details.course{
-  border:1px solid var(--edge); border-radius:12px; overflow:hidden; background:var(--card);
-}
-details.course>summary{
-  list-style:none; cursor:pointer; font-weight:700; padding:12px 16px;
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,0));
-  border-bottom:1px solid var(--edge)
-}
+details.course{border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:var(--card)}
+details.course>summary{list-style:none;cursor:pointer;font-weight:700;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,0));border-bottom:1px solid var(--edge)}
 details.course[open]>summary{background:var(--hover)}
 .title-link{color:inherit;text-decoration:none}
 .title-link:hover{text-decoration:underline}
@@ -95,17 +74,13 @@ details.course[open]>summary{background:var(--hover)}
 /* Course body */
 details.course .body{padding:14px 16px}
 .meta{font-size:12px;color:var(--muted);margin:10px 0 0}
-.btn{display:inline-block;margin-top:12px;border:1px solid var(--edge);border-radius:8px;
-  padding:8px 12px;text-decoration:none;color:var(--btn);background:var(--card)}
+.btn{display:inline-block;margin-top:12px;border:1px solid var(--edge);border-radius:8px;padding:8px 12px;text-decoration:none;color:var(--btn);background:var(--card)}
 
-/* Session list (2 columns) */
+/* Session list (2 columns desktop) */
 .enrclass-list{list-style:none;padding:0;margin:12px 0;display:grid;gap:10px;grid-template-columns:1fr}
 @media (min-width:900px){ .enrclass-list{grid-template-columns:1fr 1fr} }
 .enrclass-list li{margin:0}
-.enrclass-list a{
-  display:flex;flex-direction:column;gap:4px;border:1px solid var(--edge);
-  border-radius:10px;padding:10px 12px;text-decoration:none;color:var(--ink);background:var(--card)
-}
+.enrclass-list a{display:flex;flex-direction:column;gap:4px;border:1px solid var(--edge);border-radius:10px;padding:10px 12px;text-decoration:none;color:var(--ink);background:var(--card)}
 .enrclass-list a:hover{background:var(--hover)}
 
 /* Extra breathing room before the next placeholder header */
@@ -132,19 +107,19 @@ const ENR_ORIGIN='https://coastalcprtraining.enrollware.com';
 const isCt=id=>typeof id==='string' && /^ct\d{3,}$/i.test(id);
 const ctHref=id=>`${ENR_ORIGIN}/schedule#${encodeURIComponent(id)}`;
 
-// Popular map (short subtitles)
-const popularMap = [
-  { key:'AHA – BLS Provider - In-person Initial',     sub:'Instructor-led classroom', icon:'📘' },
-  { key:'AHA – BLS Provider - Online Class',          sub:'HeartCode online + skills session', icon:'💻' },
-  { key:'AHA – ACLS Provider - In-person Renewal',    sub:'Instructor-led renewal', icon:'🩺' },
-  { key:'AHA – ACLS Provider (HeartCode + Skills)',   sub:'HeartCode online + skills session', icon:'💻' },
-  { key:'AHA – PALS Provider - In-person Renewal',    sub:'Instructor-led renewal', icon:'👶' },
-  { key:'AHA – PALS Provider (HeartCode + Skills)',   sub:'HeartCode online + skills session', icon:'💻' },
-  { key:'HSI First Aid/CPR/AED (In-Person)',          sub:'Adult First Aid + CPR/AED (HSI)', icon:'🧰' },
-  { key:'AHA – Heartsaver Online',                    sub:'Online + fast skills test', icon:'⚡' },
+// Desired “popular” items – keys are fuzzy match hints; sub is the short subtitle
+const popularPlan = [
+  { hint:'AHA – BLS Provider - In-person Initial',  sub:'Instructor-led classroom' },
+  { hint:'AHA – BLS Provider - Online Class',       sub:'HeartCode online + skills session' },
+  { hint:'AHA – ACLS Provider - In-person Renewal', sub:'Instructor-led renewal' },
+  { hint:'AHA – ACLS Provider (HeartCode + Skills)',sub:'HeartCode online + skills session' },
+  { hint:'AHA – PALS Provider - In-person Renewal', sub:'Instructor-led renewal' },
+  { hint:'AHA – PALS Provider (HeartCode + Skills)',sub:'HeartCode online + skills session' },
+  { hint:'HSI First Aid/CPR/AED (In-Person)',       sub:'Adult First Aid + CPR/AED (HSI)' },
+  { hint:'AHA – Heartsaver Online',                 sub:'Online + fast skills test' },
 ];
 
-// make relative <img>/<a> absolute to Enrollware
+// absolutize relative <img>/<a> URLs to Enrollware
 function absolutizeUrls(frag){
   frag.querySelectorAll('img,a').forEach(el=>{
     const attr=el.tagName==='IMG'?'src':'href';
@@ -156,6 +131,7 @@ function absolutizeUrls(frag){
   return frag;
 }
 
+// robust CT id lookup
 function getCtId(panel,root){
   let a=panel.querySelector('[id^="ct"],[name^="ct"]');
   if(a&&isCt(a.id||a.name))return a.id||a.name;
@@ -168,7 +144,6 @@ function getCtId(panel,root){
     if(inner)return inner.id||inner.name;
     prev=prev.previousElementSibling;
   }
-  // fallback: last seen ct before this panel
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT);
   let last='';while(walker.nextNode()){
     const el=walker.currentNode; if(el===panel)break;
@@ -176,7 +151,7 @@ function getCtId(panel,root){
   }return last;
 }
 
-// parse "Thursday, November 6, 2025 at 9:15 AM"
+// parse “Thursday, November 6, 2025 at 9:15 AM”
 function parseDateFromText(t){
   if(!t)return null;const s=t.trim();
   const m=s.match(/([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})\s+at\s+(\d{1,2}):(\d{2})\s*(AM|PM)/i);
@@ -198,22 +173,18 @@ function limitUlToWindow(ul,maxDays=28,maxItems=10){
 
 async function loadSnapshotHTML(){
   const here=location.pathname,base=here.replace(/[^/]+$/,'');
-  const tries=[
-    base+'data/enrollware-schedule.html',
-    '/ew2landers/data/enrollware-schedule.html',
-    'data/enrollware-schedule.html'
-  ];
-  for(const u of tries){try{const r=await fetch(u,{cache:'no-cache'});if(r.ok)return await r.text();}catch{}}
+  const tries=[ base+'data/enrollware-schedule.html', '/ew2landers/data/enrollware-schedule.html', 'data/enrollware-schedule.html' ];
+  for(const u of tries){ try{ const r=await fetch(u,{cache:'no-cache'}); if(r.ok) return await r.text(); } catch{} }
   return null;
 }
 
-function wireCurtains(){
-  document.querySelectorAll('details.section').forEach(sec=>{
-    sec.open=true; // top-level open by default
-    sec.addEventListener('toggle',()=>{if(sec.open){
-      document.querySelectorAll('details.section').forEach(d=>{if(d!==sec)d.open=false;});
-      window.scrollTo({top:sec.offsetTop-12,behavior:'smooth'});
-    }});
+// prevent summary toggle when clicking links inside a <summary>
+function wireSummaryLinks(scope=document){
+  scope.querySelectorAll('summary a').forEach(a=>{
+    a.addEventListener('click',ev=>{
+      ev.stopPropagation(); // don’t toggle details
+      // allow normal navigation
+    });
   });
 }
 
@@ -226,25 +197,26 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
   const root=document.createElement('div'); root.innerHTML=html;
 
-  // Lookup: visible course title -> ctId
+  // Build index of courses (exact visible title -> ctId)
   const ctIndex=[];
   root.querySelectorAll('.enrpanel').forEach(p=>{
     const title=(p.querySelector('.enrpanel-heading,h1,h2,h3,h4')?.textContent||'').trim();
     const ctId=getCtId(p,root);
-    if(title&&ctId) ctIndex.push({title,ctId});
+    if(title&&ctId) ctIndex.push({title,ctId,panel:p});
   });
 
-  // Quick Selection wire-up
-  popularMap.forEach(item=>{
-    const found=ctIndex.find(x=>x.title.toLowerCase().includes(item.key.toLowerCase()));
-    const href=found?ctHref(found.ctId):`${ENR_ORIGIN}/schedule`;
+  // Quick Selection: use ORIGINAL title when found
+  popularPlan.forEach(item=>{
+    const found=ctIndex.find(x=>x.title.toLowerCase().includes(item.hint.toLowerCase()));
+    const titleText = found ? found.title : item.hint;
+    const href = found ? ctHref(found.ctId) : `${ENR_ORIGIN}/schedule`;
     const a=document.createElement('a');
     a.className='popbtn'; a.href=href;
-    a.innerHTML=`<span class="title">${item.icon?item.icon+' ':''}${item.key}</span><span class="sub">${item.sub}</span>`;
+    a.innerHTML=`<span class="title">${titleText}</span><span class="sub">${item.sub}</span>`;
     popularGrid.appendChild(a);
   });
 
-  // Build sections as in snapshot
+  // Convert snapshot into placeholder sections and course cards
   const panels=[...root.querySelectorAll('.enrpanel')];
   const sections=[]; let current=null;
 
@@ -263,7 +235,6 @@ document.addEventListener('DOMContentLoaded',async()=>{
     const hasDates=!!ul;
 
     if(!hasDates){
-      // Start new placeholder section
       current={header:{titleHTML,descHTML},courses:[]}; sections.push(current);
       continue;
     }
@@ -279,6 +250,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const frag=document.createDocumentFragment();
   sections.forEach(sec=>{
     const secEl=document.createElement('details'); secEl.className='section';
+    secEl.open = true; // leave top-level open by default (no auto-scroll)
     secEl.innerHTML=`<summary>
       <div class="ph-head">
         <div class="ph-title">${sec.header.titleHTML}</div>
@@ -308,7 +280,9 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
   container.textContent='';
   container.appendChild(frag);
-  wireCurtains();
+
+  // Make links inside any <summary> behave like links (don’t toggle)
+  wireSummaryLinks(document);
 });
 </script>
 
