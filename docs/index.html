@@ -24,6 +24,12 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
   --hover:#f3f8ff; --shadow:0 8px 24px rgba(0,0,0,.10);
   --bannerTop:#32415f; --bannerBot:#27354e; --bannerText:#f4f7fb;
   --btn:#0b66c3; --btnText:#fff;
+
+  /* quick-link theme colors */
+  --bls:#0b66c3;         /* blue */
+  --acls:#b3366e;        /* magenta */
+  --pals:#5a48a6;        /* purple */
+  --fa:#58636d;          /* slate */
 }
 @media (prefers-color-scheme: dark){
   :root{
@@ -31,6 +37,8 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
     --hover:#0e253f; --shadow:0 10px 30px rgba(0,0,0,.45);
     --bannerTop:#1c2a40; --bannerBot:#152133; --bannerText:#dfe7f3;
     --btn:#2a7be6; --btnText:#fff;
+
+    --bls:#2a7be6; --acls:#d34a86; --pals:#7b6be1; --fa:#6e7a86;
   }
 }
 *{box-sizing:border-box}
@@ -38,28 +46,46 @@ body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:
 .wrap{max-width:1120px;margin:auto;padding:20px}
 h1{margin:0 0 14px}
 
-/* Popular block (elevated, centered buttons 75% width) */
+/* Popular block */
 .popular{
   background:var(--card); border:1px solid var(--edge); border-radius:16px;
   padding:18px; box-shadow:var(--shadow); margin:8px 0 22px;
 }
 .popular h2{margin:0 0 12px;font-size:22px}
-.popular .grid{display:grid;grid-template-columns:1fr;gap:12px}
+.popular .grid{
+  display:grid; grid-template-columns:1fr; gap:14px; place-items:center;
+}
+@media (min-width:900px){
+  .popular .grid{ grid-template-columns:1fr 1fr; }
+}
 .popbtn{
-  width:75%; margin:0 auto; display:block; text-decoration:none; color:var(--btnText);
-  background:linear-gradient(180deg,#2f7ddf,var(--btn));
-  border-radius:14px; padding:12px 16px; box-shadow:0 6px 18px rgba(11,102,195,.28)
+  width:25%; min-width:220px; max-width:420px;
+  margin:0 auto; display:block; text-decoration:none; color:var(--btnText);
+  border-radius:14px; padding:12px 16px; box-shadow:0 6px 18px rgba(0,0,0,.18)
 }
 .popbtn .title{font-weight:800;letter-spacing:.2px}
 .popbtn .sub{display:block;font-size:12px;opacity:.95;margin-top:4px}
 
-/* Placeholder sections (full width, not clickable headers) */
-details.section{margin:16px 0 28px;border-radius:14px;background:var(--card);border:1px solid var(--edge);overflow:hidden;box-shadow:var(--shadow)}
+/* colorways for top buttons */
+.popbtn.bls{ background:linear-gradient(180deg,#2f7ddf,var(--bls)); }
+.popbtn.acls{ background:linear-gradient(180deg,#d85a95,var(--acls)); }
+.popbtn.pals{ background:linear-gradient(180deg,#7f74ea,var(--pals)); }
+.popbtn.fa{ background:linear-gradient(180deg,#8793a1,var(--fa)); }
+
+/* Placeholder sections (75% width centered, not clickable look) */
+details.section{
+  margin:28px 0; border-radius:14px; background:var(--card);
+  border:1px solid var(--edge); overflow:hidden; box-shadow:var(--shadow)
+}
 details.section>summary{cursor:pointer;list-style:none;padding:0}
-.ph-head{display:block;padding:16px 18px;border-bottom:1px solid var(--edge);background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot));color:var(--bannerText)}
+.ph-head{
+  display:block; padding:16px 18px; border-bottom:1px solid var(--edge);
+  background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot)); color:var(--bannerText);
+  max-width:75%; margin:0 auto; border-radius:12px;
+}
 .ph-title{font-weight:900;font-size:1.05rem}
 .ph-sub{font-size:12px;opacity:.9;margin-top:6px}
-.section-body{padding:16px}
+.section-body{padding:18px}
 
 /* Courses grid (two columns on desktop) */
 .section-body .courses{display:grid;grid-template-columns:1fr;gap:14px}
@@ -82,9 +108,6 @@ details.course .body{padding:14px 16px}
 .enrclass-list li{margin:0}
 .enrclass-list a{display:flex;flex-direction:column;gap:4px;border:1px solid var(--edge);border-radius:10px;padding:10px 12px;text-decoration:none;color:var(--ink);background:var(--card)}
 .enrclass-list a:hover{background:var(--hover)}
-
-/* Extra breathing room before the next placeholder header */
-details.section{padding-bottom:14px}
 </style>
 </head>
 
@@ -92,7 +115,7 @@ details.section{padding-bottom:14px}
 <div class="wrap">
   <h1>910CPR Courses & Schedule</h1>
 
-  <!-- Quick Selection (auto-wired) -->
+  <!-- Quick Selection -->
   <section class="popular" id="popular">
     <h2>Most popular courses</h2>
     <div class="grid" id="popular-grid"></div>
@@ -107,16 +130,16 @@ const ENR_ORIGIN='https://coastalcprtraining.enrollware.com';
 const isCt=id=>typeof id==='string' && /^ct\d{3,}$/i.test(id);
 const ctHref=id=>`${ENR_ORIGIN}/schedule#${encodeURIComponent(id)}`;
 
-// Desired “popular” items – keys are fuzzy match hints; sub is the short subtitle
+// Quick-links config: ORIGINAL titles will be used when found
 const popularPlan = [
-  { hint:'AHA – BLS Provider - In-person Initial',  sub:'Instructor-led classroom' },
-  { hint:'AHA – BLS Provider - Online Class',       sub:'HeartCode online + skills session' },
-  { hint:'AHA – ACLS Provider - In-person Renewal', sub:'Instructor-led renewal' },
-  { hint:'AHA – ACLS Provider (HeartCode + Skills)',sub:'HeartCode online + skills session' },
-  { hint:'AHA – PALS Provider - In-person Renewal', sub:'Instructor-led renewal' },
-  { hint:'AHA – PALS Provider (HeartCode + Skills)',sub:'HeartCode online + skills session' },
-  { hint:'HSI First Aid/CPR/AED (In-Person)',       sub:'Adult First Aid + CPR/AED (HSI)' },
-  { hint:'AHA – Heartsaver Online',                 sub:'Online + fast skills test' },
+  { hint:'BLS Provider - In-person Initial',  sub:'Instructor-led classroom', tone:'bls' },
+  { hint:'BLS Provider - Online Class',       sub:'HeartCode online + skills session', tone:'bls' },
+  { hint:'ACLS Provider - In-person Renewal', sub:'Instructor-led renewal', tone:'acls' },
+  { hint:'ACLS Provider (HeartCode + Skills)',sub:'HeartCode online + skills session', tone:'acls' },
+  { hint:'PALS Provider - In-person Renewal', sub:'Instructor-led renewal', tone:'pals' },
+  { hint:'PALS Provider (HeartCode + Skills)',sub:'HeartCode online + skills session', tone:'pals' },
+  { hint:'First Aid/CPR/AED (In-Person)',     sub:'Adult First Aid + CPR/AED (HSI)', tone:'fa' },
+  { hint:'Heartsaver Online',                 sub:'Online + fast skills test', tone:'fa' },
 ];
 
 // absolutize relative <img>/<a> URLs to Enrollware
@@ -181,19 +204,16 @@ async function loadSnapshotHTML(){
 // prevent summary toggle when clicking links inside a <summary>
 function wireSummaryLinks(scope=document){
   scope.querySelectorAll('summary a').forEach(a=>{
-    a.addEventListener('click',ev=>{
-      ev.stopPropagation(); // don’t toggle details
-      // allow normal navigation
-    });
+    a.addEventListener('click',ev=>{ ev.stopPropagation(); });
   });
 }
 
 document.addEventListener('DOMContentLoaded',async()=>{
-  const container=document.getElementById('catalog');
+  const catalog=document.getElementById('catalog');
   const popularGrid=document.getElementById('popular-grid');
 
   const html=await loadSnapshotHTML();
-  if(!html){ container.innerHTML='<p class="muted">Schedule snapshot not found.</p>'; return; }
+  if(!html){ catalog.innerHTML='<p class="muted">Schedule snapshot not found.</p>'; return; }
 
   const root=document.createElement('div'); root.innerHTML=html;
 
@@ -205,14 +225,15 @@ document.addEventListener('DOMContentLoaded',async()=>{
     if(title&&ctId) ctIndex.push({title,ctId,panel:p});
   });
 
-  // Quick Selection: use ORIGINAL title when found
+  // Quick Selection: use ORIGINAL title when found; colored by tone
   popularPlan.forEach(item=>{
-    const found=ctIndex.find(x=>x.title.toLowerCase().includes(item.hint.toLowerCase()));
+    const found = ctIndex.find(x => x.title.toLowerCase().includes(item.hint.toLowerCase()));
     const titleText = found ? found.title : item.hint;
     const href = found ? ctHref(found.ctId) : `${ENR_ORIGIN}/schedule`;
-    const a=document.createElement('a');
-    a.className='popbtn'; a.href=href;
-    a.innerHTML=`<span class="title">${titleText}</span><span class="sub">${item.sub}</span>`;
+    const a = document.createElement('a');
+    a.className = `popbtn ${item.tone||''}`;
+    a.href = href;
+    a.innerHTML = `<span class="title">${titleText}</span><span class="sub">${item.sub}</span>`;
     popularGrid.appendChild(a);
   });
 
@@ -235,6 +256,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     const hasDates=!!ul;
 
     if(!hasDates){
+      // start a new section
       current={header:{titleHTML,descHTML},courses:[]}; sections.push(current);
       continue;
     }
@@ -246,11 +268,11 @@ document.addEventListener('DOMContentLoaded',async()=>{
     current.courses.push({id:ctId,titleHTML,descHTML,ul:trimmed.ul,kept:trimmed.kept,total:trimmed.total});
   }
 
-  // Render
+  // Render sections
   const frag=document.createDocumentFragment();
   sections.forEach(sec=>{
     const secEl=document.createElement('details'); secEl.className='section';
-    secEl.open = true; // leave top-level open by default (no auto-scroll)
+    secEl.open = true; // keep open by default; no auto-scroll
     secEl.innerHTML=`<summary>
       <div class="ph-head">
         <div class="ph-title">${sec.header.titleHTML}</div>
@@ -258,6 +280,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       </div>
     </summary>
     <div class="section-body"><div class="courses"></div></div>`;
+
     const grid=secEl.querySelector('.courses');
 
     sec.courses.forEach(c=>{
@@ -278,8 +301,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
     frag.appendChild(secEl);
   });
 
-  container.textContent='';
-  container.appendChild(frag);
+  catalog.textContent='';
+  catalog.appendChild(frag);
 
   // Make links inside any <summary> behave like links (don’t toggle)
   wireSummaryLinks(document);
