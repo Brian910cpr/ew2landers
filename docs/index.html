@@ -7,11 +7,7 @@
 
 <!-- GA4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-45PBWBK7KR"></script>
-<script>
-  window.dataLayer=window.dataLayer||[];
-  function gtag(){dataLayer.push(arguments)}
-  gtag('js',new Date()); gtag('config','G-45PBWBK7KR');
-</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','G-45PBWBK7KR');</script>
 
 <!-- GTM -->
 <script>
@@ -33,7 +29,7 @@ body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:
 .status{margin:0;padding:10px 16px;font-size:14px;border-bottom:1px solid var(--edge)}
 .status.ok{background:#e8f7ee;color:#0a7d27;border-bottom-color:#cfe8d7}
 .status.err{background:#fde9ec;color:#b00020;border-bottom-color:#f3c7cf}
-.status .path{opacity:.8;font-family:ui-monospace,Menlo,Consolas,monospace}
+.muted{opacity:.7}
 
 /* Top-level placeholder headers (NEVER links) */
 details.section{margin:12px 0;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.05);
@@ -44,9 +40,8 @@ details.section>summary{cursor:pointer;list-style:none;padding:0}
   background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot));color:var(--bannerText)}
 .ph-head .ph-title{font-weight:800;font-size:1.1rem}
 .ph-head .ph-sub{font-size:12px;opacity:.9;margin-top:6px}
-/* ensure placeholder header text can’t look “clickable link blue” */
-.ph-head a{color:inherit;text-decoration:none;pointer-events:none}
-.ph-head a[href]{cursor:default}
+/* belt & suspenders: even if an <a> slips in, disable link behavior */
+.ph-head a{color:inherit;text-decoration:none;pointer-events:none;cursor:default}
 
 /* Mid-level courses */
 details.course{margin:12px 0;border-radius:12px;border:1px solid var(--edge);
@@ -78,9 +73,18 @@ details.course .body{padding:14px 16px}
 const ENR_ORIGIN='https://coastalcprtraining.enrollware.com';
 const isCt=id=>typeof id==='string' && /^ct\d{3,}$/i.test(id);
 const ctHref=id=>`${ENR_ORIGIN}/schedule#${encodeURIComponent(id)}`;
-const linkedTitle=(titleHTML,id)=>isCt(id)?`<a class="title-link" href="${ctHref(id)}">${titleHTML}</a>`:titleHTML;
 
-/* Convert relative links/imgs inside fragments to absolute to Enrollware */
+/* Replace all anchors inside a fragment with spans (keeps inner HTML) */
+function stripAllAnchors(frag){
+  frag.querySelectorAll('a').forEach(a=>{
+    const span=document.createElement('span');
+    span.innerHTML=a.innerHTML;
+    a.replaceWith(span);
+  });
+  return frag;
+}
+
+/* Absolutize relative links/imgs to Enrollware origin */
 function absolutizeUrls(frag){
   frag.querySelectorAll('img,a').forEach(el=>{
     const attr=el.tagName==='IMG'?'src':'href';
@@ -92,45 +96,36 @@ function absolutizeUrls(frag){
   return frag;
 }
 
-/* Strip <a> from placeholder headings so they cannot link out */
-function stripLinks(el){
-  el.querySelectorAll('a').forEach(a=>{
-    const span=document.createElement('span');
-    span.innerHTML=a.innerHTML;
-    a.replaceWith(span);
-  });
-  return el;
+/* Course title: strip any existing anchors, then link only if we have ct##### */
+function courseTitleHTMLToLinked(titleFragmentHTML, ctId){
+  const tmp=document.createElement('div');
+  tmp.innerHTML=titleFragmentHTML;
+  stripAllAnchors(tmp);               // remove Enrollware's built-in /ct#… or other anchors
+  const cleanHTML=tmp.innerHTML.trim();
+  if(isCt(ctId)){
+    return `<a class="title-link" href="${ctHref(ctId)}">${cleanHTML}</a>`;
+  }
+  return cleanHTML; // no link if no ct
 }
 
-/* Find a ct##### anchor near/for this panel (several strategies) */
+/* Find ct##### for a panel */
 function getCtId(panel,root){
-  // 1) direct anchor/name inside the panel
   let a=panel.querySelector('[id^="ct"],[name^="ct"]');
-  if(a && isCt(a.id||a.getAttribute('name'))) return a.id||a.getAttribute('name');
-
-  // 2) any link inside the panel already pointing to #ct
+  if(a){ const id=a.id||a.getAttribute('name')||''; if(isCt(id)) return id; }
   const deepLink=panel.querySelector('a[href*="#ct"]');
   if(deepLink){
     const m=(deepLink.getAttribute('href')||'').match(/#(ct\d{3,})/i);
     if(m && isCt(m[1])) return m[1];
   }
-
-  // 3) scan a few previous siblings
   let prev=panel.previousElementSibling;
   for(let i=0;i<8 && prev;i++){
     if(prev.matches?.('[id^="ct"],[name^="ct"]')){
-      const id=prev.id||prev.getAttribute('name')||'';
-      if(isCt(id)) return id;
+      const id=prev.id||prev.getAttribute('name')||''; if(isCt(id)) return id;
     }
     const inner=prev.querySelector?.('[id^="ct"],[name^="ct"]');
-    if(inner){
-      const id=inner.id||inner.getAttribute('name')||'';
-      if(isCt(id)) return id;
-    }
+    if(inner){ const id=inner.id||inner.getAttribute('name')||''; if(isCt(id)) return id; }
     prev=prev.previousElementSibling;
   }
-
-  // 4) walk the tree from root up to this panel and remember last ct#### seen
   const walker=document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null);
   let last=''; while(walker.nextNode()){
     const el=walker.currentNode;
@@ -138,9 +133,10 @@ function getCtId(panel,root){
     const id=el.id || el.getAttribute?.('name') || '';
     if(isCt(id)) last=id;
   }
-  return last; // '' if none
+  return last;
 }
 
+/* Date parsing + trim window */
 function parseDateFromText(t){
   if(!t) return null;
   const s=String(t).replace(/\u00A0/g,' ').trim();
@@ -152,8 +148,6 @@ function parseDateFromText(t){
   if(ap==='PM'&&hr<12) hr+=12; if(ap==='AM'&&hr===12) hr=0;
   return new Date(+m[3],mon,+m[2],hr,min);
 }
-
-/* Trim to ~4 weeks / 10 items */
 function limitUlToWindow(ul,maxDays=28,maxItems=10){
   if(!ul) return {ul,kept:0,total:0};
   const cutoff=new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
@@ -170,6 +164,24 @@ function limitUlToWindow(ul,maxDays=28,maxItems=10){
   return {ul,kept,total};
 }
 
+/* load snapshot */
+async function loadSnapshotHTML(){
+  const here = location.pathname;
+  const base = here.replace(/[^/]+$/,'');
+  const tryPaths = [
+    base + 'data/enrollware-schedule.html',
+    '/ew2landers/data/enrollware-schedule.html'
+  ];
+  for(const url of tryPaths){
+    try{
+      const res=await fetch(url,{mode:'same-origin',credentials:'omit',cache:'no-cache'});
+      if(res.ok){ return { html: await res.text(), url }; }
+    }catch{}
+  }
+  return { html:null, url:null };
+}
+
+/* UI behavior */
 function wireCurtains(){
   document.querySelectorAll('details.section').forEach(sec=>{
     sec.addEventListener('toggle',()=>{
@@ -188,25 +200,6 @@ function wireCurtains(){
   });
 }
 
-/* Load the static snapshot (must be committed to your repo) */
-async function loadSnapshotHTML(){
-  const here = location.pathname;
-  const base = here.replace(/[^/]+$/,'');
-  const tryPaths = [
-    base + 'data/enrollware-schedule.html',
-    '/ew2landers/data/enrollware-schedule.html'
-  ];
-  const tried=[];
-  for(const url of tryPaths){
-    try{
-      const res=await fetch(url,{mode:'same-origin',credentials:'omit',cache:'no-cache'});
-      if(res.ok){ return { html: await res.text(), url, tried }; }
-      tried.push(url+' ('+res.status+')');
-    }catch(e){ tried.push(url+' (fetch error)'); }
-  }
-  return { html:null, url:null, tried };
-}
-
 /* MAIN */
 document.addEventListener('DOMContentLoaded', async()=>{
   const dbg=document.getElementById('dbg');
@@ -215,9 +208,7 @@ document.addEventListener('DOMContentLoaded', async()=>{
   const load=await loadSnapshotHTML();
   if(!load.html){
     dbg.className='status err';
-    dbg.innerHTML = `<strong>Could not load schedule snapshot.</strong><br/>
-      <span class="path">Expected at docs/data/enrollware-schedule.html</span>`;
-    console.error('Snapshot load failed. Tried:', load.tried || []);
+    dbg.textContent='Could not load schedule snapshot. Expected at docs/data/enrollware-schedule.html';
     return;
   }
 
@@ -225,45 +216,40 @@ document.addEventListener('DOMContentLoaded', async()=>{
   const panels=[...root.querySelectorAll('.enrpanel')];
   if(!panels.length){
     dbg.className='status err';
-    dbg.textContent='Found snapshot, but no .enrpanel elements. Check your saved HTML.';
-    console.warn('No .enrpanel in snapshot at', load.url);
+    dbg.textContent='Found snapshot, but no .enrpanel elements.';
     return;
   }
 
   const sections=[]; let current=null;
-  panels.forEach((p, idx)=>{
-    const headingEl=p.querySelector('.enrpanel-heading,h1,h2,h3,h4');
-    if(!headingEl) return;
+
+  for(const p of panels){
+    const headingEl=p.querySelector('.enrpanel-heading,h1,h2,h3,h4'); if(!headingEl) continue;
+
+    // Build title fragment for both placeholder and course, but remove any anchors FIRST
     const headingFrag=headingEl.cloneNode(true);
     absolutizeUrls(headingFrag);
+    stripAllAnchors(headingFrag); // <— kill any built-in <a> so it can’t leak /ct# or click-outs
+    const titleHTMLClean = headingFrag.innerHTML.trim();
 
-    // STRIP LINKS for placeholder heading (will apply if we choose it as placeholder)
-    stripLinks(headingFrag);
-
-    const titleHTML=headingFrag.innerHTML.trim();
-
+    // Description (without the date list)
     const bodyEl=p.querySelector('.enrpanel-body');
     const descClone=bodyEl?bodyEl.cloneNode(true):null;
-    if(descClone){
-      const u=descClone.querySelector('ul.enrclass-list');
-      if(u) u.remove();          // remove schedule list from description clone
-      absolutizeUrls(descClone); // fix relative URLs
-    }
+    if(descClone){ const u=descClone.querySelector('ul.enrclass-list'); if(u) u.remove(); }
+    if(descClone) absolutizeUrls(descClone);
     const descHTML=descClone?(descClone.innerHTML||'').trim():'';
 
     const ul=p.querySelector('ul.enrclass-list');
     const hasDates=!!ul;
 
     if(!hasDates){
-      // start a new section (placeholder header)
-      current={ header:{titleHTML,descHTML}, courses:[] };
+      // New SECTION (placeholder). It will never link (anchors were stripped).
+      current={ header:{titleHTML:titleHTMLClean,descHTML}, courses:[] };
       sections.push(current);
-      return;
+      continue;
     }
 
-    // course panel
     if(!current){
-      // If there's no placeholder yet, create a generic section
+      // Safety: if the file starts with a course, create a generic section
       current={ header:{titleHTML:'Courses',descHTML:''}, courses:[] };
       sections.push(current);
     }
@@ -272,17 +258,23 @@ document.addEventListener('DOMContentLoaded', async()=>{
     absolutizeUrls(ulClone);
     const trimmed=limitUlToWindow(ulClone,28,10);
     const ctId=getCtId(p, root);
+
+    // For COURSE titles: ensure we rebuild the anchor only if ct##### exists
+    const finalCourseTitle = courseTitleHTMLToLinked(titleHTMLClean, ctId);
+
     current.courses.push({
-      id: ctId, titleHTML, descHTML,
-      ul: trimmed.ul, kept: trimmed.kept, total: trimmed.total
+      id: ctId,
+      titleHTML: finalCourseTitle,   // already linked or plain
+      descHTML,
+      ul: trimmed.ul,
+      kept: trimmed.kept,
+      total: trimmed.total
     });
-  });
+  }
 
-  // Render
-  host.innerHTML = `<h1>910CPR Courses & Schedule</h1>
-                    <p class="path">Snapshot: ${load.url || ''}</p>`;
+  host.innerHTML = `<h1>910CPR Courses & Schedule</h1><p class="muted">${load.url||''}</p>`;
 
-  sections.forEach((sec, sIdx)=>{
+  sections.forEach(sec=>{
     const secEl=document.createElement('details'); secEl.className='section';
     secEl.innerHTML=`
       <summary>
@@ -294,16 +286,15 @@ document.addEventListener('DOMContentLoaded', async()=>{
       <div class="section-body"></div>`;
     const body=secEl.querySelector('.section-body');
 
-    sec.courses.forEach((c, cIdx)=>{
+    sec.courses.forEach(c=>{
       const course=document.createElement('details'); course.className='course';
-      const titleLinked=linkedTitle(c.titleHTML,c.id);
-      const url=isCt(c.id)?ctHref(c.id):`${ENR_ORIGIN}/schedule`;
+      const url = isCt(c.id) ? ctHref(c.id) : `${ENR_ORIGIN}/schedule`;
       const hint = (c.total>c.kept)
         ? `<div class="meta">Showing ${c.kept} of ${c.total} upcoming (~4 weeks). <a class="btn" href="${url}">See all dates</a></div>`
         : `<div class="meta">All upcoming shown. <a class="btn" href="${url}">See all dates</a></div>`;
 
       course.innerHTML=`
-        <summary>${titleLinked}</summary>
+        <summary>${c.titleHTML}</summary>
         <div class="body">
           <div class="desc">${c.descHTML}</div>
           <ul class="enrclass-list"></ul>
@@ -313,18 +304,14 @@ document.addEventListener('DOMContentLoaded', async()=>{
       body.appendChild(course);
     });
 
+    // safety: if anything slipped into header, strip anchors again after insertion
+    stripAllAnchors(secEl.querySelector('.ph-head'));
+
     host.appendChild(secEl);
   });
 
   dbg.className='status ok';
-  dbg.innerHTML = `Rendered ${sections.length} top-level sections. 
-    <span class="path">(${panels.length} panels parsed)</span>`;
-
-  console.table(sections.map((s,i)=>({
-    section:i+1,
-    headerText: s.header.titleHTML.replace(/<[^>]+>/g,'').slice(0,80),
-    courses: s.courses.length
-  })));
+  dbg.textContent = `Rendered ${sections.length} top-level sections.`;
   wireCurtains();
 });
 </script>
