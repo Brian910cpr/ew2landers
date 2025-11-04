@@ -25,11 +25,11 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
   --bannerTop:#32415f; --bannerBot:#27354e; --bannerText:#f4f7fb;
   --btn:#0b66c3; --btnText:#fff;
 
-  /* quick-link theme colors */
-  --bls:#0b66c3;         /* blue */
-  --acls:#b3366e;        /* magenta */
-  --pals:#5a48a6;        /* purple */
-  --fa:#58636d;          /* slate */
+  /* category colors */
+  --bls:#0b66c3;  /* blue */
+  --acls:#b31d2c; /* red */
+  --pals:#5b4abf; /* purple */
+  --fa:#485563;   /* slate */
 }
 @media (prefers-color-scheme: dark){
   :root{
@@ -37,8 +37,7 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
     --hover:#0e253f; --shadow:0 10px 30px rgba(0,0,0,.45);
     --bannerTop:#1c2a40; --bannerBot:#152133; --bannerText:#dfe7f3;
     --btn:#2a7be6; --btnText:#fff;
-
-    --bls:#2a7be6; --acls:#d34a86; --pals:#7b6be1; --fa:#6e7a86;
+    --bls:#2a7be6; --acls:#e14c59; --pals:#7a66ff; --fa:#7b8896;
   }
 }
 *{box-sizing:border-box}
@@ -51,58 +50,69 @@ h1{margin:0 0 14px}
   background:var(--card); border:1px solid var(--edge); border-radius:16px;
   padding:18px; box-shadow:var(--shadow); margin:8px 0 22px;
 }
-.popular h2{margin:0 0 12px;font-size:22px}
-.popular .grid{
-  display:grid; grid-template-columns:1fr; gap:14px; place-items:center;
-}
-@media (min-width:900px){
-  .popular .grid{ grid-template-columns:1fr 1fr; }
-}
+.popular h2{margin:0 0 12px;font-size:20px}
+.popular .grid{display:grid; gap:12px; grid-template-columns:1fr;}
+@media (min-width:640px){ .popular .grid{ grid-template-columns:1fr 1fr; } }     /* 2-col */
+@media (min-width:960px){ .popular .grid{ grid-template-columns:repeat(4,1fr); } } /* 4-col */
+
+/* Buttony cards */
 .popbtn{
-  width:25%; min-width:220px; max-width:420px;
-  margin:0 auto; display:block; text-decoration:none; color:var(--btnText);
-  border-radius:14px; padding:12px 16px; box-shadow:0 6px 18px rgba(0,0,0,.18)
+  display:block; text-decoration:none; color:var(--btnText);
+  border-radius:14px; padding:14px 14px 12px;
+  box-shadow:0 8px 22px rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.2);
+  transform:translateY(0); transition:transform .08s ease, box-shadow .12s ease, filter .12s ease;
 }
-.popbtn .title{font-weight:800;letter-spacing:.2px}
-.popbtn .sub{display:block;font-size:12px;opacity:.95;margin-top:4px}
+.popbtn:hover{ transform:translateY(-1px); filter:brightness(1.02); box-shadow:0 10px 28px rgba(0,0,0,.22); }
+.popbtn:active{ transform:translateY(0); box-shadow:0 6px 16px rgba(0,0,0,.18); }
 
-/* colorways for top buttons */
-.popbtn.bls{ background:linear-gradient(180deg,#2f7ddf,var(--bls)); }
-.popbtn.acls{ background:linear-gradient(180deg,#d85a95,var(--acls)); }
-.popbtn.pals{ background:linear-gradient(180deg,#7f74ea,var(--pals)); }
-.popbtn.fa{ background:linear-gradient(180deg,#8793a1,var(--fa)); }
-
-/* Placeholder sections (75% width centered, not clickable look) */
-details.section{
-  margin:28px 0; border-radius:14px; background:var(--card);
-  border:1px solid var(--edge); overflow:hidden; box-shadow:var(--shadow)
+.popbtn .title{
+  font-weight:800; font-size:14px; letter-spacing:.2px; line-height:1.2;
+  opacity:.95; margin:0 0 6px;
 }
+.popbtn .sub{
+  display:block; font-size:12.5px; line-height:1.3; opacity:.98;
+}
+
+/* color variants – solid button look */
+.popbtn.cat-bls{ background:linear-gradient(180deg,#3e8bf0,var(--bls)); }
+.popbtn.cat-acls{ background:linear-gradient(180deg,#ff6b76,var(--acls)); }
+.popbtn.cat-pals{ background:linear-gradient(180deg,#9c8cff,var(--pals)); }
+.popbtn.cat-fa{ background:linear-gradient(180deg,#7a8a98,var(--fa)); }
+
+/* Placeholder sections (75% width header centered, own row) */
+details.section{margin:28px 0;border-radius:14px;background:var(--card);border:1px solid var(--edge);overflow:hidden;box-shadow:var(--shadow)}
 details.section>summary{cursor:pointer;list-style:none;padding:0}
 .ph-head{
-  display:block; padding:16px 18px; border-bottom:1px solid var(--edge);
-  background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot)); color:var(--bannerText);
-  max-width:75%; margin:0 auto; border-radius:12px;
+  width:75%; margin:0 auto;
+  display:block; padding:16px 18px;
+  border-bottom:1px solid var(--edge);
+  background:linear-gradient(180deg,var(--bannerTop),var(--bannerBot)); color:var(--bannerText)
 }
 .ph-title{font-weight:900;font-size:1.05rem}
 .ph-sub{font-size:12px;opacity:.9;margin-top:6px}
-.section-body{padding:18px}
+.section-body{padding:16px}
 
-/* Courses grid (two columns on desktop) */
+/* Course grid (2 columns on desktop) with a row gap after each placeholder block */
 .section-body .courses{display:grid;grid-template-columns:1fr;gap:14px}
 @media (min-width:900px){ .section-body .courses{grid-template-columns:1fr 1fr} }
 
+/* Course cards */
 details.course{border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:var(--card)}
 details.course>summary{list-style:none;cursor:pointer;font-weight:700;padding:12px 16px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,0));border-bottom:1px solid var(--edge)}
 details.course[open]>summary{background:var(--hover)}
-.title-link{color:inherit;text-decoration:none}
-.title-link:hover{text-decoration:underline}
+.course-title{font-weight:800}
 
 /* Course body */
 details.course .body{padding:14px 16px}
+.course-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.course-head a.hlink{color:var(--btn);text-decoration:none;font-weight:800}
+.course-head a.hlink:hover{text-decoration:underline}
 .meta{font-size:12px;color:var(--muted);margin:10px 0 0}
-.btn{display:inline-block;margin-top:12px;border:1px solid var(--edge);border-radius:8px;padding:8px 12px;text-decoration:none;color:var(--btn);background:var(--card)}
+.btn{display:inline-block;border:1px solid var(--edge);border-radius:8px;padding:6px 10px;text-decoration:none;color:var(--btn);background:var(--card)}
+.btn:hover{background:var(--hover)}
 
-/* Session list (2 columns desktop) */
+/* Sessions grid (always show in-page list; 2 columns desktop) */
 .enrclass-list{list-style:none;padding:0;margin:12px 0;display:grid;gap:10px;grid-template-columns:1fr}
 @media (min-width:900px){ .enrclass-list{grid-template-columns:1fr 1fr} }
 .enrclass-list li{margin:0}
@@ -130,19 +140,27 @@ const ENR_ORIGIN='https://coastalcprtraining.enrollware.com';
 const isCt=id=>typeof id==='string' && /^ct\d{3,}$/i.test(id);
 const ctHref=id=>`${ENR_ORIGIN}/schedule#${encodeURIComponent(id)}`;
 
-// Quick-links config: ORIGINAL titles will be used when found
+function catFromTitle(t){
+  const s=(t||'').toLowerCase();
+  if(s.includes('bls')) return 'bls';
+  if(s.includes('acls')) return 'acls';
+  if(s.includes('pals')) return 'pals';
+  if(s.includes('first aid')||s.includes('heartsaver')||s.includes('cpr')) return 'fa';
+  return 'bls';
+}
+
+// Keep titles compact; push detail into sub line
 const popularPlan = [
-  { hint:'BLS Provider - In-person Initial',  sub:'Instructor-led classroom', tone:'bls' },
-  { hint:'BLS Provider - Online Class',       sub:'HeartCode online + skills session', tone:'bls' },
-  { hint:'ACLS Provider - In-person Renewal', sub:'Instructor-led renewal', tone:'acls' },
-  { hint:'ACLS Provider (HeartCode + Skills)',sub:'HeartCode online + skills session', tone:'acls' },
-  { hint:'PALS Provider - In-person Renewal', sub:'Instructor-led renewal', tone:'pals' },
-  { hint:'PALS Provider (HeartCode + Skills)',sub:'HeartCode online + skills session', tone:'pals' },
-  { hint:'First Aid/CPR/AED (In-Person)',     sub:'Adult First Aid + CPR/AED (HSI)', tone:'fa' },
-  { hint:'Heartsaver Online',                 sub:'Online + fast skills test', tone:'fa' },
+  { hint:'AHA – BLS Provider - In-person Initial',  sub:'Instructor-led BLS for healthcare providers' },
+  { hint:'AHA – BLS Provider - Online Class',       sub:'HeartCode BLS + hands-on skills test' },
+  { hint:'AHA – ACLS Provider - In-person Renewal', sub:'Renew ACLS with instructor-led session' },
+  { hint:'AHA – ACLS Provider (HeartCode + Skills)',sub:'ACLS HeartCode + fast skills check' },
+  { hint:'AHA – PALS Provider - In-person Renewal', sub:'Renew PALS with instructor-led session' },
+  { hint:'AHA – PALS Provider (HeartCode + Skills)',sub:'PALS HeartCode + fast skills check' },
+  { hint:'HSI First Aid/CPR/AED (In-Person)',       sub:'Adult First Aid with CPR/AED (HSI card)' },
+  { hint:'AHA – Heartsaver Online',                 sub:'Online Heartsaver + quick skills test' },
 ];
 
-// absolutize relative <img>/<a> URLs to Enrollware
 function absolutizeUrls(frag){
   frag.querySelectorAll('img,a').forEach(el=>{
     const attr=el.tagName==='IMG'?'src':'href';
@@ -154,7 +172,6 @@ function absolutizeUrls(frag){
   return frag;
 }
 
-// robust CT id lookup
 function getCtId(panel,root){
   let a=panel.querySelector('[id^="ct"],[name^="ct"]');
   if(a&&isCt(a.id||a.name))return a.id||a.name;
@@ -163,8 +180,7 @@ function getCtId(panel,root){
   let prev=panel.previousElementSibling;
   for(let i=0;i<6&&prev;i++){
     if(prev.matches?.('[id^="ct"],[name^="ct"]')) return prev.id||prev.name;
-    const inner=prev.querySelector?.('[id^="ct"],[name^="ct"]');
-    if(inner)return inner.id||inner.name;
+    const inner=prev.querySelector?.('[id^="ct"],[name^="ct"]'); if(inner) return inner.id||inner.name;
     prev=prev.previousElementSibling;
   }
   const walker=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT);
@@ -174,7 +190,6 @@ function getCtId(panel,root){
   }return last;
 }
 
-// parse “Thursday, November 6, 2025 at 9:15 AM”
 function parseDateFromText(t){
   if(!t)return null;const s=t.trim();
   const m=s.match(/([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})\s+at\s+(\d{1,2}):(\d{2})\s*(AM|PM)/i);
@@ -201,43 +216,36 @@ async function loadSnapshotHTML(){
   return null;
 }
 
-// prevent summary toggle when clicking links inside a <summary>
-function wireSummaryLinks(scope=document){
-  scope.querySelectorAll('summary a').forEach(a=>{
-    a.addEventListener('click',ev=>{ ev.stopPropagation(); });
-  });
-}
-
 document.addEventListener('DOMContentLoaded',async()=>{
-  const catalog=document.getElementById('catalog');
+  const container=document.getElementById('catalog');
   const popularGrid=document.getElementById('popular-grid');
 
   const html=await loadSnapshotHTML();
-  if(!html){ catalog.innerHTML='<p class="muted">Schedule snapshot not found.</p>'; return; }
+  if(!html){ container.innerHTML='<p class="muted">Schedule snapshot not found.</p>'; return; }
 
   const root=document.createElement('div'); root.innerHTML=html;
 
-  // Build index of courses (exact visible title -> ctId)
+  // Build index for popular links
   const ctIndex=[];
   root.querySelectorAll('.enrpanel').forEach(p=>{
     const title=(p.querySelector('.enrpanel-heading,h1,h2,h3,h4')?.textContent||'').trim();
     const ctId=getCtId(p,root);
-    if(title&&ctId) ctIndex.push({title,ctId,panel:p});
+    if(title&&ctId) ctIndex.push({title,ctId});
   });
 
-  // Quick Selection: use ORIGINAL title when found; colored by tone
+  // Popular button rendering (compact title; details in sub line)
   popularPlan.forEach(item=>{
-    const found = ctIndex.find(x => x.title.toLowerCase().includes(item.hint.toLowerCase()));
-    const titleText = found ? found.title : item.hint;
-    const href = found ? ctHref(found.ctId) : `${ENR_ORIGIN}/schedule`;
-    const a = document.createElement('a');
-    a.className = `popbtn ${item.tone||''}`;
-    a.href = href;
-    a.innerHTML = `<span class="title">${titleText}</span><span class="sub">${item.sub}</span>`;
+    const found=ctIndex.find(x=>x.title.toLowerCase().includes(item.hint.toLowerCase()));
+    const title = found ? found.title : item.hint;
+    const href  = found ? ctHref(found.ctId) : `${ENR_ORIGIN}/schedule`;
+    const cat   = catFromTitle(title);
+    const a=document.createElement('a');
+    a.className='popbtn cat-'+cat; a.href=href;
+    a.innerHTML=`<div class="title">${title}</div><span class="sub">${item.sub}</span>`;
     popularGrid.appendChild(a);
   });
 
-  // Convert snapshot into placeholder sections and course cards
+  // Build sections and courses from snapshot
   const panels=[...root.querySelectorAll('.enrpanel')];
   const sections=[]; let current=null;
 
@@ -256,23 +264,21 @@ document.addEventListener('DOMContentLoaded',async()=>{
     const hasDates=!!ul;
 
     if(!hasDates){
-      // start a new section
       current={header:{titleHTML,descHTML},courses:[]}; sections.push(current);
       continue;
     }
-
     if(!current){ current={header:{titleHTML:'Courses',descHTML:''},courses:[]}; sections.push(current); }
+
     const ulClone=ul.cloneNode(true); absolutizeUrls(ulClone);
     const trimmed=limitUlToWindow(ulClone,28,10);
     const ctId=getCtId(p,root);
     current.courses.push({id:ctId,titleHTML,descHTML,ul:trimmed.ul,kept:trimmed.kept,total:trimmed.total});
   }
 
-  // Render sections
+  // Render sections & courses
   const frag=document.createDocumentFragment();
   sections.forEach(sec=>{
-    const secEl=document.createElement('details'); secEl.className='section';
-    secEl.open = true; // keep open by default; no auto-scroll
+    const secEl=document.createElement('details'); secEl.className='section'; secEl.open=true;
     secEl.innerHTML=`<summary>
       <div class="ph-head">
         <div class="ph-title">${sec.header.titleHTML}</div>
@@ -280,19 +286,20 @@ document.addEventListener('DOMContentLoaded',async()=>{
       </div>
     </summary>
     <div class="section-body"><div class="courses"></div></div>`;
-
     const grid=secEl.querySelector('.courses');
 
     sec.courses.forEach(c=>{
       const course=document.createElement('details'); course.className='course';
-      const titleHTML=isCt(c.id)?`<a class="title-link" href="${ctHref(c.id)}">${c.titleHTML}</a>`:c.titleHTML;
       const allUrl=isCt(c.id)?ctHref(c.id):`${ENR_ORIGIN}/schedule`;
-      const hint=`<div class="meta">${c.total>c.kept?`Showing ${c.kept} of ${c.total} upcoming (~4 weeks)`:`All upcoming shown`} <a class="btn" href="${allUrl}">See all dates</a></div>`;
-      course.innerHTML=`<summary>${titleHTML}</summary>
+      course.innerHTML=`<summary><span class="course-title">${c.titleHTML}</span></summary>
         <div class="body">
-          <div class="desc">${c.descHTML}</div>
+          <div class="course-head">
+            <a class="hlink" href="${allUrl}">${c.titleHTML}</a>
+            <a class="btn" href="${allUrl}">See all dates</a>
+          </div>
+          <div class="desc" style="margin-top:10px">${c.descHTML}</div>
           <ul class="enrclass-list"></ul>
-          ${hint}
+          <div class="meta">${c.total>c.kept?`Showing ${c.kept} of ${c.total} upcoming (~4 weeks)`:`All upcoming shown`}</div>
         </div>`;
       course.querySelector('.enrclass-list').replaceWith(c.ul);
       grid.appendChild(course);
@@ -301,11 +308,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
     frag.appendChild(secEl);
   });
 
-  catalog.textContent='';
-  catalog.appendChild(frag);
-
-  // Make links inside any <summary> behave like links (don’t toggle)
-  wireSummaryLinks(document);
+  container.textContent='';
+  container.appendChild(frag);
 });
 </script>
 
