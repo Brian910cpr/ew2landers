@@ -89,7 +89,7 @@ details.course .body{padding:16px 18px}
 .course-title{color:#f1f6ff}
 .course-title a{pointer-events:none;text-decoration:none;color:inherit;cursor:default}
 
-/* “See all dates” button */
+/* “See all dates” primary button */
 .btn{
   display:inline-flex;align-items:center;gap:8px;margin-top:12px;
   border:1px solid rgba(74,163,255,.4);border-radius:999px;
@@ -100,7 +100,7 @@ details.course .body{padding:16px 18px}
 .btn:hover{background:linear-gradient(180deg,#4aa3ff,#2e7bd9);border-color:#4aa3ff}
 .btn:active{transform:translateY(1px)}
 
-/* Session list → convert links to “date buttons” */
+/* Session list → “button chip” cards */
 .enrclass-list{list-style:none;padding:0;margin:12px 0;display:grid;grid-template-columns:1fr;gap:10px}
 @media (min-width:720px){.enrclass-list{grid-template-columns:1fr 1fr}}
 .enrclass-list li{margin:0}
@@ -117,7 +117,7 @@ details.course .body{padding:16px 18px}
 /* Secondary metadata under each course */
 .meta{font-size:12px;color:#b7c6e3;margin:10px 0 0}
 
-/* Small badges (optional future: AHA/ARC/HSI) */
+/* Optional badge style if you add cert body tags later */
 .badge{display:inline-block;border:1px solid rgba(255,255,255,.16);color:#dfe9ff;
   padding:3px 8px;border-radius:999px;font-size:11px;margin-left:6px;background:rgba(255,255,255,.04)}
 </style>
@@ -187,7 +187,7 @@ function parseDateFromText(t){
   if(ap==='PM'&&hr<12) hr+=12; if(ap==='AM'&&hr===12) hr=0;
   return new Date(+m[3],mon,+m[2],hr,min);
 }
-function limitUlToWindow(ul,maxDays=28,maxItems=10){
+function limitUlToWindow(ul,maxDays=28,maxItems=12){
   if(!ul) return {ul,kept:0,total:0};
   const cutoff=new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
   const lis=[...ul.querySelectorAll(':scope>li')];
@@ -202,16 +202,12 @@ function limitUlToWindow(ul,maxDays=28,maxItems=10){
   }
   return {ul,kept,total};
 }
-/* Make date links look like “button chips” */
 function decorateDateLinks(ul){
   if(!ul) return;
   ul.querySelectorAll(':scope>li>a').forEach(a=>{
-    a.classList.add('date-btn');
-    // Optional: prefix icon-like text (no external icon lib)
-    // a.innerHTML = '🗓️ ' + a.innerHTML;  // uncomment if you want a glyph
+    // already styled via CSS; hook left for future icon injection if needed
   });
 }
-
 async function loadSnapshotHTML(){
   const here = location.pathname;
   const base = here.replace(/[^/]+$/,'');
@@ -337,8 +333,14 @@ document.addEventListener('DOMContentLoaded', async()=>{
     host.appendChild(secEl);
   });
 
+  // Default-open the first top-level curtain
+  const firstSection = document.querySelector('details.section');
+  if (firstSection) firstSection.open = true;
+
   dbg.className='status ok';
   dbg.textContent = `Rendered ${sections.length} top-level sections. Titles are plain text; dates are button-chips; “See all dates” is a primary button.`;
+
+  // One-open-at-a-time + auto-scroll
   wireCurtains();
 });
 </script>
