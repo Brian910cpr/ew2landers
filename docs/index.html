@@ -25,22 +25,26 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
 
 <style>
 :root{
-  --ink:#0a1b2b; --bg:#f6f9fc; --card:#ffffff; --edge:#dce9f7; --hover:#f3f8ff;
-  --accent:#0b66c3; --muted:#466; --shadow:0 6px 18px rgba(0,0,0,.08);
-  --bannerTop:#32415f; --bannerBot:#27354e; --bannerText:#f4f7fb;
+  --ink:#0a1b2b; --bg:#0d1521; --card:#141e2e; --edge:#29384f; --hover:#1b2940;
+  --accent:#7fb4ff; --muted:#9fb3c7; --shadow:0 8px 22px rgba(0,0,0,.5);
+  --bannerTop:#0f1b2b; --bannerBot:#0b1421; --bannerText:#cfe2ff;
 }
-@media (prefers-color-scheme: dark){
+@media (prefers-color-scheme: light){
   :root{
-    --ink:#eaf1ff; --bg:#0d1521; --card:#141e2e; --edge:#29384f; --hover:#1b2940;
-    --accent:#7fb4ff; --muted:#9fb3c7; --shadow:0 8px 22px rgba(0,0,0,.5);
-    --bannerTop:#0f1b2b; --bannerBot:#0b1421; --bannerText:#cfe2ff;
+    --ink:#0a1b2b; --bg:#f6f9fc; --card:#ffffff; --edge:#dce9f7; --hover:#f3f8ff;
+    --accent:#0b66c3; --muted:#466; --shadow:0 6px 18px rgba(0,0,0,.08);
+    --bannerTop:#32415f; --bannerBot:#27354e; --bannerText:#f4f7fb;
   }
 }
 html,body{background:var(--bg);color:var(--ink);margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
 .wrap{max-width:1120px;margin:auto;padding:18px}
 h1{margin:8px 0 12px}
 
-/* No underlines on links */
+/* inline status banner */
+#status{margin:8px 0 12px;padding:8px 12px;border-radius:10px;border:1px solid var(--edge);background:var(--card);display:none}
+#status.err{display:block;color:#ffd2d2;border-color:#723b44;background:#2a0f17}
+
+/* remove underlines everywhere */
 a, a:visited, a:hover, a:focus, a:active { text-decoration: none; }
 
 /* Popular block */
@@ -53,7 +57,7 @@ a, a:visited, a:hover, a:focus, a:active { text-decoration: none; }
   #popular table{width:100%}
 }
 
-/* Sections (top-level “placeholder” headers) */
+/* Sections (top “placeholder” headers) */
 details.section{
   margin:14px 0;border-radius:16px;background:var(--card);border:1px solid var(--edge);box-shadow:var(--shadow);overflow:hidden
 }
@@ -67,32 +71,28 @@ details.section>summary::-webkit-details-marker{display:none}
 .ph-head .ph-sub{font-size:12px;opacity:.95;margin-top:6px}
 .section-body{padding:16px}
 
-/* Courses grid under each placeholder header */
+/* Course grid under each header */
 .courses-grid{
   display:grid;grid-template-columns:1fr 1fr;gap:14px
 }
 @media (max-width:820px){ .courses-grid{grid-template-columns:1fr} }
 
-/* Blank spacer card to occupy the RIGHT cell beside header */
+/* Spacer on RIGHT side (after first course) */
 .course.spacer{
-  min-height:60px;
-  border:1px solid var(--edge);
-  border-radius:14px;
-  background:var(--card);
-  opacity:0;
-  pointer-events:none;
+  min-height:60px;border:1px solid var(--edge);border-radius:14px;background:var(--card);
+  opacity:0;pointer-events:none
 }
 
-/* Course card (second-level) */
+/* Course card */
 details.course{
   border:1px solid var(--edge);border-radius:14px;background:var(--card);overflow:hidden
 }
 details.course>summary{
   list-style:none;cursor:pointer;padding:12px 16px;
-  background:linear-gradient(180deg,#ffffff,#f7fbff);border-bottom:1px solid var(--edge);font-weight:800
+  background:linear-gradient(180deg,#172339,#0f1a2d);border-bottom:1px solid var(--edge);font-weight:800
 }
-@media (prefers-color-scheme: dark){
-  details.course>summary{background:linear-gradient(180deg,#172339,#0f1a2d)}
+@media (prefers-color-scheme: light){
+  details.course>summary{background:linear-gradient(180deg,#ffffff,#f7fbff)}
 }
 details.course[open]>summary{background:var(--hover)}
 .course .body{padding:14px 16px}
@@ -103,7 +103,7 @@ details.course[open]>summary{background:var(--hover)}
   padding:8px 12px;color:var(--accent);background:var(--card)
 }
 
-/* Sessions list (dates) – two columns on wide screens */
+/* Sessions list – two columns */
 .enrclass-list{list-style:none;padding:0;margin:10px 0;columns:2;column-gap:12px}
 @media (max-width:700px){ .enrclass-list{columns:1} }
 .enrclass-list li{break-inside:avoid;margin:6px 0}
@@ -122,6 +122,7 @@ details.course[open]>summary{background:var(--hover)}
 <div class="wrap">
 
   <h1>910CPR Courses & Schedule</h1>
+  <div id="status"></div>
 
   <!-- Most Popular Classes -->
   <section id="popular" itemscope itemtype="https://schema.org/ItemList" style="max-width:1120px;margin:12px auto 22px;">
@@ -252,207 +253,214 @@ details.course[open]>summary{background:var(--hover)}
 </div><!-- /.wrap -->
 
 <script>
-const ENR_ORIGIN='https://coastalcprtraining.enrollware.com';
-const isCt=id=>typeof id==='string' && /^ct\d{3,}$/i.test(id);
-const ctHref=id=>`${ENR_ORIGIN}/schedule#${encodeURIComponent(id)}`;
+(function(){
+  const ENR_ORIGIN='https://coastalcprtraining.enrollware.com';
+  const statusEl=document.getElementById('status');
 
-function absolutizeUrls(frag){
-  frag.querySelectorAll('img,a').forEach(el=>{
-    const attr=el.tagName==='IMG'?'src':'href';
-    const v=el.getAttribute(attr); if(!v) return;
-    if(/^https?:\/\//i.test(v)) return;
-    const abs=v.startsWith('/')?ENR_ORIGIN+v:ENR_ORIGIN+'/'+v.replace(/^\.\//,'');
-    el.setAttribute(attr,abs);
-  });
-  return frag;
-}
-
-function getCtId(panel,root){
-  const anchor=panel.querySelector('[id^="ct"],[name^="ct"]');
-  if(anchor){const v=anchor.id||anchor.getAttribute('name'); if(isCt(v)) return v;}
-  const link=panel.querySelector('a[href*="#ct"]');
-  if(link){const m=link.getAttribute('href').match(/#(ct\d+)/i); if(m) return m[1];}
-  let prev=panel.previousElementSibling;
-  for(let i=0;i<8 && prev;i++){
-    if(prev.matches?.('[id^="ct"],[name^="ct"]')){const v=prev.id||prev.getAttribute('name'); if(isCt(v)) return v;}
-    const inner=prev.querySelector?.('[id^="ct"],[name^="ct"]'); if(inner){const v=inner.id||inner.getAttribute('name'); if(isCt(v)) return v;}
-    prev=prev.previousElementSibling;
+  function setStatus(msg,isErr){
+    statusEl.textContent=msg||'';
+    statusEl.className=isErr?'err':'';
+    statusEl.style.display = msg ? 'block' : 'none';
   }
-  const walker=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT);
-  let last=''; while(walker.nextNode()){
-    const el=walker.currentNode; if(el===panel) break;
-    const id=el.id||el.getAttribute?.('name'); if(id && isCt(id)) last=id;
+
+  const isCt=id=>typeof id==='string' && /^ct\d{3,}$/i.test(id);
+  const ctHref=id=>`${ENR_ORIGIN}/schedule#${encodeURIComponent(id)}`;
+
+  function absolutizeUrls(frag){
+    frag.querySelectorAll('img,a').forEach(el=>{
+      const attr=el.tagName==='IMG'?'src':'href';
+      const v=el.getAttribute(attr); if(!v) return;
+      if(/^https?:\/\//i.test(v)) return;
+      const abs=v.startsWith('/')?ENR_ORIGIN+v:ENR_ORIGIN+'/'+v.replace(/^\.\//,'');
+      el.setAttribute(attr,abs);
+    });
+    return frag;
   }
-  return last;
-}
 
-function parseDateFromText(t){
-  if(!t) return null; const s=t.trim();
-  const m=s.match(/([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})\s+at\s+(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-  if(!m) return null;
-  const months={january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
-  let h=+m[4]; if(m[6].toUpperCase()==='PM'&&h<12)h+=12; if(m[6].toUpperCase()==='AM'&&h===12)h=0;
-  return new Date(+m[3],months[m[1].toLowerCase()],+m[2],h,+m[5]);
-}
-
-function limitUlToWindow(ul,maxDays=28,maxItems=10){
-  if(!ul) return {ul,kept:0,total:0};
-  const cutoff=new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
-  const lis=[...ul.querySelectorAll(':scope>li')]; let kept=0,total=0;
-  for(const li of lis){ total++;
-    const a=li.querySelector('a'); const txt=(a?.textContent||li.textContent||'').trim();
-    const dt=parseDateFromText(txt);
-    if(!dt || (dt<=cutoff && kept<maxItems)){ kept++; } else { li.remove(); }
-  }
-  return {ul,kept,total};
-}
-
-async function loadSnapshotHTML(){
-  const here=location.pathname,base=here.replace(/[^/]+$/,'');
-  const tries=[
-    base+'data/enrollware-schedule.html',
-    '/ew2landers/data/enrollware-schedule.html',
-    './data/enrollware-schedule.html',
-    'data/enrollware-schedule.html'
-  ];
-  for(const u of tries){
-    try{ const r=await fetch(u,{cache:'no-cache'}); if(r.ok) return {html:await r.text(),url:u}; }catch{}
-  }
-  return {html:null,url:null};
-}
-
-function buildCourseCard(c){
-  const course=document.createElement('details'); course.className='course';
-  course.innerHTML=`
-    <summary class="course-head">
-      <span class="hlink" aria-hidden="true">${c.titleHTML}</span>
-    </summary>
-    <div class="body">
-      <div class="desc">${c.descHTML||''}</div>
-      <ul class="enrclass-list"></ul>
-      <div class="meta">
-        ${
-          c.total>c.kept
-          ? \`Showing \${c.kept} of \${c.total} upcoming (~4 weeks). \`
-          : \`All upcoming sessions shown. \`
+  function getCtId(panel,root){
+    try{
+      const anchor=panel.querySelector('[id^="ct"],[name^="ct"]');
+      if(anchor){
+        const v=anchor.id||anchor.getAttribute('name');
+        if(isCt(v)) return v;
+      }
+      const link=panel.querySelector('a[href*="#ct"]');
+      if(link){
+        const href=link.getAttribute('href')||'';
+        const m=href.match(/#(ct\d+)/i);
+        if(m) return m[1];
+      }
+      let prev=panel.previousElementSibling;
+      for(let i=0;i<8 && prev;i++){
+        if(prev.matches && prev.matches('[id^="ct"],[name^="ct"]')){
+          const v=prev.id||prev.getAttribute('name');
+          if(isCt(v)) return v;
         }
-        <a class="btn" href="\${isCt(c.id)?ctHref(c.id):ENR_ORIGIN+'/schedule'}">See all dates</a>
-      </div>
-    </div>`;
-  course.querySelector('.enrclass-list').replaceWith(c.ul);
-  return course;
-}
-
-/* Render catalog with SPACER AFTER the first course (blank RIGHT cell under header) */
-async function renderCatalog(){
-  const host=document.getElementById('catalog');
-  const load=await loadSnapshotHTML();
-  if(!load.html){ host.innerHTML='<p>Could not load schedule snapshot.</p>'; return; }
-
-  const root=document.createElement('div'); root.innerHTML=load.html;
-  const panels=[...root.querySelectorAll('.enrpanel')];
-
-  const sections=[]; let current=null;
-  for(const p of panels){
-    const headingEl=p.querySelector('.enrpanel-heading,h1,h2,h3,h4'); if(!headingEl) continue;
-    const headingFrag=headingEl.cloneNode(true); absolutizeUrls(headingFrag);
-    const titleHTML=headingFrag.innerHTML.trim();
-
-    const bodyEl=p.querySelector('.enrpanel-body');
-    const descClone=bodyEl?bodyEl.cloneNode(true):null;
-    if(descClone){ const u=descClone.querySelector('ul.enrclass-list'); if(u) u.remove(); absolutizeUrls(descClone); }
-    const descHTML=descClone?(descClone.innerHTML||'').trim():'';
-
-    const ul=p.querySelector('ul.enrclass-list');
-    const hasDates=!!ul;
-
-    if(!hasDates){
-      current={header:{titleHTML,descHTML},courses:[]}; sections.push(current);
-      continue;
-    }
-
-    if(!current){ current={header:{titleHTML:'Courses',descHTML:''},courses:[]}; sections.push(current); }
-
-    const ulClone=ul.cloneNode(true); absolutizeUrls(ulClone);
-    const trimmed=limitUlToWindow(ulClone,28,10);
-    const ctId=getCtId(p,root);
-
-    current.courses.push({
-      id:ctId,
-      titleHTML,
-      descHTML,
-      ul:trimmed.ul,
-      kept:trimmed.kept,
-      total:trimmed.total
-    });
+        const inner=prev.querySelector ? prev.querySelector('[id^="ct"],[name^="ct"]') : null;
+        if(inner){
+          const v=inner.id||inner.getAttribute('name');
+          if(isCt(v)) return v;
+        }
+        prev=prev.previousElementSibling;
+      }
+      if(window.NodeFilter){
+        const walker=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT);
+        let last=''; while(walker.nextNode()){
+          const el=walker.currentNode; if(el===panel) break;
+          const id=el.id||el.getAttribute?.('name'); if(id && isCt(id)) last=id;
+        }
+        return last;
+      }
+    }catch(e){}
+    return '';
   }
 
-  host.innerHTML='';
-  sections.forEach((sec,idx)=>{
-    const secEl=document.createElement('details'); secEl.className='section';
-    if(idx===0) secEl.setAttribute('open',''); /* auto-open first */
-    secEl.innerHTML=`
-      <summary>
-        <div class="ph-head">
-          <div class="ph-title">${sec.header.titleHTML}</div>
-          ${sec.header.descHTML?`<div class="ph-sub">${sec.header.descHTML}</div>`:''}
-        </div>
-      </summary>
-      <div class="section-body">
-        <div class="courses-grid"></div>
-      </div>`;
-    const grid=secEl.querySelector('.courses-grid');
+  function parseDateFromText(t){
+    if(!t) return null; const s=t.trim();
+    const m=s.match(/([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})\s+at\s+(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    if(!m) return null;
+    const months={january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
+    let h=+m[4]; if(m[6].toUpperCase()==='PM'&&h<12)h+=12; if(m[6].toUpperCase()==='AM'&&h===12)h=0;
+    return new Date(+m[3],months[m[1].toLowerCase()],+m[2],h,+m[5]);
+  }
 
-    if(sec.courses.length){
-      /* First: real course in left cell */
-      grid.appendChild(buildCourseCard(sec.courses[0]));
-      /* Second: blank spacer in right cell (AFTER title card) */
-      grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
-      /* Remaining courses flow normally */
-      for(let i=1;i<sec.courses.length;i++){
-        grid.appendChild(buildCourseCard(sec.courses[i]));
-      }
-    }else{
-      /* No courses: still add a spacer to preserve layout if you want the blank cell */
-      grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
+  function limitUlToWindow(ul,maxDays=28,maxItems=10){
+    if(!ul) return {ul,kept:0,total:0};
+    const cutoff=new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
+    const lis=[...ul.querySelectorAll(':scope>li')]; let kept=0,total=0;
+    for(const li of lis){ total++;
+      const a=li.querySelector('a'); const txt=(a?.textContent||li.textContent||'').trim();
+      const dt=parseDateFromText(txt);
+      if(!dt || (dt<=cutoff && kept<maxItems)){ kept++; } else { li.remove(); }
     }
+    return {ul,kept,total};
+  }
 
-    host.appendChild(secEl);
-  });
-}
+  async function loadSnapshotHTML(){
+    const here=location.pathname,base=here.replace(/[^/]+$/,'');
+    const tries=[
+      base+'data/enrollware-schedule.html',
+      '/ew2landers/data/enrollware-schedule.html',
+      './data/enrollware-schedule.html',
+      'data/enrollware-schedule.html'
+    ];
+    for(const u of tries){
+      try{ const r=await fetch(u,{cache:'no-cache'}); if(r.ok) return {html:await r.text(),url:u}; }catch{}
+    }
+    return {html:null,url:null};
+  }
 
-function wireCurtains(){
-  document.querySelectorAll('details.section').forEach(sec=>{
-    sec.addEventListener('toggle',()=>{
-      if(sec.open){
-        document.querySelectorAll('details.section').forEach(d=>{ if(d!==sec) d.open=false; });
-      }
-    });
-  });
-}
+  function buildCourseCard(c){
+    const course=document.createElement('details'); course.className='course';
+    course.innerHTML=
+      '<summary class="course-head"><span class="hlink" aria-hidden="true">'
+      + (c.titleHTML||'').trim()
+      + '</span></summary>'
+      + '<div class="body">'
+      +   '<div class="desc">'+(c.descHTML||'')+'</div>'
+      +   '<ul class="enrclass-list"></ul>'
+      +   '<div class="meta">'
+      +     (c.total>c.kept ? ('Showing '+c.kept+' of '+c.total+' upcoming (~4 weeks). ') : 'All upcoming sessions shown. ')
+      +     '<a class="btn" href="'+(isCt(c.id)?ctHref(c.id):(ENR_ORIGIN+'/schedule'))+'">See all dates</a>'
+      +   '</div>'
+      + '</div>';
+    const ulNode=c.ul; if(ulNode){ course.querySelector('.enrclass-list').replaceWith(ulNode); }
+    return course;
+  }
 
-function resolvePopularToCt(){
-  const idx=[];
-  document.querySelectorAll('#catalog details.course .course-head .hlink').forEach(h=>{
-    const title=(h.textContent||'').trim();
-    const card=h.closest('details.course'); if(!card) return;
-    const a=card.querySelector('.meta a.btn'); if(!a) return;
-    const m=(a.getAttribute('href')||'').match(/#(ct\d+)/i);
-    const ct=m?m[1]:null;
-    if(title && ct) idx.push({title,ct});
-  });
-  document.querySelectorAll('#popular .popular-link').forEach(a=>{
-    const hint=(a.getAttribute('data-hint')||'').toLowerCase();
-    const found=idx.find(x=>x.title.toLowerCase().includes(hint));
-    if(found){ a.setAttribute('href', ctHref(found.ct)); a.setAttribute('title', found.title+' – full schedule'); }
-  });
-}
+  async function renderCatalog(){
+    const host=document.getElementById('catalog');
+    const load=await loadSnapshotHTML();
+    if(!load.html){ setStatus('Could not load schedule snapshot. Put it at docs/data/enrollware-schedule.html', true); return; }
 
-document.addEventListener('DOMContentLoaded', async ()=>{
-  await renderCatalog();
-  wireCurtains();
-  resolvePopularToCt();
-});
+    try{
+      const root=document.createElement('div'); root.innerHTML=load.html;
+      const panels=[...root.querySelectorAll('.enrpanel')];
+      const sections=[]; let current=null;
+
+      panels.forEach(p=>{
+        const headingEl=p.querySelector('.enrpanel-heading,h1,h2,h3,h4'); if(!headingEl) return;
+        const headingFrag=headingEl.cloneNode(true); absolutizeUrls(headingFrag);
+        const titleHTML=headingFrag.innerHTML.trim();
+
+        const bodyEl=p.querySelector('.enrpanel-body');
+        const descClone=bodyEl?bodyEl.cloneNode(true):null;
+        if(descClone){ const u=descClone.querySelector('ul.enrclass-list'); if(u) u.remove(); absolutizeUrls(descClone); }
+        const descHTML=descClone?(descClone.innerHTML||'').trim():'';
+
+        const ul=p.querySelector('ul.enrclass-list');
+        const hasDates=!!ul;
+
+        if(!hasDates){
+          current={header:{titleHTML,descHTML},courses:[]}; sections.push(current);
+          return;
+        }
+
+        if(!current){ current={header:{titleHTML:'Courses',descHTML:''},courses:[]}; sections.push(current); }
+
+        const ulClone=ul.cloneNode(true); absolutizeUrls(ulClone);
+        const trimmed=limitUlToWindow(ulClone,28,10);
+        const ctId=getCtId(p,root);
+
+        current.courses.push({ id:ctId, titleHTML, descHTML, ul:trimmed.ul, kept:trimmed.kept, total:trimmed.total });
+      });
+
+      host.innerHTML='';
+      sections.forEach((sec,idx)=>{
+        const secEl=document.createElement('details'); secEl.className='section';
+        if(idx===0) secEl.setAttribute('open','');
+        secEl.innerHTML=
+          '<summary><div class="ph-head"><div class="ph-title">'
+          + sec.header.titleHTML
+          + '</div>'
+          + (sec.header.descHTML?('<div class="ph-sub">'+sec.header.descHTML+'</div>'):'')
+          + '</div></summary>'
+          + '<div class="section-body"><div class="courses-grid"></div></div>';
+        const grid=secEl.querySelector('.courses-grid');
+
+        if(sec.courses.length){
+          grid.appendChild(buildCourseCard(sec.courses[0]));                 /* left cell */
+          grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>'); /* right spacer */
+          for(let i=1;i<sec.courses.length;i++){ grid.appendChild(buildCourseCard(sec.courses[i])); }
+        }else{
+          grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
+        }
+        host.appendChild(secEl);
+      });
+
+      setStatus(''); // clear
+    }catch(err){
+      setStatus('Render error: '+(err?.message||String(err)), true);
+    }
+  }
+
+  function resolvePopularToCt(){
+    try{
+      const idx=[];
+      document.querySelectorAll('#catalog details.course .course-head .hlink').forEach(h=>{
+        const title=(h.textContent||'').trim();
+        const card=h.closest('details.course'); if(!card) return;
+        const a=card.querySelector('.meta a.btn'); if(!a) return;
+        const href=a.getAttribute('href')||'';
+        const m=href.match(/#(ct\d+)/i);
+        const ct=m?m[1]:null;
+        if(title && ct) idx.push({title,ct});
+      });
+      document.querySelectorAll('#popular .popular-link').forEach(a=>{
+        const hint=(a.getAttribute('data-hint')||'').toLowerCase();
+        const found=idx.find(x=>x.title.toLowerCase().includes(hint));
+        if(found){ a.setAttribute('href', ENR_ORIGIN+'/schedule#'+encodeURIComponent(found.ct)); a.setAttribute('title', found.title+' – full schedule'); }
+      });
+    }catch(e){
+      // Don’t break the page if popular mapping fails
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', async ()=>{
+    await renderCatalog();
+    resolvePopularToCt();
+  });
+})();
 </script>
 
 <!-- Voice widget -->
