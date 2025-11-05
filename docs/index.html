@@ -38,9 +38,10 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
 }
 html,body{background:var(--bg);color:var(--ink);margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
 .wrap{max-width:1120px;margin:auto;padding:18px}
-
 h1{margin:8px 0 12px}
-a{color:var(--accent)}
+
+/* Remove underlines from all links, all states */
+a, a:visited, a:hover, a:focus, a:active { text-decoration: none; }
 
 /* Popular block */
 #popular{background:var(--card);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px}
@@ -72,6 +73,16 @@ details.section>summary::-webkit-details-marker{display:none}
 }
 @media (max-width:820px){ .courses-grid{grid-template-columns:1fr} }
 
+/* Blank spacer card to occupy the right cell beside header */
+.course.spacer{
+  min-height:60px;
+  border:1px solid var(--edge);
+  border-radius:14px;
+  background:var(--card);
+  opacity:0;
+  pointer-events:none;
+}
+
 /* Course card (second-level) */
 details.course{
   border:1px solid var(--edge);border-radius:14px;background:var(--card);overflow:hidden
@@ -98,11 +109,11 @@ details.course[open]>summary{background:var(--hover)}
 .enrclass-list li{break-inside:avoid;margin:6px 0}
 .enrclass-list a{
   display:flex;flex-direction:column;gap:4px;border:1px solid var(--edge);
-  border-radius:10px;padding:8px 10px;text-decoration:none;color:var(--ink);background:var(--card)
+  border-radius:10px;padding:8px 10px;color:var(--ink);background:var(--card)
 }
 .enrclass-list a:hover{background:var(--hover);border-color:#b9d6f9}
 
-/* Catalog container (used by popular-link resolver) */
+/* Catalog container */
 #catalog{margin-top:18px}
 </style>
 </head>
@@ -112,7 +123,7 @@ details.course[open]>summary{background:var(--hover)}
 
   <h1>910CPR Courses & Schedule</h1>
 
-  <!-- Most Popular Classes (place directly under <h1> and above #catalog) -->
+  <!-- Most Popular Classes -->
   <section id="popular" itemscope itemtype="https://schema.org/ItemList" style="max-width:1120px;margin:12px auto 22px;">
     <meta itemprop="name" content="Most Popular CPR & Healthcare Provider Classes in Wilmington and Burgaw, NC">
     <div style="display:grid;grid-template-columns:1.25fr .75fr;gap:18px;align-items:center;">
@@ -127,7 +138,7 @@ details.course[open]>summary{background:var(--hover)}
                  data-hint="AHA – BLS Provider - In-person Initial"
                  href="https://coastalcprtraining.enrollware.com/schedule"
                  itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                 style="display:block;text-decoration:none;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#3e8bf0,#0b66c3);box-shadow:0 8px 22px rgba(0,0,0,.18);">
+                 style="display:block;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#3e8bf0,#0b66c3);box-shadow:0 8px 22px rgba(0,0,0,.18);">
                 <span class="title" itemprop="name" style="display:block;font-weight:800;font-size:14px;margin-bottom:6px;">BLS</span>
                 <em class="sub" style="display:block;font-size:12.5px;opacity:.95;">Initial or renewal; instructor-led</em>
                 <meta itemprop="position" content="1">
@@ -139,7 +150,7 @@ details.course[open]>summary{background:var(--hover)}
                  data-hint="AHA – BLS Provider - Online Class"
                  href="https://coastalcprtraining.enrollware.com/schedule"
                  itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                 style="display:block;text-decoration:none;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#4a9af5,#2a7be6);box-shadow:0 8px 22px rgba(0,0,0,.18);">
+                 style="display:block;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#4a9af5,#2a7be6);box-shadow:0 8px 22px rgba(0,0,0,.18);">
                 <span class="title" itemprop="name" style="display:block;font-weight:800;font-size:14px;margin-bottom:6px;">BLS Online</span>
                 <em class="sub" style="display:block;font-size:12.5px;opacity:.95;">Blended: online + in-person skills</em>
                 <meta itemprop="position" content="2">
@@ -151,7 +162,7 @@ details.course[open]>summary{background:var(--hover)}
                  data-hint="AHA – ACLS Provider - In-person Renewal"
                  href="https://coastalcprtraining.enrollware.com/schedule"
                  itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                 style="display:block;text-decoration:none;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#ff6b76,#b31d2c);box-shadow:0 8px 22px rgba(0,0,0,.18);">
+                 style="display:block;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#ff6b76,#b31d2c);box-shadow:0 8px 22px rgba(0,0,0,.18);">
                 <span class="title" itemprop="name" style="display:block;font-weight:800;font-size:14px;margin-bottom:6px;">ACLS</span>
                 <em class="sub" style="display:block;font-size:12.5px;opacity:.95;">Fully in-person renewal</em>
                 <meta itemprop="position" content="3">
@@ -163,7 +174,7 @@ details.course[open]>summary{background:var(--hover)}
                  data-hint="AHA – ACLS Provider (HeartCode + Skills)"
                  href="https://coastalcprtraining.enrollware.com/schedule"
                  itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                 style="display:block;text-decoration:none;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#ff8a93,#e14c59);box-shadow:0 8px 22px rgba(0,0,0,.18);">
+                 style="display:block;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#ff8a93,#e14c59);box-shadow:0 8px 22px rgba(0,0,0,.18);">
                 <span class="title" itemprop="name" style="display:block;font-weight:800;font-size:14px;margin-bottom:6px;">ACLS Online</span>
                 <em class="sub" style="display:block;font-size:12.5px;opacity:.95;">Initial (online + skills)</em>
                 <meta itemprop="position" content="4">
@@ -177,7 +188,7 @@ details.course[open]>summary{background:var(--hover)}
                  data-hint="AHA – PALS Provider - In-person Renewal"
                  href="https://coastalcprtraining.enrollware.com/schedule"
                  itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                 style="display:block;text-decoration:none;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#9c8cff,#5b4abf);box-shadow:0 8px 22px rgba(0,0,0,.18);">
+                 style="display:block;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#9c8cff,#5b4abf);box-shadow:0 8px 22px rgba(0,0,0,.18);">
                 <span class="title" itemprop="name" style="display:block;font-weight:800;font-size:14px;margin-bottom:6px;">PALS</span>
                 <em class="sub" style="display:block;font-size:12.5px;opacity:.95;">Fully in-person renewal</em>
                 <meta itemprop="position" content="5">
@@ -189,7 +200,7 @@ details.course[open]>summary{background:var(--hover)}
                  data-hint="AHA – PALS Provider (HeartCode + Skills)"
                  href="https://coastalcprtraining.enrollware.com/schedule"
                  itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                 style="display:block;text-decoration:none;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#b6aaff,#7a66ff);box-shadow:0 8px 22px rgba(0,0,0,.18);">
+                 style="display:block;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#b6aaff,#7a66ff);box-shadow:0 8px 22px rgba(0,0,0,.18);">
                 <span class="title" itemprop="name" style="display:block;font-weight:800;font-size:14px;margin-bottom:6px;">PALS Online</span>
                 <em class="sub" style="display:block;font-size:12.5px;opacity:.95;">Initial (online + skills)</em>
                 <meta itemprop="position" content="6">
@@ -201,7 +212,7 @@ details.course[open]>summary{background:var(--hover)}
                  data-hint="HSI First Aid/CPR/AED (In-Person)"
                  href="https://coastalcprtraining.enrollware.com/schedule"
                  itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                 style="display:block;text-decoration:none;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#7a8a98,#485563);box-shadow:0 8px 22px rgba(0,0,0,.18);">
+                 style="display:block;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#7a8a98,#485563);box-shadow:0 8px 22px rgba(0,0,0,.18);">
                 <span class="title" itemprop="name" style="display:block;font-weight:800;font-size:14px;margin-bottom:6px;">First Aid / CPR / AED</span>
                 <em class="sub" style="display:block;font-size:12.5px;opacity:.95;">Fully in-person course</em>
                 <meta itemprop="position" content="7">
@@ -213,7 +224,7 @@ details.course[open]>summary{background:var(--hover)}
                  data-hint="AHA – Heartsaver Online"
                  href="https://coastalcprtraining.enrollware.com/schedule"
                  itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
-                 style="display:block;text-decoration:none;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#96a6b4,#7b8896);box-shadow:0 8px 22px rgba(0,0,0,.18);">
+                 style="display:block;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#96a6b4,#7b8896);box-shadow:0 8px 22px rgba(0,0,0,.18);">
                 <span class="title" itemprop="name" style="display:block;font-weight:800;font-size:14px;margin-bottom:6px;">First Aid / CPR / AED Online</span>
                 <em class="sub" style="display:block;font-size:12.5px;opacity:.95;">Flexible + fast (online + skills)</em>
                 <meta itemprop="position" content="8">
@@ -223,7 +234,7 @@ details.course[open]>summary{background:var(--hover)}
         </table>
       </div>
 
-      <!-- Right: Brand banner (JPG as requested) -->
+      <!-- Right: Brand banner (JPG) -->
       <div style="text-align:center;">
         <img
           src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg"
@@ -315,7 +326,7 @@ async function loadSnapshotHTML(){
   return {html:null,url:null};
 }
 
-/* Render catalog: top-level placeholders -> grid of course cards */
+/* Render catalog: top-level placeholders -> spacer -> grid of course cards */
 async function renderCatalog(){
   const host=document.getElementById('catalog');
   const load=await loadSnapshotHTML();
@@ -378,6 +389,9 @@ async function renderCatalog(){
       </div>`;
     const grid=secEl.querySelector('.courses-grid');
 
+    /* Add blank spacer card so the first real course starts on the next row (creating a blank to the right of the header) */
+    grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
+
     sec.courses.forEach(c=>{
       const course=document.createElement('details'); course.className='course';
       /* Summary is plain title (not a link). Links live in body via “See all dates”. */
@@ -405,7 +419,7 @@ async function renderCatalog(){
   });
 }
 
-/* Wire: only one top-level open at a time, and do NOT auto-scroll (keeps popular block visible) */
+/* Only one top-level open at once, and do NOT auto-scroll (keep quick links visible) */
 function wireCurtains(){
   document.querySelectorAll('details.section').forEach(sec=>{
     sec.addEventListener('toggle',()=>{
