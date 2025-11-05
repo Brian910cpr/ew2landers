@@ -135,8 +135,8 @@ details.course[open]>summary{background:var(--hover)}
             </td>
 
             <td style="width:25%;">
-              <a class="popbtn cat-bls popular-link
-                 " data-hint="AHA – BLS Provider - Online Class"
+              <a class="popbtn cat-bls popular-link"
+                 data-hint="AHA – BLS Provider - Online Class"
                  href="https://coastalcprtraining.enrollware.com/schedule"
                  itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"
                  style="display:block;text-decoration:none;color:#fff;border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#4a9af5,#2a7be6);box-shadow:0 8px 22px rgba(0,0,0,.18);">
@@ -223,11 +223,11 @@ details.course[open]>summary{background:var(--hover)}
         </table>
       </div>
 
-      <!-- Right: Brand image -->
+      <!-- Right: Brand banner (JPG as requested) -->
       <div style="text-align:center;">
         <img
-          src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.png"
-          alt="910CPR wave brand mark"
+          src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg"
+          alt="910CPR wave brand banner"
           loading="lazy"
           style="max-width:100%;height:auto;border-radius:12px;border:1px solid rgba(0,0,0,.08);box-shadow:0 8px 22px rgba(0,0,0,.12)"
         >
@@ -242,7 +242,7 @@ details.course[open]>summary{background:var(--hover)}
 
 <script>
 const ENR_ORIGIN='https://coastalcprtraining.enrollware.com';
-const isCt=id=>typeof id==='string' && /^ct\\d{3,}$/i.test(id);
+const isCt=id=>typeof id==='string' && /^ct\d{3,}$/i.test(id);
 const ctHref=id=>`${ENR_ORIGIN}/schedule#${encodeURIComponent(id)}`;
 
 /* Absolutize IMG/A URLs coming from the Enrollware fragment */
@@ -250,8 +250,8 @@ function absolutizeUrls(frag){
   frag.querySelectorAll('img,a').forEach(el=>{
     const attr=el.tagName==='IMG'?'src':'href';
     const v=el.getAttribute(attr); if(!v) return;
-    if(/^https?:\\/\\//i.test(v)) return;
-    const abs=v.startsWith('/')?ENR_ORIGIN+v:ENR_ORIGIN+'/'+v.replace(/^\\.?\\//,'');
+    if(/^https?:\/\//i.test(v)) return;
+    const abs=v.startsWith('/')?ENR_ORIGIN+v:ENR_ORIGIN+'/'+v.replace(/^\.\//,'');
     el.setAttribute(attr,abs);
   });
   return frag;
@@ -262,7 +262,7 @@ function getCtId(panel,root){
   const anchor=panel.querySelector('[id^="ct"],[name^="ct"]');
   if(anchor){const v=anchor.id||anchor.getAttribute('name'); if(isCt(v)) return v;}
   const link=panel.querySelector('a[href*="#ct"]');
-  if(link){const m=link.getAttribute('href').match(/#(ct\\d+)/i); if(m) return m[1];}
+  if(link){const m=link.getAttribute('href').match(/#(ct\d+)/i); if(m) return m[1];}
   let prev=panel.previousElementSibling;
   for(let i=0;i<8 && prev;i++){
     if(prev.matches?.('[id^="ct"],[name^="ct"]')){const v=prev.id||prev.getAttribute('name'); if(isCt(v)) return v;}
@@ -280,7 +280,7 @@ function getCtId(panel,root){
 /* Parse "Thursday, October 30, 2025 at 12:30 PM" */
 function parseDateFromText(t){
   if(!t) return null; const s=t.trim();
-  const m=s.match(/([A-Za-z]+)\\s+(\\d{1,2}),\\s*(\\d{4})\\s+at\\s+(\\d{1,2}):(\\d{2})\\s*(AM|PM)/i);
+  const m=s.match(/([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})\s+at\s+(\d{1,2}):(\d{2})\s*(AM|PM)/i);
   if(!m) return null;
   const months={january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
   let h=+m[4]; if(m[6].toUpperCase()==='PM'&&h<12)h+=12; if(m[6].toUpperCase()==='AM'&&h===12)h=0;
@@ -380,7 +380,7 @@ async function renderCatalog(){
 
     sec.courses.forEach(c=>{
       const course=document.createElement('details'); course.className='course';
-      /* Summary is plain title (not a link), links live in body via “See all dates” */
+      /* Summary is plain title (not a link). Links live in body via “See all dates”. */
       course.innerHTML=`
         <summary class="course-head">
           <span class="hlink" aria-hidden="true">${c.titleHTML}</span>
@@ -405,13 +405,12 @@ async function renderCatalog(){
   });
 }
 
-/* Wire: only one top-level open at a time, and do NOT auto-scroll (per request) */
+/* Wire: only one top-level open at a time, and do NOT auto-scroll (keeps popular block visible) */
 function wireCurtains(){
   document.querySelectorAll('details.section').forEach(sec=>{
     sec.addEventListener('toggle',()=>{
       if(sec.open){
         document.querySelectorAll('details.section').forEach(d=>{ if(d!==sec) d.open=false; });
-        /* no scrollTo here (keep Quick section visible) */
       }
     });
   });
@@ -422,10 +421,9 @@ function resolvePopularToCt(){
   const idx=[];
   document.querySelectorAll('#catalog details.course .course-head .hlink').forEach(h=>{
     const title=(h.textContent||'').trim();
-    /* Find “See all dates” link inside same course */
     const card=h.closest('details.course'); if(!card) return;
     const a=card.querySelector('.meta a.btn'); if(!a) return;
-    const m=(a.getAttribute('href')||'').match(/#(ct\\d+)/i);
+    const m=(a.getAttribute('href')||'').match(/#(ct\d+)/i);
     const ct=m?m[1]:null;
     if(title && ct) idx.push({title,ct});
   });
