@@ -40,7 +40,7 @@ html,body{background:var(--bg);color:var(--ink);margin:0;font-family:system-ui,S
 .wrap{max-width:1120px;margin:auto;padding:18px}
 h1{margin:8px 0 12px}
 
-/* Remove underlines from all links, all states */
+/* No underlines on links */
 a, a:visited, a:hover, a:focus, a:active { text-decoration: none; }
 
 /* Popular block */
@@ -73,7 +73,7 @@ details.section>summary::-webkit-details-marker{display:none}
 }
 @media (max-width:820px){ .courses-grid{grid-template-columns:1fr} }
 
-/* Blank spacer card to occupy the right cell beside header */
+/* Blank spacer card to occupy the RIGHT cell beside header */
 .course.spacer{
   min-height:60px;
   border:1px solid var(--edge);
@@ -100,7 +100,7 @@ details.course[open]>summary{background:var(--hover)}
 .meta{font-size:12px;color:var(--muted);margin-top:10px}
 .btn{
   display:inline-block;margin-top:10px;border:1px solid var(--edge);border-radius:10px;
-  padding:8px 12px;text-decoration:none;color:var(--accent);background:var(--card)
+  padding:8px 12px;color:var(--accent);background:var(--card)
 }
 
 /* Sessions list (dates) – two columns on wide screens */
@@ -256,7 +256,6 @@ const ENR_ORIGIN='https://coastalcprtraining.enrollware.com';
 const isCt=id=>typeof id==='string' && /^ct\d{3,}$/i.test(id);
 const ctHref=id=>`${ENR_ORIGIN}/schedule#${encodeURIComponent(id)}`;
 
-/* Absolutize IMG/A URLs coming from the Enrollware fragment */
 function absolutizeUrls(frag){
   frag.querySelectorAll('img,a').forEach(el=>{
     const attr=el.tagName==='IMG'?'src':'href';
@@ -268,7 +267,6 @@ function absolutizeUrls(frag){
   return frag;
 }
 
-/* Locate ct ID: anchor nearby, or link referencing #ct, or nearest previous ct anchor in DOM */
 function getCtId(panel,root){
   const anchor=panel.querySelector('[id^="ct"],[name^="ct"]');
   if(anchor){const v=anchor.id||anchor.getAttribute('name'); if(isCt(v)) return v;}
@@ -288,7 +286,6 @@ function getCtId(panel,root){
   return last;
 }
 
-/* Parse "Thursday, October 30, 2025 at 12:30 PM" */
 function parseDateFromText(t){
   if(!t) return null; const s=t.trim();
   const m=s.match(/([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})\s+at\s+(\d{1,2}):(\d{2})\s*(AM|PM)/i);
@@ -298,7 +295,6 @@ function parseDateFromText(t){
   return new Date(+m[3],months[m[1].toLowerCase()],+m[2],h,+m[5]);
 }
 
-/* Keep ~4 weeks or up to 10 items */
 function limitUlToWindow(ul,maxDays=28,maxItems=10){
   if(!ul) return {ul,kept:0,total:0};
   const cutoff=new Date(); cutoff.setDate(cutoff.getDate()+maxDays);
@@ -311,7 +307,6 @@ function limitUlToWindow(ul,maxDays=28,maxItems=10){
   return {ul,kept,total};
 }
 
-/* Load snapshot from docs/data/enrollware-schedule.html */
 async function loadSnapshotHTML(){
   const here=location.pathname,base=here.replace(/[^/]+$/,'');
   const tries=[
@@ -326,7 +321,29 @@ async function loadSnapshotHTML(){
   return {html:null,url:null};
 }
 
-/* Render catalog: top-level placeholders -> spacer -> grid of course cards */
+function buildCourseCard(c){
+  const course=document.createElement('details'); course.className='course';
+  course.innerHTML=`
+    <summary class="course-head">
+      <span class="hlink" aria-hidden="true">${c.titleHTML}</span>
+    </summary>
+    <div class="body">
+      <div class="desc">${c.descHTML||''}</div>
+      <ul class="enrclass-list"></ul>
+      <div class="meta">
+        ${
+          c.total>c.kept
+          ? \`Showing \${c.kept} of \${c.total} upcoming (~4 weeks). \`
+          : \`All upcoming sessions shown. \`
+        }
+        <a class="btn" href="\${isCt(c.id)?ctHref(c.id):ENR_ORIGIN+'/schedule'}">See all dates</a>
+      </div>
+    </div>`;
+  course.querySelector('.enrclass-list').replaceWith(c.ul);
+  return course;
+}
+
+/* Render catalog with SPACER AFTER the first course (blank RIGHT cell under header) */
 async function renderCatalog(){
   const host=document.getElementById('catalog');
   const load=await loadSnapshotHTML();
@@ -349,13 +366,11 @@ async function renderCatalog(){
     const ul=p.querySelector('ul.enrclass-list');
     const hasDates=!!ul;
 
-    /* Placeholder header (no dates) starts a new section */
     if(!hasDates){
       current={header:{titleHTML,descHTML},courses:[]}; sections.push(current);
       continue;
     }
 
-    /* Ensure a section exists */
     if(!current){ current={header:{titleHTML:'Courses',descHTML:''},courses:[]}; sections.push(current); }
 
     const ulClone=ul.cloneNode(true); absolutizeUrls(ulClone);
@@ -372,11 +387,10 @@ async function renderCatalog(){
     });
   }
 
-  /* Build DOM */
   host.innerHTML='';
   sections.forEach((sec,idx)=>{
     const secEl=document.createElement('details'); secEl.className='section';
-    if(idx===0) secEl.setAttribute('open',''); /* auto-open first top-level */
+    if(idx===0) secEl.setAttribute('open',''); /* auto-open first */
     secEl.innerHTML=`
       <summary>
         <div class="ph-head">
@@ -389,37 +403,24 @@ async function renderCatalog(){
       </div>`;
     const grid=secEl.querySelector('.courses-grid');
 
-    /* Add blank spacer card so the first real course starts on the next row (creating a blank to the right of the header) */
-    grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
-
-    sec.courses.forEach(c=>{
-      const course=document.createElement('details'); course.className='course';
-      /* Summary is plain title (not a link). Links live in body via “See all dates”. */
-      course.innerHTML=`
-        <summary class="course-head">
-          <span class="hlink" aria-hidden="true">${c.titleHTML}</span>
-        </summary>
-        <div class="body">
-          <div class="desc">${c.descHTML||''}</div>
-          <ul class="enrclass-list"></ul>
-          <div class="meta">
-            ${
-              c.total>c.kept
-              ? `Showing ${c.kept} of ${c.total} upcoming (~4 weeks). `
-              : `All upcoming sessions shown. `
-            }
-            <a class="btn" href="${isCt(c.id)?ctHref(c.id):ENR_ORIGIN+'/schedule'}">See all dates</a>
-          </div>
-        </div>`;
-      course.querySelector('.enrclass-list').replaceWith(c.ul);
-      grid.appendChild(course);
-    });
+    if(sec.courses.length){
+      /* First: real course in left cell */
+      grid.appendChild(buildCourseCard(sec.courses[0]));
+      /* Second: blank spacer in right cell (AFTER title card) */
+      grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
+      /* Remaining courses flow normally */
+      for(let i=1;i<sec.courses.length;i++){
+        grid.appendChild(buildCourseCard(sec.courses[i]));
+      }
+    }else{
+      /* No courses: still add a spacer to preserve layout if you want the blank cell */
+      grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
+    }
 
     host.appendChild(secEl);
   });
 }
 
-/* Only one top-level open at once, and do NOT auto-scroll (keep quick links visible) */
 function wireCurtains(){
   document.querySelectorAll('details.section').forEach(sec=>{
     sec.addEventListener('toggle',()=>{
@@ -430,7 +431,6 @@ function wireCurtains(){
   });
 }
 
-/* After catalog renders, upgrade Popular links to exact #ct URLs by matching titles we just rendered */
 function resolvePopularToCt(){
   const idx=[];
   document.querySelectorAll('#catalog details.course .course-head .hlink').forEach(h=>{
