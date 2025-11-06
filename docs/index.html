@@ -25,46 +25,28 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
 
 <style>
 :root{
-  /* Dark theme (default) — higher contrast */
-  --ink:#e9f1ff;            /* high-contrast text on dark bg */
-  --bg:#0d1521;
-  --card:#141e2e;
-  --edge:#29384f;
-  --hover:#1b2940;
-  --accent:#99c7ff;
-  --muted:#c3d0df;
-  --shadow:0 8px 22px rgba(0,0,0,.5);
-  --bannerTop:#0f1b2b;
-  --bannerBot:#0b1421;
-  --bannerText:#eaf2ff;
+  --ink:#e9f1ff; --bg:#0d1521; --card:#141e2e; --edge:#29384f; --hover:#1b2940;
+  --accent:#99c7ff; --muted:#c3d0df; --shadow:0 8px 22px rgba(0,0,0,.5);
+  --bannerTop:#0f1b2b; --bannerBot:#0b1421; --bannerText:#eaf2ff;
 }
 @media (prefers-color-scheme: light){
   :root{
-    --ink:#0a1b2b;
-    --bg:#f6f9fc;
-    --card:#ffffff;
-    --edge:#dce9f7;
-    --hover:#f3f8ff;
-    --accent:#0b66c3;
-    --muted:#466;
-    --shadow:0 6px 18px rgba(0,0,0,.08);
-    --bannerTop:#32415f;
-    --bannerBot:#27354e;
-    --bannerText:#0a1b2b;
+    --ink:#0a1b2b; --bg:#f6f9fc; --card:#ffffff; --edge:#dce9f7; --hover:#f3f8ff;
+    --accent:#0b66c3; --muted:#466; --shadow:0 6px 18px rgba(0,0,0,.08);
+    --bannerTop:#32415f; --bannerBot:#27354e; --bannerText:#0a1b2b;
   }
 }
-
 html,body{background:var(--bg);color:var(--ink);margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
 .wrap{max-width:1120px;margin:auto;padding:18px}
 h1{margin:8px 0 12px}
 a, a:visited, a:hover, a:focus, a:active { text-decoration: none; color: inherit; }
 
-/* inline status banner */
+/* status */
 #status{margin:8px 0 12px;padding:8px 12px;border-radius:10px;border:1px solid var(--edge);background:var(--card);display:none;color:var(--ink)}
 #status.err{display:block;color:#ffd2d2;border-color:#723b44;background:#2a0f17}
 
-/* Popular block */
-#popular{background:var(--card);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;color:var(--ink)}
+/* Popular */
+#popular{background:var(--card);border:1px solid var(--edge);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px}
 #popular h2{margin:0 0 10px}
 #popular .title{font-weight:800}
 #popular .sub{opacity:.95}
@@ -75,7 +57,7 @@ a, a:visited, a:hover, a:focus, a:active { text-decoration: none; color: inherit
 
 /* Sections */
 details.section{
-  margin:14px 0;border-radius:16px;background:var(--card);border:1px solid var(--edge);box-shadow:var(--shadow);overflow:hidden;color:var(--ink)
+  margin:14px 0;border-radius:16px;background:var(--card);border:1px solid var(--edge);box-shadow:var(--shadow);overflow:hidden
 }
 details.section>summary{list-style:none;cursor:pointer;padding:0}
 details.section>summary::-webkit-details-marker{display:none}
@@ -87,28 +69,18 @@ details.section>summary::-webkit-details-marker{display:none}
 .ph-head .ph-sub{font-size:12px;opacity:.95;margin-top:6px}
 .section-body{padding:16px}
 
-/* Course grid */
-.courses-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:14px
-}
-@media (max-width:820px){ .courses-grid{grid-template-columns:1fr} }
-
-/* utilities */
+/* Grid */
+.courses-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:820px){.courses-grid{grid-template-columns:1fr}}
 .rowbreak{grid-column:1 / -1;height:0}
-.course.spacer{
-  min-height:60px;border:1px solid var(--edge);border-radius:14px;background:var(--card);
-  opacity:0;pointer-events:none
-}
+.course.spacer{min-height:60px;border:1px solid var(--edge);border-radius:14px;background:var(--card);opacity:0;pointer-events:none}
 
 /* Course card */
-details.course{
-  border:1px solid var(--edge);border-radius:14px;background:var(--card);overflow:hidden;color:var(--ink)
-}
+details.course{border:1px solid var(--edge);border-radius:14px;background:var(--card);overflow:hidden}
 details.course>summary{
   list-style:none;cursor:pointer;padding:12px 16px;
-  background:linear-gradient(180deg,#182743,#0f1a2d);
-  border-bottom:1px solid var(--edge);
-  font-weight:800;color:#e9f1ff;
+  background:linear-gradient(180deg,#182743,#0f1a2d);border-bottom:1px solid var(--edge);
+  font-weight:800;color:#e9f1ff
 }
 @media (prefers-color-scheme: light){
   details.course>summary{background:linear-gradient(180deg,#ffffff,#f7fbff);color:#0a1b2b}
@@ -117,22 +89,15 @@ details.course[open]>summary{background:var(--hover)}
 .course .body{padding:14px 16px;color:var(--ink)}
 .course .desc{margin:6px 0 10px}
 .meta{font-size:12px;color:var(--muted);margin-top:10px}
-.btn{
-  display:inline-block;margin-top:10px;border:1px solid var(--edge);border-radius:10px;
-  padding:8px 12px;color:var(--accent);background:var(--card)
-}
+.btn{display:inline-block;margin-top:10px;border:1px solid var(--edge);border-radius:10px;padding:8px 12px;color:var(--accent);background:var(--card)}
 
-/* Sessions list – two columns */
+/* Session list */
 .enrclass-list{list-style:none;padding:0;margin:10px 0;columns:2;column-gap:12px}
-@media (max-width:700px){ .enrclass-list{columns:1} }
+@media (max-width:700px){.enrclass-list{columns:1}}
 .enrclass-list li{break-inside:avoid;margin:6px 0}
-.enrclass-list a{
-  display:flex;flex-direction:column;gap:4px;border:1px solid var(--edge);
-  border-radius:10px;padding:8px 10px;color:var(--ink);background:var(--card)
-}
+.enrclass-list a{display:flex;flex-direction:column;gap:4px;border:1px solid var(--edge);border-radius:10px;padding:8px 10px;color:var(--ink);background:var(--card)}
 .enrclass-list a:hover{background:var(--hover);border-color:#b9d6f9}
 
-/* Catalog container */
 #catalog{margin-top:18px}
 </style>
 </head>
@@ -165,22 +130,15 @@ details.course[open]>summary{background:var(--hover)}
         </table>
       </div>
 
-      <!-- Right: Brand banner -->
       <div style="text-align:center;">
-        <img
-          src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg"
-          alt="910CPR wave brand banner"
-          loading="lazy"
-          style="max-width:100%;height:auto;border-radius:12px;border:1px solid rgba(0,0,0,.08);box-shadow:0 8px 22px rgba(0,0,0,.12)"
-        >
+        <img src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg" alt="910CPR wave brand banner" loading="lazy" style="max-width:100%;height:auto;border-radius:12px;border:1px solid rgba(0,0,0,.08);box-shadow:0 8px 22px rgba(0,0,0,.12)">
       </div>
     </div>
   </section>
 
-  <!-- Catalog rendered from Enrollware snapshot -->
   <div id="catalog"></div>
 
-</div><!-- /.wrap -->
+</div>
 
 <script>
 (function(){
@@ -207,19 +165,35 @@ details.course[open]>summary{background:var(--hover)}
     return frag;
   }
 
-  function getCtId(panel,root){
+  // new: grab ct from first session link if available
+  function ctFromUl(ul){
+    if(!ul) return '';
+    const a=ul.querySelector('a[href*="#ct"]');
+    if(!a) return '';
+    const m=(a.getAttribute('href')||'').match(/#(ct\d+)/i);
+    return m?m[1]:'';
+  }
+
+  function getCtId(panel,root,ul){
     try{
+      // 0) look in the session list first (most reliable)
+      const fromUl = ctFromUl(ul);
+      if(isCt(fromUl)) return fromUl;
+
+      // 1) direct anchors/id/name near this panel
       const anchor=panel.querySelector('[id^="ct"],[name^="ct"]');
       if(anchor){
         const v=anchor.id||anchor.getAttribute('name');
         if(isCt(v)) return v;
       }
+      // 2) links with #ct
       const link=panel.querySelector('a[href*="#ct"]');
       if(link){
         const href=link.getAttribute('href')||'';
         const m=href.match(/#(ct\d+)/i);
         if(m) return m[1];
       }
+      // 3) search a few previous siblings
       let prev=panel.previousElementSibling;
       for(let i=0;i<8 && prev;i++){
         if(prev.matches && prev.matches('[id^="ct"],[name^="ct"]')){
@@ -233,13 +207,14 @@ details.course[open]>summary{background:var(--hover)}
         }
         prev=prev.previousElementSibling;
       }
+      // 4) slow walk up to this panel
       if(window.NodeFilter){
         const walker=document.createTreeWalker(root,NodeFilter.SHOW_ELEMENT);
         let last=''; while(walker.nextNode()){
           const el=walker.currentNode; if(el===panel) break;
           const id=el.id||el.getAttribute?.('name'); if(id && isCt(id)) last=id;
         }
-        return last;
+        if(isCt(last)) return last;
       }
     }catch(e){}
     return '';
@@ -291,20 +266,24 @@ details.course[open]>summary{background:var(--hover)}
       +   '<ul class="enrclass-list"></ul>'
       +   '<div class="meta">'
       +     (c.total>c.kept ? ('Showing '+c.kept+' of '+c.total+' upcoming (~4 weeks). ') : 'All upcoming sessions shown. ')
-      +     '<a class="btn" href="'+(isCt(c.id)?ctHref(c.id):(ENR_ORIGIN+'/schedule'))+'">See all dates</a>'
+      +     '<a class="btn see-all" href="'+(isCt(c.id)?ctHref(c.id):(ENR_ORIGIN+'/schedule'))+'">See all dates</a>'
       +   '</div>'
       + '</div>';
-    const ulNode=c.ul; if(ulNode){ course.querySelector('.enrclass-list').replaceWith(ulNode); }
+    if(c.ul){ course.querySelector('.enrclass-list').replaceWith(c.ul); }
     return course;
   }
 
-  // Heuristic: title/placeholder cards are the colored “Course” ones
+  // Title-card detector (explicit)
+  const titleRegex=/^Healthcare Provider:\s*(BLS|ACLS|PALS|ASLS)\s*Course$/i;
+  const alsoTitles=[
+    'CPR / AED & First Aid',
+    'Other Programs'
+  ].map(s=>s.toLowerCase());
+
   function isTitleCard(courseObj){
     const t=(courseObj.titleText||'').trim();
-    if(!t) return false;
-    const hasCourse=/\bCourse\b/i.test(t) || /\bCPR\s*\/\s*AED\b/i.test(t);
-    const looksLikeListing=/(Online|Renewal|Provider\s*-\s*|Classroom|Skills?\s*Session)/i.test(t);
-    return hasCourse && !looksLikeListing;
+    if(titleRegex.test(t)) return true;
+    return alsoTitles.includes(t.toLowerCase());
   }
 
   async function renderCatalog(){
@@ -321,7 +300,7 @@ details.course[open]>summary{background:var(--hover)}
         const headingEl=p.querySelector('.enrpanel-heading,h1,h2,h3,h4'); if(!headingEl) return;
         const headingFrag=headingEl.cloneNode(true); absolutizeUrls(headingFrag);
         const titleHTML=headingFrag.innerHTML.trim();
-        const titleText=headingFrag.textContent || '';
+        const titleText=headingFrag.textContent||'';
 
         const bodyEl=p.querySelector('.enrpanel-body');
         const descClone=bodyEl?bodyEl.cloneNode(true):null;
@@ -332,7 +311,6 @@ details.course[open]>summary{background:var(--hover)}
         const hasDates=!!ul;
 
         if(!hasDates){
-          // Treat as “section header” (placeholder top banner), not a course
           current={header:{titleHTML,descHTML},courses:[]}; sections.push(current);
           return;
         }
@@ -341,9 +319,12 @@ details.course[open]>summary{background:var(--hover)}
 
         const ulClone=ul.cloneNode(true); absolutizeUrls(ulClone);
         const trimmed=limitUlToWindow(ulClone,28,10);
-        const ctId=getCtId(p,root);
+        const ctId=getCtId(p,root,ulClone);
 
-        current.courses.push({ id:ctId, titleHTML, titleText, descHTML, ul:trimmed.ul, kept:trimmed.kept, total:trimmed.total });
+        current.courses.push({
+          id:ctId, titleHTML, titleText, descHTML,
+          ul:trimmed.ul, kept:trimmed.kept, total:trimmed.total
+        });
       });
 
       host.innerHTML='';
@@ -362,12 +343,9 @@ details.course[open]>summary{background:var(--hover)}
         for(let i=0;i<sec.courses.length;i++){
           const c=sec.courses[i];
           if(isTitleCard(c)){
-            // ensure the title card starts a fresh row …
             grid.insertAdjacentHTML('beforeend','<div class="rowbreak" aria-hidden="true"></div>');
-            // … then place the title card with a blank spacer to its right
             grid.appendChild(buildCourseCard(c));
             grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
-            // no rowbreak after — next items flow onto the next row naturally
           }else{
             grid.appendChild(buildCourseCard(c));
           }
@@ -388,7 +366,7 @@ details.course[open]>summary{background:var(--hover)}
       document.querySelectorAll('#catalog details.course .course-head .hlink').forEach(h=>{
         const title=(h.textContent||'').trim();
         const card=h.closest('details.course'); if(!card) return;
-        const a=card.querySelector('.meta a.btn'); if(!a) return;
+        const a=card.querySelector('.meta a.see-all'); if(!a) return;
         const href=a.getAttribute('href')||'';
         const m=href.match(/#(ct\d+)/i);
         const ct=m?m[1]:null;
@@ -399,7 +377,7 @@ details.course[open]>summary{background:var(--hover)}
         const found=idx.find(x=>x.title.toLowerCase().includes(hint));
         if(found){ a.setAttribute('href', ENR_ORIGIN+'/schedule#'+encodeURIComponent(found.ct)); a.setAttribute('title', found.title+' – full schedule'); }
       });
-    }catch(e){ /* no-op */ }
+    }catch(e){}
   }
 
   document.addEventListener('DOMContentLoaded', async ()=>{
