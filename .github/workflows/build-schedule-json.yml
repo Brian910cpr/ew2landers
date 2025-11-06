@@ -1,0 +1,51 @@
+name: Build schedule.json from snapshot
+
+on:
+workflow_run:
+workflows: ["Refresh Enrollware Snapshot"]
+types: [completed]
+schedule:
+- cron: "17 * * * *"
+workflow_dispatch:
+
+permissions:
+contents: write
+
+jobs:
+build:
+if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name != 'workflow_run' }}
+runs-on: ubuntu-latest
+steps:
+- name: Checkout
+uses: actions/checkout@v4
+
+  - name: Ensure snapshot exists
+    run: |
+      test -f docs/data/enrollware-schedule.html || { echo "Missing docs/data/enrollware-schedule.html"; exit 1; }
+
+  - name: Set up Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.x"
+
+  - name: Install parser deps
+    run: |
+      python -m pip install --upgrade pip
+      pip install beautifulsoup4 lxml
+
+  - name: Build docs/data/schedule.json
+    run: |
+      python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
+      jq -e . docs/data/schedule.json >/dev/null
+
+  - name: Commit if changed
+    run: |
+      if git diff --quiet -- docs/data/schedule.json; then
+        echo "No changes to schedule.json"
+        exit 0
+      fi
+      git config user.name  "github-actions[bot]"
+      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      git add docs/data/schedule.json
+      git commit -m "chore: build schedule.json from snapshot"
+      git push
