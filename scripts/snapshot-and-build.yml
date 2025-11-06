@@ -1,0 +1,63 @@
+name: Snapshot Enrollware + Build schedule.json
+
+on:
+schedule:
+- cron: "11 * * * *" # fetch HTML at :11 UTC
+workflow_dispatch:
+
+permissions:
+contents: write
+
+jobs:
+snapshot_and_build:
+runs-on: ubuntu-latest
+steps:
+- name: Checkout
+uses: actions/checkout@v4
+
+  - name: Pull Enrollware schedule HTML
+    run: |
+      mkdir -p docs/data
+      curl -fSL \
+        -A "910CPR-LanderBot/1.0 (+https://brian910cpr.github.io/ew2landers/)" \
+        https://coastalcprtraining.enrollware.com/schedule \
+        -o docs/data/enrollware-schedule.html
+
+  - name: Commit snapshot if changed
+    run: |
+      if git diff --quiet -- docs/data/enrollware-schedule.html; then
+        echo "No snapshot changes."
+      else
+        git config user.name  "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add docs/data/enrollware-schedule.html
+        git commit -m "chore: refresh Enrollware schedule snapshot"
+        git push
+      fi
+
+  - name: Setup Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.x"
+
+  - name: Install parser deps
+    run: |
+      python -m pip install --upgrade pip
+      pip install beautifulsoup4 lxml
+
+  - name: Build docs/data/schedule.json
+    run: |
+      python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
+      jq -e . docs/data/schedule.json >/dev/null
+
+  - name: Commit schedule.json if changed
+    run: |
+      if git diff --quiet -- docs/data/schedule.json; then
+        echo "No changes to schedule.json"
+        exit 0
+      fi
+      git config user.name  "github-actions[bot]"
+      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      git add docs/data/schedule.json
+      git commit -m "chore: build schedule.json from snapshot"
+      git push
