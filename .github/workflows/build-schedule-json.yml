@@ -13,9 +13,15 @@ contents: write
 
 jobs:
 build:
-if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name != 'workflow_run' }}
+# Run for manual/cron; for workflow_run only if it completed successfully or neutral
+if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.status == 'completed' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'neutral')) }}
 runs-on: ubuntu-latest
 steps:
+- name: Debug event
+run: |
+echo "event_name=${{ github.event_name }}"
+echo "status=${{ github.event.workflow_run.status }}"
+echo "conclusion=${{ github.event.workflow_run.conclusion }}"
 - name: Checkout
 uses: actions/checkout@v4
 
