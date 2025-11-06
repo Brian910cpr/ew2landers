@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -134,6 +135,8 @@ summary:hover{background:#1a2b55;border-color:#3b5aa0}
     </div>
     <div class="art"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg" alt="910CPR wave logo banner"/></div>
   </section>
+
+
 
   <!-- Catalog grid renders here -->
   <section id="courseGrid" class="grid" aria-live="polite"></section>
@@ -301,15 +304,23 @@ function parseHTMLSchedule(html){
 }
 
 // ==========================
-// DYNAMIC RENDER: mirror Enrollware snapshot order + group under headers (only courses with dates)
+// HELPERS
 // ==========================
-function detectBrand(title=''){
-const t=title.toLowerCase();
-if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
-if(t.includes('hsi')) return 'HSI';
-if(t.includes('aha')||t.includes('american heart')) return 'AHA';
-return null;
+function guessType(title=''){
+  const t = title.toLowerCase();
+  if(t.includes('acls')) return 'ACLS';
+  if(t.includes('pals')) return 'PALS';
+  if(t.includes('bls')) return 'BLS';
+  if(t.includes('heartsaver')) return 'Heartsaver';
+  if(t.includes('hsi')) return 'HSI';
+  return 'Other';
 }
+function guessDate(str){ if(!str) return null; const d = new Date(str); return isNaN(d) ? null : d.toISOString(); }
+function withinWindow(dtISO){ if(!dtISO) return false; const s=new Date(dtISO); if(isNaN(s)) return false; const now=new Date(); const cap=new Date(now.getTime()+CONFIG.windowDays*86400000); return s>=now && s<=cap; }
+
+
+===BEGIN JS===
+/* SNAPSHOT ORDER RENDER (mirror enrollware-schedule.html order) */
 function buildUpcomingMap(feed){
 const map=new Map();
 feed.filter(s=>withinWindow(s.start)).forEach(s=>{
@@ -338,6 +349,13 @@ if(t.includes('acls')) return 'acls';
 if(t.includes('pals')) return 'pals';
 return 'faid';
 }
+function detectBrand(title=''){
+const t=title.toLowerCase();
+if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
+if(t.includes('hsi')) return 'HSI';
+if(t.includes('aha')||t.includes('american heart')) return 'AHA';
+return null;
+}
 function createCourseCardExact(title, sessions){
 const brand = detectBrand(title);
 const el=document.createElement('div');
@@ -351,7 +369,7 @@ const ul = el.querySelector(#slots-${keySlug});
 if(!sessions || !sessions.length){
 ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. See full schedule.</li>';
 } else {
-sessions.slice(0,CONFIG.maxSessionsPerCourse).forEach(s=>{
+sessions.forEach(s=>{
 const li=document.createElement('li');
 li.innerHTML = <a class="slotbtn" href="${s.url}" target="_blank" rel="noopener" aria-label="Register for ${title} on ${fmtDate(s.start)}"> <div> <time datetime="${s.start}">${fmtDate(s.start)}</time> <div class="meta">${s.location||''}</div> </div> <div class="right">Register →</div> </a>;
 ul.appendChild(li);
@@ -359,8 +377,9 @@ ul.appendChild(li);
 }
 return el;
 }
-async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
+async function renderFromSnapshot(container, feed, snapshotHTML){
 container.innerHTML='';
+const upcomingMap = buildUpcomingMap(feed);
 const doc=new DOMParser().parseFromString(snapshotHTML,'text/html');
 const walker=doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
 let lastHeaderCard=null;
@@ -370,173 +389,98 @@ while(walker.nextNode()){
 const node=walker.currentNode;
 const text=(node.textContent||'').replace(/\s+/g,' ').trim();
 if(!text) continue;
+
+// Section headers in document order
 if(isSectionHeaderText(text)){
-const fam=familyFromHeader(text);
-lastHeaderCard = makeTitleCard(text,'',fam);
-container.appendChild(lastHeaderCard);
-continue;
+  const fam=familyFromHeader(text);
+  lastHeaderCard = makeTitleCard(text,'',fam);
+  container.appendChild(lastHeaderCard);
+  continue;
 }
+
+// Course rows in document order (only if they have upcoming sessions)
 const a = node.matches && node.matches('a[href*="enroll?id="]') ? node : (node.querySelector && node.querySelector('a[href*="enroll?id="]'));
-if(a){
+if(!a) continue;
+
 const row = a.closest('tr') || a.closest('.row') || node;
-const title = ((row && row.innerText) ? row.innerText : a.textContent || '').replace(/\s+/g,' ').trim();
+const rawTitle = ((row && row.innerText) ? row.innerText : a.textContent || '').replace(/\s+/g,' ').trim();
+const title = rawTitle || a.getAttribute('title') || a.textContent || '';
 if(!title) continue;
-const isInstructor=/instructor/i.test(title); const isRenewal=/renewal/i.test(title);
-if(isInstructor && isRenewal) continue;
+
 const sessions = upcomingMap.get(title);
-if(!sessions || !sessions.length) continue;
+if(!sessions || !sessions.length) continue; // skip courses without real dates
 if(added.has(title)) continue;
+
 const card = createCourseCardExact(title, sessions);
+
 if(lastHeaderCard && lastHeaderCard.nextSibling){
-container.insertBefore(card, lastHeaderCard.nextSibling);
-lastHeaderCard = card;
+  container.insertBefore(card, lastHeaderCard.nextSibling);
+  lastHeaderCard = card; // keep insertion point moving within this section
 } else {
-container.appendChild(card);
+  container.appendChild(card);
 }
+
 added.add(title);
 window._COURSE_KEYS.push(title);
+
+
 }
-}
+
+// Fallback if selectors ever change: show grouped by title
 if(!container.children.length){
-upcomingMap.forEach((sessions,title)=>{
-if(/instructor/i.test(title) && /renewal/i.test(title)) return;
+const byTitle=new Map();
+feed.filter(s=>withinWindow(s.start)).forEach(s=>{const k=(s.title||'').trim(); if(!byTitle.has(k)) byTitle.set(k,[]); byTitle.get(k).push(s);});
+byTitle.forEach((sessions,title)=>{
 container.appendChild(createCourseCardExact(title,sessions));
 window._COURSE_KEYS.push(title);
 });
 }
+
 const map=new Map([...container.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
 applyOpenFromURL(map);
 }
+===END JS===
 
+Step 2 — Replace renderCatalog to use the snapshot order
+Find the function that starts:
+function renderCatalog(container, feed){
 
-// ==========================
-// DYNAMIC RENDER: mirror Enrollware snapshot order + group under headers (only courses with dates)
-// ==========================
-function detectBrand(title=''){
-  const t=title.toLowerCase();
-  if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
-  if(t.includes('hsi')) return 'HSI';
-  if(t.includes('aha')||t.includes('american heart')) return 'AHA';
-  return null;
-}
-function buildUpcomingMap(feed){
-  const map=new Map();
-  feed.filter(s=>withinWindow(s.start)).forEach(s=>{
-    const k=(s.title||'').trim(); if(!k) return;
-    if(!map.has(k)) map.set(k,[]);
-    map.get(k).push(s);
-  });
-  map.forEach(v=>v.sort((a,b)=>new Date(a.start)-new Date(b.start)));
-  return map;
-}
-function isSectionHeaderText(t){
-  const x=(t||'').toLowerCase().trim();
-  return x.startsWith('healthcare provider: bls')
-      || x.startsWith('healthcare provider: acls')
-      || x.startsWith('healthcare provider: pals')
-      || x.startsWith('healthcare provider: asls')
-      || x==='cpr / aed & first aid'
-      || x==='cpr / aed only'
-      || x==='instructor programs'
-      || x==='other programs';
-}
-function familyFromHeader(text){
-  const t=text.toLowerCase();
-  if(t.includes('bls')) return 'bls';
-  if(t.includes('acls')) return 'acls';
-  if(t.includes('pals')) return 'pals';
-  return 'faid';
-}
-function createCourseCardExact(title, sessions){
-  const brand = detectBrand(title);
-  const el=document.createElement('div');
-  el.className='card course';
-  const keySlug=slug(title);
-  el.id=`card-${keySlug}`;
-  const brandSrc = brand && BRAND_LOGO[brand] ? BRAND_LOGO[brand] : '';
-  const brandImg = brandSrc ? `<img class=\"brandicon\" src=\"${brandSrc}\" alt=\"${brand} logo\"/>` : '';
-  el.innerHTML=`
-    <h3 id=\"h-${keySlug}\">${brandImg}<a href=\"#${keySlug}\" style=\"text-decoration:none;color:inherit\">${title}</a></h3>
-    <details id=\"d-${keySlug}\" data-key=\"${keySlug}\">
-      <summary>Course details & upcoming sessions</summary>
-      <div class=\"desc\" id=\"desc-${keySlug}\"><!-- Course Description --></div>
-      <ul class=\"slots\" id=\"slots-${keySlug}\"></ul>
-    </details>`;
-  const ul = el.querySelector(`#slots-${keySlug}`);
-  if(!sessions || !sessions.length){
-    ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. See full schedule.</li>';
-  } else {
-    sessions.slice(0,CONFIG.maxSessionsPerCourse).forEach(s=>{
-      const li=document.createElement('li');
-      li.innerHTML = `<a class=\"slotbtn\" href=\"${s.url}\" target=\"_blank\" rel=\"noopener\" aria-label=\"Register for ${title} on ${fmtDate(s.start)}\">\n          <div>\n            <time datetime=\"${s.start}\">${fmtDate(s.start)}</time>\n            <div class=\"meta\">${s.location||''}</div>\n          </div>\n          <div class=\"right\">Register →</div>\n        </a>`;
-      ul.appendChild(li);
-    });
-  }
-  return el;
-}
-async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
-  container.innerHTML='';
-  const doc=new DOMParser().parseFromString(snapshotHTML,'text/html');
-  const walker=doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
-  let lastHeaderCard=null;
-  const added=new Set();
-  window._COURSE_KEYS=[]; // collect rendered titles for snippet loading
-  while(walker.nextNode()){
-    const node=walker.currentNode;
-    const text=(node.textContent||'').replace(/\s+/g,' ').trim();
-    if(!text) continue;
-    if(isSectionHeaderText(text)){
-      const fam=familyFromHeader(text);
-      lastHeaderCard = makeTitleCard(text,'',fam);
-      container.appendChild(lastHeaderCard);
-      continue;
-    }
-    const a = node.matches && node.matches('a[href*=\"enroll?id=\"]') ? node : (node.querySelector && node.querySelector('a[href*=\"enroll?id=\"]'));
-    if(a){
-      const row = a.closest('tr') || a.closest('.row') || node;
-      const title = ((row && row.innerText) ? row.innerText : a.textContent || '').replace(/\s+/g,' ').trim();
-      if(!title) continue;
-      const isInstructor=/instructor/i.test(title); const isRenewal=/renewal/i.test(title);
-      if(isInstructor && isRenewal) continue; // skip instructor renewals
-      const sessions = upcomingMap.get(title);
-      if(!sessions || !sessions.length) continue; // only show with dates
-      if(added.has(title)) continue;
-      const card = createCourseCardExact(title, sessions);
-      if(lastHeaderCard && lastHeaderCard.nextSibling){
-        container.insertBefore(card, lastHeaderCard.nextSibling);
-        lastHeaderCard = card; // maintain insertion point within the section
-      } else {
-        container.appendChild(card);
-      }
-      added.add(title);
-      window._COURSE_KEYS.push(title);
-    }
-  }
-  if(!container.children.length){
-    upcomingMap.forEach((sessions,title)=>{
-      if(/instructor/i.test(title) && /renewal/i.test(title)) return;
-      container.appendChild(createCourseCardExact(title,sessions));
-      window._COURSE_KEYS.push(title);
-    });
-  }
-  const map=new Map([...container.querySelectorAll('details[id^=\"d-\"]')].map(d=>[d.id.slice(2),d]));
-  applyOpenFromURL(map);
-}
+Replace the entire function body with this minimal delegator:
 
-// ==========================
-// HELPERS
-// ==========================
-function guessType(title=''){
-  const t = title.toLowerCase();
-  if(t.includes('acls')) return 'ACLS';
-  if(t.includes('pals')) return 'PALS';
-  if(t.includes('bls')) return 'BLS';
-  if(t.includes('heartsaver')) return 'Heartsaver';
-  if(t.includes('hsi')) return 'HSI';
-  return 'Other';
+===BEGIN JS===
+async function renderCatalog(container, feed){
+const snapshot = await fetch(CONFIG.htmlFallback,{cache:'no-store'})
+.then(r=>r.ok?r.text():Promise.resolve('<body></body>'))
+.catch(()=>'<body></body>');
+await renderFromSnapshot(container, feed, snapshot);
 }
-function guessDate(str){ if(!str) return null; const d = new Date(str); return isNaN(d) ? null : d.toISOString(); }
-function withinWindow(dtISO){ if(!dtISO) return false; const s=new Date(dtISO); if(isNaN(s)) return false; const now=new Date(); const cap=new Date(now.getTime()+CONFIG.windowDays*86400000); return s>=now && s<=cap; }
+===END JS===
+
+Step 3 — Make loadSnippets follow the actually-rendered titles
+In the second <script> tag at the very bottom you have:
+async function loadSnippets(){ const fetchOne = async(key)=>{ ... } ... Promise.all(CATALOG.filter(...)) }
+
+Replace that whole function with:
+
+===BEGIN JS===
+async function loadSnippets(){
+const keys = Array.isArray(window._COURSE_KEYS)&&window._COURSE_KEYS.length
+? window._COURSE_KEYS
+: [];
+const fetchOne=async(title)=>{
+const file=CONFIG.snippetRoot + slug(title) + '.html';
+try{
+const r=await fetch(file,{cache:'no-store'});
+if(!r.ok) return;
+const html=await r.text();
+const el=document.getElementById('desc-'+slug(title));
+if(el){ el.innerHTML=html; }
+}catch(e){/* ignore */}
+};
+await Promise.all(keys.map(fetchOne));
+}
+===END JS===
+
 
 // ==========================
 // RENDER
@@ -664,28 +608,9 @@ function applyOpenFromURL(map){
 // BOOT
 // ==========================
 (async function init(){
-const grid=document.getElementById('courseGrid');
-const [feed, snapshot] = await Promise.all([
-loadFeed(),
-fetch(CONFIG.htmlFallback,{cache:'no-store'}).then(r=>r.ok?r.text():Promise.resolve('<body></body>')).catch(()=>'<body></body>')
-]);
-FEED = feed;
-const upcoming = buildUpcomingMap(FEED);
-await renderFromSnapshot(grid, upcoming, snapshot);
-await loadSnippets();
-if(!FEED.length){
-const warn=document.createElement('div');
-warn.className='note';
-warn.style.color='#ffcccc';
-warn.style.fontWeight='700';
-warn.style.marginTop='12px';
-warn.textContent=No sessions loaded. Check docs/data/schedule.json or docs/data/enrollware-schedule.html. Detail: ${FEED_ERROR||'n/a'};
-document.querySelector('.wrap').appendChild(warn);
-}
-})();  
-FEED = feed;
-  const upcoming = buildUpcomingMap(FEED);
-  await renderFromSnapshot(grid, upcoming, snapshot);
+  const grid=document.getElementById('courseGrid');
+  FEED = await loadFeed();
+  renderCatalog(grid, FEED);
   await loadSnippets();
   if(!FEED.length){
     const warn=document.createElement('div');
@@ -694,7 +619,9 @@ FEED = feed;
     warn.style.fontWeight='700';
     warn.style.marginTop='12px';
     warn.textContent=`No sessions loaded. Check docs/data/schedule.json or docs/data/enrollware-schedule.html. Detail: ${FEED_ERROR||'n/a'}`;
-    document.querySelector('.wrap').appendChild(wa
+    document.querySelector('.wrap').appendChild(warn);
+  }
+})();
 
 window.addEventListener('hashchange',()=>{
   const grid=document.getElementById('courseGrid');
@@ -706,21 +633,17 @@ window.addEventListener('hashchange',()=>{
 <!-- inject per‑course HTML snippets into Course Description areas -->
 <script>
 async function loadSnippets(){
-const keys = Array.isArray(window._COURSE_KEYS)&&window._COURSE_KEYS.length
-? window._COURSE_KEYS
-: CATALOG.filter(c=>c.type==='course').map(c=>c.key);
-const fetchOne=async(title)=>{
-const file=CONFIG.snippetRoot + slug(title) + '.html';
-try{
-const r=await fetch(file,{cache:'no-store'});
-if(!r.ok) return;
-const html=await r.text();
-const el=document.getElementById('desc-'+slug(title));
-if(el){ el.innerHTML=html; }
-}catch(e){/* ignore */}
-};
-await Promise.all(keys.map(fetchOne));
-}  await Promise.all(CATALOG.filter(c=>c.type==='course').map(c=>fetchOne(c.key)));
+  const fetchOne=async(key)=>{
+    const file=CONFIG.snippetRoot + slug(key) + '.html';
+    try{
+      const r=await fetch(file,{cache:'no-store'});
+      if(!r.ok) return; 
+      const html=await r.text();
+      const el=document.getElementById('desc-'+slug(key));
+      if(el){ el.innerHTML=html; }
+    }catch(e){/* ignore */}
+  };
+  await Promise.all(CATALOG.filter(c=>c.type==='course').map(c=>fetchOne(c.key)));
 }
 
 // ==========================
