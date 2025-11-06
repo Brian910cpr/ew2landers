@@ -298,6 +298,15 @@ details.course[open]>summary{background:var(--hover)}
     return course;
   }
 
+  // Heuristic: title/placeholder cards are the colored “Course” ones
+  function isTitleCard(courseObj){
+    const t=(courseObj.titleText||'').trim();
+    if(!t) return false;
+    const hasCourse=/\bCourse\b/i.test(t) || /\bCPR\s*\/\s*AED\b/i.test(t);
+    const looksLikeListing=/(Online|Renewal|Provider\s*-\s*|Classroom|Skills?\s*Session)/i.test(t);
+    return hasCourse && !looksLikeListing;
+  }
+
   async function renderCatalog(){
     const host=document.getElementById('catalog');
     const load=await loadSnapshotHTML();
@@ -312,6 +321,7 @@ details.course[open]>summary{background:var(--hover)}
         const headingEl=p.querySelector('.enrpanel-heading,h1,h2,h3,h4'); if(!headingEl) return;
         const headingFrag=headingEl.cloneNode(true); absolutizeUrls(headingFrag);
         const titleHTML=headingFrag.innerHTML.trim();
+        const titleText=headingFrag.textContent || '';
 
         const bodyEl=p.querySelector('.enrpanel-body');
         const descClone=bodyEl?bodyEl.cloneNode(true):null;
@@ -322,6 +332,7 @@ details.course[open]>summary{background:var(--hover)}
         const hasDates=!!ul;
 
         if(!hasDates){
+          // Treat as “section header” (placeholder top banner), not a course
           current={header:{titleHTML,descHTML},courses:[]}; sections.push(current);
           return;
         }
@@ -332,7 +343,7 @@ details.course[open]>summary{background:var(--hover)}
         const trimmed=limitUlToWindow(ulClone,28,10);
         const ctId=getCtId(p,root);
 
-        current.courses.push({ id:ctId, titleHTML, descHTML, ul:trimmed.ul, kept:trimmed.kept, total:trimmed.total });
+        current.courses.push({ id:ctId, titleHTML, titleText, descHTML, ul:trimmed.ul, kept:trimmed.kept, total:trimmed.total });
       });
 
       host.innerHTML='';
@@ -348,21 +359,18 @@ details.course[open]>summary{background:var(--hover)}
           + '<div class="section-body"><div class="courses-grid"></div></div>';
         const grid=secEl.querySelector('.courses-grid');
 
-        if(sec.courses.length){
-          /* Ensure the title card starts on its own row */
-          grid.insertAdjacentHTML('beforeend','<div class="rowbreak" aria-hidden="true"></div>');
-
-          /* Title card (first) + blank spacer to its right */
-          grid.appendChild(buildCourseCard(sec.courses[0]));
-          grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
-
-          /* Remaining courses flow naturally (no rowbreaks) */
-          for(let i=1;i<sec.courses.length;i++){
-            grid.appendChild(buildCourseCard(sec.courses[i]));
+        for(let i=0;i<sec.courses.length;i++){
+          const c=sec.courses[i];
+          if(isTitleCard(c)){
+            // ensure the title card starts a fresh row …
+            grid.insertAdjacentHTML('beforeend','<div class="rowbreak" aria-hidden="true"></div>');
+            // … then place the title card with a blank spacer to its right
+            grid.appendChild(buildCourseCard(c));
+            grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
+            // no rowbreak after — next items flow onto the next row naturally
+          }else{
+            grid.appendChild(buildCourseCard(c));
           }
-        }else{
-          /* No courses—keep predictable spacing */
-          grid.insertAdjacentHTML('beforeend','<div class="course spacer" aria-hidden="true"></div>');
         }
 
         host.appendChild(secEl);
