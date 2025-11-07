@@ -20,7 +20,7 @@ SECTION_HINTS = [
 CITY_HINTS = r"(Wilmington|Burgaw|Jacksonville|Shipyard|Sound Rd|Hinton Ave|Gum Branch|Merlot|Wright St)"
 
 def normspace(s: str) -> str:
-    return re.sub(r"\s+", " ", (s or "")).strip()
+    return re.sub(r"\s+", " ", (s or "").strip())
 
 def to_abs_url(href: str) -> str:
     href = href or ""
