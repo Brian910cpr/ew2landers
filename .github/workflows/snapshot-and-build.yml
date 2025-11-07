@@ -19,7 +19,6 @@ jobs:
         run: |
           set -xe
           mkdir -p docs/data scripts
-          ls -la
           ls -la docs || true
           ls -la docs/data || true
 
@@ -32,14 +31,14 @@ jobs:
             -o docs/data/enrollware-schedule.html
           echo "Snapshot size and first lines:"
           wc -c docs/data/enrollware-schedule.html
-          head -n 25 docs/data/enrollware-schedule.html || true
+          head -n 20 docs/data/enrollware-schedule.html || true
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      - name: Install parser deps
+      - name: Install deps (bs4, lxml, dateutil, jq)
         run: |
           set -xe
           python -m pip install --upgrade pip
@@ -47,7 +46,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Write parser (inline)
+      - name: Overwrite parser (inline, known good)
         run: |
           set -xe
           cat > scripts/parse_enrollware.py <<'PYCODE'
@@ -198,18 +197,16 @@ if __name__ == "__main__":
     main()
 PYCODE
           python -m py_compile scripts/parse_enrollware.py
-          head -n 35 scripts/parse_enrollware.py
+          head -n 30 scripts/parse_enrollware.py
 
       - name: Build docs/data/schedule.json
         run: |
           set -xe
-          test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
           test -f docs/data/enrollware-schedule.html || { echo "Missing HTML snapshot"; exit 1; }
           python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
           echo "schedule.json size:"
           wc -c docs/data/schedule.json
-          jq -e . docs/data/schedule.json >/dev/null
-          echo "Preview first 40 lines of JSON:"
+          jq -e . docs/data/schedule.json >/dev/null || (echo "schedule.json not valid JSON" && exit 1)
           head -n 40 docs/data/schedule.json || true
 
       - name: Upload schedule.json artifact (debug)
