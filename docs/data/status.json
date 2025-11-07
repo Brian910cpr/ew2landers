@@ -1,18 +1,18 @@
 {
-  "updated_at": "2025-11-07T19:13:08.765191+00:00",
+  "updated_at": "2025-11-07T20:27:01.610375+00:00",
   "snapshot": {
     "exists": true,
-    "bytes": 25915,
-    "md5": "22eb03ebb3d024412c0abe331fa7a6ad"
+    "bytes": 503702,
+    "md5": "5636e576f74c5ef44b05943c4c1446a1"
   },
   "schedule": {
     "exists": true,
-    "bytes": 205,
-    "md5": "37cdfa50b627ced68b91e352a67904f8"
+    "bytes": 761808,
+    "md5": "21926e7bd136f82f21d7cddb96e61572"
   },
   "github": {
-    "sha": null,
-    "run_id": null,
-    "repo": null
+    "sha": "1dc6d1de57f7d2f41d71739cc03febb683287b33",
+    "run_id": "19180360642",
+    "repo": "Brian910cpr/ew2landers"
   }
 }
