@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "docs/data/enrollware-schedule.html",
-    "fetched_at": "2025-11-07T20:31:53.406805Z",
+    "fetched_at": "2025-11-07T21:21:05.814218Z",
     "panel_count": 48
   },
   "sections": [
@@ -1229,15 +1229,6 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929736",
       "id": 11929736
-    },
-    {
-      "course_id": "ct359474",
-      "title": "AHA - BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal",
-      "start_text": "Friday, November 7, 2025 at 3:00 PM NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "start_iso": null,
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=12352265",
-      "id": 12352265
     },
     {
       "course_id": "ct359474",
