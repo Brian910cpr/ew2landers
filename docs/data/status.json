@@ -1,0 +1,18 @@
+{
+  "updated_at": "2025-11-07T19:13:08.765191+00:00",
+  "snapshot": {
+    "exists": true,
+    "bytes": 25915,
+    "md5": "22eb03ebb3d024412c0abe331fa7a6ad"
+  },
+  "schedule": {
+    "exists": true,
+    "bytes": 205,
+    "md5": "37cdfa50b627ced68b91e352a67904f8"
+  },
+  "github": {
+    "sha": null,
+    "run_id": null,
+    "repo": null
+  }
+}

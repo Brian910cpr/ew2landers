@@ -1,0 +1,33 @@
+name: Refresh Enrollware Snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "7 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p docs/data
+          curl -fSL \
+            "https://coastalcprtraining.enrollware.com/schedule" \
+            -H "User-Agent: ew2landers-actions-snapshot" \
+            -o docs/data/enrollware-schedule.html
+          wc -c docs/data/enrollware-schedule.html
+      - name: Commit snapshot if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/enrollware-schedule.html || true
+          if git diff --cached --quiet; then
+            echo "No snapshot change."
+            exit 0
+          fi
+          git commit -m "chore: refresh enrollware snapshot"
+          git push

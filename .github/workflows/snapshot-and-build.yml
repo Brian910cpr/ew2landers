@@ -1,92 +1,38 @@
-# .github/workflows/snapshot-and-build.yml
-name: Snapshot Enrollware + Build schedule.json
+    - name: Snapshot Enrollware HTML
+      run: |
+        curl -fSL "https://www.enrollware.com/sitefiles/coastalcprtraining/schedule.html" -o docs/data/enrollware-schedule.html
+        wc -c docs/data/enrollware-schedule.html || true
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "17 * * * *"
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
 
-permissions:
-  contents: write
+    - name: Install parser deps
+      run: |
+        python -m pip install --upgrade pip
+        pip install beautifulsoup4 lxml python-dateutil
 
-jobs:
-  snapshot_and_build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Build schedule.json
+      run: |
+        python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
+        jq -e . docs/data/schedule.json >/dev/null
 
-      # 1) (Whatever you're already doing to fetch the snapshot)
-      - name: Download snapshot to docs/data/enrollware-schedule.html
-        run: |
-          mkdir -p docs/data
-          curl -fSL "https://coastalcprtraining.enrollware.com/sitefiles/coastalcprtraining/schedule.html" -o docs/data/enrollware-schedule.html
-          ls -l docs/data/enrollware-schedule.html
-          wc -c docs/data/enrollware-schedule.html
+    - name: Build status.json
+      run: |
+        python scripts/build_status_json.py \
+          --snapshot docs/data/enrollware-schedule.html \
+          --schedule docs/data/schedule.json \
+          --out docs/data/status.json
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install parser deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install beautifulsoup4 lxml python-dateutil jq
-
-      # 2) Build schedule.json from the snapshot (your existing parser)
-      - name: Build docs/data/schedule.json
-        run: |
-          test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
-          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
-          jq -e . docs/data/schedule.json >/dev/null
-
-      # 3) WRITE status.json so you can see health from the site
-      - name: Write docs/data/status.json
-        run: |
-          python - <<'PY'
-          import json, os, time, hashlib
-          def sha256(path):
-              try:
-                  with open(path,'rb') as f:
-                      import hashlib
-                      h=hashlib.sha256()
-                      for chunk in iter(lambda: f.read(1<<20), b''):
-                          h.update(chunk)
-                      return h.hexdigest()
-              except FileNotFoundError:
-                  return None
-          now = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
-          snap_path = 'docs/data/enrollware-schedule.html'
-          sched_path = 'docs/data/schedule.json'
-          out = {
-              "updated_at": now,
-              "snapshot": {
-                  "exists": os.path.exists(snap_path),
-                  "bytes": os.path.getsize(snap_path) if os.path.exists(snap_path) else 0,
-                  "sha256": sha256(snap_path)
-              },
-              "schedule": {
-                  "exists": os.path.exists(sched_path),
-                  "bytes": os.path.getsize(sched_path) if os.path.exists(sched_path) else 0,
-                  "sha256": sha256(sched_path)
-              }
-          }
-          os.makedirs('docs/data', exist_ok=True)
-          with open('docs/data/status.json','w',encoding='utf-8') as f:
-              json.dump(out, f, ensure_ascii=False, indent=2)
-          print(json.dumps(out, indent=2))
-          PY
-
-      # 4) Commit any changes (schedule.json or status.json)
-      - name: Commit if changed
-        run: |
-          if git diff --quiet -- docs/data/schedule.json docs/data/status.json; then
-            echo "No data changes."
-            exit 0
-          fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/schedule.json docs/data/status.json
-          git commit -m "data: update schedule.json + status.json"
-          git push
+    - name: Commit if changed
+      run: |
+        if git diff --quiet -- docs/data/schedule.json docs/data/status.json; then
+          echo "No changes to commit."
+          exit 0
+        fi
+        git config user.name  "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add docs/data/schedule.json docs/data/status.json
+        git commit -m "data: update schedule.json + status.json"
+        git push
