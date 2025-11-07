@@ -27,8 +27,7 @@ def to_abs_url(href: str) -> str:
     return href if href.startswith("http") else (ENROLLWARE_BASE + href.lstrip("./"))
 
 def looks_like_section(text: str) -> bool:
-    if not text:
-        return False
+    if not text: return False
     x = text.strip().lower()
     return (x in SECTION_HINTS) or any(x.startswith(h) for h in SECTION_HINTS)
 
