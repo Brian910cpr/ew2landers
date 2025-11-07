@@ -1,3 +1,52 @@
+name: Snapshot Enrollware + Build schedule.json
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "11 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot_and_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure docs/data exists
+        run: |
+          mkdir -p docs/data
+          ls -la docs || true
+          ls -la docs/data || true
+
+      - name: Pull Enrollware schedule HTML
+        run: |
+          curl -fSL \
+            -A "910CPR-LanderBot/1.0 (+https://brian910cpr.github.io/ew2landers/)" \
+            https://coastalcprtraining.enrollware.com/schedule \
+            -o docs/data/enrollware-schedule.html
+          echo "Snapshot size:"
+          wc -c docs/data/enrollware-schedule.html
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install parser deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install beautifulsoup4 lxml python-dateutil
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      # Hard overwrite parser to avoid any hidden newline corruption in repo
+      - name: Overwrite parser from inline source
+        run: |
+          mkdir -p scripts
+          cat > scripts/parse_enrollware.py <<'PYCODE'
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys, re, json
@@ -5,8 +54,6 @@ from bs4 import BeautifulSoup
 from dateutil import parser as dateparser
 
 ENROLLWARE_BASE = "https://coastalcprtraining.enrollware.com/"
-
-CITY_HINTS = r"(Wilmington|Burgaw|Jacksonville|Shipyard|Sound Rd|Hinton Ave|Gum Branch|Merlot|Wright St)"
 
 SECTION_HINTS = [
     "healthcare provider: bls",
@@ -18,6 +65,8 @@ SECTION_HINTS = [
     "instructor programs",
     "other programs",
 ]
+
+CITY_HINTS = r"(Wilmington|Burgaw|Jacksonville|Shipyard|Sound Rd|Hinton Ave|Gum Branch|Merlot|Wright St)"
 
 def normspace(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "")).strip()
@@ -112,12 +161,8 @@ def main():
             })
             course_idx[ct_key] = len(courses) - 1
 
-        # Find a nearby time snippet; keep human text and try to parse ISO
         tm = re.search(r"\b\d{1,2}:\d{2}\s?(AM|PM)\b", row_text, re.I)
-        if tm:
-            start_text = row_text[max(0, tm.start()-30): tm.end()+40]
-        else:
-            start_text = row_text[:140]
+        start_text = row_text[max(0, tm.start()-30): tm.end()+40] if tm else row_text[:140]
 
         try:
             dt = dateparser.parse(start_text, fuzzy=True)
@@ -147,3 +192,42 @@ def main():
 
 if __name__ == "__main__":
     main()
+PYCODE
+
+      - name: Syntax check parser
+        run: |
+          set -xe
+          python -m py_compile scripts/parse_enrollware.py
+          head -n 40 scripts/parse_enrollware.py
+
+      - name: Build docs/data/schedule.json
+        run: |
+          set -e
+          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
+          echo "schedule.json size:"
+          wc -c docs/data/schedule.json
+          jq -e . docs/data/schedule.json >/dev/null
+
+      - name: Commit snapshot if changed
+        run: |
+          if git diff --quiet -- docs/data/enrollware-schedule.html; then
+            echo "No snapshot changes."
+          else
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/data/enrollware-schedule.html
+            git commit -m "chore: refresh Enrollware schedule snapshot"
+            git push
+          fi
+
+      - name: Commit schedule.json if changed
+        run: |
+          if git diff --quiet -- docs/data/schedule.json; then
+            echo "No changes to schedule.json"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/schedule.json
+          git commit -m "chore: build schedule.json from snapshot"
+          git push
