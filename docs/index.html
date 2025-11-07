@@ -6,360 +6,459 @@
   <title>910CPR Courses</title>
   <style>
     :root{
-      --bg:#f7fbff;           /* subtle white→blue vibe */
-      --card:#ffffff;
-      --ink:#0b1220;          /* high-contrast text */
-      --muted:#5a667a;
-      --brand:#1373d1;        /* links/chips */
-      --accent:#0d5aa3;       /* hover */
-      --title-bg:#e8f1ff;     /* colored title cards */
-      --title-ink:#0b1220;
-      --shadow: 0 2px 16px rgba(11,18,32,.08);
+      --bg:#0b1320;          /* dark background */
+      --ink:#eaf2ff;         /* high-contrast text */
+      --muted:#9fb6e8;
+      --brand:#1373d1;       /* primary action */
+      --accent:#0f61bb;
+      --shadow:0 2px 16px rgba(6,10,18,.35);
       --radius:18px;
+      /* family color chips */
+      --bls:#b6d4ff;   /* BLS */
+      --acls:#ff7474;  /* ACLS */
+      --pals:#c59eff;  /* PALS */
+      --faid:#7eb0ff;  /* First Aid / Heartsaver */
     }
 
-    html,body{margin:0;padding:0;background:linear-gradient(180deg,#fff 0%, var(--bg) 100%);color:var(--ink);font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif}
-
-    a{ color:var(--brand); text-decoration:none; }
-    a:hover{ color:var(--accent); text-decoration:none; }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:var(--brand);text-decoration:none}
+    a:hover{color:var(--accent)}
 
     .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
-    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin:8px 0 18px}
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin:8px 0 18px;position:sticky;top:0;z-index:10}
     header h1{font-size:clamp(22px,3.5vw,34px);margin:0;font-weight:750}
+    .nav{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .nav a{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #243349;border-radius:12px;background:#0e1726;color:var(--ink);font-weight:650}
+    .nav a[target="_blank"]::after{content:" ↗";opacity:.7;font-weight:700}
+    .nav a:hover{background:#122448;border-color:#2f416a}
 
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-
-    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;min-height:120px}
-    .card h3{margin:4px 0 8px;font-size:clamp(16px,2.4vw,20px)}
-
+    .card{background:#0e1726;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;min-height:120px;border:1px solid #243349;position:relative}
+    .card h3{margin:0 0 10px;padding-right:24px;display:flex;align-items:center;gap:8px}
+    .card h3 .brandicon{height:22px;width:auto;object-fit:contain;display:inline-block;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+    .card.course:hover{outline:2px solid #2f416a;outline-offset:0;border-color:#2f416a;background:#0f1f39}
+    .card .cardlogo{display:none}
+    @media(max-width:640px){.card h3{padding-right:96px}.card .cardlogo{height:28px}}
     .card.course{grid-column:span 6}
-    @media (max-width: 860px){ .card.course{grid-column: span 12} }
+    @media(max-width:860px){.card.course{grid-column:span 12}}
 
-    .card.title{grid-column:1 / -1;background:var(--title-bg);color:var(--title-ink);border:2px solid #d4e4ff}
-    .card.title h2{margin:0;font-size:clamp(18px,2.8vw,24px)}
+    /* Section separators with left accent bar (width 12px) */
+    .card.title{grid-column:1 / -1;background:#0f1c33;color:var(--ink);border:1px solid #2a3b62;position:relative;overflow:hidden}
+    .card.title::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#2a3b62}
+    .card.title.bls::before{background:var(--bls)}
+    .card.title.acls::before{background:var(--acls)}
+    .card.title.pals::before{background:var(--pals)}
+    .card.title.faid::before{background:var(--faid)}
+    .card.title h2{margin:0 0 4px;font-size:clamp(18px,2.8vw,24px);padding-right:128px}
     .card.title small{color:var(--muted)}
+    .card.title .famimg{position:absolute;right:16px;top:12px;height:calc(100% - 24px);max-height:none;width:auto;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));pointer-events:none}
+    @media(max-width:640px){.card.title .famimg{max-height:44px;right:12px}}
 
+    /* Periscope */
     details{margin-top:auto}
-    summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#f4f7fb;color:var(--ink);font-weight:650}
+    summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#111e36;color:var(--ink);font-weight:700;border:1px solid #243349}
+    summary:hover{background:#1a2b55;border-color:#3b5aa0}
     summary::-webkit-details-marker{display:none}
-    details[open] summary{background:#eaf2ff}
+    details[open] summary{background:#122448;border-color:#2f416a}
 
-    .desc{padding:10px 2px 2px;color:var(--muted)}
-
+    .desc{padding:10px 2px 2px;color:#bfd2ff}
     .slots{margin:8px 0 0;padding:0;list-style:none}
-    .slots li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid #e7ecf3;background:#fff;border-radius:12px;margin:8px 0}
-    .slots time{font-weight:700;color:var(--ink)}
-    .slots .meta{font-size:13px;color:var(--muted)}
-    .slots .go{white-space:nowrap}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--brand);color:#fff;border:none;font-weight:700}
-    .btn:hover{background:var(--accent)}
+    .slots li{display:block;padding:0;margin:10px 0;background:transparent;border:none}
+
+    /* Full-width clickable slot button */
+    .slotbtn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px;border-radius:12px;background:#152242;border:1px solid #2a3b62;color:var(--ink);text-decoration:none}
+    .slotbtn:hover{background:#1a2b55;border-color:#385089}
+    .slotbtn .meta{font-size:13px;color:var(--muted)}
+    .slotbtn .right{white-space:nowrap;margin-left:12px}
+
+    /* Popular quick-links */
+    .popular{display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:center;background:#0b1320;color:var(--ink);border-radius:20px;padding:18px;margin:8px 0 22px;border:1px solid #243349;box-shadow:var(--shadow)}
+    .popular h2{margin:6px 0 10px;font-size:clamp(16px,2.2vw,20px);font-weight:750;color:#b6d4ff}
+    .tiles{display:flex;flex-wrap:wrap;gap:10px}
+    .tile{display:flex;flex-direction:column;justify-content:center;min-width:160px;padding:10px 12px;border-radius:12px;color:#001a4d;border:1px solid #2a3b62;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+    .tile .t1{font-weight:800}
+    .tile .t2{font-size:12px;opacity:.8;color:#eef3ff}
+    .tile:hover{filter:brightness(1.15);box-shadow:0 0 0 2px rgba(0,0,0,.15) inset}
+    .tile.bls{background:var(--bls)}
+    .tile.acls{background:var(--acls);color:#2a0010}
+    .tile.pals{background:var(--pals)}
+    .tile.faid{background:var(--faid)}
+    .popular .art{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:16px;padding:12px}
+    .popular .art img{max-width:100%;height:auto;border-radius:12px}
 
     .note{font-size:13px;color:var(--muted);margin-top:6px}
-    .chip{display:inline-block;background:#eef6ff;color:#0d4f8c;border-radius:999px;padding:4px 10px;font-size:12px;margin-left:8px}
+
+    /* Certifying bodies strip (white background) */
+    .brandrow{display:flex;justify-content:center;align-items:center;gap:28px;background:#ffffff;border:1px solid #e6eaf5;border-radius:20px;padding:14px;margin:0 0 12px;box-shadow:0 2px 16px rgba(6,10,18,.08)}
+    .brandrow .badge{display:flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:14px;background:transparent;border:1px solid transparent}
+    .brandrow .badge img{height:56px;width:auto;object-fit:contain;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
+    @media(max-width:640px){.brandrow .badge img{height:44px}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>910CPR – Course Catalog</h1>
-      <div class="note">Title cards span the full row. Periscope shows rich HTML description + upcoming sessions.</div>
-    </header>
+<div class="wrap">
+  <header>
+    <h1>910CPR – Course Catalog</h1>
+    <nav class="nav" aria-label="Primary">
+      <a href="http://coastalcprtraining.com/about" target="_blank" rel="noopener">About</a>
+      <a href="http://910cpr.com/" target="_blank" rel="noopener">Classes</a>
+      <a href="http://coastalcprtraining.com/" target="_blank" rel="noopener">Coastal CPR Training</a>
+      <a href="http://coastalcprtraining.com/on-site-training" target="_blank" rel="noopener">On Site Training</a>
+    </nav>
+  </header>
 
-    <section id="courseGrid" class="grid" aria-live="polite"></section>
+  <!-- Certifying bodies / partners -->
+  <section class="brandrow" aria-label="Certifying bodies">
+    <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 aha-authorized-training-site.png" alt="AHA Authorized Training Site" /></div>
+    <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 arc-ltp-logo.jpg" alt="American Red Cross Licensed Training Provider" /></div>
+    <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/HSI.png" alt="HSI Training Center" /></div>
+  </section>
 
-    <p class="note">If you needed a different time, see all dates for each class type on our schedule pages.</p>
-  </div>
+  <!-- Popular quick-links -->
+  <section class="popular" aria-label="Most popular classes">
+    <div>
+      <h2>Most popular classes</h2>
+      <div class="tiles">
+        <a class="tile bls" href="#aha---bls-provider---in-person-renewal"><span class="t1">BLS</span><span class="t2">Initial or renewal; instructor‑led</span></a>
+        <a class="tile bls" href="#aha---bls-provider---heartcode"><span class="t1">BLS Online</span><span class="t2">Blended: online + in‑person skills</span></a>
+        <a class="tile acls" href="#aha---acls-provider---in-person---renewal"><span class="t1">ACLS</span><span class="t2">Fully in‑person renewal</span></a>
+        <a class="tile acls" href="#aha---acls-provider---heartcode"><span class="t1">ACLS Online</span><span class="t2">Initial (online + skills)</span></a>
+        <a class="tile pals" href="#aha---pals-provider---in-person---renewal"><span class="t1">PALS</span><span class="t2">Fully in‑person renewal</span></a>
+        <a class="tile pals" href="#aha---pals-provider---heartcode"><span class="t1">PALS Online</span><span class="t2">Initial (online + skills)</span></a>
+        <a class="tile faid" href="#hsi---first-aid-cpr-aed-classroom"><span class="t1">First Aid / CPR / AED</span><span class="t2">Fully in‑person course</span></a>
+        <a class="tile faid" href="#aha---heartsaver-online"><span class="t1">First Aid / CPR / AED Online</span><span class="t2">Flexible + fast (online + skills)</span></a>
+      </div>
+    </div>
+    <div class="art"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg" alt="910CPR wave logo banner"/></div>
+  </section>
 
-  <script>
-  // Config
-  const CONFIG = {
-    windowDays: 28,
-    maxSessionsPerCourse: 15,
-    jsonFeed: "docs/data/schedule.json",
-    htmlFallback: "docs/data/enrollware-schedule.html",
-    manualSessions: "docs/data/manual-sessions.json", // optional extra sessions
-    snippetRoot: "docs/courses/" // per-course HTML files go here (e.g., bls-renewal.html)
-  };
+  <!-- Catalog grid renders here -->
+  <section id="courseGrid" class="grid" aria-live="polite"></section>
+</div>
 
-  // Catalog (descHtml is optional and will be fetched + injected)
-  const CATALOG = [
-    { type:"title", text:"Healthcare Provider: BLS", blurb:"For clinical staff, hospitals, clinics" },
-    {
-      type:"course",
-      key:"AHA - BLS Provider - In-person Renewal",
-      title:"AHA – BLS Provider – In‑Person Renewal",
-      short:"Instructor‑led Renewal",
-      desc:"Hands‑on BLS Renewal for healthcare professionals.",
-      descHtml:"bls-renewal.html",
-      courseMatch:["BLS", "BLS Provider", "AHA - BLS Provider - In-person Renewal", "BLS In-Person"],
-      scheduleFilter:{ classType:"BLS" }
-    },
-    {
-      type:"course",
-      key:"AHA - BLS Provider - In-person Initial",
-      title:"AHA – BLS Provider – In‑Person Initial",
-      short:"For new or expired certs",
-      desc:"Initial BLS course covering compressions, AED, team dynamics, and respirations.",
-      descHtml:"bls-initial.html",
-      courseMatch:["BLS", "BLS Provider", "AHA - BLS Provider - In-person Initial"],
-      scheduleFilter:{ classType:"BLS" }
-    },
+<script>
+// ==========================
+// TOP-LEVEL HELPERS (define early so they're always available)
+// ==========================
+function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+function fmtDate(dtISO){ const d=new Date(dtISO); const opt={weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}; return d.toLocaleString(undefined,opt); }
 
-    { type:"title", text:"Healthcare Provider: ACLS", blurb:"Advanced Cardiovascular Life Support" },
-    {
-      type:"course",
-      key:"AHA - ACLS Provider - In-person - Initial",
-      title:"AHA – ACLS Provider – Initial",
-      short:"For first‑time ACLS",
-      desc:"Megacode practice, algorithms, and leadership for adult emergencies.",
-      descHtml:"acls-initial.html",
-      courseMatch:["ACLS", "AHA - ACLS"],
-      scheduleFilter:{ classType:"ACLS" }
-    },
-    {
-      type:"course",
-      key:"AHA - ACLS Provider - In-person - Renewal",
-      title:"AHA – ACLS Provider – Renewal",
-      short:"Update & renewal",
-      desc:"Focused ACLS refresh with testing and skills verification.",
-      descHtml:"acls-renewal.html",
-      courseMatch:["ACLS", "AHA - ACLS"],
-      scheduleFilter:{ classType:"ACLS" }
-    },
-
-    { type:"title", text:"Healthcare Provider: PALS", blurb:"Pediatric Advanced Life Support" },
-    {
-      type:"course",
-      key:"AHA - PALS Provider - In Person - Initial",
-      title:"AHA – PALS Provider – Initial",
-      short:"For first‑time PALS",
-      desc:"Recognition and management of pediatric respiratory and shock states.",
-      descHtml:"pals-initial.html",
-      courseMatch:["PALS", "AHA - PALS"],
-      scheduleFilter:{ classType:"PALS" }
-    },
-    {
-      type:"course",
-      key:"AHA - PALS Provider - In Person - Renewal",
-      title:"AHA – PALS Provider – Renewal",
-      short:"Update & renewal",
-      desc:"Scenario‑based practice and testing for pediatric emergencies.",
-      descHtml:"pals-renewal.html",
-      courseMatch:["PALS", "AHA - PALS"],
-      scheduleFilter:{ classType:"PALS" }
-    },
-
-    { type:"title", text:"Other Programs", blurb:"Workplace & community classes" },
-    {
-      type:"course",
-      key:"HSI - First Aid/CPR/AED (In-Person)",
-      title:"HSI – Adult First Aid / CPR AED (Classroom)",
-      short:"Meets OSHA 1910.151",
-      desc:"Practical first aid plus CPR/AED skills for workplaces and community responders.",
-      descHtml:"hsi-facpraed.html",
-      courseMatch:["HSI Adult First Aid", "HSI - First Aid/CPR/AED"],
-      scheduleFilter:{ classType:"HSI" }
-    },
-    {
-      type:"course",
-      key:"AHA - Heartsaver Online",
-      title:"AHA – Heartsaver (Online + Skills)",
-      short:"Flexible blended path",
-      desc:"Complete HeartCode online, then a fast, in‑person skills session.",
-      descHtml:"heartsaver-online.html",
-      courseMatch:["Heartsaver", "AHA - Heartsaver Online"],
-      scheduleFilter:{ classType:"Heartsaver" }
-    }
-  ];
-
-  let FEED = [];
-  let FEED_ERROR = null;
-  let MANUAL = [];
-
-  async function loadJSON(path){
-    try{ const r = await fetch(path, {cache:'no-store'}); if(!r.ok) return null; return await r.json(); }catch(e){ return null; }
-  }
-
-  async function loadFeed(){
-    try{
-      const r = await fetch(CONFIG.jsonFeed, {cache:'no-store'});
-      if(r.ok){
-        const j = await r.json();
-        if(Array.isArray(j) && j.length>0) return j;
-        FEED_ERROR = Array.isArray(j) ? 'JSON feed is empty.' : 'JSON not an array.';
-      } else {
-        FEED_ERROR = `JSON feed not ok: ${r.status}`;
-      }
-      throw new Error('No usable JSON');
-    }catch(e){
-      try{
-        const r = await fetch(CONFIG.htmlFallback, {cache:'no-store'});
-        if(!r.ok) { FEED_ERROR = `HTML fallback not ok: ${r.status}`; throw new Error('HTML fallback missing'); }
-        const html = await r.text();
-        const parsed = parseHTMLSchedule(html);
-        if(!parsed.length) FEED_ERROR = 'Parsed 0 sessions from HTML fallback.';
-        return parsed;
-      }catch(e2){
-        FEED_ERROR = FEED_ERROR || e2.message || 'Unknown feed error';
-        return [];
-      }
-    }
-  }
-
-  async function loadManualSessions(){
-    const j = await loadJSON(CONFIG.manualSessions);
-    return Array.isArray(j) ? j : [];
-  }
-
-  function parseHTMLSchedule(html){
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const anchors = [...doc.querySelectorAll('a[href*="enroll?id="]')];
-    const rows = [];
-    anchors.forEach(a=>{
-      const url = new URL(a.getAttribute('href'), location.origin).href;
-      const idMatch = url.match(/id=(\d+)/); const id = idMatch? Number(idMatch[1]) : undefined;
-      const row = a.closest('tr') || a.closest('.row') || a.parentElement;
-      const text = (row ? row.innerText : a.innerText || '').replace(/\s+/g,' ').trim();
-      const title = text.match(/AHA|HSI|Heartsaver|BLS|ACLS|PALS/i)?.[0] ? text : (a.title || a.textContent.trim());
-      const when = text.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b.*?\d{1,2}:\d{2}\s*(?:AM|PM)/i)?.[0] || text.match(/\d{4}-\d{2}-\d{2}.*?\d{1,2}:\d{2}/)?.[0];
-      const location = text.match(/Wilmington|Burgaw|Jacksonville|Shipyard|Sound Rd|Hinton Ave|Gum Branch/i)?.[0] || '';
-      const startAttr = a.getAttribute('data-start');
-      const start = startAttr || guessDate(when);
-      const courseType = guessType(title);
-      rows.push({ id, classType: courseType, title, start, end:null, location, instructor:null, seats:null, url });
-    });
-    return rows;
-  }
-
-  function guessType(title=''){
-    const t = title.toLowerCase();
-    if(t.includes('acls')) return 'ACLS';
-    if(t.includes('pals')) return 'PALS';
-    if(t.includes('bls')) return 'BLS';
-    if(t.includes('heartsaver')) return 'Heartsaver';
-    if(t.includes('hsi')) return 'HSI';
-    return 'Other';
-  }
-  function guessDate(str){ if(!str) return null; const d = new Date(str); return isNaN(d) ? null : d.toISOString(); }
-
-  function withinWindow(dtISO){
-    if(!dtISO) return false; const start = new Date(dtISO); if(isNaN(start)) return false;
-    const now = new Date(); const limit = new Date(now.getTime() + CONFIG.windowDays*24*3600*1000);
-    return start >= now && start <= limit;
-  }
-
-  function fmtDate(dtISO){ const d = new Date(dtISO); const opt = {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}; return d.toLocaleString(undefined,opt); }
-  function seatText(seats){ if(!seats) return ''; const left = seats.capacity - seats.enrolled; return `${left} seats left`; }
-  function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
-
-  function makeTitleCard(text, blurb){ const el = document.createElement('div'); el.className = 'card title'; el.innerHTML = `<h2>${text}</h2>${blurb?`<small>${blurb}</small>`:''}`; return el; }
-  function makeCourseCard(c){
-    const el = document.createElement('div'); el.className = 'card course'; const keySlug = slug(c.key); el.id = `card-${keySlug}`;
-    el.innerHTML = `
-      <h3 id="h-${keySlug}"><a href="#${keySlug}" style="text-decoration:none;color:inherit">${c.title}</a> <span class="chip">${c.short||''}</span></h3>
-      <details id="d-${keySlug}" data-key="${keySlug}">
-        <summary aria-label="Show description and upcoming sessions">Course details & upcoming sessions</summary>
-        <div class="desc" id="desc-${keySlug}">${c.desc||''}</div>
-        <ul class="slots" id="slots-${keySlug}"><li class="note">Loading sessions…</li></ul>
-      </details>`;
-    return el;
-  }
-
-  function matchesCourse(feedItem, course){
-    if(course.scheduleFilter?.classType && feedItem.classType === course.scheduleFilter.classType) return true;
-    if(Array.isArray(course.courseMatch)){ const t = (feedItem.title||'').toLowerCase(); return course.courseMatch.some(k => t.includes(String(k).toLowerCase())); }
-    return false;
-  }
-
-  function mergeSessions(live, manual){
-    const all = [...live, ...manual];
-    const seen = new Set();
-    const out = [];
-    all.forEach(s=>{ const id = s.id || `${s.classType}-${s.start}-${s.location}`; if(!seen.has(id)){ seen.add(id); out.push(s); } });
-    return out;
-  }
-
-  async function loadSnippets(){
-    await Promise.all(CATALOG.map(async c=>{
-      if(c.type!=="course" || !c.descHtml) return;
-      const path = CONFIG.snippetRoot + c.descHtml;
-      try{
-        const r = await fetch(path, {cache:'no-store'});
-        if(!r.ok) return; const html = await r.text();
-        const el = document.getElementById(`desc-${slug(c.key)}`);
-        if(el){ el.innerHTML = html; }
-      }catch(e){ /* ignore */ }
-    }));
-  }
-
-  function renderCatalog(container, feed){
-    container.innerHTML = '';
-    const detailsMap = new Map();
-    CATALOG.forEach((item) =>{
-      if(item.type === 'title'){
-        container.appendChild(makeTitleCard(item.text, item.blurb));
-      } else if(item.type === 'course'){
-        const card = makeCourseCard(item); container.appendChild(card);
-        const keySlug = slug(item.key);
-        const slotsEl = card.querySelector(`#slots-${keySlug}`);
-        const det = card.querySelector(`#d-${keySlug}`); detailsMap.set(keySlug, det);
-        const sessionsLive = feed.filter(s => matchesCourse(s, item)).filter(s => withinWindow(s.start));
-        const sessionsManual = MANUAL.filter(s => matchesCourse(s, item)).filter(s => withinWindow(s.start));
-        const sessions = mergeSessions(sessionsLive, sessionsManual).sort((a,b)=> new Date(a.start) - new Date(b.start)).slice(0, CONFIG.maxSessionsPerCourse);
-
-        if(!sessions.length){
-          slotsEl.innerHTML = '<li class="note">No upcoming sessions in the next 4 weeks. See full schedule.</li>';
-        }else{
-          slotsEl.innerHTML = '';
-          sessions.forEach(s=>{
-            const li = document.createElement('li'); const seat = seatText(s.seats);
-            li.innerHTML = `
-              <div>
-                <time datetime="${s.start}">${fmtDate(s.start)}</time>
-                <div class="meta">${s.location || ''}</div>
-              </div>
-              <div class="go">
-                <a class="btn" href="${s.url}" rel="noopener" target="_blank" aria-label="Register for ${item.title} on ${fmtDate(s.start)}">Register →</a>
-                ${seat?`<div class="note" style="text-align:right">${seat}</div>`:''}
-              </div>`;
-            slotsEl.appendChild(li);
-          });
-        }
-      }
-    });
-    applyOpenFromURL(detailsMap);
-  }
-
-  function applyOpenFromURL(detailsMap){
-    const params = new URLSearchParams(location.search);
-    const openAll = params.get('open') === 'all';
+// Open the details matching location.hash and scroll into view (no-op if not found)
+function applyOpenFromURL(map){
+  try{
     const hash = decodeURIComponent(location.hash.replace('#',''));
-    if(openAll){ detailsMap.forEach(d => d && d.setAttribute('open','')); return; }
-    if(hash && detailsMap.has(hash)){
-      const d = detailsMap.get(hash); if(d){ d.setAttribute('open',''); }
-      const card = document.getElementById(`card-${hash}`); if(card){ card.scrollIntoView({behavior:'smooth', block:'start'}); }
+    if(!hash) return;
+    const det = map && map.get ? map.get(hash) : null;
+    if(det){
+      det.setAttribute('open','');
+      const card = document.getElementById(`card-${hash}`) || det.closest('.card');
+      if(card && card.scrollIntoView){ card.scrollIntoView({behavior:'smooth',block:'start'}); }
+      const sum = det.querySelector('summary');
+      if(sum && sum.focus) sum.focus();
+    }
+  }catch(e){ /* never throw */ }
+}
+
+// ==========================
+// CONFIG & CONSTANTS
+// ==========================
+const CONFIG = {
+  windowDays: 28,
+  maxSessionsPerCourse: 15,
+  jsonFeed: "docs/data/schedule.json",
+  htmlFallback: "docs/data/enrollware-schedule.html",
+  snippetRoot: "docs/courses/" // per-course HTML goes in docs/courses/{slug(title)}.html
+};
+const ENROLLWARE_BASE = 'https://coastalcprtraining.enrollware.com/';
+const IMG_BASE = 'https://www.enrollware.com/sitefiles/coastalcprtraining/';
+const FAMILY_IMG = { bls:'25-bls-new.png', acls:'25-acls-new.png', pals:'25-pals-new.png', faid:'25_Heartsaver.png' };
+const BRAND_LOGO = {
+  AHA: IMG_BASE + '_AHA.png',
+  'Red Cross': IMG_BASE + '_ARC.png',
+  HSI: IMG_BASE + '_HSI.png'
+};
+
+// ==========================
+// FEED LOADING (robust JSON detection)
+// ==========================
+let FEED = [];
+let FEED_ERROR = null;
+
+async function loadJSONRobust(url){
+  const r = await fetch(url, {cache:'no-store'});
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  const text = await r.text();
+  if(text.trim().startsWith('<')) throw new Error('Expected JSON, got HTML');
+  try{ return JSON.parse(text); }
+  catch(parseErr){ throw new Error('Invalid JSON in schedule.json'); }
+}
+
+async function loadFeed(){
+  try{
+    const j = await loadJSONRobust(CONFIG.jsonFeed);
+    if(Array.isArray(j) && j.length>0) return j; 
+    FEED_ERROR = Array.isArray(j) ? 'JSON feed is empty.' : 'JSON feed present but not an array.';
+    throw new Error(FEED_ERROR);
+  }catch(e){
+    try{
+      const r = await fetch(CONFIG.htmlFallback, {cache:'no-store'});
+      if(!r.ok) { FEED_ERROR = `HTML fallback not ok: ${r.status}`; throw new Error('No HTML fallback'); }
+      const html = await r.text();
+      const parsed = parseHTMLSchedule(html);
+      if(!parsed.length) FEED_ERROR = 'Parsed 0 sessions from HTML fallback.';
+      return parsed;
+    }catch(e2){ FEED_ERROR = FEED_ERROR || e.message || e2.message; return []; }
+  }
+}
+
+// ==========================
+// SNAPSHOT HTML PARSER (coarse but effective)
+// ==========================
+function parseHTMLSchedule(html){
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const anchors = [...doc.querySelectorAll('a[href*="enroll?id="]')];
+  const rows = [];
+  anchors.forEach(a=>{
+    const href = a.getAttribute('href') || '';
+    const url = href.startsWith('http') ? href : new URL(href, ENROLLWARE_BASE).href;
+    const idMatch = url.match(/id=(\d+)/); const id = idMatch? Number(idMatch[1]) : undefined;
+    const row = a.closest('tr') || a.closest('.row') || a.parentElement;
+    const text = (row ? row.innerText : a.innerText || '').replace(/\s+/g,' ').trim();
+    const title = text || (a.title || a.textContent.trim());
+    const when = text.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b.*?\d{1,2}:\d{2}\s*(?:AM|PM)/i)?.[0] || text.match(/\d{4}-\d{2}-\d{2}.*?\d{1,2}:\d{2}/)?.[0];
+    const location = text.match(/Wilmington|Burgaw|Jacksonville|Shipyard|Sound Rd|Hinton Ave|Gum Branch/i)?.[0] || '';
+    const startAttr = a.getAttribute('data-start');
+    const start = startAttr || guessDate(when);
+    const classType = guessType(title);
+    rows.push({ id, classType, title, start, end:null, location, instructor:null, seats:null, url });
+  });
+  return rows;
+}
+
+// ==========================
+// HELPERS
+// ==========================
+function guessType(title=''){
+  const t = title.toLowerCase();
+  if(t.includes('acls')) return 'ACLS';
+  if(t.includes('pals')) return 'PALS';
+  if(t.includes('bls')) return 'BLS';
+  if(t.includes('heartsaver')) return 'Heartsaver';
+  if(t.includes('hsi')) return 'HSI';
+  return 'Other';
+}
+function guessDate(str){ if(!str) return null; const d = new Date(str); return isNaN(d) ? null : d.toISOString(); }
+function withinWindow(dtISO){ if(!dtISO) return false; const s=new Date(dtISO); if(isNaN(s)) return false; const now=new Date(); const cap=new Date(now.getTime()+CONFIG.windowDays*86400000); return s>=now && s<=cap; }
+
+// ==========================
+// DYNAMIC RENDER: mirror snapshot order + group under headers (only courses with dates)
+// ==========================
+function detectBrand(title=''){
+  const t=title.toLowerCase();
+  if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
+  if(t.includes('hsi')) return 'HSI';
+  if(t.includes('aha')||t.includes('american heart')) return 'AHA';
+  return null;
+}
+function buildUpcomingMap(feed){
+  const map=new Map();
+  feed.filter(s=>withinWindow(s.start)).forEach(s=>{
+    const k=(s.title||'').trim(); if(!k) return;
+    if(!map.has(k)) map.set(k,[]);
+    map.get(k).push(s);
+  });
+  map.forEach(v=>v.sort((a,b)=>new Date(a.start)-new Date(b.start)));
+  return map;
+}
+function isSectionHeaderText(t){
+  const x=(t||'').toLowerCase().trim();
+  return x.startsWith('healthcare provider: bls')
+      || x.startsWith('healthcare provider: acls')
+      || x.startsWith('healthcare provider: pals')
+      || x.startsWith('healthcare provider: asls')
+      || x==='cpr / aed & first aid'
+      || x==='cpr / aed only'
+      || x==='instructor programs'
+      || x==='other programs';
+}
+function familyFromHeader(text){
+  const t=text.toLowerCase();
+  if(t.includes('bls')) return 'bls';
+  if(t.includes('acls')) return 'acls';
+  if(t.includes('pals')) return 'pals';
+  return 'faid';
+}
+function makeTitleCard(text, blurb, family){
+  const el=document.createElement('div');
+  el.className='card title' + (family? (' '+family) : '');
+  const img = (family && FAMILY_IMG[family]) ? `<img class="famimg" src="${IMG_BASE}${FAMILY_IMG[family]}" alt="${family} icon"/>` : '';
+  el.innerHTML=`<h2>${text}</h2>${blurb?`<small>${blurb}</small>`:''}${img}`;
+  return el;
+}
+function createCourseCardExact(title, sessions){
+  const brand = detectBrand(title);
+  const el=document.createElement('div');
+  el.className='card course';
+  const keySlug=slug(title);
+  el.id=`card-${keySlug}`;
+  const brandSrc = brand && BRAND_LOGO[brand] ? BRAND_LOGO[brand] : '';
+  const brandImg = brandSrc ? `<img class="brandicon" src="${brandSrc}" alt="${brand} logo"/>` : '';
+  el.innerHTML=`
+    <h3 id="h-${keySlug}">${brandImg}<a href="#${keySlug}" style="text-decoration:none;color:inherit">${title}</a></h3>
+    <details id="d-${keySlug}" data-key="${keySlug}">
+      <summary>Course details & upcoming sessions</summary>
+      <div class="desc" id="desc-${keySlug}"><!-- Course Description --></div>
+      <ul class="slots" id="slots-${keySlug}"></ul>
+    </details>`;
+  const ul = el.querySelector(`#slots-${keySlug}`);
+  if(!sessions || !sessions.length){
+    ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. See full schedule.</li>';
+  } else {
+    sessions.slice(0,CONFIG.maxSessionsPerCourse).forEach(s=>{
+      const li=document.createElement('li');
+      li.innerHTML = `<a class=\"slotbtn\" href=\"${s.url}\" target=\"_blank\" rel=\"noopener\" aria-label=\"Register for ${title} on ${fmtDate(s.start)}\">\n          <div>\n            <time datetime=\"${s.start}\">${fmtDate(s.start)}</time>\n            <div class=\"meta\">${s.location||''}</div>\n          </div>\n          <div class=\"right\">Register →</div>\n        </a>`;
+      ul.appendChild(li);
+    });
+  }
+  return el;
+}
+async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
+  container.innerHTML='';
+  const doc=new DOMParser().parseFromString(snapshotHTML,'text/html');
+  const walker=doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
+  let lastHeaderCard=null;
+  const added=new Set();
+  window._COURSE_KEYS=[];
+  while(walker.nextNode()){
+    const node=walker.currentNode;
+    const text=(node.textContent||'').replace(/\s+/g,' ').trim();
+    if(!text) continue;
+    if(isSectionHeaderText(text)){
+      const fam=familyFromHeader(text);
+      lastHeaderCard = makeTitleCard(text,'',fam);
+      container.appendChild(lastHeaderCard);
+      continue;
+    }
+    const a = node.matches && node.matches('a[href*="enroll?id="]') ? node : (node.querySelector && node.querySelector('a[href*="enroll?id="]'));
+    if(a){
+      const row = a.closest('tr') || a.closest('.row') || node;
+      const title = ((row && row.innerText) ? row.innerText : a.textContent || '').replace(/\s+/g,' ').trim();
+      if(!title) continue;
+      const isInstructor=/instructor/i.test(title); const isRenewal=/renewal/i.test(title);
+      if(isInstructor && isRenewal) continue; // skip instructor renewals
+      const sessions = upcomingMap.get(title);
+      if(!sessions || !sessions.length) continue; // only show with dates
+      if(added.has(title)) continue;
+      const card = createCourseCardExact(title, sessions);
+      if(lastHeaderCard && lastHeaderCard.nextSibling){
+        container.insertBefore(card, lastHeaderCard.nextSibling);
+        lastHeaderCard = card; // maintain insertion point within the section
+      } else {
+        container.appendChild(card);
+      }
+      added.add(title);
+      window._COURSE_KEYS.push(title);
     }
   }
+  if(!container.children.length){
+    upcomingMap.forEach((sessions,title)=>{
+      if(/instructor/i.test(title) && /renewal/i.test(title)) return;
+      container.appendChild(createCourseCardExact(title,sessions));
+      window._COURSE_KEYS.push(title);
+    });
+  }
+  const map=new Map([...container.querySelectorAll('details[id^=\"d-\"]')].map(d=>[d.id.slice(2),d]));
+  applyOpenFromURL(map);
+}
 
-  (async function init(){
-    const grid = document.getElementById('courseGrid');
-    FEED = await loadFeed();
-    MANUAL = await loadManualSessions();
-    renderCatalog(grid, FEED);
-    await loadSnippets();
+// ==========================
+// LEGACY CATALOG (kept as fallback for snippet discovery)
+// ==========================
+const CATALOG = [
+  { type:"title", text:"Healthcare Provider: BLS", blurb:"For clinical staff, hospitals, clinics", family:"bls" },
+  { type:"course", key:"AHA - BLS Provider - In-person Renewal", brand:"AHA", title:"AHA – BLS Provider – In‑Person Renewal" },
+  { type:"course", key:"AHA - BLS Provider - In-person Initial", brand:"AHA", title:"AHA – BLS Provider – In‑Person Initial" },
+  { type:"course", key:"AHA - BLS Provider - Heartcode", brand:"AHA", title:"AHA – BLS Provider – HeartCode (Online + Skills)" },
+  { type:"title", text:"Healthcare Provider: ACLS", blurb:"Advanced Cardiovascular Life Support", family:"acls" },
+  { type:"course", key:"AHA - ACLS Provider - In-person - Initial", brand:"AHA", title:"AHA – ACLS Provider – Initial" },
+  { type:"course", key:"AHA - ACLS Provider - In-person - Renewal", brand:"AHA", title:"AHA – ACLS Provider – Renewal" },
+  { type:"course", key:"AHA - ACLS Provider - Heartcode", brand:"AHA", title:"AHA – ACLS Provider – HeartCode (Online + Skills)" },
+  { type:"title", text:"Healthcare Provider: PALS", blurb:"Pediatric Advanced Life Support", family:"pals" },
+  { type:"course", key:"AHA - PALS Provider - In Person - Initial", brand:"AHA", title:"AHA – PALS Provider – Initial" },
+  { type:"course", key:"AHA - PALS Provider - In Person - Renewal", brand:"AHA", title:"AHA – PALS Provider – Renewal" },
+  { type:"course", key:"AHA - PALS Provider - Heartcode", brand:"AHA", title:"AHA – PALS Provider – HeartCode (Online + Skills)" },
+  { type:"title", text:"CPR / AED & First Aid", blurb:"First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.", family:"faid" },
+  { type:"title", text:"CPR / AED Only", blurb:"First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an AED in a safe, timely, and effective manner.", family:"faid" },
+  { type:"title", text:"Instructor Programs", blurb:"Become an instructor and teach CPR, First Aid, or BLS through AHA, HSI, or Red Cross.", family:"bls" },
+  { type:"title", text:"Other Programs", blurb:"Workplace & community classes", family:"faid" }
+];
 
-    if(!FEED.length && !MANUAL.length){
-      const warn = document.createElement('div'); warn.className = 'note'; warn.style.color = '#a00'; warn.style.fontWeight = '700'; warn.style.marginTop = '12px';
-      warn.textContent = `No sessions loaded. Put JSON at ${CONFIG.jsonFeed} or HTML fallback at ${CONFIG.htmlFallback}. Detail: ${FEED_ERROR || 'n/a'}`;
-      document.querySelector('.wrap').appendChild(warn);
-    }
-  })();
+// ==========================
+// BOOT (snapshot-first; JSON if available)
+// ==========================
+(async function init(){
+  const grid=document.getElementById('courseGrid');
+  const [feed, snapshot] = await Promise.all([
+    loadFeed(),
+    fetch(CONFIG.htmlFallback,{cache:'no-store'}).then(r=>r.ok?r.text():Promise.resolve('<body></body>')).catch(()=>'<body></body>')
+  ]);
+  FEED = feed;
+  const upcoming = buildUpcomingMap(FEED);
+  await renderFromSnapshot(grid, upcoming, snapshot);
+  await loadSnippets();
+  if(!FEED.length){
+    const warn=document.createElement('div');
+    warn.className='note';
+    warn.style.color='#ffcccc';
+    warn.style.fontWeight='700';
+    warn.style.marginTop='12px';
+    warn.textContent=`No sessions loaded. Check docs/data/schedule.json or docs/data/enrollware-schedule.html. Detail: ${FEED_ERROR||'n/a'}`;
+    document.querySelector('.wrap').appendChild(warn);
+  }
+})();
 
-  window.addEventListener('hashchange', () => {
-    const grid = document.getElementById('courseGrid');
-    const map = new Map([...grid.querySelectorAll('details[id^="d-"]')].map(d => [d.id.slice(2), d]));
-    applyOpenFromURL(map);
-  });
-  </script>
+window.addEventListener('hashchange',()=>{
+  const grid=document.getElementById('courseGrid');
+  const map=new Map([...grid.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
+  applyOpenFromURL(map);
+});
+</script>
+
+<!-- inject per-course HTML snippets into Course Description areas -->
+<script>
+async function loadSnippets(){
+  const keys = Array.isArray(window._COURSE_KEYS)&&window._COURSE_KEYS.length
+    ? window._COURSE_KEYS
+    : CATALOG.filter(c=>c.type==='course').map(c=>c.title||c.key);
+  const fetchOne=async(title)=>{
+    const file=CONFIG.snippetRoot + slug(title) + '.html';
+    try{
+      const r=await fetch(file,{cache:'no-store'});
+      if(!r.ok) return; 
+      const html=await r.text();
+      const el=document.getElementById('desc-'+slug(title));
+      if(el){ el.innerHTML=html; }
+    }catch(e){/* ignore */}
+  };
+  await Promise.all(keys.map(fetchOne));
+}
+
+// ==========================
+// Minimal self-tests (non-blocking)
+// ==========================
+console.assert(slug('AHA - BLS Provider - In-person Initial')==='aha---bls-provider---in-person-initial','slug() failed');
+(function testWithin(){
+  const now=new Date();
+  const in3d=new Date(now.getTime()+3*86400000).toISOString();
+  const in60d=new Date(now.getTime()+60*86400000).toISOString();
+  console.assert(withinWindow(in3d)===true,'withinWindow short range');
+  console.assert(withinWindow(in60d)===false,'withinWindow beyond window');
+})();
+(function testApplyOpen(){
+  // should not throw with empty map or empty hash
+  history.replaceState(null,'',location.pathname);
+  applyOpenFromURL(new Map());
+})();
+</script>
 </body>
 </html>
