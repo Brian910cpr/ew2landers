@@ -1,3 +1,4 @@
+# scripts/parse_enrollware.py
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys, re, json
@@ -112,12 +113,8 @@ def main():
             })
             course_idx[ct_key] = len(courses) - 1
 
-        # Find a nearby time snippet; keep human text and try to parse ISO
         tm = re.search(r"\b\d{1,2}:\d{2}\s?(AM|PM)\b", row_text, re.I)
-        if tm:
-            start_text = row_text[max(0, tm.start()-30): tm.end()+40]
-        else:
-            start_text = row_text[:140]
+        start_text = row_text[max(0, tm.start()-30): tm.end()+40] if tm else row_text[:140]
 
         try:
             dt = dateparser.parse(start_text, fuzzy=True)
