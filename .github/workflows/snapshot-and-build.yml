@@ -1,11 +1,10 @@
-name: Snapshot Enrollware + Build schedule.json and pivot.json
+# .github/workflows/snapshot-and-build.yml
+name: Snapshot Enrollware + Build schedule.json
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 * * * *"   # hourly at :17
-  push:
-    branches: [ "main" ]
+    - cron: "17 * * * *"
 
 permissions:
   contents: write
@@ -17,69 +16,77 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ensure data dir
-        run: mkdir -p docs/data scripts
-
-      - name: Fetch Enrollware snapshot
+      # 1) (Whatever you're already doing to fetch the snapshot)
+      - name: Download snapshot to docs/data/enrollware-schedule.html
         run: |
-          curl -fSL \
-            'https://coastalcprtraining.enrollware.com/schedule' \
-            -o docs/data/enrollware-schedule.html
+          mkdir -p docs/data
+          curl -fSL "https://coastalcprtraining.enrollware.com/sitefiles/coastalcprtraining/schedule.html" -o docs/data/enrollware-schedule.html
           ls -l docs/data/enrollware-schedule.html
-          wc -c docs/data/enrollware-schedule.html || true
+          wc -c docs/data/enrollware-schedule.html
 
-      - name: Install deps
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
-      - run: |
-          python -m pip install --upgrade pip
-          pip install beautifulsoup4 lxml python-dateutil
-          sudo apt-get update -qq
-          sudo apt-get install -y jq
+          python-version: '3.x'
 
-      - name: Verify parser exists
+      - name: Install parser deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install beautifulsoup4 lxml python-dateutil jq
+
+      # 2) Build schedule.json from the snapshot (your existing parser)
+      - name: Build docs/data/schedule.json
         run: |
           test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
-
-      - name: Build pivot.json (rich)
-        run: |
-          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/pivot.json
-          jq -e . docs/data/pivot.json >/dev/null
-
-      - name: Build schedule.json (coarse sessions list)
-        run: |
-          python - << 'PY'
-import sys,re,json
-from bs4 import BeautifulSoup
-ENR="https://coastalcprtraining.enrollware.com/"
-html=open("docs/data/enrollware-schedule.html","r",encoding="utf-8",errors="ignore").read()
-soup=BeautifulSoup(html,"lxml")
-rows=[]
-for a in soup.select('a[href*="enroll?id="]'):
-    href=a.get("href") or ""
-    url=href if href.startswith("http") else ENR+href.lstrip("./")
-    m=re.search(r"id=(\d+)",url); sess=int(m.group(1)) if m else None
-    row=a.find_parent(["tr","div"]) or a
-    text=" ".join((row.get_text(" ",strip=True) if row else a.get_text(" ",strip=True)).split())
-    title=a.get("title") or a.get_text(" ",strip=True) or text
-    # Minimal fields; index.html will time-window filter
-    rows.append({
-        "id":sess,"classType":"", "title":title, "start":None,
-        "end":None,"location":"","instructor":None,"seats":None,"url":url
-    })
-open("docs/data/schedule.json","w",encoding="utf-8").write(json.dumps(rows,ensure_ascii=False,indent=2))
-PY
+          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
           jq -e . docs/data/schedule.json >/dev/null
 
+      # 3) WRITE status.json so you can see health from the site
+      - name: Write docs/data/status.json
+        run: |
+          python - <<'PY'
+          import json, os, time, hashlib
+          def sha256(path):
+              try:
+                  with open(path,'rb') as f:
+                      import hashlib
+                      h=hashlib.sha256()
+                      for chunk in iter(lambda: f.read(1<<20), b''):
+                          h.update(chunk)
+                      return h.hexdigest()
+              except FileNotFoundError:
+                  return None
+          now = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+          snap_path = 'docs/data/enrollware-schedule.html'
+          sched_path = 'docs/data/schedule.json'
+          out = {
+              "updated_at": now,
+              "snapshot": {
+                  "exists": os.path.exists(snap_path),
+                  "bytes": os.path.getsize(snap_path) if os.path.exists(snap_path) else 0,
+                  "sha256": sha256(snap_path)
+              },
+              "schedule": {
+                  "exists": os.path.exists(sched_path),
+                  "bytes": os.path.getsize(sched_path) if os.path.exists(sched_path) else 0,
+                  "sha256": sha256(sched_path)
+              }
+          }
+          os.makedirs('docs/data', exist_ok=True)
+          with open('docs/data/status.json','w',encoding='utf-8') as f:
+              json.dump(out, f, ensure_ascii=False, indent=2)
+          print(json.dumps(out, indent=2))
+          PY
+
+      # 4) Commit any changes (schedule.json or status.json)
       - name: Commit if changed
         run: |
-          if git diff --quiet -- docs/data/pivot.json docs/data/schedule.json docs/data/enrollware-schedule.html; then
-            echo "No changes."
+          if git diff --quiet -- docs/data/schedule.json docs/data/status.json; then
+            echo "No data changes."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/pivot.json docs/data/schedule.json docs/data/enrollware-schedule.html
-          git commit -m "chore: refresh snapshot + rebuild pivot.json & schedule.json"
+          git add docs/data/schedule.json docs/data/status.json
+          git commit -m "data: update schedule.json + status.json"
           git push
