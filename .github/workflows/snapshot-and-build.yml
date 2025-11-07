@@ -1,9 +1,11 @@
-name: Snapshot Enrollware + Build schedule.json
+name: Snapshot Enrollware + Build schedule.json and pivot.json
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "11 * * * *"
+    - cron: "17 * * * *"   # hourly at :17
+  push:
+    branches: [ "main" ]
 
 permissions:
   contents: write
@@ -15,71 +17,69 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ensure docs/data exists
-        run: |
-          set -xe
-          mkdir -p docs/data
+      - name: Ensure data dir
+        run: mkdir -p docs/data scripts
 
-      - name: Snapshot Enrollware schedule HTML
+      - name: Fetch Enrollware snapshot
         run: |
-          set -xe
           curl -fSL \
-            -A "910CPR-LanderBot/1.0 (+https://brian910cpr.github.io/ew2landers/)" \
-            https://coastalcprtraining.enrollware.com/schedule \
+            'https://coastalcprtraining.enrollware.com/schedule' \
             -o docs/data/enrollware-schedule.html
-          wc -c docs/data/enrollware-schedule.html
-          head -n 10 docs/data/enrollware-schedule.html || true
+          ls -l docs/data/enrollware-schedule.html
+          wc -c docs/data/enrollware-schedule.html || true
 
-      - name: Setup Python
+      - name: Install deps
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-
-      - name: Install deps
-        run: |
-          set -xe
+      - run: |
           python -m pip install --upgrade pip
           pip install beautifulsoup4 lxml python-dateutil
-          sudo apt-get update
+          sudo apt-get update -qq
           sudo apt-get install -y jq
 
-      - name: Compile parser (syntax check)
+      - name: Verify parser exists
         run: |
-          set -xe
           test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
-          python -m py_compile scripts/parse_enrollware.py
-          head -n 20 scripts/parse_enrollware.py
 
-      - name: Build docs/data/schedule.json
+      - name: Build pivot.json (rich)
         run: |
-          set -xe
-          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
-          wc -c docs/data/schedule.json
+          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/pivot.json
+          jq -e . docs/data/pivot.json >/dev/null
+
+      - name: Build schedule.json (coarse sessions list)
+        run: |
+          python - << 'PY'
+import sys,re,json
+from bs4 import BeautifulSoup
+ENR="https://coastalcprtraining.enrollware.com/"
+html=open("docs/data/enrollware-schedule.html","r",encoding="utf-8",errors="ignore").read()
+soup=BeautifulSoup(html,"lxml")
+rows=[]
+for a in soup.select('a[href*="enroll?id="]'):
+    href=a.get("href") or ""
+    url=href if href.startswith("http") else ENR+href.lstrip("./")
+    m=re.search(r"id=(\d+)",url); sess=int(m.group(1)) if m else None
+    row=a.find_parent(["tr","div"]) or a
+    text=" ".join((row.get_text(" ",strip=True) if row else a.get_text(" ",strip=True)).split())
+    title=a.get("title") or a.get_text(" ",strip=True) or text
+    # Minimal fields; index.html will time-window filter
+    rows.append({
+        "id":sess,"classType":"", "title":title, "start":None,
+        "end":None,"location":"","instructor":None,"seats":None,"url":url
+    })
+open("docs/data/schedule.json","w",encoding="utf-8").write(json.dumps(rows,ensure_ascii=False,indent=2))
+PY
           jq -e . docs/data/schedule.json >/dev/null
-          head -n 30 docs/data/schedule.json || true
 
-      - name: Commit snapshot if changed
+      - name: Commit if changed
         run: |
-          set -xe
-          if git diff --quiet -- docs/data/enrollware-schedule.html; then
-            echo "No snapshot changes."
-          else
-            git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add docs/data/enrollware-schedule.html
-            git commit -m "chore: refresh Enrollware schedule snapshot"
-            git push
-          fi
-
-      - name: Commit schedule.json if changed
-        run: |
-          set -xe
-          if git diff --quiet -- docs/data/schedule.json; then
-            echo "No changes to schedule.json"
+          if git diff --quiet -- docs/data/pivot.json docs/data/schedule.json docs/data/enrollware-schedule.html; then
+            echo "No changes."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/schedule.json
-          git commit -m "chore: build schedule.json from snapshot"
+          git add docs/data/pivot.json docs/data/schedule.json docs/data/enrollware-schedule.html
+          git commit -m "chore: refresh snapshot + rebuild pivot.json & schedule.json"
           git push
