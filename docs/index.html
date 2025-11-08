@@ -13,7 +13,6 @@
       --accent:#0f61bb;
       --shadow:0 2px 16px rgba(6,10,18,.35);
       --radius:18px;
-      /* family color chips */
       --bls:#b6d4ff;   /* BLS */
       --acls:#ff7474;  /* ACLS */
       --pals:#c59eff;  /* PALS */
@@ -32,7 +31,7 @@
     .nav a[target="_blank"]::after{content:" ↗";opacity:.7;font-weight:700}
     .nav a:hover{background:#122448;border-color:#2f416a}
 
-    #dataStatus{font:13px/1.3 system-ui; color:#9fb6e8; margin:4px 0 18px}
+    #dataStatus{font:13px/1.3 system-ui;color:#9fb6e8;margin:4px 0 18px}
 
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
     .card{background:#0e1726;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;min-height:120px;border:1px solid #243349;position:relative}
@@ -44,7 +43,7 @@
     .card.course{grid-column:span 6}
     @media(max-width:860px){.card.course{grid-column:span 12}}
 
-    /* Section separators with left accent bar (width 12px) */
+    /* Section headers */
     .card.title{grid-column:1 / -1;background:#0f1c33;color:var(--ink);border:1px solid #2a3b62;position:relative;overflow:hidden}
     .card.title::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#2a3b62}
     .card.title.bls::before{background:var(--bls)}
@@ -67,13 +66,11 @@
     .slots{margin:8px 0 0;padding:0;list-style:none}
     .slots li{display:block;padding:0;margin:10px 0;background:transparent;border:none}
 
-    /* Full-width clickable slot button */
     .slotbtn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px;border-radius:12px;background:#152242;border:1px solid #2a3b62;color:var(--ink);text-decoration:none}
     .slotbtn:hover{background:#1a2b55;border-color:#385089}
     .slotbtn .meta{font-size:13px;color:#9fb6e8}
     .slotbtn .right{white-space:nowrap;margin-left:12px}
 
-    /* Popular quick-links */
     .popular{display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:center;background:#0b1320;color:var(--ink);border-radius:20px;padding:18px;margin:8px 0 22px;border:1px solid #243349;box-shadow:var(--shadow)}
     .popular h2{margin:6px 0 10px;font-size:clamp(16px,2.2vw,20px);font-weight:750;color:#b6d4ff}
     .tiles{display:flex;flex-wrap:wrap;gap:10px}
@@ -114,14 +111,12 @@
 
   <div id="dataStatus">Checking data status…</div>
 
-  <!-- Certifying bodies / partners -->
   <section class="brandrow" aria-label="Certifying bodies">
     <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 aha-authorized-training-site.png" alt="AHA Authorized Training Site" /></div>
     <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 arc-ltp-logo.jpg" alt="American Red Cross Licensed Training Provider" /></div>
     <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/HSI.png" alt="HSI Training Center" /></div>
   </section>
 
-  <!-- Popular quick-links -->
   <section class="popular" aria-label="Most popular classes">
     <div>
       <h2>Most popular classes</h2>
@@ -139,23 +134,14 @@
     <div class="art"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg" alt="910CPR wave logo banner"/></div>
   </section>
 
-  <!-- Catalog grid renders here -->
   <section id="courseGrid" class="grid" aria-live="polite"></section>
 </div>
 
 <script>
-/* ==========================
-   TOP-LEVEL HELPERS
-   ========================== */
+/* ========== Helpers ========== */
 function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
-function fmtDate(dtISO){
-  const d=new Date(dtISO);
-  if(isNaN(d)) return '';
-  const opt={weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'};
-  return d.toLocaleString(undefined,opt);
-}
+function fmtDate(dtISO){ const d=new Date(dtISO); const opt={weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}; return d.toLocaleString(undefined,opt); }
 
-/* Open the details matching location.hash and scroll into view (no-op if absent) */
 function applyOpenFromURL(map){
   try{
     const hash = decodeURIComponent(location.hash.replace('#',''));
@@ -171,16 +157,16 @@ function applyOpenFromURL(map){
   }catch(e){}
 }
 
-/* ==========================
-   CONFIG & CONSTANTS
-   ========================== */
+/* ========== Config ========== */
 const CONFIG = {
   windowDays: 28,
   maxSessionsPerCourse: 15,
   jsonFeed: "data/schedule.json",
+  htmlFallback: "data/enrollware-schedule.html",
   statusFile: "data/status.json",
-  snippetRoot: "courses/"   // per-course HTML: courses/{slug(title)}.html
+  snippetRoot: "courses/"
 };
+const ENROLLWARE_BASE = 'https://coastalcprtraining.enrollware.com/';
 const IMG_BASE = 'https://www.enrollware.com/sitefiles/coastalcprtraining/';
 const FAMILY_IMG = { bls:'25-bls-new.png', acls:'25-acls-new.png', pals:'25-pals-new.png', faid:'25_Heartsaver.png' };
 const BRAND_LOGO = {
@@ -189,12 +175,7 @@ const BRAND_LOGO = {
   HSI: IMG_BASE + '_HSI.png'
 };
 
-let FEED = [];
-let FEED_ERROR = null;
-
-/* ==========================
-   STATUS INDICATOR
-   ========================== */
+/* ========== Status indicator ========== */
 (function checkDataStatus(){
   const el = document.getElementById('dataStatus');
   if(!el) return;
@@ -208,79 +189,96 @@ let FEED_ERROR = null;
       }
       const snap = st.snapshot || {}, sched = st.schedule || {};
       const ok = snap.exists && snap.bytes>0 && sched.exists && sched.bytes>0;
-      el.innerHTML = (ok
+      el.innerHTML = ok
         ? `Data status: OK • updated ${st.updated_at} • schedule.json ${sched.bytes} bytes`
-        : `Data status: INCOMPLETE • snapshot: ${snap.exists?'yes':'no'} • schedule: ${sched.exists?'yes':'no'}`
-      );
+        : `Data status: INCOMPLETE • snapshot: ${snap.exists?'yes':'no'} • schedule: ${sched.exists?'yes':'no'}`;
       el.className = ok ? 'note ok' : 'note soft';
     })
-    .catch(()=>{
-      el.textContent='Data status: unknown (fetch error).';
-      el.className='note bad';
-    });
+    .catch(()=>{ el.textContent='Data status: unknown (fetch error).'; el.className='note bad'; });
 })();
 
-/* ==========================
-   FEED LOADING / NORMALIZATION
-   ========================== */
+/* ========== Feed loading (pivot-aware) ========== */
+let FEED = [];
+let FEED_ERROR = null;
+
 async function loadJSONRobust(url){
   const r = await fetch(url, {cache:'no-store'});
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
   const text = await r.text();
   if(text.trim().startsWith('<')) throw new Error('Expected JSON, got HTML');
-  try{ return JSON.parse(text); }
-  catch(parseErr){ throw new Error('Invalid JSON in schedule.json'); }
+  return JSON.parse(text);
 }
 
-// Accepts either:
-//  A) legacy array-of-sessions
-//  B) pivot: { meta:{}, sessions:[...] }
+/* key fix: normalize pivot {sessions:[…]} into flat array with .start */
 function normalizeFeed(json){
-  let raw = [];
-  if(Array.isArray(json)) raw = json;
-  else if(json && Array.isArray(json.sessions)) raw = json.sessions;
-  else return [];
-
-  const out = [];
-  for(const s of raw){
-    let startISO = s.start_iso || s.start || null;
-    if(!startISO && s.start_text){
-      const d = new Date(s.start_text);
-      if(!isNaN(d)) startISO = d.toISOString();
-    }
-    out.push({
-      id: s.id,
-      url: s.url,
-      start: startISO,
-      location: s.location || '',
-      title: s.course_title || s.title || '',
-      raw_title: s.title || '',
-      course_title: s.course_title || s.title || '',
-      course_id: s.course_id || slug(s.course_title || s.title || ''),
-      section: s.section || '',
-      classType: s.classType || null,
-      instructor: s.instructor ?? null,
-      seats: s.seats ?? null
-    });
+  let arr;
+  if (Array.isArray(json)) {
+    arr = json;
+  } else if (json && Array.isArray(json.sessions)) {
+    arr = json.sessions;
+  } else {
+    return [];
   }
-  return out;
+  return arr.map(s => {
+    const start = s.start_iso || s.start || null;
+    return Object.assign({}, s, { start });
+  });
 }
 
 async function loadFeed(){
   try{
     const j = await loadJSONRobust(CONFIG.jsonFeed);
     const arr = normalizeFeed(j);
-    if(!arr.length) FEED_ERROR = 'schedule.json is present but has 0 sessions.';
-    return arr;
+    if(Array.isArray(arr) && arr.length>0) return arr;
+    FEED_ERROR = 'JSON feed is empty.';
+    throw new Error(FEED_ERROR);
   }catch(e){
-    FEED_ERROR = e.message || 'Failed to load schedule.json';
-    return [];
+    try{
+      const r = await fetch(CONFIG.htmlFallback, {cache:'no-store'});
+      if(!r.ok) { FEED_ERROR = `HTML fallback not ok: ${r.status}`; throw new Error('No HTML fallback'); }
+      const html = await r.text();
+      const parsed = parseHTMLSchedule(html);
+      if(!parsed.length) FEED_ERROR = 'Parsed 0 sessions from HTML fallback.';
+      return parsed;
+    }catch(e2){
+      FEED_ERROR = FEED_ERROR || e.message || e2.message;
+      return [];
+    }
   }
 }
 
-/* ==========================
-   HELPERS FOR STRUCTURE
-   ========================== */
+/* ========== HTML fallback parser ========== */
+function parseHTMLSchedule(html){
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const anchors = [...doc.querySelectorAll('a[href*="enroll?id="]')];
+  const rows = [];
+  anchors.forEach(a=>{
+    const href = a.getAttribute('href') || '';
+    const url = href.startsWith('http') ? href : new URL(href, ENROLLWARE_BASE).href;
+    const idMatch = url.match(/id=(\d+)/); const id = idMatch? Number(idMatch[1]) : undefined;
+    const row = a.closest('tr') || a.closest('.row') || a.parentElement;
+    const text = (row ? row.innerText : a.innerText || '').replace(/\s+/g,' ').trim();
+    const title = text || (a.title || a.textContent.trim());
+    const when = text.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b.*?\d{1,2}:\d{2}\s*(?:AM|PM)/i)?.[0] ||
+                 text.match(/\d{4}-\d{2}-\d{2}.*?\d{1,2}:\d{2}/)?.[0];
+    const location = text.match(/Wilmington|Burgaw|Jacksonville|Shipyard|Sound Rd|Hinton Ave|Gum Branch|Merlot|Wright St/i)?.[0] || '';
+    const start = when ? new Date(when).toISOString() : null;
+    const classType = guessType(title);
+    rows.push({ id, classType, title, start, end:null, location, instructor:null, seats:null, url });
+  });
+  return rows;
+}
+
+/* ========== general helpers ========== */
+function guessType(title=''){
+  const t = title.toLowerCase();
+  if(t.includes('acls')) return 'ACLS';
+  if(t.includes('pals')) return 'PALS';
+  if(t.includes('bls')) return 'BLS';
+  if(t.includes('heartsaver')) return 'Heartsaver';
+  if(t.includes('hsi')) return 'HSI';
+  return 'Other';
+}
 function withinWindow(dtISO){
   if(!dtISO) return false;
   const s=new Date(dtISO);
@@ -290,6 +288,7 @@ function withinWindow(dtISO){
   return s>=now && s<=cap;
 }
 
+/* ========== render from snapshot order ========== */
 function detectBrand(title=''){
   const t=title.toLowerCase();
   if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
@@ -297,75 +296,35 @@ function detectBrand(title=''){
   if(t.includes('aha')||t.includes('american heart')) return 'AHA';
   return null;
 }
-
+function buildUpcomingMap(feed){
+  const map=new Map();
+  feed.filter(s=>withinWindow(s.start)).forEach(s=>{
+    const k=(s.course_title || s.title || '').trim();
+    if(!k) return;
+    if(!map.has(k)) map.set(k,[]);
+    map.get(k).push(s);
+  });
+  map.forEach(v=>v.sort((a,b)=>new Date(a.start)-new Date(b.start)));
+  return map;
+}
+function isSectionHeaderText(t){
+  const x=(t||'').toLowerCase().trim();
+  return x.startsWith('healthcare provider: bls')
+      || x.startsWith('healthcare provider: acls')
+      || x.startsWith('healthcare provider: pals')
+      || x.startsWith('healthcare provider: asls')
+      || x==='cpr / aed & first aid'
+      || x==='cpr / aed only'
+      || x==='instructor programs'
+      || x==='other programs';
+}
 function familyFromHeader(text){
-  const t=(text||'').toLowerCase();
+  const t=text.toLowerCase();
   if(t.includes('bls')) return 'bls';
   if(t.includes('acls')) return 'acls';
   if(t.includes('pals')) return 'pals';
   return 'faid';
 }
-
-// Split the long section string into a short title + blurb.
-function splitSection(full){
-  if(!full) return {title:'Other Programs', blurb:''};
-  const idx = full.toLowerCase().indexOf('course ');
-  if(idx > 0){
-    const title = full.slice(0, idx).trim();
-    const blurb = full.slice(idx + 'course'.length).trim();
-    return {title: title || full, blurb};
-  }
-  return {title: full, blurb:''};
-}
-
-/* Build sections + courses + sessions purely from JSON (in snapshot order) */
-function buildStructure(feed){
-  const sections = [];
-  const sectionMap = new Map(); // sectionKey -> sectionObj
-  const courses = [];
-  const courseMap = new Map();  // courseId -> courseObj
-  const courseSessions = new Map(); // courseId -> [sessions]
-
-  for(const s of feed){
-    if(!withinWindow(s.start)) continue;  // only upcoming
-
-    const secKey = s.section || 'Other Programs';
-    let sec = sectionMap.get(secKey);
-    if(!sec){
-      const parts = splitSection(secKey);
-      const fam = familyFromHeader(parts.title);
-      sec = { key: secKey, title: parts.title, blurb: parts.blurb, family: fam, index: sections.length };
-      sectionMap.set(secKey, sec);
-      sections.push(sec);
-    }
-
-    const cId = s.course_id || slug(s.course_title || s.title || '');
-    let course = courseMap.get(cId);
-    if(!course){
-      const cTitle = s.course_title || s.title || '';
-      course = {
-        id: cId,
-        title: cTitle,
-        sectionKey: secKey,
-        brand: detectBrand(cTitle)
-      };
-      courseMap.set(cId, course);
-      courses.push(course);
-    }
-
-    if(!courseSessions.has(cId)) courseSessions.set(cId, []);
-    courseSessions.get(cId).push(s);
-  }
-
-  // sort each course's sessions chronologically
-  courseSessions.forEach(list => list.sort((a,b)=> new Date(a.start) - new Date(b.start)));
-
-  return { sections, courses, courseSessions };
-}
-
-/* ==========================
-   RENDERING
-   ========================== */
 function makeTitleCard(text, blurb, family){
   const el=document.createElement('div');
   el.className='card title' + (family? (' '+family) : '');
@@ -373,80 +332,89 @@ function makeTitleCard(text, blurb, family){
   el.innerHTML=`<h2>${text}</h2>${blurb?`<small>${blurb}</small>`:''}${img}`;
   return el;
 }
-
-function createCourseCardExact(title, sessions, courseId){
+function createCourseCardExact(title, sessions){
   const brand = detectBrand(title);
   const el=document.createElement('div');
   el.className='card course';
-  const keySlug = slug(title);
-  const idSlug = courseId || keySlug;
-  el.id=`card-${idSlug}`;
-
+  const keySlug=slug(title);
+  el.id=`card-${keySlug}`;
   const brandSrc = brand && BRAND_LOGO[brand] ? BRAND_LOGO[brand] : '';
   const brandImg = brandSrc ? `<img class="brandicon" src="${brandSrc}" alt="${brand} logo"/>` : '';
-
   el.innerHTML=`
-    <h3 id="h-${idSlug}">${brandImg}<a href="#${idSlug}" style="text-decoration:none;color:inherit">${title}</a></h3>
-    <details id="d-${idSlug}" data-key="${idSlug}">
+    <h3 id="h-${keySlug}">${brandImg}<a href="#${keySlug}" style="text-decoration:none;color:inherit">${title}</a></h3>
+    <details id="d-${keySlug}" data-key="${keySlug}">
       <summary>Course details & upcoming sessions</summary>
-      <div class="desc" id="desc-${idSlug}"><!-- Course Description --></div>
-      <ul class="slots" id="slots-${idSlug}"></ul>
+      <div class="desc" id="desc-${keySlug}"><!-- Course Description --></div>
+      <ul class="slots" id="slots-${keySlug}"></ul>
     </details>`;
-
-  const ul = el.querySelector(`#slots-${idSlug}`);
+  const ul = el.querySelector(`#slots-${keySlug}`);
   if(!sessions || !sessions.length){
-    ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. See full schedule.</li>';
+    ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. Try a later date or contact us for scheduling.</li>';
   } else {
     sessions.slice(0,CONFIG.maxSessionsPerCourse).forEach(s=>{
       const li=document.createElement('li');
-      li.innerHTML = `
-        <a class="slotbtn" href="${s.url}" target="_blank" rel="noopener"
-           aria-label="Register for ${title} on ${fmtDate(s.start)}">
-          <div>
-            <time datetime="${s.start}">${fmtDate(s.start)}</time>
-            <div class="meta">${s.location||''}</div>
-          </div>
-          <div class="right">Register →</div>
-        </a>`;
+      li.innerHTML = `<a class="slotbtn" href="${s.url}" target="_blank" rel="noopener" aria-label="Register for ${title} on ${fmtDate(s.start)}">
+        <div>
+          <time datetime="${s.start}">${fmtDate(s.start)}</time>
+          <div class="meta">${s.location||''}</div>
+        </div>
+        <div class="right">Register →</div>
+      </a>`;
       ul.appendChild(li);
     });
   }
   return el;
 }
 
-function renderFromStructure(container, pivot){
+async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
   container.innerHTML='';
-  window._COURSE_KEYS = [];
-
-  if(!pivot.sections.length){
-    const none=document.createElement('div');
-    none.className='note bad';
-    none.textContent='No upcoming sessions in the next 4 weeks. Try a later date or contact us for scheduling.';
-    container.appendChild(none);
-    return;
+  const doc=new DOMParser().parseFromString(snapshotHTML,'text/html');
+  const walker=doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
+  let lastHeaderCard=null;
+  const added=new Set();
+  window._COURSE_KEYS=[];
+  while(walker.nextNode()){
+    const node=walker.currentNode;
+    const text=(node.textContent||'').replace(/\s+/g,' ').trim();
+    if(!text) continue;
+    if(isSectionHeaderText(text)){
+      const fam=familyFromHeader(text);
+      lastHeaderCard = makeTitleCard(text,'',fam);
+      container.appendChild(lastHeaderCard);
+      continue;
+    }
+    const a = node.matches && node.matches('a[href*="enroll?id="]') ? node : (node.querySelector && node.querySelector('a[href*="enroll?id="]'));
+    if(a){
+      const row = a.closest('tr') || a.closest('.row') || node;
+      const rawTitle = ((row && row.innerText) ? row.innerText : a.textContent || '').replace(/\s+/g,' ').trim();
+      const title = rawTitle || a.getAttribute('title') || a.textContent || '';
+      if(!title) continue;
+      const courseTitle = title;
+      const sessions = upcomingMap.get(courseTitle);
+      if(!sessions || !sessions.length) continue;
+      if(added.has(courseTitle)) continue;
+      const card = createCourseCardExact(courseTitle, sessions);
+      if(lastHeaderCard && lastHeaderCard.nextSibling){
+        container.insertBefore(card, lastHeaderCard.nextSibling);
+        lastHeaderCard = card;
+      } else {
+        container.appendChild(card);
+      }
+      added.add(courseTitle);
+      window._COURSE_KEYS.push(courseTitle);
+    }
   }
-
-  pivot.sections.forEach(sec=>{
-    const header = makeTitleCard(sec.title, sec.blurb, sec.family);
-    container.appendChild(header);
-
-    pivot.courses.forEach(course=>{
-      if(course.sectionKey !== sec.key) return;
-      const sessions = pivot.courseSessions.get(course.id) || [];
-      if(!sessions.length) return;
-      const card = createCourseCardExact(course.title, sessions, course.id);
-      container.appendChild(card);
-      window._COURSE_KEYS.push(course.title);
+  if(!container.children.length){
+    upcomingMap.forEach((sessions,title)=>{
+      container.appendChild(createCourseCardExact(title,sessions));
+      window._COURSE_KEYS.push(title);
     });
-  });
-
-  const map=new Map([...container.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.replace(/^d-/,'').replace(/^card-/,''),d]));
+  }
+  const map=new Map([...container.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
   applyOpenFromURL(map);
 }
 
-/* ==========================
-   LEGACY CATALOG (fallback for snippets)
-   ========================== */
+/* ========== Legacy CATALOG for snippets ========== */
 const CATALOG = [
   { type:"title", text:"Healthcare Provider: BLS", blurb:"For clinical staff, hospitals, clinics", family:"bls" },
   { type:"course", key:"AHA - BLS Provider - In-person Renewal", brand:"AHA", title:"AHA – BLS Provider – In-Person Renewal" },
@@ -466,33 +434,32 @@ const CATALOG = [
   { type:"title", text:"Other Programs", blurb:"Workplace & community classes", family:"faid" }
 ];
 
-/* ==========================
-   BOOT
-   ========================== */
+/* ========== Boot ========== */
 (async function init(){
   const grid=document.getElementById('courseGrid');
-  const feed = await loadFeed();
+  const [feed, snapshot] = await Promise.all([
+    loadFeed(),
+    fetch(CONFIG.htmlFallback,{cache:'no-store'}).then(r=>r.ok?r.text():Promise.resolve('<body></body>')).catch(()=>'<body></body>')
+  ]);
   FEED = feed;
-  const pivot = buildStructure(FEED);
-  renderFromStructure(grid, pivot);
+  const upcoming = buildUpcomingMap(FEED);
+  await renderFromSnapshot(grid, upcoming, snapshot);
   await loadSnippets();
-
-  if((!FEED.length || !pivot.courses.length) && FEED_ERROR){
+  if(!FEED.length){
     const warn=document.createElement('div');
     warn.className='warn';
-    warn.textContent=`No sessions loaded. Detail: ${FEED_ERROR}`;
+    warn.textContent=`No sessions loaded. Check data/schedule.json or data/enrollware-schedule.html. Detail: ${FEED_ERROR||'n/a'}`;
     document.querySelector('.wrap').appendChild(warn);
   }
 })();
 
 window.addEventListener('hashchange',()=>{
   const grid=document.getElementById('courseGrid');
-  const map=new Map([...grid.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.replace(/^d-/,'').replace(/^card-/,''),d]));
+  const map=new Map([...grid.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
   applyOpenFromURL(map);
 });
 </script>
 
-<!-- inject per-course HTML snippets into Course Description areas -->
 <script>
 async function loadSnippets(){
   const keys = Array.isArray(window._COURSE_KEYS)&&window._COURSE_KEYS.length
@@ -502,7 +469,7 @@ async function loadSnippets(){
     const file=CONFIG.snippetRoot + slug(title) + '.html';
     try{
       const r=await fetch(file,{cache:'no-store'});
-      if(!r.ok) return;
+      if(!r.ok) return; 
       const html=await r.text();
       const el=document.getElementById('desc-'+slug(title));
       if(el){ el.innerHTML=html; }
@@ -510,8 +477,10 @@ async function loadSnippets(){
   };
   await Promise.all(keys.map(fetchOne));
 
-  /* Minimal self-tests (non-blocking) */
-  console.assert(slug('AHA - BLS Provider - In-person Initial')==='aha---bls-provider---in-person-initial','slug() failed');
+  console.assert(
+    slug('AHA – BLS Provider – In-person Initial') === 'aha-bls-provider-in-person-initial',
+    'slug() failed'
+  );
   (function testWithin(){
     const now=new Date();
     const in3d=new Date(now.getTime()+3*86400000).toISOString();
