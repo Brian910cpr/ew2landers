@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "docs/data/enrollware-schedule.html",
-    "fetched_at": "2025-11-08T13:34:04.430674+00:00",
+    "fetched_at": "2025-11-08T14:24:34.472488+00:00",
     "panel_count": 48
   },
   "sessions": [
@@ -2764,20 +2764,6 @@
       "seats": null
     },
     {
-      "id": 11930112,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11930112",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode® BLS",
-      "course_title": "AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode® BLS",
-      "course_id": "ct210549",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
       "id": 11929591,
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929591",
       "start": null,
@@ -5228,20 +5214,6 @@
       "seats": null
     },
     {
-      "id": 11929316,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929316",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
-      "course_title": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
-      "course_id": "ct248287",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
       "id": 11929625,
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929625",
       "start": null,
@@ -6846,20 +6818,6 @@
       "title": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
       "course_title": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
       "course_id": "ct248287",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 11962275,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11962275",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "ARC BLS Challenge - Renewal for experienced Providers 🚨 An assessment-only session for experienced providers needing to renew their certification.",
-      "course_title": "ARC BLS Challenge - Renewal for experienced Providers 🚨 An assessment-only session for experienced providers needing to renew their certification.",
-      "course_id": "ct444919",
       "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
       "classType": "BLS",
       "instructor": null,
@@ -8490,20 +8448,6 @@
       "seats": null
     },
     {
-      "id": 11929441,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929441",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "HSI BLS and Adult First Aid | Blended Learning Online Coursework with In-Person Skills Testing",
-      "course_title": "HSI BLS and Adult First Aid | Blended Learning Online Coursework with In-Person Skills Testing",
-      "course_id": "ct445670",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
       "id": 11930045,
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11930045",
       "start": null,
@@ -9506,20 +9450,6 @@
       "title": "HSI BLS and Adult First Aid | Blended Learning Online Coursework with In-Person Skills Testing",
       "course_title": "HSI BLS and Adult First Aid | Blended Learning Online Coursework with In-Person Skills Testing",
       "course_id": "ct445670",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 12474142,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=12474142",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "HSI BLS Challenge – Renewal for Experienced Providers 🚨 An assessment-only session for experienced providers ready to test out and renew certification.",
-      "course_title": "HSI BLS Challenge – Renewal for Experienced Providers 🚨 An assessment-only session for experienced providers ready to test out and renew certification.",
-      "course_id": "ct463743",
       "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
       "classType": "BLS",
       "instructor": null,
