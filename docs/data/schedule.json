@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "docs/data/enrollware-schedule.html",
-    "fetched_at": "2025-11-08T22:32:02.800229+00:00",
+    "fetched_at": "2025-11-08T23:24:03.855035+00:00",
     "panel_count": 48
   },
   "sessions": [
@@ -2708,20 +2708,6 @@
       "seats": null
     },
     {
-      "id": 11929591,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929591",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode® BLS",
-      "course_title": "AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode® BLS",
-      "course_id": "ct210549",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
       "id": 12351704,
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=12351704",
       "start": null,
@@ -5144,20 +5130,6 @@
       "seats": null
     },
     {
-      "id": 11929625,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929625",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
-      "course_title": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
-      "course_id": "ct248287",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
       "id": 11924558,
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11924558",
       "start": null,
@@ -6748,20 +6720,6 @@
       "title": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
       "course_title": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
       "course_id": "ct248287",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 11929657,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929657",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "ARC BLS Challenge - Renewal for experienced Providers 🚨 An assessment-only session for experienced providers needing to renew their certification.",
-      "course_title": "ARC BLS Challenge - Renewal for experienced Providers 🚨 An assessment-only session for experienced providers needing to renew their certification.",
-      "course_id": "ct444919",
       "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
       "classType": "BLS",
       "instructor": null,
@@ -9366,20 +9324,6 @@
       "title": "HSI BLS and Adult First Aid | Blended Learning Online Coursework with In-Person Skills Testing",
       "course_title": "HSI BLS and Adult First Aid | Blended Learning Online Coursework with In-Person Skills Testing",
       "course_id": "ct445670",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 12474194,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=12474194",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "HSI BLS Challenge – Renewal for Experienced Providers 🚨 An assessment-only session for experienced providers ready to test out and renew certification.",
-      "course_title": "HSI BLS Challenge – Renewal for Experienced Providers 🚨 An assessment-only session for experienced providers ready to test out and renew certification.",
-      "course_id": "ct463743",
       "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
       "classType": "BLS",
       "instructor": null,
@@ -12396,20 +12340,6 @@
       "seats": null
     },
     {
-      "id": 11930631,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11930631",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "HSI Pediatric First Aid | CPR AED — Blended Online + In-Person Skills ✔ Fulfills the CPR/First Aid component of NC DCDEE (10A NCAC 09 .1102); additional NC trainings required for full compliance ✔ Fulfills the CPR/First Aid requirement in CT OEC (Sec. 19a-79-4a); center policies/modules may apply",
-      "course_title": "HSI Pediatric First Aid | CPR AED — Blended Online + In-Person Skills ✔ Fulfills the CPR/First Aid component of NC DCDEE (10A NCAC 09 .1102); additional NC trainings required for full compliance ✔ Fulfills the CPR/First Aid requirement in CT OEC (Sec. 19a-79-4a); center policies/modules may apply",
-      "course_id": "ct449422",
-      "section": "CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.",
-      "classType": "HSI",
-      "instructor": null,
-      "seats": null
-    },
-    {
       "id": 11930627,
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11930627",
       "start": null,
@@ -12798,20 +12728,6 @@
       "course_id": "ct449422",
       "section": "CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.",
       "classType": "HSI",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 11930410,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11930410",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "American Heart Association",
-      "course_title": "American Heart Association",
-      "course_id": "ct329495",
-      "section": "CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.",
-      "classType": "Other",
       "instructor": null,
       "seats": null
     },
@@ -14636,20 +14552,6 @@
       "seats": null
     },
     {
-      "id": 11929559,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929559",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing ✔ Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
-      "course_title": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing ✔ Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
-      "course_id": "ct371954",
-      "section": "CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.",
-      "classType": "HSI",
-      "instructor": null,
-      "seats": null
-    },
-    {
       "id": 11924969,
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11924969",
       "start": null,
@@ -15252,20 +15154,6 @@
       "seats": null
     },
     {
-      "id": 11818576,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11818576",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "ARC - Adult CPR/AED Online",
-      "course_title": "ARC - Adult CPR/AED Online",
-      "course_id": "ct372258",
-      "section": "CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.",
-      "classType": "Other",
-      "instructor": null,
-      "seats": null
-    },
-    {
       "id": 11930487,
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11930487",
       "start": null,
@@ -15652,20 +15540,6 @@
       "title": "ARC - Adult CPR/AED Online",
       "course_title": "ARC - Adult CPR/AED Online",
       "course_id": "ct372258",
-      "section": "CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.",
-      "classType": "Other",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 11820684,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11820684",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "ARC - Adult and Pediatric First Aid/CPR/AED",
-      "course_title": "ARC - Adult and Pediatric First Aid/CPR/AED",
-      "course_id": "ct369209",
       "section": "CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.",
       "classType": "Other",
       "instructor": null,
@@ -16842,20 +16716,6 @@
       "title": "Elementary First Aid p { text-indent: 50px; } to meet \"U.S. Coast Guard Maritime Elementary First Aid and CPR\" Requirement",
       "course_title": "Elementary First Aid p { text-indent: 50px; } to meet \"U.S. Coast Guard Maritime Elementary First Aid and CPR\" Requirement",
       "course_id": "ct253768",
-      "section": "CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.",
-      "classType": "Other",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 11818637,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11818637",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "Elementary First Aid ONLINEto meet \"U.S. Coast Guard Maritime Elementary First Aid and CPR\" Requirement Same day certification... both AHA card and AMERHA-216 Recieve the SAME card as the in-person class but, significantly more convenient.",
-      "course_title": "Elementary First Aid ONLINEto meet \"U.S. Coast Guard Maritime Elementary First Aid and CPR\" Requirement Same day certification... both AHA card and AMERHA-216 Recieve the SAME card as the in-person class but, significantly more convenient.",
-      "course_id": "ct359827",
       "section": "CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.",
       "classType": "Other",
       "instructor": null,
