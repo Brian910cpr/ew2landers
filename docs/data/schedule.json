@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "docs/data/enrollware-schedule.html",
-    "fetched_at": "2025-11-08T16:37:36.694221+00:00",
+    "fetched_at": "2025-11-08T17:22:25.785890+00:00",
     "panel_count": 48
   },
   "sessions": [
@@ -8428,20 +8428,6 @@
       "title": "ARC BLS Challenge - Renewal for experienced Providers 🚨 An assessment-only session for experienced providers needing to renew their certification.",
       "course_title": "ARC BLS Challenge - Renewal for experienced Providers 🚨 An assessment-only session for experienced providers needing to renew their certification.",
       "course_id": "ct444919",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 11930045,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11930045",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "HSI BLS and Adult First Aid | Blended Learning Online Coursework with In-Person Skills Testing",
-      "course_title": "HSI BLS and Adult First Aid | Blended Learning Online Coursework with In-Person Skills Testing",
-      "course_id": "ct445670",
       "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
       "classType": "BLS",
       "instructor": null,
