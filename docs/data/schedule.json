@@ -1,24 +1,10 @@
 {
   "meta": {
     "source": "docs/data/enrollware-schedule.html",
-    "fetched_at": "2025-11-08T17:30:48.871884+00:00",
+    "fetched_at": "2025-11-08T18:35:43.381126+00:00",
     "panel_count": 48
   },
   "sessions": [
-    {
-      "id": 11930079,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11930079",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS",
-      "course_title": "AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS",
-      "course_id": "ct209806",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
     {
       "id": 11929721,
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929721",
@@ -1232,20 +1218,6 @@
       "title": "AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS",
       "course_title": "AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS",
       "course_id": "ct209806",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 11929519,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11929519",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "AHA - BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal",
-      "course_title": "AHA - BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal",
-      "course_id": "ct359474",
       "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
       "classType": "BLS",
       "instructor": null,
@@ -4172,20 +4144,6 @@
       "title": "AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode® BLS",
       "course_title": "AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode® BLS",
       "course_id": "ct210549",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 11819635,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=11819635",
-      "start": null,
-      "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "title": "ARC - BLS - In-Person Classroom Instructor-led Classroom for Expired or New BLS",
-      "course_title": "ARC - BLS - In-Person Classroom Instructor-led Classroom for Expired or New BLS",
-      "course_id": "ct248288",
       "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
       "classType": "BLS",
       "instructor": null,
