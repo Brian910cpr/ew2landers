@@ -1,9 +1,10 @@
+<!-- docs/index.html -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>910CPR – Course Catalog</title>
+  <title>910CPR Courses</title>
   <style>
     :root{
       --bg:#0b1320; --ink:#eaf2ff; --muted:#9fb6e8;
@@ -19,13 +20,13 @@
     .nav a{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #243349;border-radius:12px;background:#0e1726;color:var(--ink);font-weight:650}
     .nav a[target="_blank"]::after{content:" ↗";opacity:.7;font-weight:700}
     .nav a:hover{background:#122448;border-color:#2f416a}
-    #dataStatus{font:13px/1.3 system-ui; color:var(--muted); margin:4px 0 18px}
+    #dataStatus{font:13px/1.3 system-ui;color:#9fb6e8;margin:4px 0 18px}
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
     .card{background:#0e1726;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;min-height:120px;border:1px solid #243349;position:relative}
     .card h3{margin:0 0 10px;padding-right:24px;display:flex;align-items:center;gap:8px}
     .card h3 .brandicon{height:22px;width:auto;object-fit:contain;display:inline-block;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+    .card.course:hover{outline:2px solid #2f416a;border-color:#2f416a;background:#0f1f39}
     .card.course{grid-column:span 6} @media(max-width:860px){.card.course{grid-column:span 12}}
-    .card.course:hover{outline:2px solid #2f416a;outline-offset:0;border-color:#2f416a;background:#0f1f39}
     .card.title{grid-column:1 / -1;background:#0f1c33;color:var(--ink);border:1px solid #2a3b62;position:relative;overflow:hidden}
     .card.title::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#2a3b62}
     .card.title.bls::before{background:var(--bls)} .card.title.acls::before{background:var(--acls)}
@@ -34,16 +35,15 @@
     .card.title small{color:var(--muted)}
     .card.title .famimg{position:absolute;right:16px;top:12px;height:calc(100% - 24px);width:auto;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));pointer-events:none}
     @media(max-width:640px){.card.title .famimg{max-height:44px;right:12px}}
-    details{margin-top:auto}
-    summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#111e36;color:var(--ink);font-weight:700;border:1px solid #243349}
+    details{margin-top:auto} summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#111e36;color:var(--ink);font-weight:700;border:1px solid #243349}
     summary:hover{background:#1a2b55;border-color:#3b5aa0} summary::-webkit-details-marker{display:none}
     details[open] summary{background:#122448;border-color:#2f416a}
     .desc{padding:10px 2px 2px;color:#bfd2ff}
     .slots{margin:8px 0 0;padding:0;list-style:none}
-    .slots li{display:block;padding:0;margin:10px 0;background:transparent;border:none}
+    .slots li{display:block;margin:10px 0}
     .slotbtn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px;border-radius:12px;background:#152242;border:1px solid #2a3b62;color:var(--ink);text-decoration:none}
     .slotbtn:hover{background:#1a2b55;border-color:#385089}
-    .slotbtn .meta{font-size:13px;color:var(--muted)} .slotbtn .right{white-space:nowrap;margin-left:12px}
+    .slotbtn .meta{font-size:13px;color:#9fb6e8} .slotbtn .right{white-space:nowrap;margin-left:12px}
     .popular{display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:center;background:#0b1320;color:var(--ink);border-radius:20px;padding:18px;margin:8px 0 22px;border:1px solid #243349;box-shadow:var(--shadow)}
     .popular h2{margin:6px 0 10px;font-size:clamp(16px,2.2vw,20px);font-weight:750;color:#b6d4ff}
     .tiles{display:flex;flex-wrap:wrap;gap:10px}
@@ -55,8 +55,9 @@
     .popular .art{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:16px;padding:12px}
     .popular .art img{max-width:100%;height:auto;border-radius:12px}
     .note{font-size:13px;color:#9fb6e8;margin-top:6px}
+    .ok{color:#7fe1a9}.soft{color:#ffdd99}.bad{color:#ffc9c9}
     .brandrow{display:flex;justify-content:center;align-items:center;gap:28px;background:#ffffff;border:1px solid #e6eaf5;border-radius:20px;padding:14px;margin:0 0 12px;box-shadow:0 2px 16px rgba(6,10,18,.08)}
-    .brandrow .badge{display:flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:14px;background:transparent;border:1px solid transparent}
+    .brandrow .badge{display:flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:14px}
     .brandrow .badge img{height:56px;width:auto;object-fit:contain;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
     @media(max-width:640px){.brandrow .badge img{height:44px}}
   </style>
@@ -106,15 +107,9 @@ function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').
 function fmtDate(dtISO){ const d=new Date(dtISO); const opt={weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}; return d.toLocaleString(undefined,opt); }
 function applyOpenFromURL(map){
   try{
-    const hash = decodeURIComponent(location.hash.replace('#',''));
-    if(!hash) return;
+    const hash = decodeURIComponent(location.hash.replace('#','')); if(!hash) return;
     const det = map && map.get ? map.get(hash) : null;
-    if(det){
-      det.setAttribute('open','');
-      const card = document.getElementById(`card-${hash}`) || det.closest('.card');
-      if(card && card.scrollIntoView){ card.scrollIntoView({behavior:'smooth',block:'start'}); }
-      const sum = det.querySelector('summary'); if(sum && sum.focus) sum.focus();
-    }
+    if(det){ det.setAttribute('open',''); const card = document.getElementById(`card-${hash}`) || det.closest('.card'); if(card?.scrollIntoView){ card.scrollIntoView({behavior:'smooth',block:'start'}); } det.querySelector('summary')?.focus?.(); }
   }catch(e){}
 }
 
@@ -126,125 +121,151 @@ const CONFIG = {
   statusFile: "data/status.json",
   snippetRoot: "courses/"
 };
-const ENROLLWARE_BASE = 'https://coastalcprtraining.enrollware.com/';
-const IMG_BASE = 'https://www.enrollware.com/sitefiles/coastalcprtraining/';
-const FAMILY_IMG = { bls:'25-bls-new.png', acls:'25-acls-new.png', pals:'25-pals-new.png', faid:'25_Heartsaver.png' };
-const BRAND_LOGO = { AHA: IMG_BASE + '_AHA.png', 'Red Cross': IMG_BASE + '_ARC.png', HSI: IMG_BASE + '_HSI.png' };
+const ENROLLWARE_BASE='https://coastalcprtraining.enrollware.com/';
+const IMG_BASE='https://www.enrollware.com/sitefiles/coastalcprtraining/';
+const FAMILY_IMG={bls:'25-bls-new.png',acls:'25-acls-new.png',pals:'25-pals-new.png',faid:'25_Heartsaver.png'};
+const BRAND_LOGO={AHA:IMG_BASE+'_AHA.png','Red Cross':IMG_BASE+'_ARC.png',HSI:IMG_BASE+'_HSI.png'};
 
 (function checkDataStatus(){
-  const el = document.getElementById('dataStatus');
-  if(!el) return;
-  fetch(CONFIG.statusFile + '?v=' + Date.now(), {cache:'no-store'})
-    .then(r => r.ok ? r.json() : null)
-    .then(st => {
-      if(!st){ el.textContent = 'Data status: missing (status.json 404).'; el.className = 'note'; return; }
-      const snap = st.snapshot || {}, sched = st.schedule || {};
+  const el=document.getElementById('dataStatus'); if(!el) return;
+  fetch(CONFIG.statusFile+'?v='+Date.now(),{cache:'no-store'})
+    .then(r=>r.ok?r.json():null)
+    .then(st=>{
+      if(!st){ el.textContent='Data status: missing (status.json 404). Actions may not have run yet.'; el.className='note bad'; return; }
+      const snap=st.snapshot||{}, sched=st.schedule||{};
       const ok = snap.exists && snap.bytes>0 && sched.exists && sched.bytes>0;
-      el.innerHTML = (ok
-        ? `Data status: OK • updated ${st.updated_at} • schedule.json ${sched.bytes} bytes`
-        : `Data status: INCOMPLETE • snapshot: ${snap.exists?'yes':'no'} • schedule: ${sched.exists?'yes':'no'}`);
-      el.className = 'note';
+      el.innerHTML = (ok?`Data status: OK • updated ${st.updated_at} • schedule.json ${sched.bytes} bytes`:`Data status: INCOMPLETE • snapshot: ${snap.exists?'yes':'no'} • schedule: ${sched.exists?'yes':'no'}`);
+      el.className = ok?'note ok':'note soft';
     })
-    .catch(()=>{ el.textContent='Data status: unknown (fetch error).'; el.className='note'; });
+    .catch(()=>{ el.textContent='Data status: unknown (fetch error).'; el.className='note bad'; });
 })();
 
-/* ---------- JSON loader (accepts array or {sessions:[]}) ---------- */
-let FEED = []; let FEED_ERROR = null;
+let FEED=[]; let FEED_ERROR=null;
+
 async function loadJSONRobust(url){
-  const r = await fetch(url, {cache:'no-store'});
-  if(!r.ok) throw new Error(`HTTP ${r.status}`);
-  const text = await r.text();
-  if(text.trim().startsWith('<')) throw new Error('Expected JSON, got HTML');
-  try{ return JSON.parse(text); } catch{ throw new Error('Invalid JSON in schedule.json'); }
+  const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  const text=await r.text(); if(text.trim().startsWith('<')) throw new Error('Expected JSON, got HTML');
+  try{ return JSON.parse(text); }catch{ throw new Error('Invalid JSON in schedule.json'); }
 }
 function normalizeFeed(json){
-  if (Array.isArray(json)) return json;
-  if (json && Array.isArray(json.sessions)) return json.sessions;
+  if(Array.isArray(json)) return json;
+  if(json && Array.isArray(json.sessions)) return json.sessions;
   return [];
 }
 async function loadFeed(){
   try{
-    const j = await loadJSONRobust(CONFIG.jsonFeed);
-    const arr = normalizeFeed(j);
-    if(arr.length>0) return arr;
-    FEED_ERROR = 'JSON feed is empty.'; throw new Error(FEED_ERROR);
+    const j=await loadJSONRobust(CONFIG.jsonFeed);
+    const arr=normalizeFeed(j);
+    if(Array.isArray(arr)&&arr.length>0) return arr;
+    FEED_ERROR=Array.isArray(arr)?'JSON feed is empty.':'JSON feed present but not an array.';
+    throw new Error(FEED_ERROR);
   }catch(e){
     try{
-      const r = await fetch(CONFIG.htmlFallback, {cache:'no-store'});
-      if(!r.ok) { FEED_ERROR = `HTML fallback not ok: ${r.status}`; throw new Error('No HTML fallback'); }
-      const html = await r.text();
-      const parsed = parseHTMLSchedule(html);
-      if(!parsed.length) FEED_ERROR = 'Parsed 0 sessions from HTML fallback.';
+      const r=await fetch(CONFIG.htmlFallback,{cache:'no-store'});
+      if(!r.ok){ FEED_ERROR=`HTML fallback not ok: ${r.status}`; throw new Error('No HTML fallback'); }
+      const html=await r.text();
+      const parsed=parseHTMLSchedule(html);
+      if(!parsed.length) FEED_ERROR='Parsed 0 sessions from HTML fallback.';
       return parsed;
-    }catch(e2){ FEED_ERROR = FEED_ERROR || e.message || e2.message; return []; }
+    }catch(e2){ FEED_ERROR=FEED_ERROR||e.message||e2.message; return []; }
   }
 }
 
-/* ---------- Snapshot HTML parser (uses real Enrollware structure) ---------- */
+/* ===== Bulletproof snapshot HTML parser (handles .enrpanel value + <a name="ct####">) ===== */
 function parseHTMLSchedule(html){
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  const result = [];
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const out=[];
 
-  // cache section headers in document order
-  const SECTION_TEXTS = [];
-  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
-  while (walker.nextNode()){
-    const node = walker.currentNode;
-    const txt = (node.textContent||'').replace(/\s+/g,' ').trim();
-    if (isSectionHeaderText(txt)) SECTION_TEXTS.push({el:node, text:txt});
+  const sections=[]; // track nearest previous header
+  const walker=doc.createTreeWalker(doc.body,NodeFilter.SHOW_ELEMENT,null);
+  while(walker.nextNode()){
+    const node=walker.currentNode;
+    const txt=(node.textContent||'').replace(/\s+/g,' ').trim();
+    if(isSectionHeaderText(txt)) sections.push({el:node,text:txt});
   }
 
-  const links = [...doc.querySelectorAll('a[href*="enroll?id="]')];
-  for (const a of links){
-    const href = a.getAttribute('href') || '';
-    const url = href.startsWith('http') ? href : new URL(href, ENROLLWARE_BASE).href;
-    const idMatch = url.match(/id=(\d+)/); const id = idMatch? Number(idMatch[1]) : undefined;
+  const links=[...doc.querySelectorAll('a[href*="enroll?id="]')];
+  for(const a of links){
+    const href=a.getAttribute('href')||'';
+    const url=href.startsWith('http')?href:new URL(href,ENROLLWARE_BASE).href;
+    const idMatch=url.match(/id=(\d+)/); const id=idMatch?Number(idMatch[1]):undefined;
 
-    // find enclosing course panel and title
-    const panel = a.closest('.enrpanel');
-    const titleEl = panel?.querySelector('.enrpanel-heading .enrpanel-title');
-    const courseTitle = (titleEl?.textContent || '').replace(/\s+/g,' ').trim();
-    if (!courseTitle) continue;
+    const panel=a.closest('.enrpanel'); if(!panel) continue;
 
-    // find nearest previous section header
-    const sectionTitle = nearestSectionText(panel || a, SECTION_TEXTS);
+    let rawTitle=panel.getAttribute('value')||''; rawTitle=rawTitle?rawTitle.replace(/<[^>]+>/g,''):'';
+    if(!rawTitle){
+      const t1=panel.querySelector('.enrpanel-heading .enrpanel-title');
+      const t2=panel.querySelector('.enrpanel-heading a.enrtrigger, .enrpanel-heading a');
+      rawTitle=(t1?.textContent||t2?.textContent||'').replace(/\s+/g,' ').trim();
+    }
+    const courseTitle=(rawTitle||'').replace(/\s+/g,' ').trim(); if(!courseTitle) continue;
 
-    // find row text to pick time & location
-    const row = a.closest('li, tr, .row') || a.parentElement;
-    const text = (row ? row.innerText : a.innerText || '').replace(/\s+/g,' ').trim();
-    const when = text.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b.*?\d{1,2}:\d{2}\s*(?:AM|PM)/i)?.[0]
-              || text.match(/\d{4}-\d{2}-\d{2}.*?\d{1,2}:\d{2}/)?.[0];
-    const location = (row?.querySelector('span')?.textContent || text.match(/Wilmington|Burgaw|Jacksonville|Shipyard|Sound Rd|Hinton Ave|Gum Branch|Merlot|Wright St/i)?.[0] || '').trim();
-    const startAttr = a.getAttribute('data-start');
-    const start = startAttr || guessDate(when);
+    const anchor=panel.querySelector('a[name^="ct"]');
+    const courseId=anchor?anchor.getAttribute('name'):slug(courseTitle);
 
-    result.push({
-      id, url, start, end:null,
-      location,
-      title: courseTitle,          // clean course title from heading
-      section: sectionTitle || '', // optional, used for ordering
+    const row=a.closest('li,tr,.row')||a.parentElement;
+    const text=(row?row.innerText:a.innerText||'').replace(/\s+/g,' ').trim();
+    const when=text.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b.*?\d{1,2}:\d{2}\s*(?:AM|PM)/i)?.[0]
+             || text.match(/\d{4}-\d{2}-\d{2}.*?\d{1,2}:\d{2}/)?.[0];
+    const location=(row?.querySelector('span')?.textContent||text.match(/Wilmington|Burgaw|Jacksonville|Shipyard|Sound Rd|Hinton Ave|Gum Branch|Merlot|Wright St/i)?.[0]||'').trim();
+    const start=a.getAttribute('data-start')||guessDate(when);
+
+    out.push({
+      id,url,start,end:null,location,
+      title: courseTitle,
+      course_title: courseTitle,
+      course_id: courseId,
+      section: nearestSection(panel,sections) || '',
       classType: guessType(courseTitle),
-      instructor:null, seats:null
+      instructor:null,seats:null
     });
   }
-  return result;
+  return out;
 }
-
-function nearestSectionText(refNode, list){
-  if(!list.length) return null;
-  // pick the last section header whose element precedes refNode in the tree
-  let winner = null;
-  for (const item of list){
-    if (item.el.compareDocumentPosition(refNode) & Node.DOCUMENT_POSITION_FOLLOWING) {
-      winner = item.text;
-    } else {
-      break;
-    }
+function nearestSection(el,list){
+  let name=null;
+  for(const item of list){
+    if(item.el.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING){ name=item.text; }
+    else break;
   }
-  return winner;
+  return name;
 }
 
-/* ---------- helpers ---------- */
+function guessType(title=''){
+  const t=title.toLowerCase();
+  if(t.includes('acls')) return 'ACLS';
+  if(t.includes('pals')) return 'PALS';
+  if(t.includes('bls')) return 'BLS';
+  if(t.includes('heartsaver')) return 'Heartsaver';
+  if(t.includes('hsi')) return 'HSI';
+  return 'Other';
+}
+function guessDate(str){ if(!str) return null; const d=new Date(str); return isNaN(d)?null:d.toISOString(); }
+function withinWindow(dtISO){ if(!dtISO) return false; const s=new Date(dtISO); if(isNaN(s)) return false; const now=new Date(); const cap=new Date(now.getTime()+CONFIG.windowDays*86400000); return s>=now && s<=cap; }
+
+function detectBrand(title=''){
+  const t=title.toLowerCase();
+  if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
+  if(t.includes('hsi')) return 'HSI';
+  if(t.includes('aha')||t.includes('american heart')) return 'AHA';
+  return null;
+}
+
+/* ===== Build upcoming map keyed by stable course_id when present ===== */
+function buildUpcomingMap(feed){
+  const map=new Map(); // key -> {title, sessions[]}
+  feed.filter(s=>withinWindow(s.start)).forEach(s=>{
+    const key = s.course_id || slug(s.course_title||s.title||'');
+    const title = s.course_title || s.title || '';
+    if(!key || !title) return;
+    if(!map.has(key)) map.set(key,{title, sessions:[]});
+    map.get(key).sessions.push(s);
+  });
+  // sort each course's sessions
+  map.forEach(v=>v.sessions.sort((a,b)=>new Date(a.start)-new Date(b.start)));
+  return map;
+}
+
 function isSectionHeaderText(t){
   const x=(t||'').toLowerCase().trim();
   return x.startsWith('healthcare provider: bls')
@@ -263,65 +284,34 @@ function familyFromHeader(text){
   if(t.includes('pals')) return 'pals';
   return 'faid';
 }
-function guessType(title=''){
-  const t = title.toLowerCase();
-  if(t.includes('acls')) return 'ACLS';
-  if(t.includes('pals')) return 'PALS';
-  if(t.includes('bls')) return 'BLS';
-  if(t.includes('heartsaver')) return 'Heartsaver';
-  if(t.includes('hsi')) return 'HSI';
-  return 'Other';
-}
-function guessDate(str){ if(!str) return null; const d = new Date(str); return isNaN(d) ? null : d.toISOString(); }
-function withinWindow(dtISO){ if(!dtISO) return false; const s=new Date(dtISO); if(isNaN(s)) return false; const now=new Date(); const cap=new Date(now.getTime()+CONFIG.windowDays*86400000); return s>=now && s<=cap; }
-function detectBrand(title=''){
-  const t=title.toLowerCase();
-  if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
-  if(t.includes('hsi')) return 'HSI';
-  if(t.includes('aha')||t.includes('american heart')) return 'AHA';
-  return null;
-}
-function buildUpcomingMap(feed){
-  const map=new Map();
-  feed.filter(s=>withinWindow(s.start)).forEach(s=>{
-    const k=(s.title||'').trim(); if(!k) return;
-    if(!map.has(k)) map.set(k,[]);
-    map.get(k).push(s);
-  });
-  map.forEach(v=>v.sort((a,b)=>new Date(a.start)-new Date(b.start)));
-  return map;
-}
-function makeTitleCard(text, blurb, family){
+function makeTitleCard(text,blurb,family){
   const el=document.createElement('div');
-  el.className='card title' + (family? (' '+family) : '');
-  const img = (family && FAMILY_IMG[family]) ? `<img class="famimg" src="${IMG_BASE}${FAMILY_IMG[family]}" alt="${family} icon"/>` : '';
+  el.className='card title'+(family?(' '+family):'');
+  const img=(family && FAMILY_IMG[family])?`<img class="famimg" src="${IMG_BASE}${FAMILY_IMG[family]}" alt="${family} icon"/>`:'';
   el.innerHTML=`<h2>${text}</h2>${blurb?`<small>${blurb}</small>`:''}${img}`;
   return el;
 }
-function createCourseCardExact(title, sessions){
-  const brand = detectBrand(title);
+function createCourseCardExact(displayTitle, sessions){
+  const brand=detectBrand(displayTitle);
   const el=document.createElement('div'); el.className='card course';
-  const keySlug=slug(title); el.id=`card-${keySlug}`;
-  const brandSrc = brand && BRAND_LOGO[brand] ? BRAND_LOGO[brand] : '';
-  const brandImg = brandSrc ? `<img class="brandicon" src="${brandSrc}" alt="${brand} logo"/>` : '';
+  const keySlug=slug(displayTitle); el.id=`card-${keySlug}`;
+  const brandSrc=brand && BRAND_LOGO[brand] ? BRAND_LOGO[brand] : '';
+  const brandImg=brandSrc?`<img class="brandicon" src="${brandSrc}" alt="${brand} logo"/>`:'';
   el.innerHTML=`
-    <h3 id="h-${keySlug}">${brandImg}<a href="#${keySlug}" style="text-decoration:none;color:inherit">${title}</a></h3>
+    <h3 id="h-${keySlug}">${brandImg}<a href="#${keySlug}" style="text-decoration:none;color:inherit">${displayTitle}</a></h3>
     <details id="d-${keySlug}" data-key="${keySlug}">
       <summary>Course details & upcoming sessions</summary>
-      <div class="desc" id="desc-${keySlug}"><!-- Course Description --></div>
+      <div class="desc" id="desc-${keySlug}"></div>
       <ul class="slots" id="slots-${keySlug}"></ul>
     </details>`;
-  const ul = el.querySelector(`#slots-${keySlug}`);
+  const ul=el.querySelector(`#slots-${keySlug}`);
   if(!sessions || !sessions.length){
     ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. See full schedule.</li>';
-  } else {
+  }else{
     sessions.slice(0,CONFIG.maxSessionsPerCourse).forEach(s=>{
       const li=document.createElement('li');
-      li.innerHTML = `<a class="slotbtn" href="${s.url}" target="_blank" rel="noopener" aria-label="Register for ${title} on ${fmtDate(s.start)}">
-        <div>
-          <time datetime="${s.start}">${fmtDate(s.start)}</time>
-          <div class="meta">${s.location||''}</div>
-        </div>
+      li.innerHTML=`<a class="slotbtn" href="${s.url}" target="_blank" rel="noopener" aria-label="Register for ${displayTitle} on ${fmtDate(s.start)}">
+        <div><time datetime="${s.start}">${fmtDate(s.start)}</time><div class="meta">${s.location||''}</div></div>
         <div class="right">Register →</div>
       </a>`;
       ul.appendChild(li);
@@ -330,132 +320,104 @@ function createCourseCardExact(title, sessions){
   return el;
 }
 
-/* ---------- Render from snapshot DOM (dedup by course title) ---------- */
+/* ===== Render using snapshot order (headers) but dedupe by course_id ===== */
 async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
   container.innerHTML='';
   const doc=new DOMParser().parseFromString(snapshotHTML,'text/html');
+  const walker=doc.createTreeWalker(doc.body,NodeFilter.SHOW_ELEMENT,null);
+  let lastHeaderCard=null;
+  const added=new Set(); // keys we've rendered (course_id/slug)
+  window._COURSE_KEYS=[];
 
-  // walk document; insert section headers in order
-  const seenHeaders = new Set();
-  const addedCourse = new Set();
+  while(walker.nextNode()){
+    const node=walker.currentNode;
+    const text=(node.textContent||'').replace(/\s+/g,' ').trim();
+    if(!text) continue;
 
-  // collect nodes in order to keep snapshot’s original flow
-  const nodes = [...doc.querySelectorAll('body *')];
-
-  for (const node of nodes){
-    const txt = (node.textContent||'').replace(/\s+/g,' ').trim();
-    if (isSectionHeaderText(txt) && !seenHeaders.has(txt)){
-      seenHeaders.add(txt);
-      container.appendChild(makeTitleCard(txt,'',familyFromHeader(txt)));
+    if(isSectionHeaderText(text)){
+      const fam=familyFromHeader(text);
+      lastHeaderCard=makeTitleCard(text,'',fam);
+      container.appendChild(lastHeaderCard);
       continue;
     }
 
-    // only act on enroll links; but use their enclosing panel to get the proper title
-    const a = node.matches?.('a[href*="enroll?id="]') ? node : node.querySelector?.('a[href*="enroll?id="]');
-    if (!a) continue;
+    const panel = node.closest?.('.enrpanel') || (node.classList?.contains('enrpanel')?node:null);
+    const anchor = panel?.querySelector('a[name^="ct"]');
+    const keyFromPanel = anchor ? anchor.getAttribute('name') : null;
 
-    const panel = a.closest('.enrpanel');
-    const titleEl = panel?.querySelector('.enrpanel-heading .enrpanel-title');
-    const courseTitle = (titleEl?.textContent || '').replace(/\s+/g,' ').trim();
-    if (!courseTitle) continue;
+    // find a course in upcomingMap that matches this panel key or title text
+    let matchedKey=null, displayTitle=null;
+    if(keyFromPanel && upcomingMap.has(keyFromPanel)){
+      matchedKey=keyFromPanel; displayTitle=upcomingMap.get(keyFromPanel).title;
+    }else{
+      // fallback: try by slug(title text)
+      const guessKey = slug(text);
+      if(upcomingMap.has(guessKey)){ matchedKey=guessKey; displayTitle=upcomingMap.get(guessKey).title; }
+      else{
+        // last resort: scan titles for substring match
+        for(const [k,v] of upcomingMap.entries()){
+          if(text.toLowerCase().includes(v.title.toLowerCase())){ matchedKey=k; displayTitle=v.title; break; }
+        }
+      }
+    }
+    if(!matchedKey) continue;
+    if(added.has(matchedKey)) continue;
 
-    const sessions = upcomingMap.get(courseTitle);
-    if (!sessions || !sessions.length) continue;
+    const sessions = upcomingMap.get(matchedKey).sessions;
+    if(!sessions || !sessions.length) continue;
 
-    const slugKey = slug(courseTitle);
-    if (addedCourse.has(slugKey)) continue; // dedupe
-
-    container.appendChild(createCourseCardExact(courseTitle, sessions));
-    addedCourse.add(slugKey);
+    const card=createCourseCardExact(displayTitle, sessions);
+    if(lastHeaderCard && lastHeaderCard.nextSibling){
+      container.insertBefore(card,lastHeaderCard.nextSibling);
+      lastHeaderCard=card;
+    }else{
+      container.appendChild(card);
+    }
+    added.add(matchedKey);
+    window._COURSE_KEYS.push(displayTitle);
   }
 
-  // If nothing added (e.g., JSON only), fallback to all courses from upcoming map
+  // Fallback: if nothing was placed via snapshot, render all courses alphabetically
   if(!container.children.length){
-    upcomingMap.forEach((sessions,title)=>{
-      container.appendChild(createCourseCardExact(title,sessions));
-    });
+    const sorted=[...upcomingMap.values()].sort((a,b)=>a.title.localeCompare(b.title));
+    for(const item of sorted){
+      container.appendChild(createCourseCardExact(item.title,item.sessions));
+      window._COURSE_KEYS.push(item.title);
+    }
   }
 
   const map=new Map([...container.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
   applyOpenFromURL(map);
 }
 
-/* ---------- Legacy catalog list (only used to probe snippets) ---------- */
-const CATALOG = [
-  { type:"title", text:"Healthcare Provider: BLS", family:"bls" },
-  { type:"course", title:"AHA – BLS Provider – In-Person Renewal" },
-  { type:"course", title:"AHA – BLS Provider – In-Person Initial" },
-  { type:"course", title:"AHA – BLS Provider – HeartCode (Online + Skills)" },
-  { type:"title", text:"Healthcare Provider: ACLS", family:"acls" },
-  { type:"course", title:"AHA – ACLS Provider – Initial" },
-  { type:"course", title:"AHA – ACLS Provider – Renewal" },
-  { type:"course", title:"AHA – ACLS Provider – HeartCode (Online + Skills)" },
-  { type:"title", text:"Healthcare Provider: PALS", family:"pals" },
-  { type:"course", title:"AHA – PALS Provider – Initial" },
-  { type:"course", title:"AHA – PALS Provider – Renewal" },
-  { type:"course", title:"AHA – PALS Provider – HeartCode (Online + Skills)" },
-  { type:"title", text:"CPR / AED & First Aid", family:"faid" },
-  { type:"title", text:"CPR / AED Only", family:"faid" },
-  { type:"title", text:"Instructor Programs", family:"bls" },
-  { type:"title", text:"Other Programs", family:"faid" }
-];
+const CATALOG=[]; // kept empty; snippets still supported if you add files
 
-/* ---------- Boot ---------- */
 (async function init(){
   const grid=document.getElementById('courseGrid');
-  const [feed, snapshot] = await Promise.all([
+  const [feed,snapshot]=await Promise.all([
     loadFeed(),
     fetch(CONFIG.htmlFallback,{cache:'no-store'}).then(r=>r.ok?r.text():Promise.resolve('<body></body>')).catch(()=>'<body></body>')
   ]);
-  FEED = feed;
-  const upcoming = buildUpcomingMap(FEED);
-  await renderFromSnapshot(grid, upcoming, snapshot);
-  await loadSnippets();
+  FEED=feed;
+  const upcoming=buildUpcomingMap(FEED);
+  await renderFromSnapshot(grid,upcoming,snapshot);
   if(!FEED.length){
-    const warn=document.createElement('div');
-    warn.className='note';
+    const warn=document.createElement('div'); warn.className='note bad';
     warn.textContent=`No sessions loaded. Check data/schedule.json or data/enrollware-schedule.html. Detail: ${FEED_ERROR||'n/a'}`;
     document.querySelector('.wrap').appendChild(warn);
   }
 })();
+
 window.addEventListener('hashchange',()=>{
   const grid=document.getElementById('courseGrid');
   const map=new Map([...grid.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
   applyOpenFromURL(map);
 });
-</script>
 
-<script>
-async function loadSnippets(){
-  const keys = Array.isArray(window._COURSE_KEYS)&&window._COURSE_KEYS.length
-    ? window._COURSE_KEYS
-    : CATALOG.filter(c=>c.type==='course').map(c=>c.title);
-  const fetchOne=async(title)=>{
-    const file=CONFIG.snippetRoot + slug(title) + '.html';
-    try{
-      const r=await fetch(file,{cache:'no-store'});
-      if(!r.ok) return; 
-      const html=await r.text();
-      const el=document.getElementById('desc-'+slug(title));
-      if(el){ el.innerHTML=html; }
-    }catch(e){}
-  };
-  await Promise.all(keys.map(fetchOne));
-}
-
-/* quick self-checks (non-blocking) */
+// tiny sanity checks
 console.assert(slug('AHA - BLS Provider - In-person Initial')==='aha---bls-provider---in-person-initial','slug() failed');
-(function testWithin(){
-  const now=new Date();
-  const in3d=new Date(now.getTime()+3*86400000).toISOString();
-  const in60d=new Date(now.getTime()+60*86400000).toISOString();
-  console.assert(withinWindow(in3d)===true,'withinWindow short range');
-  console.assert(withinWindow(in60d)===false,'withinWindow beyond window');
-})();
-(function testApplyOpen(){
-  history.replaceState(null,'',location.pathname);
-  applyOpenFromURL(new Map());
-})();
+(function testWithin(){ const now=new Date(); const in3d=new Date(now.getTime()+3*86400000).toISOString(); const in60d=new Date(now.getTime()+60*86400000).toISOString(); console.assert(withinWindow(in3d)===true,'withinWindow short'); console.assert(withinWindow(in60d)===false,'withinWindow long');})();
+(function testApply(){ history.replaceState(null,'',location.pathname); applyOpenFromURL(new Map());})();
 </script>
 </body>
 </html>
