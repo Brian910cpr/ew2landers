@@ -6,12 +6,24 @@
   <title>910CPR Courses</title>
   <style>
     :root{
-      --bg:#0b1320; --ink:#eaf2ff; --muted:#9fb6e8;
-      --brand:#1373d1; --accent:#0f61bb; --shadow:0 2px 16px rgba(6,10,18,.35);
-      --radius:18px; --bls:#b6d4ff; --acls:#ff7474; --pals:#c59eff; --faid:#7eb0ff;
+      --bg:#0b1320;          /* dark background */
+      --ink:#eaf2ff;         /* high-contrast text */
+      --muted:#9fb6e8;
+      --brand:#1373d1;       /* primary action */
+      --accent:#0f61bb;
+      --shadow:0 2px 16px rgba(6,10,18,.35);
+      --radius:18px;
+      /* family color chips */
+      --bls:#b6d4ff;   /* BLS */
+      --acls:#ff7474;  /* ACLS */
+      --pals:#c59eff;  /* PALS */
+      --faid:#7eb0ff;  /* First Aid / Heartsaver */
     }
+
     html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    a{color:var(--brand);text-decoration:none} a:hover{color:var(--accent)}
+    a{color:var(--brand);text-decoration:none}
+    a:hover{color:var(--accent)}
+
     .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
     header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin:8px 0 8px;position:sticky;top:0;z-index:10;background:linear-gradient(180deg, rgba(11,19,32,1) 0%, rgba(11,19,32,0.85) 100%);backdrop-filter:saturate(1.1) blur(2px)}
     header h1{font-size:clamp(22px,3.5vw,34px);margin:0;font-weight:750}
@@ -20,24 +32,31 @@
     .nav a[target="_blank"]::after{content:" ↗";opacity:.7;font-weight:700}
     .nav a:hover{background:#122448;border-color:#2f416a}
 
-    #dataStatus{font:13px/1.3 system-ui;color:#9fb6e8;margin:4px 0 18px}
+    #dataStatus{font:13px/1.3 system-ui; color:#9fb6e8; margin:4px 0 18px}
 
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
     .card{background:#0e1726;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;min-height:120px;border:1px solid #243349;position:relative}
     .card h3{margin:0 0 10px;padding-right:24px;display:flex;align-items:center;gap:8px}
     .card h3 .brandicon{height:22px;width:auto;object-fit:contain;display:inline-block;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
-    .card.course:hover{outline:2px solid #2f416a;border-color:#2f416a;background:#0f1f39}
-    .card.course{grid-column:span 6} @media(max-width:860px){.card.course{grid-column:span 12}}
+    .card.course:hover{outline:2px solid #2f416a;outline-offset:0;border-color:#2f416a;background:#0f1f39}
+    .card .cardlogo{display:none}
+    @media(max-width:640px){.card h3{padding-right:96px}.card .cardlogo{height:28px}}
+    .card.course{grid-column:span 6}
+    @media(max-width:860px){.card.course{grid-column:span 12}}
 
+    /* Section separators with left accent bar (width 12px) */
     .card.title{grid-column:1 / -1;background:#0f1c33;color:var(--ink);border:1px solid #2a3b62;position:relative;overflow:hidden}
     .card.title::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#2a3b62}
-    .card.title.bls::before{background:var(--bls)} .card.title.acls::before{background:var(--acls)}
-    .card.title.pals::before{background:var(--pals)} .card.title.faid::before{background:var(--faid)}
+    .card.title.bls::before{background:var(--bls)}
+    .card.title.acls::before{background:var(--acls)}
+    .card.title.pals::before{background:var(--pals)}
+    .card.title.faid::before{background:var(--faid)}
     .card.title h2{margin:0 0 4px;font-size:clamp(18px,2.8vw,24px);padding-right:128px}
     .card.title small{color:var(--muted)}
-    .card.title .famimg{position:absolute;right:16px;top:12px;height:calc(100% - 24px);width:auto;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));pointer-events:none}
+    .card.title .famimg{position:absolute;right:16px;top:12px;height:calc(100% - 24px);max-height:none;width:auto;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));pointer-events:none}
     @media(max-width:640px){.card.title .famimg{max-height:44px;right:12px}}
 
+    /* Periscope */
     details{margin-top:auto}
     summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#111e36;color:var(--ink);font-weight:700;border:1px solid #243349}
     summary:hover{background:#1a2b55;border-color:#3b5aa0}
@@ -46,27 +65,37 @@
 
     .desc{padding:10px 2px 2px;color:#bfd2ff}
     .slots{margin:8px 0 0;padding:0;list-style:none}
-    .slots li{display:block;margin:10px 0}
+    .slots li{display:block;padding:0;margin:10px 0;background:transparent;border:none}
+
+    /* Full-width clickable slot button */
     .slotbtn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px;border-radius:12px;background:#152242;border:1px solid #2a3b62;color:var(--ink);text-decoration:none}
     .slotbtn:hover{background:#1a2b55;border-color:#385089}
-    .slotbtn .meta{font-size:13px;color:#9fb6e8} .slotbtn .right{white-space:nowrap;margin-left:12px}
+    .slotbtn .meta{font-size:13px;color:#9fb6e8}
+    .slotbtn .right{white-space:nowrap;margin-left:12px}
 
+    /* Popular quick-links */
     .popular{display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:center;background:#0b1320;color:var(--ink);border-radius:20px;padding:18px;margin:8px 0 22px;border:1px solid #243349;box-shadow:var(--shadow)}
     .popular h2{margin:6px 0 10px;font-size:clamp(16px,2.2vw,20px);font-weight:750;color:#b6d4ff}
     .tiles{display:flex;flex-wrap:wrap;gap:10px}
     .tile{display:flex;flex-direction:column;justify-content:center;min-width:160px;padding:10px 12px;border-radius:12px;color:#001a4d;border:1px solid #2a3b62;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-    .tile .t1{font-weight:800} .tile .t2{font-size:12px;opacity:.8;color:#eef3ff}
+    .tile .t1{font-weight:800}
+    .tile .t2{font-size:12px;opacity:.8;color:#eef3ff}
     .tile:hover{filter:brightness(1.15);box-shadow:0 0 0 2px rgba(0,0,0,.15) inset}
-    .tile.bls{background:var(--bls)} .tile.acls{background:var(--acls);color:#2a0010}
-    .tile.pals{background:var(--pals)} .tile.faid{background:var(--faid)}
+    .tile.bls{background:var(--bls)}
+    .tile.acls{background:var(--acls);color:#2a0010}
+    .tile.pals{background:var(--pals)}
+    .tile.faid{background:var(--faid)}
     .popular .art{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:16px;padding:12px}
     .popular .art img{max-width:100%;height:auto;border-radius:12px}
 
     .note{font-size:13px;color:#9fb6e8;margin-top:6px}
-    .ok{color:#7fe1a9}.soft{color:#ffdd99}.bad{color:#ffc9c9}
+    .warn{color:#ffc9c9;font-weight:700;margin-top:12px}
+    .ok{color:#7fe1a9}
+    .soft{color:#ffdd99}
+    .bad{color:#ffc9c9}
 
     .brandrow{display:flex;justify-content:center;align-items:center;gap:28px;background:#ffffff;border:1px solid #e6eaf5;border-radius:20px;padding:14px;margin:0 0 12px;box-shadow:0 2px 16px rgba(6,10,18,.08)}
-    .brandrow .badge{display:flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:14px}
+    .brandrow .badge{display:flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:14px;background:transparent;border:1px solid transparent}
     .brandrow .badge img{height:56px;width:auto;object-fit:contain;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
     @media(max-width:640px){.brandrow .badge img{height:44px}}
   </style>
@@ -85,12 +114,14 @@
 
   <div id="dataStatus">Checking data status…</div>
 
+  <!-- Certifying bodies / partners -->
   <section class="brandrow" aria-label="Certifying bodies">
     <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 aha-authorized-training-site.png" alt="AHA Authorized Training Site" /></div>
     <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 arc-ltp-logo.jpg" alt="American Red Cross Licensed Training Provider" /></div>
     <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/HSI.png" alt="HSI Training Center" /></div>
   </section>
 
+  <!-- Popular quick-links -->
   <section class="popular" aria-label="Most popular classes">
     <div>
       <h2>Most popular classes</h2>
@@ -108,126 +139,390 @@
     <div class="art"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg" alt="910CPR wave logo banner"/></div>
   </section>
 
+  <!-- Catalog grid renders here -->
   <section id="courseGrid" class="grid" aria-live="polite"></section>
 </div>
 
 <script>
-/* === helpers === */
+/* ==========================
+   TOP-LEVEL HELPERS
+   ========================== */
 function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
-function fmtDate(dtISO){ const d=new Date(dtISO); const opt={weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}; return d.toLocaleString(undefined,opt); }
-function withinWindow(dtISO,days){ if(!dtISO) return false; const s=new Date(dtISO); if(isNaN(s)) return false; const now=new Date(); const cap=new Date(now.getTime()+days*86400000); return s>=now && s<=cap; }
-function familyFromTitle(t){ t=(t||'').toLowerCase(); if(t.includes('bls')) return 'bls'; if(t.includes('acls')) return 'acls'; if(t.includes('pals')) return 'pals'; return 'faid'; }
+function fmtDate(dtISO){
+  const d=new Date(dtISO);
+  if(isNaN(d)) return '';
+  const opt={weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'};
+  return d.toLocaleString(undefined,opt);
+}
 
-/* === config === */
-const CONFIG={ windowDays:28, maxSessionsPerCourse:15, jsonFeed:"data/schedule.json", statusFile:"data/status.json" };
-const IMG_BASE='https://www.enrollware.com/sitefiles/coastalcprtraining/';
-const BRAND_LOGO={AHA:IMG_BASE+'_AHA.png','Red Cross':IMG_BASE+'_ARC.png',HSI:IMG_BASE+'_HSI.png'};
-const FAMILY_IMG={bls:'25-bls-new.png',acls:'25-acls-new.png',pals:'25-pals-new.png',faid:'25_Heartsaver.png'};
-
-function detectBrand(title=''){const t=title.toLowerCase(); if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross'; if(t.includes('hsi')) return 'HSI'; if(t.includes('aha')||t.includes('american heart')) return 'AHA'; return null;}
-
-/* === status line === */
-(async function status(){ const el=document.getElementById('dataStatus'); try{ const r=await fetch(CONFIG.statusFile+'?v='+Date.now(),{cache:'no-store'}); if(!r.ok) throw 0; const st=await r.json(); const snap=st.snapshot||{}, sched=st.schedule||{}; const ok=snap.exists&&snap.bytes>0&&sched.exists&&sched.bytes>0; el.innerHTML=ok?`Data status: OK • updated ${st.updated_at} • schedule.json ${sched.bytes} bytes`:`Data status: INCOMPLETE • snapshot:${snap.exists?'yes':'no'} • schedule:${sched.exists?'yes':'no'}`; el.className=ok?'note ok':'note soft'; }catch{ el.textContent='Data status: unknown (fetch error).'; el.className='note bad'; }})();
-
-/* === load feed and render by section === */
-(async function main(){
-  const grid=document.getElementById('courseGrid');
-  let data=null;
+/* Open the details matching location.hash and scroll into view (no-op if absent) */
+function applyOpenFromURL(map){
   try{
-    const r=await fetch(CONFIG.jsonFeed,{cache:'no-store'}); if(!r.ok) throw 0; data=await r.json();
-  }catch{ showWarn('Could not load data/schedule.json'); return; }
+    const hash = decodeURIComponent(location.hash.replace('#',''));
+    if(!hash) return;
+    const det = map && map.get ? map.get(hash) : null;
+    if(det){
+      det.setAttribute('open','');
+      const card = document.getElementById(`card-${hash}`) || det.closest('.card');
+      if(card && card.scrollIntoView){ card.scrollIntoView({behavior:'smooth',block:'start'}); }
+      const sum = det.querySelector('summary');
+      if(sum && sum.focus) sum.focus();
+    }
+  }catch(e){}
+}
 
-  const sessions = Array.isArray(data)?data:(Array.isArray(data?.sessions)?data.sessions:[]);
-  if(!sessions.length){ showWarn('No sessions found in schedule.json'); return; }
+/* ==========================
+   CONFIG & CONSTANTS
+   ========================== */
+const CONFIG = {
+  windowDays: 28,
+  maxSessionsPerCourse: 15,
+  jsonFeed: "data/schedule.json",
+  statusFile: "data/status.json",
+  snippetRoot: "courses/"   // per-course HTML: courses/{slug(title)}.html
+};
+const IMG_BASE = 'https://www.enrollware.com/sitefiles/coastalcprtraining/';
+const FAMILY_IMG = { bls:'25-bls-new.png', acls:'25-acls-new.png', pals:'25-pals-new.png', faid:'25_Heartsaver.png' };
+const BRAND_LOGO = {
+  AHA: IMG_BASE + '_AHA.png',
+  'Red Cross': IMG_BASE + '_ARC.png',
+  HSI: IMG_BASE + '_HSI.png'
+};
 
-  // group by course_id (stable) → pick section mode, title, etc.
-  const coursesMap=new Map();
-  for(const s of sessions){
-    if(!withinWindow(s.start, CONFIG.windowDays)) continue;
-    const key = s.course_id || slug(s.course_title || s.title || '');
-    const title = s.course_title || s.title || '';
-    if(!key || !title) continue;
-    if(!coursesMap.has(key)) coursesMap.set(key,{title,section:s.section||'',family:familyFromTitle(title),sessions:[]});
-    coursesMap.get(key).sessions.push(s);
-    // if section is empty, prefer the first non-empty we see
-    if(!coursesMap.get(key).section && (s.section||'')) coursesMap.get(key).section = s.section;
-  }
-  // sort sessions for each course
-  coursesMap.forEach(v=>v.sessions.sort((a,b)=>new Date(a.start)-new Date(b.start)));
+let FEED = [];
+let FEED_ERROR = null;
 
-  // render in fixed section order
-  const sectionOrder=[
-    'Healthcare Provider: BLS',
-    'Healthcare Provider: ACLS',
-    'Healthcare Provider: PALS',
-    'Healthcare Provider: ASLS',
-    'CPR / AED & First Aid',
-    'CPR / AED Only',
-    'Instructor Programs',
-    'Other Programs'
-  ];
-
-  const coursesBySection=new Map();
-  for(const sec of sectionOrder) coursesBySection.set(sec,[]);
-  for(const v of coursesMap.values()){
-    const sec = sectionOrder.find(s=> (v.section||'').toLowerCase().startsWith(s.toLowerCase())) || 'Other Programs';
-    coursesBySection.get(sec).push(v);
-  }
-  // sort courses alphabetically inside a section
-  for(const sec of sectionOrder){ coursesBySection.get(sec).sort((a,b)=>a.title.localeCompare(b.title)); }
-
-  // renderer helpers
-  function makeTitleCard(text,family){
-    const el=document.createElement('div'); el.className='card title ' + (family||'');
-    const img=(family && FAMILY_IMG[family])?`<img class="famimg" src="${IMG_BASE}${FAMILY_IMG[family]}" alt="${family} icon"/>`:'';
-    el.innerHTML=`<h2>${text}</h2>${img}`; return el;
-  }
-  function courseCard(title, list){
-    const brand=detectBrand(title);
-    const keySlug=slug(title);
-    const el=document.createElement('div'); el.className='card course'; el.id=`card-${keySlug}`;
-    const brandSrc=brand && BRAND_LOGO[brand] ? BRAND_LOGO[brand] : '';
-    const brandImg=brandSrc?`<img class="brandicon" src="${brandSrc}" alt="${brand} logo"/>`:'';
-    el.innerHTML=`
-      <h3 id="h-${keySlug}">${brandImg}<a href="#${keySlug}" style="text-decoration:none;color:inherit">${title}</a></h3>
-      <details id="d-${keySlug}" data-key="${keySlug}">
-        <summary>Course details & upcoming sessions</summary>
-        <div class="desc" id="desc-${keySlug}"></div>
-        <ul class="slots" id="slots-${keySlug}"></ul>
-      </details>`;
-    const ul=el.querySelector(`#slots-${keySlug}`);
-    (list||[]).slice(0,CONFIG.maxSessionsPerCourse).forEach(s=>{
-      const li=document.createElement('li');
-      li.innerHTML=`<a class="slotbtn" href="${s.url}" target="_blank" rel="noopener" aria-label="Register for ${title} on ${fmtDate(s.start)}">
-        <div><time datetime="${s.start}">${fmtDate(s.start)}</time><div class="meta">${s.location||''}</div></div>
-        <div class="right">Register →</div>
-      </a>`;
-      ul.appendChild(li);
+/* ==========================
+   STATUS INDICATOR
+   ========================== */
+(function checkDataStatus(){
+  const el = document.getElementById('dataStatus');
+  if(!el) return;
+  fetch(CONFIG.statusFile + '?v=' + Date.now(), {cache:'no-store'})
+    .then(r => r.ok ? r.json() : null)
+    .then(st => {
+      if(!st){
+        el.textContent = 'Data status: missing (status.json 404). Actions may not have run yet.';
+        el.className = 'note bad';
+        return;
+      }
+      const snap = st.snapshot || {}, sched = st.schedule || {};
+      const ok = snap.exists && snap.bytes>0 && sched.exists && sched.bytes>0;
+      el.innerHTML = (ok
+        ? `Data status: OK • updated ${st.updated_at} • schedule.json ${sched.bytes} bytes`
+        : `Data status: INCOMPLETE • snapshot: ${snap.exists?'yes':'no'} • schedule: ${sched.exists?'yes':'no'}`
+      );
+      el.className = ok ? 'note ok' : 'note soft';
+    })
+    .catch(()=>{
+      el.textContent='Data status: unknown (fetch error).';
+      el.className='note bad';
     });
-    if(!(list||[]).length){ ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. See full schedule.</li>'; }
-    return el;
-  }
-
-  // paint
-  grid.innerHTML='';
-  for(const sec of sectionOrder){
-    const items=coursesBySection.get(sec);
-    if(!items || !items.length) continue; // skip empty sections
-    grid.appendChild(makeTitleCard(sec, familyFromTitle(sec)));
-    for(const c of items){ grid.appendChild(courseCard(c.title, c.sessions)); }
-  }
-
-  function showHash(){
-    const map=new Map([...grid.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
-    const hash=decodeURIComponent(location.hash.replace('#','')); if(!hash) return;
-    const det=map.get(hash); if(det){ det.setAttribute('open',''); det.closest('.card')?.scrollIntoView({behavior:'smooth',block:'start'}); det.querySelector('summary')?.focus?.(); }
-  }
-  showHash(); window.addEventListener('hashchange',showHash);
 })();
 
-function showWarn(msg){
-  const w=document.createElement('div'); w.className='note bad'; w.textContent=msg;
-  document.querySelector('.wrap').appendChild(w);
+/* ==========================
+   FEED LOADING / NORMALIZATION
+   ========================== */
+async function loadJSONRobust(url){
+  const r = await fetch(url, {cache:'no-store'});
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  const text = await r.text();
+  if(text.trim().startsWith('<')) throw new Error('Expected JSON, got HTML');
+  try{ return JSON.parse(text); }
+  catch(parseErr){ throw new Error('Invalid JSON in schedule.json'); }
+}
+
+// Accepts either:
+//  A) legacy array-of-sessions
+//  B) pivot: { meta:{}, sessions:[...] }
+function normalizeFeed(json){
+  let raw = [];
+  if(Array.isArray(json)) raw = json;
+  else if(json && Array.isArray(json.sessions)) raw = json.sessions;
+  else return [];
+
+  const out = [];
+  for(const s of raw){
+    let startISO = s.start_iso || s.start || null;
+    if(!startISO && s.start_text){
+      const d = new Date(s.start_text);
+      if(!isNaN(d)) startISO = d.toISOString();
+    }
+    out.push({
+      id: s.id,
+      url: s.url,
+      start: startISO,
+      location: s.location || '',
+      title: s.course_title || s.title || '',
+      raw_title: s.title || '',
+      course_title: s.course_title || s.title || '',
+      course_id: s.course_id || slug(s.course_title || s.title || ''),
+      section: s.section || '',
+      classType: s.classType || null,
+      instructor: s.instructor ?? null,
+      seats: s.seats ?? null
+    });
+  }
+  return out;
+}
+
+async function loadFeed(){
+  try{
+    const j = await loadJSONRobust(CONFIG.jsonFeed);
+    const arr = normalizeFeed(j);
+    if(!arr.length) FEED_ERROR = 'schedule.json is present but has 0 sessions.';
+    return arr;
+  }catch(e){
+    FEED_ERROR = e.message || 'Failed to load schedule.json';
+    return [];
+  }
+}
+
+/* ==========================
+   HELPERS FOR STRUCTURE
+   ========================== */
+function withinWindow(dtISO){
+  if(!dtISO) return false;
+  const s=new Date(dtISO);
+  if(isNaN(s)) return false;
+  const now=new Date();
+  const cap=new Date(now.getTime()+CONFIG.windowDays*86400000);
+  return s>=now && s<=cap;
+}
+
+function detectBrand(title=''){
+  const t=title.toLowerCase();
+  if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
+  if(t.includes('hsi')) return 'HSI';
+  if(t.includes('aha')||t.includes('american heart')) return 'AHA';
+  return null;
+}
+
+function familyFromHeader(text){
+  const t=(text||'').toLowerCase();
+  if(t.includes('bls')) return 'bls';
+  if(t.includes('acls')) return 'acls';
+  if(t.includes('pals')) return 'pals';
+  return 'faid';
+}
+
+// Split the long section string into a short title + blurb.
+function splitSection(full){
+  if(!full) return {title:'Other Programs', blurb:''};
+  const idx = full.toLowerCase().indexOf('course ');
+  if(idx > 0){
+    const title = full.slice(0, idx).trim();
+    const blurb = full.slice(idx + 'course'.length).trim();
+    return {title: title || full, blurb};
+  }
+  return {title: full, blurb:''};
+}
+
+/* Build sections + courses + sessions purely from JSON (in snapshot order) */
+function buildStructure(feed){
+  const sections = [];
+  const sectionMap = new Map(); // sectionKey -> sectionObj
+  const courses = [];
+  const courseMap = new Map();  // courseId -> courseObj
+  const courseSessions = new Map(); // courseId -> [sessions]
+
+  for(const s of feed){
+    if(!withinWindow(s.start)) continue;  // only upcoming
+
+    const secKey = s.section || 'Other Programs';
+    let sec = sectionMap.get(secKey);
+    if(!sec){
+      const parts = splitSection(secKey);
+      const fam = familyFromHeader(parts.title);
+      sec = { key: secKey, title: parts.title, blurb: parts.blurb, family: fam, index: sections.length };
+      sectionMap.set(secKey, sec);
+      sections.push(sec);
+    }
+
+    const cId = s.course_id || slug(s.course_title || s.title || '');
+    let course = courseMap.get(cId);
+    if(!course){
+      const cTitle = s.course_title || s.title || '';
+      course = {
+        id: cId,
+        title: cTitle,
+        sectionKey: secKey,
+        brand: detectBrand(cTitle)
+      };
+      courseMap.set(cId, course);
+      courses.push(course);
+    }
+
+    if(!courseSessions.has(cId)) courseSessions.set(cId, []);
+    courseSessions.get(cId).push(s);
+  }
+
+  // sort each course's sessions chronologically
+  courseSessions.forEach(list => list.sort((a,b)=> new Date(a.start) - new Date(b.start)));
+
+  return { sections, courses, courseSessions };
+}
+
+/* ==========================
+   RENDERING
+   ========================== */
+function makeTitleCard(text, blurb, family){
+  const el=document.createElement('div');
+  el.className='card title' + (family? (' '+family) : '');
+  const img = (family && FAMILY_IMG[family]) ? `<img class="famimg" src="${IMG_BASE}${FAMILY_IMG[family]}" alt="${family} icon"/>` : '';
+  el.innerHTML=`<h2>${text}</h2>${blurb?`<small>${blurb}</small>`:''}${img}`;
+  return el;
+}
+
+function createCourseCardExact(title, sessions, courseId){
+  const brand = detectBrand(title);
+  const el=document.createElement('div');
+  el.className='card course';
+  const keySlug = slug(title);
+  const idSlug = courseId || keySlug;
+  el.id=`card-${idSlug}`;
+
+  const brandSrc = brand && BRAND_LOGO[brand] ? BRAND_LOGO[brand] : '';
+  const brandImg = brandSrc ? `<img class="brandicon" src="${brandSrc}" alt="${brand} logo"/>` : '';
+
+  el.innerHTML=`
+    <h3 id="h-${idSlug}">${brandImg}<a href="#${idSlug}" style="text-decoration:none;color:inherit">${title}</a></h3>
+    <details id="d-${idSlug}" data-key="${idSlug}">
+      <summary>Course details & upcoming sessions</summary>
+      <div class="desc" id="desc-${idSlug}"><!-- Course Description --></div>
+      <ul class="slots" id="slots-${idSlug}"></ul>
+    </details>`;
+
+  const ul = el.querySelector(`#slots-${idSlug}`);
+  if(!sessions || !sessions.length){
+    ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. See full schedule.</li>';
+  } else {
+    sessions.slice(0,CONFIG.maxSessionsPerCourse).forEach(s=>{
+      const li=document.createElement('li');
+      li.innerHTML = `
+        <a class="slotbtn" href="${s.url}" target="_blank" rel="noopener"
+           aria-label="Register for ${title} on ${fmtDate(s.start)}">
+          <div>
+            <time datetime="${s.start}">${fmtDate(s.start)}</time>
+            <div class="meta">${s.location||''}</div>
+          </div>
+          <div class="right">Register →</div>
+        </a>`;
+      ul.appendChild(li);
+    });
+  }
+  return el;
+}
+
+function renderFromStructure(container, pivot){
+  container.innerHTML='';
+  window._COURSE_KEYS = [];
+
+  if(!pivot.sections.length){
+    const none=document.createElement('div');
+    none.className='note bad';
+    none.textContent='No upcoming sessions in the next 4 weeks. Try a later date or contact us for scheduling.';
+    container.appendChild(none);
+    return;
+  }
+
+  pivot.sections.forEach(sec=>{
+    const header = makeTitleCard(sec.title, sec.blurb, sec.family);
+    container.appendChild(header);
+
+    pivot.courses.forEach(course=>{
+      if(course.sectionKey !== sec.key) return;
+      const sessions = pivot.courseSessions.get(course.id) || [];
+      if(!sessions.length) return;
+      const card = createCourseCardExact(course.title, sessions, course.id);
+      container.appendChild(card);
+      window._COURSE_KEYS.push(course.title);
+    });
+  });
+
+  const map=new Map([...container.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.replace(/^d-/,'').replace(/^card-/,''),d]));
+  applyOpenFromURL(map);
+}
+
+/* ==========================
+   LEGACY CATALOG (fallback for snippets)
+   ========================== */
+const CATALOG = [
+  { type:"title", text:"Healthcare Provider: BLS", blurb:"For clinical staff, hospitals, clinics", family:"bls" },
+  { type:"course", key:"AHA - BLS Provider - In-person Renewal", brand:"AHA", title:"AHA – BLS Provider – In-Person Renewal" },
+  { type:"course", key:"AHA - BLS Provider - In-person Initial", brand:"AHA", title:"AHA – BLS Provider – In-Person Initial" },
+  { type:"course", key:"AHA - BLS Provider - Heartcode", brand:"AHA", title:"AHA – BLS Provider – HeartCode (Online + Skills)" },
+  { type:"title", text:"Healthcare Provider: ACLS", blurb:"Advanced Cardiovascular Life Support", family:"acls" },
+  { type:"course", key:"AHA - ACLS Provider - In-person - Initial", brand:"AHA", title:"AHA – ACLS Provider – Initial" },
+  { type:"course", key:"AHA - ACLS Provider - In-person - Renewal", brand:"AHA", title:"AHA – ACLS Provider – Renewal" },
+  { type:"course", key:"AHA - ACLS Provider - Heartcode", brand:"AHA", title:"AHA – ACLS Provider – HeartCode (Online + Skills)" },
+  { type:"title", text:"Healthcare Provider: PALS", blurb:"Pediatric Advanced Life Support", family:"pals" },
+  { type:"course", key:"AHA - PALS Provider - In Person - Initial", brand:"AHA", title:"AHA – PALS Provider – Initial" },
+  { type:"course", key:"AHA - PALS Provider - In Person - Renewal", brand:"AHA", title:"AHA – PALS Provider – Renewal" },
+  { type:"course", key:"AHA - PALS Provider - Heartcode", brand:"AHA", title:"AHA – PALS Provider – HeartCode (Online + Skills)" },
+  { type:"title", text:"CPR / AED & First Aid", blurb:"First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.", family:"faid" },
+  { type:"title", text:"CPR / AED Only", blurb:"First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an AED in a safe, timely, and effective manner.", family:"faid" },
+  { type:"title", text:"Instructor Programs", blurb:"Become an instructor and teach CPR, First Aid, or BLS through AHA, HSI, or Red Cross.", family:"bls" },
+  { type:"title", text:"Other Programs", blurb:"Workplace & community classes", family:"faid" }
+];
+
+/* ==========================
+   BOOT
+   ========================== */
+(async function init(){
+  const grid=document.getElementById('courseGrid');
+  const feed = await loadFeed();
+  FEED = feed;
+  const pivot = buildStructure(FEED);
+  renderFromStructure(grid, pivot);
+  await loadSnippets();
+
+  if((!FEED.length || !pivot.courses.length) && FEED_ERROR){
+    const warn=document.createElement('div');
+    warn.className='warn';
+    warn.textContent=`No sessions loaded. Detail: ${FEED_ERROR}`;
+    document.querySelector('.wrap').appendChild(warn);
+  }
+})();
+
+window.addEventListener('hashchange',()=>{
+  const grid=document.getElementById('courseGrid');
+  const map=new Map([...grid.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.replace(/^d-/,'').replace(/^card-/,''),d]));
+  applyOpenFromURL(map);
+});
+</script>
+
+<!-- inject per-course HTML snippets into Course Description areas -->
+<script>
+async function loadSnippets(){
+  const keys = Array.isArray(window._COURSE_KEYS)&&window._COURSE_KEYS.length
+    ? window._COURSE_KEYS
+    : CATALOG.filter(c=>c.type==='course').map(c=>c.title||c.key);
+  const fetchOne=async(title)=>{
+    const file=CONFIG.snippetRoot + slug(title) + '.html';
+    try{
+      const r=await fetch(file,{cache:'no-store'});
+      if(!r.ok) return;
+      const html=await r.text();
+      const el=document.getElementById('desc-'+slug(title));
+      if(el){ el.innerHTML=html; }
+    }catch(e){}
+  };
+  await Promise.all(keys.map(fetchOne));
+
+  /* Minimal self-tests (non-blocking) */
+  console.assert(slug('AHA - BLS Provider - In-person Initial')==='aha---bls-provider---in-person-initial','slug() failed');
+  (function testWithin(){
+    const now=new Date();
+    const in3d=new Date(now.getTime()+3*86400000).toISOString();
+    const in60d=new Date(now.getTime()+60*86400000).toISOString();
+    console.assert(withinWindow(in3d)===true,'withinWindow short range');
+    console.assert(withinWindow(in60d)===false,'withinWindow beyond window');
+  })();
+  (function testApplyOpen(){
+    history.replaceState(null,'',location.pathname);
+    applyOpenFromURL(new Map());
+  })();
 }
 </script>
 </body>
