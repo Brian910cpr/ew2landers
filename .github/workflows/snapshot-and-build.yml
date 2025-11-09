@@ -1,38 +1,74 @@
-    - name: Snapshot Enrollware HTML
-      run: |
-        curl -fSL "https://www.enrollware.com/sitefiles/coastalcprtraining/schedule.html" -o docs/data/enrollware-schedule.html
-        wc -c docs/data/enrollware-schedule.html || true
+name: Snapshot Enrollware + Build schedule.json
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.x"
+on:
+  # Run every hour at minute 17 (adjust if you like)
+  schedule:
+    - cron: "17 * * * *"
+  # Allow manual runs from the Actions tab
+  workflow_dispatch: {}
 
-    - name: Install parser deps
-      run: |
-        python -m pip install --upgrade pip
-        pip install beautifulsoup4 lxml python-dateutil
+permissions:
+  contents: write
 
-    - name: Build schedule.json
-      run: |
-        python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
-        jq -e . docs/data/schedule.json >/dev/null
+jobs:
+  snapshot_and_build:
+    runs-on: ubuntu-latest
 
-    - name: Build status.json
-      run: |
-        python scripts/build_status_json.py \
-          --snapshot docs/data/enrollware-schedule.html \
-          --schedule docs/data/schedule.json \
-          --out docs/data/status.json
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Commit if changed
-      run: |
-        if git diff --quiet -- docs/data/schedule.json docs/data/status.json; then
-          echo "No changes to commit."
-          exit 0
-        fi
-        git config user.name  "github-actions[bot]"
-        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git add docs/data/schedule.json docs/data/status.json
-        git commit -m "data: update schedule.json + status.json"
-        git push
+      - name: Ensure docs/data directory exists
+        run: |
+          mkdir -p docs/data
+
+      - name: Snapshot Enrollware schedule.html
+        run: |
+          curl -fSL \
+            "https://coastalcprtraining.enrollware.com/schedule" \
+            -o docs/data/enrollware-schedule.html
+          echo "Snapshot size:"
+          wc -c docs/data/enrollware-schedule.html || true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install parser deps
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install beautifulsoup4 lxml python-dateutil
+
+      - name: Parse snapshot into docs/data/schedule.json
+        run: |
+          test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
+          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
+          echo "schedule.json size:"
+          wc -c docs/data/schedule.json || true
+
+      - name: Build docs/data/status.json
+        run: |
+          test -f scripts/build_status_json.py || { echo "Missing scripts/build_status_json.py"; exit 1; }
+          python scripts/build_status_json.py \
+            --snapshot docs/data/enrollware-schedule.html \
+            --schedule docs/data/schedule.json \
+            --out docs/data/status.json
+
+      - name: Show status.json
+        run: |
+          echo "status.json content:"
+          cat docs/data/status.json
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json; then
+            echo "No changes to snapshot/schedule/status; nothing to commit."
+            exit 0
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json
+          git commit -m "chore: update enrollware snapshot + schedule.json"
+          git push
