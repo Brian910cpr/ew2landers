@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "docs/data/enrollware-schedule.html",
-    "fetched_at": "2025-11-09T14:31:03.908743+00:00",
+    "fetched_at": "2025-11-09T15:24:22.929396+00:00",
     "panel_count": 48
   },
   "sessions": [
@@ -1204,20 +1204,6 @@
       "title": "AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS",
       "course_title": "AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS",
       "course_id": "ct209806",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
-      "classType": "BLS",
-      "instructor": null,
-      "seats": null
-    },
-    {
-      "id": 12352149,
-      "url": "https://coastalcprtraining.enrollware.com/enroll?id=12352149",
-      "start": null,
-      "end": null,
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "title": "AHA - BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal",
-      "course_title": "AHA - BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal",
-      "course_id": "ct359474",
       "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.",
       "classType": "BLS",
       "instructor": null,
