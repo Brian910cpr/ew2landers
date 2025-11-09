@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>910CPR – Course Catalog</title>
+  <title>910CPR Courses</title>
   <style>
     :root{
       --bg:#0b1320;          /* dark background */
@@ -13,150 +13,51 @@
       --accent:#0f61bb;
       --shadow:0 2px 16px rgba(6,10,18,.35);
       --radius:18px;
-      /* family color chips */
       --bls:#b6d4ff;   /* BLS */
       --acls:#ff7474;  /* ACLS */
       --pals:#c59eff;  /* PALS */
       --faid:#7eb0ff;  /* First Aid / Heartsaver */
     }
 
-    html,body{
-      margin:0;
-      padding:0;
-      background:var(--bg);
-      color:var(--ink);
-      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
-    }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     a{color:var(--brand);text-decoration:none}
     a:hover{color:var(--accent)}
 
     .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
-    header{
-      display:flex;
-      gap:16px;
-      align-items:center;
-      justify-content:space-between;
-      margin:8px 0 8px;
-      position:sticky;
-      top:0;
-      z-index:10;
-      background:linear-gradient(180deg, rgba(11,19,32,1) 0%, rgba(11,19,32,0.85) 100%);
-      backdrop-filter:saturate(1.1) blur(2px)
-    }
+    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin:8px 0 8px;position:sticky;top:0;z-index:10;background:linear-gradient(180deg, rgba(11,19,32,1) 0%, rgba(11,19,32,0.85) 100%);backdrop-filter:saturate(1.1) blur(2px)}
     header h1{font-size:clamp(22px,3.5vw,34px);margin:0;font-weight:750}
     .nav{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-    .nav a{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:8px 10px;
-      border:1px solid #243349;
-      border-radius:12px;
-      background:#0e1726;
-      color:var(--ink);
-      font-weight:650
-    }
+    .nav a{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid #243349;border-radius:12px;background:#0e1726;color:var(--ink);font-weight:650}
     .nav a[target="_blank"]::after{content:" ↗";opacity:.7;font-weight:700}
     .nav a:hover{background:#122448;border-color:#2f416a}
 
-    #dataStatus{
-      font:13px/1.3 system-ui;
-      color:#9fb6e8;
-      margin:4px 0 18px
-    }
+    #dataStatus{font:13px/1.3 system-ui;color:#9fb6e8;margin:4px 0 18px}
 
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-    .card{
-      background:#0e1726;
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:16px;
-      display:flex;
-      flex-direction:column;
-      min-height:120px;
-      border:1px solid #243349;
-      position:relative
-    }
-    .card h3{
-      margin:0 0 10px;
-      padding-right:24px;
-      display:flex;
-      align-items:center;
-      gap:8px
-    }
-    .card h3 .brandicon{
-      height:22px;
-      width:auto;
-      object-fit:contain;
-      display:inline-block;
-      filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))
-    }
-    .card.course:hover{
-      outline:2px solid #2f416a;
-      outline-offset:0;
-      border-color:#2f416a;
-      background:#0f1f39
-    }
+    .card{background:#0e1726;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;min-height:120px;border:1px solid #243349;position:relative}
+    .card h3{margin:0 0 10px;padding-right:24px;display:flex;align-items:center;gap:8px}
+    .card h3 .brandicon{height:22px;width:auto;object-fit:contain;display:inline-block;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+    .card.course:hover{outline:2px solid #2f416a;outline-offset:0;border-color:#2f416a;background:#0f1f39}
     .card .cardlogo{display:none}
-    @media(max-width:640px){
-      .card h3{padding-right:96px}
-      .card .cardlogo{height:28px}
-    }
+    @media(max-width:640px){.card h3{padding-right:96px}.card .cardlogo{height:28px}}
     .card.course{grid-column:span 6}
     @media(max-width:860px){.card.course{grid-column:span 12}}
 
-    /* Section separators with left accent bar (width 12px) */
-    .card.title{
-      grid-column:1 / -1;
-      background:#0f1c33;
-      color:var(--ink);
-      border:1px solid #2a3b62;
-      position:relative;
-      overflow:hidden
-    }
-    .card.title::before{
-      content:"";
-      position:absolute;
-      left:0;top:0;bottom:0;
-      width:12px;
-      background:#2a3b62
-    }
+    /* Section headers */
+    .card.title{grid-column:1 / -1;background:#0f1c33;color:var(--ink);border:1px solid #2a3b62;position:relative;overflow:hidden}
+    .card.title::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#2a3b62}
     .card.title.bls::before{background:var(--bls)}
     .card.title.acls::before{background:var(--acls)}
     .card.title.pals::before{background:var(--pals)}
     .card.title.faid::before{background:var(--faid)}
     .card.title h2{margin:0 0 4px;font-size:clamp(18px,2.8vw,24px);padding-right:128px}
     .card.title small{color:var(--muted)}
-    .card.title .famimg{
-      position:absolute;
-      right:16px;
-      top:12px;
-      height:calc(100% - 24px);
-      max-height:none;
-      width:auto;
-      object-fit:contain;
-      filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
-      pointer-events:none
-    }
-    @media(max-width:640px){
-      .card.title .famimg{max-height:44px;right:12px}
-    }
+    .card.title .famimg{position:absolute;right:16px;top:12px;height:calc(100% - 24px);max-height:none;width:auto;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));pointer-events:none}
+    @media(max-width:640px){.card.title .famimg{max-height:44px;right:12px}}
 
     /* Periscope */
     details{margin-top:auto}
-    summary{
-      cursor:pointer;
-      list-style:none;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius:12px;
-      background:#111e36;
-      color:var(--ink);
-      font-weight:700;
-      border:1px solid #243349
-    }
+    summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#111e36;color:var(--ink);font-weight:700;border:1px solid #243349}
     summary:hover{background:#1a2b55;border-color:#3b5aa0}
     summary::-webkit-details-marker{display:none}
     details[open] summary{background:#122448;border-color:#2f416a}
@@ -165,50 +66,16 @@
     .slots{margin:8px 0 0;padding:0;list-style:none}
     .slots li{display:block;padding:0;margin:10px 0;background:transparent;border:none}
 
-    /* Full-width clickable slot button */
-    .slotbtn{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      width:100%;
-      padding:14px;
-      border-radius:12px;
-      background:#152242;
-      border:1px solid #2a3b62;
-      color:var(--ink);
-      text-decoration:none
-    }
+    .slotbtn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px;border-radius:12px;background:#152242;border:1px solid #2a3b62;color:var(--ink);text-decoration:none}
     .slotbtn:hover{background:#1a2b55;border-color:#385089}
     .slotbtn .meta{font-size:13px;color:#9fb6e8}
     .slotbtn .right{white-space:nowrap;margin-left:12px}
 
     /* Popular quick-links */
-    .popular{
-      display:grid;
-      grid-template-columns:2fr 1fr;
-      gap:20px;
-      align-items:center;
-      background:#0b1320;
-      color:var(--ink);
-      border-radius:20px;
-      padding:18px;
-      margin:8px 0 22px;
-      border:1px solid #243349;
-      box-shadow:var(--shadow)
-    }
+    .popular{display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:center;background:#0b1320;color:var(--ink);border-radius:20px;padding:18px;margin:8px 0 22px;border:1px solid #243349;box-shadow:var(--shadow)}
     .popular h2{margin:6px 0 10px;font-size:clamp(16px,2.2vw,20px);font-weight:750;color:#b6d4ff}
     .tiles{display:flex;flex-wrap:wrap;gap:10px}
-    .tile{
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      min-width:160px;
-      padding:10px 12px;
-      border-radius:12px;
-      color:#001a4d;
-      border:1px solid #2a3b62;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.04)
-    }
+    .tile{display:flex;flex-direction:column;justify-content:center;min-width:160px;padding:10px 12px;border-radius:12px;color:#001a4d;border:1px solid #2a3b62;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
     .tile .t1{font-weight:800}
     .tile .t2{font-size:12px;opacity:.8;color:#eef3ff}
     .tile:hover{filter:brightness(1.15);box-shadow:0 0 0 2px rgba(0,0,0,.15) inset}
@@ -224,39 +91,10 @@
     .ok{color:#7fe1a9}
     .soft{color:#ffdd99}
     .bad{color:#ffc9c9}
-
-    /* Certifying bodies row */
-    .brandrow{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:28px;
-      background:#ffffff;
-      border:1px solid #e6eaf5;
-      border-radius:20px;
-      padding:14px;
-      margin:0 0 12px;
-      box-shadow:0 2px 16px rgba(6,10,18,.08)
-    }
-    .brandrow .badge{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:8px 12px;
-      border-radius:14px;
-      background:transparent;
-      border:1px solid transparent
-    }
-    .brandrow .badge img{
-      height:56px;
-      width:auto;
-      object-fit:contain;
-      display:block;
-      filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))
-    }
-    @media(max-width:640px){
-      .brandrow .badge img{height:44px}
-    }
+    .brandrow{display:flex;justify-content:center;align-items:center;gap:28px;background:#ffffff;border:1px solid #e6eaf5;border-radius:20px;padding:14px;margin:0 0 12px;box-shadow:0 2px 16px rgba(6,10,18,.08)}
+    .brandrow .badge{display:flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:14px;background:transparent;border:1px solid transparent}
+    .brandrow .badge img{height:56px;width:auto;object-fit:contain;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
+    @media(max-width:640px){.brandrow .badge img{height:44px}}
   </style>
 </head>
 <body>
@@ -275,15 +113,9 @@
 
   <!-- Certifying bodies / partners -->
   <section class="brandrow" aria-label="Certifying bodies">
-    <div class="badge">
-      <img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 aha-authorized-training-site.png" alt="AHA Authorized Training Site" />
-    </div>
-    <div class="badge">
-      <img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 arc-ltp-logo.jpg" alt="American Red Cross Licensed Training Provider" />
-    </div>
-    <div class="badge">
-      <img src="https://www.enrollware.com/sitefiles/coastalcprtraining/HSI.png" alt="HSI Training Center" />
-    </div>
+    <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 aha-authorized-training-site.png" alt="AHA Authorized Training Site" /></div>
+    <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/111 arc-ltp-logo.jpg" alt="American Red Cross Licensed Training Provider" /></div>
+    <div class="badge"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/HSI.png" alt="HSI Training Center" /></div>
   </section>
 
   <!-- Popular quick-links -->
@@ -291,43 +123,17 @@
     <div>
       <h2>Most popular classes</h2>
       <div class="tiles">
-        <a class="tile bls" href="#aha---bls-provider---in-person-renewal">
-          <span class="t1">BLS</span>
-          <span class="t2">Initial or renewal; instructor-led</span>
-        </a>
-        <a class="tile bls" href="#aha---bls-provider---heartcode">
-          <span class="t1">BLS Online</span>
-          <span class="t2">Blended: online + in-person skills</span>
-        </a>
-        <a class="tile acls" href="#aha---acls-provider---in-person---renewal">
-          <span class="t1">ACLS</span>
-          <span class="t2">Fully in-person renewal</span>
-        </a>
-        <a class="tile acls" href="#aha---acls-provider---heartcode">
-          <span class="t1">ACLS Online</span>
-          <span class="t2">Initial (online + skills)</span>
-        </a>
-        <a class="tile pals" href="#aha---pals-provider---in-person---renewal">
-          <span class="t1">PALS</span>
-          <span class="t2">Fully in-person renewal</span>
-        </a>
-        <a class="tile pals" href="#aha---pals-provider---heartcode">
-          <span class="t1">PALS Online</span>
-          <span class="t2">Initial (online + skills)</span>
-        </a>
-        <a class="tile faid" href="#hsi---first-aid-cpr-aed-classroom">
-          <span class="t1">First Aid / CPR / AED</span>
-          <span class="t2">Fully in-person course</span>
-        </a>
-        <a class="tile faid" href="#aha---heartsaver-online">
-          <span class="t1">First Aid / CPR / AED Online</span>
-          <span class="t2">Flexible + fast (online + skills)</span>
-        </a>
+        <a class="tile bls" href="#aha---bls-provider---in-person-renewal"><span class="t1">BLS</span><span class="t2">Initial or renewal; instructor-led</span></a>
+        <a class="tile bls" href="#aha---bls-provider---heartcode"><span class="t1">BLS Online</span><span class="t2">Blended: online + in-person skills</span></a>
+        <a class="tile acls" href="#aha---acls-provider---in-person---renewal"><span class="t1">ACLS</span><span class="t2">Fully in-person renewal</span></a>
+        <a class="tile acls" href="#aha---acls-provider---heartcode"><span class="t1">ACLS Online</span><span class="t2">Initial (online + skills)</span></a>
+        <a class="tile pals" href="#aha---pals-provider---in-person---renewal"><span class="t1">PALS</span><span class="t2">Fully in-person renewal</span></a>
+        <a class="tile pals" href="#aha---pals-provider---heartcode"><span class="t1">PALS Online</span><span class="t2">Initial (online + skills)</span></a>
+        <a class="tile faid" href="#hsi---first-aid-cpr-aed-classroom"><span class="t1">First Aid / CPR / AED</span><span class="t2">Fully in-person course</span></a>
+        <a class="tile faid" href="#aha---heartsaver-online"><span class="t1">First Aid / CPR / AED Online</span><span class="t2">Flexible + fast (online + skills)</span></a>
       </div>
     </div>
-    <div class="art">
-      <img src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg" alt="910CPR wave logo banner"/>
-    </div>
+    <div class="art"><img src="https://www.enrollware.com/sitefiles/coastalcprtraining/910CPR_wave.jpg" alt="910CPR wave logo banner"/></div>
   </section>
 
   <!-- Catalog grid renders here -->
@@ -335,34 +141,14 @@
 </div>
 
 <script>
-/* ==========================
-   TOP-LEVEL HELPERS
-   ========================== */
-function slug(s){
-  // Note: this intentionally allows repeated "-" (e.g. "aha---bls-..."),
-  // which matches older links and our popular tiles.
-  return String(s || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g,'-')
-    .replace(/(^-|-$)/g,'');
-}
-
-/** Accepts either an ISO string or a fuzzy date-ish string. */
-function fmtDate(v){
-  if(!v) return '';
-  const d = new Date(v);
-  if(!isNaN(d)) {
-    const opt = {
-      weekday:'short',
-      month:'short',
-      day:'numeric',
-      hour:'numeric',
-      minute:'2-digit'
-    };
-    return d.toLocaleString(undefined,opt);
-  }
-  // fallback: just show the raw text
-  return String(v);
+/* ========================== */
+/* TOP-LEVEL HELPERS          */
+/* ========================== */
+function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+function fmtDate(dtISO){
+  const d=new Date(dtISO);
+  const opt={weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'};
+  return d.toLocaleString(undefined,opt);
 }
 
 /* Open the details matching location.hash and scroll into view (no-op if absent) */
@@ -381,17 +167,16 @@ function applyOpenFromURL(map){
   }catch(e){}
 }
 
-/* ==========================
-   CONFIG & CONSTANTS
-   (paths are relative to docs/index.html)
-   ========================== */
+/* ========================== */
+/* CONFIG & CONSTANTS         */
+/* ========================== */
 const CONFIG = {
   windowDays: 28,
   maxSessionsPerCourse: 15,
-  jsonFeed: "data/schedule.json",
-  htmlFallback: "data/enrollware-schedule.html",
-  statusFile: "data/status.json",
-  snippetRoot: "courses/" // per-course HTML goes in docs/courses/{slug(title)}.html
+  jsonFeed: "docs/data/schedule.json",
+  htmlFallback: "docs/data/enrollware-schedule.html",
+  statusFile: "docs/data/status.json",
+  snippetRoot: "docs/courses/"
 };
 const ENROLLWARE_BASE = 'https://coastalcprtraining.enrollware.com/';
 const IMG_BASE = 'https://www.enrollware.com/sitefiles/coastalcprtraining/';
@@ -402,9 +187,9 @@ const BRAND_LOGO = {
   HSI: IMG_BASE + '_HSI.png'
 };
 
-/* ==========================
-   STATUS INDICATOR
-   ========================== */
+/* ========================== */
+/* STATUS INDICATOR           */
+/* ========================== */
 (function checkDataStatus(){
   const el = document.getElementById('dataStatus');
   if(!el) return;
@@ -418,26 +203,33 @@ const BRAND_LOGO = {
       }
       const snap = st.snapshot || {}, sched = st.schedule || {};
       const ok = snap.exists && snap.bytes>0 && sched.exists && sched.bytes>0;
-      el.innerHTML = (ok
+      el.innerHTML = ok
         ? `Data status: OK • updated ${st.updated_at} • schedule.json ${sched.bytes} bytes`
-        : `Data status: INCOMPLETE • snapshot: ${snap.exists?'yes':'no'} • schedule: ${sched.exists?'yes':'no'}`
-      );
+        : `Data status: INCOMPLETE • snapshot: ${snap.exists?'yes':'no'} • schedule: ${sched.exists?'yes':'no'}`;
       el.className = ok ? 'note ok' : 'note soft';
     })
-    .catch(()=>{
-      el.textContent='Data status: unknown (fetch error).';
-      el.className='note bad';
-    });
+    .catch(()=>{ el.textContent='Data status: unknown (fetch error).'; el.className='note bad'; });
 })();
 
-/* ==========================
-   FEED LOADING (supports:
-   - array of sessions
-   - pivot {sessions: [...]}
-   and normalizes to objects with .start
-   ========================== */
+/* ========================== */
+/* FEED LOADING + NORMALIZE   */
+/* ========================== */
 let FEED = [];
 let FEED_ERROR = null;
+
+/* Pick a single ISO start field from whatever the parser gave us */
+function pickStartField(s){
+  return s.start || s.start_iso || s.startISO || s.start_time || null;
+}
+
+/* Ensure every session object has a .start field the UI can rely on */
+function normalizeSessionsArray(arr){
+  if(!Array.isArray(arr)) return [];
+  return arr.map(s => {
+    const iso = pickStartField(s);
+    return Object.assign({}, s, { start: iso });
+  });
+}
 
 async function loadJSONRobust(url){
   const r = await fetch(url, {cache:'no-store'});
@@ -448,38 +240,27 @@ async function loadJSONRobust(url){
   catch(parseErr){ throw new Error('Invalid JSON in schedule.json'); }
 }
 
-/** Turn whatever JSON shape we get into a flat array of sessions with .start */
 function normalizeFeed(json){
   let arr;
-  if (Array.isArray(json)) {
-    arr = json;
-  } else if (json && Array.isArray(json.sessions)) {
-    arr = json.sessions;
-  } else {
-    return [];
-  }
-
-  return arr.map(s => {
-    // prefer explicit ISO-ish field if present, else fall back to start_text
-    const when = s.start || s.start_iso || s.start_text || null;
-    return Object.assign({}, s, { start: when });
-  });
+  if(Array.isArray(json)) arr = json;
+  else if(json && Array.isArray(json.sessions)) arr = json.sessions;
+  else arr = [];
+  return normalizeSessionsArray(arr);
 }
 
 async function loadFeed(){
   try{
     const j = await loadJSONRobust(CONFIG.jsonFeed);
     const arr = normalizeFeed(j);
-    if(Array.isArray(arr) && arr.length>0) return arr; 
-    FEED_ERROR = Array.isArray(arr) ? 'JSON feed is empty.' : 'JSON feed present but not an array.';
+    if(arr.length>0) return arr;
+    FEED_ERROR = 'JSON feed is empty after normalization.';
     throw new Error(FEED_ERROR);
   }catch(e){
-    // HTML fallback – only used if JSON really fails
     try{
       const r = await fetch(CONFIG.htmlFallback, {cache:'no-store'});
       if(!r.ok) { FEED_ERROR = `HTML fallback not ok: ${r.status}`; throw new Error('No HTML fallback'); }
       const html = await r.text();
-      const parsed = parseHTMLSchedule(html);
+      const parsed = normalizeSessionsArray(parseHTMLSchedule(html));
       if(!parsed.length) FEED_ERROR = 'Parsed 0 sessions from HTML fallback.';
       return parsed;
     }catch(e2){
@@ -489,9 +270,9 @@ async function loadFeed(){
   }
 }
 
-/* ==========================
-   SNAPSHOT HTML PARSER (coarse fallback)
-   ========================== */
+/* ========================== */
+/* SNAPSHOT HTML PARSER       */
+/* ========================== */
 function parseHTMLSchedule(html){
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const anchors = [...doc.querySelectorAll('a[href*="enroll?id="]')];
@@ -503,33 +284,21 @@ function parseHTMLSchedule(html){
     const row = a.closest('tr') || a.closest('.row') || a.parentElement;
     const text = (row ? row.innerText : a.innerText || '').replace(/\s+/g,' ').trim();
     const title = text || (a.title || a.textContent.trim());
-    const whenChunk =
+    const when =
       text.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b.*?\d{1,2}:\d{2}\s*(?:AM|PM)/i)?.[0] ||
-      text.match(/\d{4}-\d{2}-\d{2}.*?\d{1,2}:\d{2}/)?.[0] ||
-      null;
+      text.match(/\d{4}-\d{2}-\d{2}.*?\d{1,2}:\d{2}/)?.[0];
     const location = text.match(/Wilmington|Burgaw|Jacksonville|Shipyard|Sound Rd|Hinton Ave|Gum Branch|Merlot|Wright St/i)?.[0] || '';
     const startAttr = a.getAttribute('data-start');
-    const start = startAttr || whenChunk || null;
+    const start = startAttr || guessDate(when);
     const classType = guessType(title);
-    rows.push({
-      id,
-      classType,
-      title,
-      start,
-      start_text: start,
-      end:null,
-      location,
-      instructor:null,
-      seats:null,
-      url
-    });
+    rows.push({ id, classType, title, start, end:null, location, instructor:null, seats:null, url });
   });
   return rows;
 }
 
-/* ==========================
-   HELPERS
-   ========================== */
+/* ========================== */
+/* HELPERS                    */
+/* ========================== */
 function guessType(title=''){
   const t = title.toLowerCase();
   if(t.includes('acls')) return 'ACLS';
@@ -539,20 +308,23 @@ function guessType(title=''){
   if(t.includes('hsi')) return 'HSI';
   return 'Other';
 }
-
-/** window check – works with ISO or any Date-parsable string */
-function withinWindow(dtLike){
-  if(!dtLike) return false;
-  const s = new Date(dtLike);
+function guessDate(str){
+  if(!str) return null;
+  const d = new Date(str);
+  return isNaN(d) ? null : d.toISOString();
+}
+function withinWindow(dtISO){
+  if(!dtISO) return false;
+  const s=new Date(dtISO);
   if(isNaN(s)) return false;
-  const now = new Date();
-  const cap = new Date(now.getTime() + CONFIG.windowDays*86400000);
-  return s >= now && s <= cap;
+  const now=new Date();
+  const cap=new Date(now.getTime()+CONFIG.windowDays*86400000);
+  return s>=now && s<=cap;
 }
 
-/* ==========================
-   DYNAMIC RENDER: mirror snapshot order + group
-   ========================== */
+/* ========================== */
+/* RENDERING                  */
+/* ========================== */
 function detectBrand(title=''){
   const t=title.toLowerCase();
   if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
@@ -563,14 +335,12 @@ function detectBrand(title=''){
 
 function buildUpcomingMap(feed){
   const map=new Map();
-  feed
-    .filter(s => withinWindow(s.start))
-    .forEach(s=>{
-      const k=(s.course_title || s.title || '').trim();
-      if(!k) return;
-      if(!map.has(k)) map.set(k,[]);
-      map.get(k).push(s);
-    });
+  feed.filter(s=>withinWindow(pickStartField(s))).forEach(s=>{
+    const k=(s.course_title || s.title || '').trim();
+    if(!k) return;
+    if(!map.has(k)) map.set(k,[]);
+    map.get(k).push(Object.assign({}, s, { start: pickStartField(s) }));
+  });
   map.forEach(v=>v.sort((a,b)=>new Date(a.start)-new Date(b.start)));
   return map;
 }
@@ -600,6 +370,7 @@ function makeTitleCard(text, blurb, family){
   el.innerHTML=`<h2>${text}</h2>${blurb?`<small>${blurb}</small>`:''}${img}`;
   return el;
 }
+
 function createCourseCardExact(title, sessions){
   const brand = detectBrand(title);
   const el=document.createElement('div');
@@ -617,20 +388,18 @@ function createCourseCardExact(title, sessions){
     </details>`;
   const ul = el.querySelector(`#slots-${keySlug}`);
   if(!sessions || !sessions.length){
-    ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. See full schedule.</li>';
+    ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. Try a later date or contact us for scheduling.</li>';
   } else {
     sessions.slice(0,CONFIG.maxSessionsPerCourse).forEach(s=>{
-      const when = s.start || s.start_iso || s.start_text;
+      const when = pickStartField(s);
       const li=document.createElement('li');
-      li.innerHTML = `
-        <a class="slotbtn" href="${s.url}" target="_blank" rel="noopener"
-           aria-label="Register for ${title} on ${fmtDate(when)}">
-          <div>
-            <time datetime="${s.start || s.start_iso || ''}">${fmtDate(when)}</time>
-            <div class="meta">${s.location||''}</div>
-          </div>
-          <div class="right">Register →</div>
-        </a>`;
+      li.innerHTML = `<a class="slotbtn" href="${s.url}" target="_blank" rel="noopener" aria-label="Register for ${title} on ${fmtDate(when)}">
+        <div>
+          <time datetime="${when}">${fmtDate(when)}</time>
+          <div class="meta">${s.location||''}</div>
+        </div>
+        <div class="right">Register →</div>
+      </a>`;
       ul.appendChild(li);
     });
   }
@@ -654,23 +423,16 @@ async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
       container.appendChild(lastHeaderCard);
       continue;
     }
-    const a = node.matches && node.matches('a[href*="enroll?id="]')
-      ? node
-      : (node.querySelector && node.querySelector('a[href*="enroll?id="]'));
+    const a = node.matches && node.matches('a[href*="enroll?id="]') ? node : (node.querySelector && node.querySelector('a[href*="enroll?id="]'));
     if(a){
       const row = a.closest('tr') || a.closest('.row') || node;
-      // Prefer tidy course title from panel "value" if present, else row text
-      const titleRaw = (row && row.getAttribute && row.getAttribute('value'))
-                    || (row && row.innerText)
-                    || a.textContent
-                    || '';
-      const title = titleRaw.replace(/\s+/g,' ').trim();
-      if(!title) continue;
-      const isInstructor=/instructor/i.test(title); 
-      const isRenewal=/renewal/i.test(title);
-      if(isInstructor && isRenewal) continue; // skip instructor renewals
+      const rawTitle = ((row && row.innerText) ? row.innerText : a.textContent || '').replace(/\s+/g,' ').trim();
+      if(!rawTitle) continue;
+      const title = rawTitle; // already trimmed
+      const isInstructor=/instructor/i.test(title); const isRenewal=/renewal/i.test(title);
+      if(isInstructor && isRenewal) continue;
       const sessions = upcomingMap.get(title);
-      if(!sessions || !sessions.length) continue; // only show with dates
+      if(!sessions || !sessions.length) continue;
       if(added.has(title)) continue;
       const card = createCourseCardExact(title, sessions);
       if(lastHeaderCard && lastHeaderCard.nextSibling){
@@ -684,7 +446,6 @@ async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
     }
   }
   if(!container.children.length){
-    // Fallback: just dump all upcoming courses, grouped by title
     upcomingMap.forEach((sessions,title)=>{
       if(/instructor/i.test(title) && /renewal/i.test(title)) return;
       container.appendChild(createCourseCardExact(title,sessions));
@@ -695,9 +456,9 @@ async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
   applyOpenFromURL(map);
 }
 
-/* ==========================
-   LEGACY CATALOG (fallback for snippets)
-   ========================== */
+/* ========================== */
+/* LEGACY CATALOG (snippets)  */
+/* ========================== */
 const CATALOG = [
   { type:"title", text:"Healthcare Provider: BLS", blurb:"For clinical staff, hospitals, clinics", family:"bls" },
   { type:"course", key:"AHA - BLS Provider - In-person Renewal", brand:"AHA", title:"AHA – BLS Provider – In-Person Renewal" },
@@ -717,9 +478,9 @@ const CATALOG = [
   { type:"title", text:"Other Programs", blurb:"Workplace & community classes", family:"faid" }
 ];
 
-/* ==========================
-   BOOT
-   ========================== */
+/* ========================== */
+/* BOOT                       */
+/* ========================== */
 (async function init(){
   const grid=document.getElementById('courseGrid');
   const [feed, snapshot] = await Promise.all([
@@ -733,7 +494,7 @@ const CATALOG = [
   if(!FEED.length){
     const warn=document.createElement('div');
     warn.className='warn';
-    warn.textContent=`No sessions loaded. Check data/schedule.json or data/enrollware-schedule.html. Detail: ${FEED_ERROR||'n/a'}`;
+    warn.textContent=`No sessions loaded. Check docs/data/schedule.json or docs/data/enrollware-schedule.html. Detail: ${FEED_ERROR||'n/a'}`;
     document.querySelector('.wrap').appendChild(warn);
   }
 })();
@@ -743,10 +504,10 @@ window.addEventListener('hashchange',()=>{
   const map=new Map([...grid.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
   applyOpenFromURL(map);
 });
+</script>
 
-/* ==========================
-   Snippet loader + self-tests
-   ========================== */
+<!-- inject per-course HTML snippets into Course Description areas -->
+<script>
 async function loadSnippets(){
   const keys = Array.isArray(window._COURSE_KEYS)&&window._COURSE_KEYS.length
     ? window._COURSE_KEYS
@@ -755,28 +516,28 @@ async function loadSnippets(){
     const file=CONFIG.snippetRoot + slug(title) + '.html';
     try{
       const r=await fetch(file,{cache:'no-store'});
-      if(!r.ok) return; 
+      if(!r.ok) return;
       const html=await r.text();
       const el=document.getElementById('desc-'+slug(title));
       if(el){ el.innerHTML=html; }
     }catch(e){}
   };
   await Promise.all(keys.map(fetchOne));
-}
 
-// Minimal self-tests (non-blocking)
-// console.assert(slug('AHA - BLS Provider - In-person Initial')==='aha---bls-provider---in-person-initial','slug() failed');
-(function testWithin(){
-  const now=new Date();
-  const in3d=new Date(now.getTime()+3*86400000).toISOString();
-  const in60d=new Date(now.getTime()+60*86400000).toISOString();
-  console.assert(withinWindow(in3d)===true,'withinWindow short range');
-  console.assert(withinWindow(in60d)===false,'withinWindow beyond window');
-})();
-(function testApplyOpen(){
-  history.replaceState(null,'',location.pathname);
-  applyOpenFromURL(new Map());
-})();
+  /* self-tests */
+  console.assert(slug('AHA - BLS Provider - In-person Initial')==='aha---bls-provider---in-person-initial','slug() failed');
+  (function testWithin(){
+    const now=new Date();
+    const in3d=new Date(now.getTime()+3*86400000).toISOString();
+    const in60d=new Date(now.getTime()+60*86400000).toISOString();
+    console.assert(withinWindow(in3d)===true,'withinWindow short range');
+    console.assert(withinWindow(in60d)===false,'withinWindow beyond window');
+  })();
+  (function testApplyOpen(){
+    history.replaceState(null,'',location.pathname);
+    applyOpenFromURL(new Map());
+  })();
+}
 </script>
 </body>
 </html>
