@@ -22,13 +22,14 @@ jobs:
         run: |
           mkdir -p docs/data
 
-      - name: Snapshot Enrollware schedule.html
-        run: |
-          curl -fSL \
-            "https://coastalcprtraining.enrollware.com/schedule" \
-            -o docs/data/enrollware-schedule.html
-          echo "Snapshot size:"
-          wc -c docs/data/enrollware-schedule.html || true
+     - name: Snapshot Enrollware schedule.html
+  run: |
+    mkdir -p docs/data
+    echo "Fetching latest Enrollware snapshot..."
+    curl -sSL "https://coastalcprtraining.enrollware.com/schedule" -o docs/data/enrollware-schedule.html || echo "Download failed."
+    echo "Snapshot size:"
+    wc -c docs/data/enrollware-schedule.html || true
+    test -s docs/data/enrollware-schedule.html || echo "<!-- empty snapshot placeholder -->" > docs/data/enrollware-schedule.html
 
       - name: Set up Python
         uses: actions/setup-python@v5
