@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """
-Parse docs/data/enrollware-schedule.html into a simple sessions JSON:
+Parse Enrollware snapshot HTML into a JSON sessions list.
+
+Input:  path to docs/data/enrollware-schedule.html
+Output: JSON to stdout:
 
 {
   "meta": {
     "source": "docs/data/enrollware-schedule.html",
     "fetched_at": "...",
-    "panel_count": 48
+    "panel_count": 48,
+    "session_count": 1234
   },
   "sessions": [
     {
@@ -14,23 +18,19 @@ Parse docs/data/enrollware-schedule.html into a simple sessions JSON:
       "url": "https://coastalcprtraining.enrollware.com/enroll?id=11930079",
       "start": "2025-12-29T13:00:00",
       "end": null,
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
       "title": "AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS",
       "course_title": "AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS",
       "course_id": "ct209806",
-      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals ...",
+      "section": "Healthcare Provider: BLS Course Basic Life Support (BLS) ... Select a Program Below ...",
       "classType": "BLS",
       "instructor": null,
-      "seats": null,
-      "start_text": "Monday, December 29, 2025 at 1:00 PM (5 seats left) NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office"
+      "seats": 5,
+      "start_text": "Monday, December 29, 2025 at 1:00 PM NC - Burgaw: 111 S Wright St @ 910CPR's Office"
     },
     ...
   ]
 }
-
-Notes:
-- `start` is ISO 8601 when we can parse it, otherwise null.
-- `start_text` keeps the raw visible Enrollware text for debugging.
 """
 
 import sys
@@ -38,13 +38,19 @@ import re
 import json
 from datetime import datetime, timezone
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 from dateutil import parser as dateparser
 
 ENROLLWARE_BASE = "https://coastalcprtraining.enrollware.com/"
 
-# Heuristic: what kind of class is this?
-def guess_type(title: str | None) -> str:
+
+# ---------- small helpers ----------
+
+def normspace(s: str) -> str:
+    return re.sub(r"\s+", " ", (s or "")).strip()
+
+
+def guess_class_type(title: str) -> str:
     t = (title or "").lower()
     if "acls" in t:
         return "ACLS"
@@ -52,116 +58,138 @@ def guess_type(title: str | None) -> str:
         return "PALS"
     if "bls" in t:
         return "BLS"
-    if "heartsaver" in t or "first aid" in t:
+    if "heartsaver" in t:
         return "Heartsaver"
     if "hsi" in t:
         return "HSI"
     return "Other"
 
 
-def normspace(s: str | None) -> str:
-    return re.sub(r"\s+", " ", (s or "")).strip()
-
-
-def to_abs_url(href: str | None) -> str:
+def to_abs_url(href: str) -> str:
     href = href or ""
     if href.startswith("http://") or href.startswith("https://"):
         return href
     return ENROLLWARE_BASE + href.lstrip("./")
 
 
-def guess_start_iso(text: str | None) -> str | None:
+def extract_seats(text: str):
     """
-    Try very hard to get an ISO datetime out of the Enrollware
-    visible text, e.g.:
-
-      "Monday, December 29, 2025 at 1:00 PM (5 seats left)
-       NC - Burgaw: ..."
-
-    We let dateutil.parser skip the junk (fuzzy=True).
+    From '... at 1:00 PM (5 seats left) ...' -> 5
     """
-    txt = normspace(text)
-    if not txt:
+    if not text:
         return None
+    m = re.search(r"\((\d+)\s+seats?\s+left\)", text, re.I)
+    if m:
+        try:
+            return int(m.group(1))
+        except ValueError:
+            return None
+    return None
+
+
+def strip_seats(text: str) -> str:
+    if not text:
+        return ""
+    return normspace(re.sub(r"\(\d+\s+seats?\s+left\)", "", text, flags=re.I))
+
+
+def parse_start_iso(text: str):
+    """
+    Best-effort parse of 'Monday, December 29, 2025 at 1:00 PM NC - Burgaw: ...'
+    Returns ISO string or None.
+    """
+    if not text:
+        return None
+    # Give dateutil the whole line and let it ignore the location
     try:
-        dt = dateparser.parse(txt, fuzzy=True)
+        dt = dateparser.parse(text, fuzzy=True)
         if not dt:
             return None
-        # Normalise to naive ISO; frontend doesn't care about tz right now.
-        # If the parser didn't get any time component, this will still be 00:00.
-        return dt.replace(tzinfo=None).isoformat()
+        # If dateutil gives us a date with no time, don't pretend
+        if dt.hour == 0 and dt.minute == 0 and "am" not in text.lower() and "pm" not in text.lower():
+            return None
+        # Make it naive ISO (browser will interpret local, as before)
+        if dt.tzinfo is not None:
+            dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+        return dt.isoformat(timespec="minutes")
     except Exception:
         return None
 
 
-def find_section_label(panel: Tag) -> str:
+def extract_panel_section_text(panel):
     """
-    Walk backwards from a panel to find the nearest "section-ish" text.
-    On the Enrollware snapshot this is typically the BLS/ACLS/PALS
-    section heading just above the panel.
+    Get the course description text without the giant schedule list.
+
+    Strategy:
+      - Find .enrpanel-body
+      - Remove any <ul class="enrclass-list"> from a *copy*
+      - Return remaining text as 'section'
     """
-    cur: Tag | None = panel
-    steps = 0
-    while cur is not None and steps < 200:
-        steps += 1
-        sib = cur.previous_sibling
-        while sib is not None:
-            if isinstance(sib, Tag):
-                txt = normspace(sib.get_text(" ", strip=True))
-                if txt:
-                    return txt
-            sib = sib.previous_sibling
-        parent = cur.parent if isinstance(cur, Tag) else None
-        if parent is None or getattr(parent, "name", "").lower() == "body":
-            break
-        cur = parent
-    return ""
+    body = panel.select_one(".enrpanel-body")
+    if not body:
+        return ""
+
+    # Work on a clone to safely strip the <ul>
+    clone = BeautifulSoup(str(body), "lxml")
+    ul = clone.select_one(".enrclass-list")
+    if ul:
+        ul.decompose()
+    text = normspace(clone.get_text(" ", strip=True))
+    return text
 
 
-def main() -> None:
-    if len(sys.argv) < 2:
-        print(
-            "Usage: parse_enrollware.py docs/data/enrollware-schedule.html",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+# ---------- core parser ----------
 
-    html_path = sys.argv[1]
+def parse_schedule_from_html(html: str):
+    soup = BeautifulSoup(html, "lxml")
 
-    with open(html_path, "r", encoding="utf-8", errors="ignore") as f:
-        soup = BeautifulSoup(f.read(), "lxml")
+    sessions = []
+    panel_count = 0
 
-    panels = soup.select("div.enrpanel")
-    sessions: list[dict] = []
+    # Main accordion: one .enrpanel per course
+    panels = soup.select("#enraccordion .enrpanel")
+    if not panels:
+        # Fall back: if markup changes, still try generic anchors
+        return parse_generic_anchors(soup)
 
     for panel in panels:
-        # Course-level data
-        name_anchor = panel.find("a", attrs={"name": True})
-        course_id = name_anchor.get("name") if name_anchor else None
+        panel_count += 1
 
-        title_el = panel.select_one(".enrpanel-title")
-        course_title = normspace(title_el.get_text(" ", strip=True)) if title_el else ""
-        section_label = find_section_label(panel)
-        class_type = guess_type(course_title)
+        # Course id from <a name="ctXXXXX">
+        course_anchor = panel.find("a", attrs={"name": True})
+        course_id = course_anchor["name"] if course_anchor and course_anchor.has_attr("name") else None
 
-        # Each scheduled class inside this panel
-        for a in panel.select('a[href*="enroll?id="]'):
+        # Course title from panel heading
+        heading = panel.select_one(".enrpanel-heading .enrpanel-title") or panel.select_one(".enrpanel-heading")
+        course_title = normspace(heading.get_text(" ", strip=True)) if heading else ""
+
+        class_type = guess_class_type(course_title)
+        section_text = extract_panel_section_text(panel)
+
+        # Each li in .enrclass-list is a session
+        ul = panel.select_one(".enrclass-list")
+        if not ul:
+            continue
+
+        for li in ul.find_all("li"):
+            a = li.find("a", href=lambda h: h and "enroll?id=" in h)
+            if not a:
+                continue
+
             href = a.get("href") or ""
             url = to_abs_url(href)
-
             m = re.search(r"id=(\d+)", url)
             sess_id = int(m.group(1)) if m else None
 
-            # Visible text & location span
-            # Example:
-            #   "Monday, December 29, 2025 at 1:00 PM (5 seats left)
-            #    NC - Burgaw: ... "
-            start_text = normspace(a.get_text(" ", strip=True))
+            visible_text = normspace(a.get_text(" ", strip=True))
+            seats = extract_seats(visible_text)
+            start_text = strip_seats(visible_text)
 
-            span_loc = a.find("span")
-            location = normspace(span_loc.get_text(" ", strip=True)) if span_loc else ""
+            # Location: prefer explicit span inside the anchor
+            loc_span = a.find("span")
+            location = normspace(loc_span.get_text(" ", strip=True)) if loc_span else ""
 
-            start_iso = guess_start_iso(start_text)
+            start_iso = parse_start_iso(start_text)
 
             sessions.append(
                 {
@@ -170,27 +198,91 @@ def main() -> None:
                     "start": start_iso,
                     "end": None,
                     "location": location,
-                    "title": course_title or start_text,
-                    "course_title": course_title or start_text,
+                    "title": course_title,
+                    "course_title": course_title,
                     "course_id": course_id,
-                    "section": section_label,
+                    "section": section_text,
                     "classType": class_type,
                     "instructor": None,
-                    "seats": None,
+                    "seats": seats,
                     "start_text": start_text,
                 }
             )
 
-    out = {
-        "meta": {
-            "source": html_path,
-            "fetched_at": datetime.now(timezone.utc).isoformat(),
-            "panel_count": len(panels),
-        },
-        "sessions": sessions,
+    meta = {
+        "source": "docs/data/enrollware-schedule.html",
+        "fetched_at": datetime.utcnow().isoformat() + "Z",
+        "panel_count": panel_count,
+        "session_count": len(sessions),
     }
+    return {"meta": meta, "sessions": sessions}
 
-    json.dump(out, sys.stdout, ensure_ascii=False, indent=2)
+
+def parse_generic_anchors(soup):
+    """
+    Fallback if .enrpanel structure is not present.
+    Parses any <a href*="enroll?id="> found in the document.
+    Much dumber, but better than returning nothing.
+    """
+    sessions = []
+    anchors = soup.select('a[href*="enroll?id="]')
+    for a in anchors:
+        href = a.get("href") or ""
+        url = to_abs_url(href)
+        m = re.search(r"id=(\d+)", url)
+        sess_id = int(m.group(1)) if m else None
+
+        row = a.find_parent(["li", "tr", "div"]) or a
+        row_text = normspace(row.get_text(" ", strip=True))
+        seats = extract_seats(row_text)
+        start_text = strip_seats(row_text)
+
+        loc_span = a.find("span")
+        location = normspace(loc_span.get_text(" ", strip=True)) if loc_span else ""
+        title = normspace(a.get("title") or a.get_text(" ", strip=True) or row_text)
+        class_type = guess_class_type(title)
+        start_iso = parse_start_iso(start_text)
+
+        sessions.append(
+            {
+                "id": sess_id,
+                "url": url,
+                "start": start_iso,
+                "end": None,
+                "location": location,
+                "title": title,
+                "course_title": title,
+                "course_id": None,
+                "section": "",
+                "classType": class_type,
+                "instructor": None,
+                "seats": seats,
+                "start_text": start_text,
+            }
+        )
+
+    meta = {
+        "source": "docs/data/enrollware-schedule.html",
+        "fetched_at": datetime.utcnow().isoformat() + "Z",
+        "panel_count": 0,
+        "session_count": len(sessions),
+    }
+    return {"meta": meta, "sessions": sessions}
+
+
+# ---------- CLI ----------
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: parse_enrollware.py docs/data/enrollware-schedule.html", file=sys.stderr)
+        sys.exit(1)
+
+    html_path = sys.argv[1]
+    with open(html_path, "r", encoding="utf-8", errors="ignore") as f:
+        html = f.read()
+
+    data = parse_schedule_from_html(html)
+    json.dump(data, sys.stdout, ensure_ascii=False, indent=2)
 
 
 if __name__ == "__main__":
