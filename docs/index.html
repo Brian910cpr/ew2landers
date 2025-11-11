@@ -32,7 +32,8 @@
     .nav a[target="_blank"]::after{content:" ↗";opacity:.7;font-weight:700}
     .nav a:hover{background:#122448;border-color:#2f416a}
 
-    #dataStatus{font:13px/1.3 system-ui;color:var(--muted);margin:4px 0 18px}
+    #dataStatus{font:13px/1.3 system-ui; color:#9fb6e8; margin:4px 0 4px}
+    #buildDebug{font:11px/1.3 system-ui; color:#7c8fbf; margin:0 0 16px}
 
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
     .card{background:#0e1726;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;min-height:120px;border:1px solid #243349;position:relative}
@@ -44,7 +45,7 @@
     .card.course{grid-column:span 6}
     @media(max-width:860px){.card.course{grid-column:span 12}}
 
-    /* Section separators with left accent bar (width 12px) */
+    /* Section separators with left accent bar */
     .card.title{grid-column:1 / -1;background:#0f1c33;color:var(--ink);border:1px solid #2a3b62;position:relative;overflow:hidden}
     .card.title::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#2a3b62}
     .card.title.bls::before{background:var(--bls)}
@@ -88,13 +89,12 @@
     .popular .art{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:16px;padding:12px}
     .popular .art img{max-width:100%;height:auto;border-radius:12px}
 
-    .note{font-size:13px;color:#9fb6e8;margin-top:6px}
-    .warn{color:#ffc9c9;font-weight:700;margin-top:12px}
+    .note{font-size:13px;color:var(--muted);margin-top:6px}
+    .warn{font-size:13px;color:#ffc9c9;font-weight:700;margin-top:12px}
     .ok{color:#7fe1a9}
     .soft{color:#ffdd99}
     .bad{color:#ffc9c9}
 
-    /* Certifying bodies strip */
     .brandrow{display:flex;justify-content:center;align-items:center;gap:28px;background:#ffffff;border:1px solid #e6eaf5;border-radius:20px;padding:14px;margin:0 0 12px;box-shadow:0 2px 16px rgba(6,10,18,.08)}
     .brandrow .badge{display:flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:14px;background:transparent;border:1px solid transparent}
     .brandrow .badge img{height:56px;width:auto;object-fit:contain;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
@@ -114,6 +114,7 @@
   </header>
 
   <div id="dataStatus">Checking data status…</div>
+  <div id="buildDebug"></div>
 
   <!-- Certifying bodies / partners -->
   <section class="brandrow" aria-label="Certifying bodies">
@@ -148,22 +149,8 @@
 /* ==========================
    TOP-LEVEL HELPERS
    ========================== */
-function slug(s){
-  return String(s||'').toLowerCase()
-    .replace(/[^a-z0-9]+/g,'-')
-    .replace(/(^-|-$)/g,'');
-}
-function fmtDate(dtISO){
-  const d = new Date(dtISO);
-  const opt = {
-    weekday:'short',
-    month:'short',
-    day:'numeric',
-    hour:'numeric',
-    minute:'2-digit'
-  };
-  return d.toLocaleString(undefined,opt);
-}
+function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+function fmtDate(dtISO){ const d=new Date(dtISO); const opt={weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}; return d.toLocaleString(undefined,opt); }
 
 /* Open the details matching location.hash and scroll into view (no-op if absent) */
 function applyOpenFromURL(map){
@@ -174,9 +161,7 @@ function applyOpenFromURL(map){
     if(det){
       det.setAttribute('open','');
       const card = document.getElementById(`card-${hash}`) || det.closest('.card');
-      if(card && card.scrollIntoView){
-        card.scrollIntoView({behavior:'smooth',block:'start'});
-      }
+      if(card && card.scrollIntoView){ card.scrollIntoView({behavior:'smooth',block:'start'}); }
       const sum = det.querySelector('summary');
       if(sum && sum.focus) sum.focus();
     }
@@ -189,7 +174,6 @@ function applyOpenFromURL(map){
 const CONFIG = {
   windowDays: 28,
   maxSessionsPerCourse: 15,
-  // NOTE: everything under docs/ is served from site root, so we drop "docs/"
   jsonFeed: "data/schedule.json",
   htmlFallback: "data/enrollware-schedule.html",
   statusFile: "data/status.json",
@@ -197,42 +181,67 @@ const CONFIG = {
 };
 const ENROLLWARE_BASE = 'https://coastalcprtraining.enrollware.com/';
 const IMG_BASE = 'https://www.enrollware.com/sitefiles/coastalcprtraining/';
-const FAMILY_IMG = {
-  bls:'25-bls-new.png',
-  acls:'25-acls-new.png',
-  pals:'25-pals-new.png',
-  faid:'25_Heartsaver.png'
-};
+const FAMILY_IMG = { bls:'25-bls-new.png', acls:'25-acls-new.png', pals:'25-pals-new.png', faid:'25_Heartsaver.png' };
 const BRAND_LOGO = {
   AHA: IMG_BASE + '_AHA.png',
   'Red Cross': IMG_BASE + '_ARC.png',
   HSI: IMG_BASE + '_HSI.png'
 };
 
+// global for “last build” display in warnings
+window._LAST_STATUS_UPDATED_AT = null;
+window._LAST_STATUS_SHA = null;
+
 /* ==========================
-   STATUS INDICATOR
+   STATUS INDICATOR + DEBUG LINE
    ========================== */
 (function checkDataStatus(){
-  const el = document.getElementById('dataStatus');
-  if(!el) return;
+  const statusEl = document.getElementById('dataStatus');
+  const debugEl = document.getElementById('buildDebug');
+  if(!statusEl) return;
+
+  const indexModified = document.lastModified || 'unknown';
+
   fetch(CONFIG.statusFile + '?v=' + Date.now(), {cache:'no-store'})
     .then(r => r.ok ? r.json() : null)
     .then(st => {
       if(!st){
-        el.textContent = 'Data status: missing (status.json 404). Actions may not have run yet.';
-        el.className = 'note bad';
+        statusEl.textContent = 'Data status: missing (status.json 404). Actions may not have run yet.';
+        statusEl.className = 'note bad';
+        if(debugEl){
+          debugEl.textContent = `Debug · index.html last modified: ${indexModified} · data build: n/a · commit: n/a`;
+        }
+        window._LAST_STATUS_UPDATED_AT = null;
+        window._LAST_STATUS_SHA = null;
         return;
       }
       const snap = st.snapshot || {}, sched = st.schedule || {};
       const ok = snap.exists && snap.bytes>0 && sched.exists && sched.bytes>0;
-      el.innerHTML = ok
-        ? `Data status: OK • updated ${st.updated_at} • schedule.json ${sched.bytes} bytes`
-        : `Data status: INCOMPLETE • snapshot: ${snap.exists?'yes':'no'} • schedule: ${sched.exists?'yes':'no'}`;
-      el.className = ok ? 'note ok' : 'note soft';
+      const updated = st.index_built_at || st.updated_at || 'unknown';
+      const sha = (st.github && st.github.sha) ? String(st.github.sha) : null;
+      const shortSha = sha ? sha.slice(0,7) : 'n/a';
+
+      window._LAST_STATUS_UPDATED_AT = updated;
+      window._LAST_STATUS_SHA = shortSha;
+
+      statusEl.innerHTML = (ok
+        ? `Data status: OK • updated ${updated} • schedule.json ${sched.bytes} bytes`
+        : `Data status: INCOMPLETE • updated ${updated} • snapshot: ${snap.exists?'yes':'no'} • schedule: ${sched.exists?'yes':'no'}`
+      );
+      statusEl.className = ok ? 'note ok' : 'note soft';
+
+      if(debugEl){
+        debugEl.textContent = `Debug · index.html last modified: ${indexModified} · data build: ${updated} · commit: ${shortSha}`;
+      }
     })
     .catch(()=>{
-      el.textContent='Data status: unknown (fetch error).';
-      el.className='note bad';
+      statusEl.textContent='Data status: unknown (fetch error).';
+      statusEl.className='note bad';
+      if(debugEl){
+        debugEl.textContent = `Debug · index.html last modified: ${indexModified} · data build: n/a · commit: n/a`;
+      }
+      window._LAST_STATUS_UPDATED_AT = null;
+      window._LAST_STATUS_SHA = null;
     });
 })();
 
@@ -247,19 +256,13 @@ async function loadJSONRobust(url){
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
   const text = await r.text();
   if(text.trim().startsWith('<')) throw new Error('Expected JSON, got HTML');
-  try{
-    return JSON.parse(text);
-  }catch(parseErr){
-    throw new Error('Invalid JSON in schedule.json');
-  }
+  try{ return JSON.parse(text); }
+  catch(parseErr){ throw new Error('Invalid JSON in schedule.json'); }
 }
 
 function normalizeFeed(json){
-  // Accept either:
-  // A) simple array of sessions [{id,title,start,location,url,classType}, ...]
-  // B) pivot object { sessions:[{...}], ... }
-  if(Array.isArray(json)) return json;
-  if(json && Array.isArray(json.sessions)) return json.sessions;
+  if (Array.isArray(json)) return json;
+  if (json && Array.isArray(json.sessions)) return json.sessions;
   return [];
 }
 
@@ -267,29 +270,23 @@ async function loadFeed(){
   try{
     const j = await loadJSONRobust(CONFIG.jsonFeed);
     const arr = normalizeFeed(j);
-    if(Array.isArray(arr) && arr.length>0) return arr;
+    if(Array.isArray(arr) && arr.length>0) return arr; 
     FEED_ERROR = Array.isArray(arr) ? 'JSON feed is empty.' : 'JSON feed present but not an array.';
     throw new Error(FEED_ERROR);
   }catch(e){
     try{
       const r = await fetch(CONFIG.htmlFallback, {cache:'no-store'});
-      if(!r.ok){
-        FEED_ERROR = `HTML fallback not ok: ${r.status}`;
-        throw new Error('No HTML fallback');
-      }
+      if(!r.ok) { FEED_ERROR = `HTML fallback not ok: ${r.status}`; throw new Error('No HTML fallback'); }
       const html = await r.text();
       const parsed = parseHTMLSchedule(html);
       if(!parsed.length) FEED_ERROR = 'Parsed 0 sessions from HTML fallback.';
       return parsed;
-    }catch(e2){
-      FEED_ERROR = FEED_ERROR || e.message || e2.message;
-      return [];
-    }
+    }catch(e2){ FEED_ERROR = FEED_ERROR || e.message || e2.message; return []; }
   }
 }
 
 /* ==========================
-   SNAPSHOT HTML PARSER (coarse but effective)
+   SNAPSHOT HTML PARSER (fallback)
    ========================== */
 function parseHTMLSchedule(html){
   const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -298,12 +295,9 @@ function parseHTMLSchedule(html){
   anchors.forEach(a=>{
     const href = a.getAttribute('href') || '';
     const url = href.startsWith('http') ? href : new URL(href, ENROLLWARE_BASE).href;
-    const idMatch = url.match(/id=(\d+)/);
-    const id = idMatch ? Number(idMatch[1]) : undefined;
+    const idMatch = url.match(/id=(\d+)/); const id = idMatch? Number(idMatch[1]) : undefined;
     const row = a.closest('tr') || a.closest('.row') || a.parentElement;
-    const text = (row ? row.innerText : a.innerText || '')
-      .replace(/\s+/g,' ')
-      .trim();
+    const text = (row ? row.innerText : a.innerText || '').replace(/\s+/g,' ').trim();
     const title = text || (a.title || a.textContent.trim());
     const when = text.match(/\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b.*?\d{1,2}:\d{2}\s*(?:AM|PM)/i)?.[0]
               || text.match(/\d{4}-\d{2}-\d{2}.*?\d{1,2}:\d{2}/)?.[0];
@@ -311,17 +305,7 @@ function parseHTMLSchedule(html){
     const startAttr = a.getAttribute('data-start');
     const start = startAttr || guessDate(when);
     const classType = guessType(title);
-    rows.push({
-      id,
-      classType,
-      title,
-      start,
-      end:null,
-      location,
-      instructor:null,
-      seats:null,
-      url
-    });
+    rows.push({ id, classType, title, start, end:null, location, instructor:null, seats:null, url });
   });
   return rows;
 }
@@ -338,35 +322,30 @@ function guessType(title=''){
   if(t.includes('hsi')) return 'HSI';
   return 'Other';
 }
-function guessDate(str){
-  if(!str) return null;
-  const d = new Date(str);
-  return isNaN(d) ? null : d.toISOString();
-}
+function guessDate(str){ if(!str) return null; const d = new Date(str); return isNaN(d) ? null : d.toISOString(); }
 function withinWindow(dtISO){
   if(!dtISO) return false;
-  const s = new Date(dtISO);
+  const s=new Date(dtISO);
   if(isNaN(s)) return false;
-  const now = new Date();
-  const cap = new Date(now.getTime()+CONFIG.windowDays*86400000);
+  const now=new Date();
+  const cap=new Date(now.getTime()+CONFIG.windowDays*86400000);
   return s>=now && s<=cap;
 }
 
 /* ==========================
-   DYNAMIC RENDER: mirror snapshot order + group
+   DYNAMIC RENDER
    ========================== */
 function detectBrand(title=''){
-  const t = title.toLowerCase();
-  if(t.includes('american red cross') || t.startsWith('arc') || t.includes('arc -')) return 'Red Cross';
+  const t=title.toLowerCase();
+  if(t.includes('american red cross')||t.startsWith('arc')||t.includes('arc -')) return 'Red Cross';
   if(t.includes('hsi')) return 'HSI';
-  if(t.includes('aha') || t.includes('american heart')) return 'AHA';
+  if(t.includes('aha')||t.includes('american heart')) return 'AHA';
   return null;
 }
 function buildUpcomingMap(feed){
-  const map = new Map();
+  const map=new Map();
   feed.filter(s=>withinWindow(s.start)).forEach(s=>{
-    const k = (s.title||'').trim();
-    if(!k) return;
+    const k=(s.title||'').trim(); if(!k) return;
     if(!map.has(k)) map.set(k,[]);
     map.get(k).push(s);
   });
@@ -374,41 +353,39 @@ function buildUpcomingMap(feed){
   return map;
 }
 function isSectionHeaderText(t){
-  const x = (t||'').toLowerCase().trim();
+  const x=(t||'').toLowerCase().trim();
   return x.startsWith('healthcare provider: bls')
       || x.startsWith('healthcare provider: acls')
       || x.startsWith('healthcare provider: pals')
       || x.startsWith('healthcare provider: asls')
-      || x === 'cpr / aed & first aid'
-      || x === 'cpr / aed only'
-      || x === 'instructor programs'
-      || x === 'other programs';
+      || x==='cpr / aed & first aid'
+      || x==='cpr / aed only'
+      || x==='instructor programs'
+      || x==='other programs';
 }
 function familyFromHeader(text){
-  const t = text.toLowerCase();
+  const t=text.toLowerCase();
   if(t.includes('bls')) return 'bls';
   if(t.includes('acls')) return 'acls';
   if(t.includes('pals')) return 'pals';
   return 'faid';
 }
 function makeTitleCard(text, blurb, family){
-  const el = document.createElement('div');
-  el.className = 'card title' + (family ? (' '+family) : '');
-  const img = (family && FAMILY_IMG[family])
-    ? `<img class="famimg" src="${IMG_BASE}${FAMILY_IMG[family]}" alt="${family} icon"/>`
-    : '';
-  el.innerHTML = `<h2>${text}</h2>${blurb?`<small>${blurb}</small>`:''}${img}`;
+  const el=document.createElement('div');
+  el.className='card title' + (family? (' '+family) : '');
+  const img = (family && FAMILY_IMG[family]) ? `<img class="famimg" src="${IMG_BASE}${FAMILY_IMG[family]}" alt="${family} icon"/>` : '';
+  el.innerHTML=`<h2>${text}</h2>${blurb?`<small>${blurb}</small>`:''}${img}`;
   return el;
 }
 function createCourseCardExact(title, sessions){
   const brand = detectBrand(title);
-  const el = document.createElement('div');
-  el.className = 'card course';
-  const keySlug = slug(title);
-  el.id = `card-${keySlug}`;
+  const el=document.createElement('div');
+  el.className='card course';
+  const keySlug=slug(title);
+  el.id=`card-${keySlug}`;
   const brandSrc = brand && BRAND_LOGO[brand] ? BRAND_LOGO[brand] : '';
   const brandImg = brandSrc ? `<img class="brandicon" src="${brandSrc}" alt="${brand} logo"/>` : '';
-  el.innerHTML = `
+  el.innerHTML=`
     <h3 id="h-${keySlug}">${brandImg}<a href="#${keySlug}" style="text-decoration:none;color:inherit">${title}</a></h3>
     <details id="d-${keySlug}" data-key="${keySlug}">
       <summary>Course details & upcoming sessions</summary>
@@ -417,52 +394,45 @@ function createCourseCardExact(title, sessions){
     </details>`;
   const ul = el.querySelector(`#slots-${keySlug}`);
   if(!sessions || !sessions.length){
-    ul.innerHTML = '<li class="note">No upcoming sessions in the next 4 weeks. Try a later date or contact us.</li>';
+    ul.innerHTML='<li class="note">No upcoming sessions in the next 4 weeks. Try a later date or contact us.</li>';
   } else {
     sessions.slice(0,CONFIG.maxSessionsPerCourse).forEach(s=>{
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <a class="slotbtn" href="${s.url}" target="_blank" rel="noopener"
-           aria-label="Register for ${title} on ${fmtDate(s.start)}">
-          <div>
-            <time datetime="${s.start}">${fmtDate(s.start)}</time>
-            <div class="meta">${s.location||''}</div>
-          </div>
-          <div class="right">Register →</div>
-        </a>`;
+      const li=document.createElement('li');
+      li.innerHTML = `<a class="slotbtn" href="${s.url}" target="_blank" rel="noopener" aria-label="Register for ${title} on ${fmtDate(s.start)}">
+        <div>
+          <time datetime="${s.start}">${fmtDate(s.start)}</time>
+          <div class="meta">${s.location||''}</div>
+        </div>
+        <div class="right">Register →</div>
+      </a>`;
       ul.appendChild(li);
     });
   }
   return el;
 }
 async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
-  container.innerHTML = '';
-  const doc = new DOMParser().parseFromString(snapshotHTML,'text/html');
-  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
-  let lastHeaderCard = null;
-  const added = new Set();
-  window._COURSE_KEYS = [];
+  container.innerHTML='';
+  const doc=new DOMParser().parseFromString(snapshotHTML,'text/html');
+  const walker=doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT, null);
+  let lastHeaderCard=null;
+  const added=new Set();
+  window._COURSE_KEYS=[];
   while(walker.nextNode()){
-    const node = walker.currentNode;
-    const text = (node.textContent||'').replace(/\s+/g,' ').trim();
+    const node=walker.currentNode;
+    const text=(node.textContent||'').replace(/\s+/g,' ').trim();
     if(!text) continue;
     if(isSectionHeaderText(text)){
-      const fam = familyFromHeader(text);
+      const fam=familyFromHeader(text);
       lastHeaderCard = makeTitleCard(text,'',fam);
       container.appendChild(lastHeaderCard);
       continue;
     }
-    const a = node.matches && node.matches('a[href*="enroll?id="]')
-      ? node
-      : (node.querySelector && node.querySelector('a[href*="enroll?id="]'));
+    const a = node.matches && node.matches('a[href*="enroll?id="]') ? node : (node.querySelector && node.querySelector('a[href*="enroll?id="]'));
     if(a){
       const row = a.closest('tr') || a.closest('.row') || node;
-      const title = ((row && row.innerText) ? row.innerText : a.textContent || '')
-        .replace(/\s+/g,' ')
-        .trim();
+      const title = ((row && row.innerText) ? row.innerText : a.textContent || '').replace(/\s+/g,' ').trim();
       if(!title) continue;
-      const isInstructor = /instructor/i.test(title);
-      const isRenewal = /renewal/i.test(title);
+      const isInstructor=/instructor/i.test(title); const isRenewal=/renewal/i.test(title);
       if(isInstructor && isRenewal) continue; // skip instructor renewals
       const sessions = upcomingMap.get(title);
       if(!sessions || !sessions.length) continue; // only show with dates
@@ -485,10 +455,7 @@ async function renderFromSnapshot(container, upcomingMap, snapshotHTML){
       window._COURSE_KEYS.push(title);
     });
   }
-  const map = new Map(
-    [...container.querySelectorAll('details[id^="d-"]')]
-      .map(d=>[d.id.slice(2),d])
-  );
+  const map=new Map([...container.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
   applyOpenFromURL(map);
 }
 
@@ -500,20 +467,16 @@ const CATALOG = [
   { type:"course", key:"AHA - BLS Provider - In-person Renewal", brand:"AHA", title:"AHA – BLS Provider – In-Person Renewal" },
   { type:"course", key:"AHA - BLS Provider - In-person Initial", brand:"AHA", title:"AHA – BLS Provider – In-Person Initial" },
   { type:"course", key:"AHA - BLS Provider - Heartcode", brand:"AHA", title:"AHA – BLS Provider – HeartCode (Online + Skills)" },
-
   { type:"title", text:"Healthcare Provider: ACLS", blurb:"Advanced Cardiovascular Life Support", family:"acls" },
   { type:"course", key:"AHA - ACLS Provider - In-person - Initial", brand:"AHA", title:"AHA – ACLS Provider – Initial" },
   { type:"course", key:"AHA - ACLS Provider - In-person - Renewal", brand:"AHA", title:"AHA – ACLS Provider – Renewal" },
   { type:"course", key:"AHA - ACLS Provider - Heartcode", brand:"AHA", title:"AHA – ACLS Provider – HeartCode (Online + Skills)" },
-
   { type:"title", text:"Healthcare Provider: PALS", blurb:"Pediatric Advanced Life Support", family:"pals" },
   { type:"course", key:"AHA - PALS Provider - In Person - Initial", brand:"AHA", title:"AHA – PALS Provider – Initial" },
   { type:"course", key:"AHA - PALS Provider - In Person - Renewal", brand:"AHA", title:"AHA – PALS Provider – Renewal" },
   { type:"course", key:"AHA - PALS Provider - Heartcode", brand:"AHA", title:"AHA – PALS Provider – HeartCode (Online + Skills)" },
-
   { type:"title", text:"CPR / AED & First Aid", blurb:"First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.", family:"faid" },
   { type:"title", text:"CPR / AED Only", blurb:"First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an AED in a safe, timely, and effective manner.", family:"faid" },
-
   { type:"title", text:"Instructor Programs", blurb:"Become an instructor and teach CPR, First Aid, or BLS through AHA, HSI, or Red Cross.", family:"bls" },
   { type:"title", text:"Other Programs", blurb:"Workplace & community classes", family:"faid" }
 ];
@@ -522,37 +485,28 @@ const CATALOG = [
    BOOT
    ========================== */
 (async function init(){
-  const grid = document.getElementById('courseGrid');
+  const grid=document.getElementById('courseGrid');
   const [feed, snapshot] = await Promise.all([
     loadFeed(),
-    fetch(CONFIG.htmlFallback,{cache:'no-store'})
-      .then(r=>r.ok ? r.text() : Promise.resolve('<body></body>'))
-      .catch(()=>'<body></body>')
+    fetch(CONFIG.htmlFallback,{cache:'no-store'}).then(r=>r.ok?r.text():Promise.resolve('<body></body>')).catch(()=>'<body></body>')
   ]);
   FEED = feed;
   const upcoming = buildUpcomingMap(FEED);
   await renderFromSnapshot(grid, upcoming, snapshot);
   await loadSnippets();
-
   if(!FEED.length){
-    const warn1 = document.createElement('div');
-    warn1.className = 'warn';
-    warn1.textContent = 'No sessions loaded into the grid. Check data/schedule.json.';
-    const warn2 = document.createElement('div');
-    warn2.className = 'warn';
-    warn2.textContent = `No sessions loaded. Check data/schedule.json or data/enrollware-schedule.html. Detail: ${FEED_ERROR||'n/a'}`;
-    const wrap = document.querySelector('.wrap');
-    wrap.appendChild(warn1);
-    wrap.appendChild(warn2);
+    const warn=document.createElement('div');
+    warn.className='warn';
+    const last = window._LAST_STATUS_UPDATED_AT || 'unknown';
+    const sha = window._LAST_STATUS_SHA || 'n/a';
+    warn.textContent=`No sessions loaded into the grid. Check data/schedule.json. Detail: ${FEED_ERROR||'n/a'}. Last data build: ${last} (commit ${sha}).`;
+    document.querySelector('.wrap').appendChild(warn);
   }
 })();
 
 window.addEventListener('hashchange',()=>{
-  const grid = document.getElementById('courseGrid');
-  const map = new Map(
-    [...grid.querySelectorAll('details[id^="d-"]')]
-      .map(d=>[d.id.slice(2),d])
-  );
+  const grid=document.getElementById('courseGrid');
+  const map=new Map([...grid.querySelectorAll('details[id^="d-"]')].map(d=>[d.id.slice(2),d]));
   applyOpenFromURL(map);
 });
 </script>
@@ -560,38 +514,35 @@ window.addEventListener('hashchange',()=>{
 <!-- inject per-course HTML snippets into Course Description areas -->
 <script>
 async function loadSnippets(){
-  const keys = Array.isArray(window._COURSE_KEYS) && window._COURSE_KEYS.length
+  const keys = Array.isArray(window._COURSE_KEYS)&&window._COURSE_KEYS.length
     ? window._COURSE_KEYS
     : CATALOG.filter(c=>c.type==='course').map(c=>c.title||c.key);
-  const fetchOne = async(title)=>{
-    const file = CONFIG.snippetRoot + slug(title) + '.html';
+  const fetchOne=async(title)=>{
+    const file=CONFIG.snippetRoot + slug(title) + '.html';
     try{
-      const r = await fetch(file,{cache:'no-store'});
-      if(!r.ok) return;
-      const html = await r.text();
-      const el = document.getElementById('desc-'+slug(title));
-      if(el) el.innerHTML = html;
+      const r=await fetch(file,{cache:'no-store'});
+      if(!r.ok) return; 
+      const html=await r.text();
+      const el=document.getElementById('desc-'+slug(title));
+      if(el){ el.innerHTML=html; }
     }catch(e){}
   };
   await Promise.all(keys.map(fetchOne));
-}
 
-/* Minimal self-tests (non-blocking) */
-console.assert(
-  slug('AHA - BLS Provider - In-person Initial') === 'aha---bls-provider---in-person-initial',
-  'slug() failed'
-);
-(function testWithin(){
-  const now = new Date();
-  const in3d = new Date(now.getTime()+3*86400000).toISOString();
-  const in60d = new Date(now.getTime()+60*86400000).toISOString();
-  console.assert(withinWindow(in3d)===true,'withinWindow short range');
-  console.assert(withinWindow(in60d)===false,'withinWindow beyond window');
-})();
-(function testApplyOpen(){
-  history.replaceState(null,'',location.pathname);
-  applyOpenFromURL(new Map());
-})();
+  // Minimal self-tests (non-blocking)
+  console.assert(slug('AHA - BLS Provider - In-person Initial')==='aha---bls-provider---in-person-initial','slug() failed');
+  (function testWithin(){
+    const now=new Date();
+    const in3d=new Date(now.getTime()+3*86400000).toISOString();
+    const in60d=new Date(now.getTime()+60*86400000).toISOString();
+    console.assert(withinWindow(in3d)===true,'withinWindow short range');
+    console.assert(withinWindow(in60d)===false,'withinWindow beyond window');
+  })();
+  (function testApplyOpen(){
+    history.replaceState(null,'',location.pathname);
+    applyOpenFromURL(new Map());
+  })();
+}
 </script>
 </body>
 </html>
