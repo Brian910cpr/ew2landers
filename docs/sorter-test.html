@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>910CPR • Course Families Quick Lander (Classifier)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111a2b; --ink:#e6edf3; --muted:#a7b0be;
+      --aha:#e53935; --arc:#d32f2f; --hsi:#1976d2; --ok:#2e7d32; --warn:#ef6c00;
+      --chip:#1b2538; --grid: 1220px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; background:var(--bg); color:var(--ink)}
+    header{max-width:var(--grid); margin:24px auto 12px; padding:0 16px}
+    h1{margin:0 0 6px 0; font-size:22px}
+    .sub{color:var(--muted); font-size:13px}
+    .row{max-width:var(--grid); margin:0 auto; padding:0 16px}
+    .bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:10px 0 18px}
+    .pill{background:var(--chip); border:1px solid #24314a; color:var(--ink); padding:6px 10px; border-radius:999px; font-size:12px}
+    .pill b{font-weight:700}
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:14px}
+    .col-6{grid-column:span 6}
+    .col-12{grid-column:span 12}
+    @media (max-width:900px){ .col-6{grid-column:span 12} }
+    section.family{background:var(--card); border:1px solid #1b2740; border-radius:14px; padding:14px}
+    section.family h2{margin:0 0 8px 0; font-size:18px}
+    .meta{display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:12px; margin-bottom:10px}
+    .list{display:grid; gap:8px}
+    .item{border:1px solid #22314d; border-radius:10px; padding:10px; background:#0f1726}
+    .item .t{display:flex; gap:10px; align-items:center; margin-bottom:4px}
+    .badge{font-size:10px; padding:2px 6px; border-radius:6px; border:1px solid #2a3a5e; background:#152034; color:#bfd3ff}
+    .brand-AHA{border-color:var(--aha); color:#ffd7d5}
+    .brand-ARC{border-color:var(--arc)}
+    .brand-HSI{border-color:var(--hsi)}
+    .why{color:var(--muted); font-size:12px}
+    .warn{color:#ffc07a}
+    details{background:#0c1524; border:1px dashed #273552; border-radius:10px; padding:10px}
+    summary{cursor:pointer; color:#cfe0ff}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:12px; background:#0b1322; padding:2px 4px; border-radius:4px; border:1px solid #1e2a44}
+    a{color:#9ec6ff; text-decoration:none}
+    a:hover{text-decoration:underline}
+    footer{max-width:var(--grid); margin:18px auto 40px; padding:0 16px; color:var(--muted); font-size:12px}
+    .status{display:flex; gap:8px; flex-wrap:wrap}
+    .good{color:#a5e5b2}
+    .bad{color:#ffb3a6}
+    .btn{display:inline-block; padding:6px 10px; border-radius:8px; border:1px solid #2a3a5e; background:#13203a; color:#d9e7ff; font-size:12px}
+  </style>
+</head>
+<body>
+<header>
+  <h1>Course Families — quick classifier</h1>
+  <div class="sub">Groups unique course types from <code>schedule.json</code> into families (BLS / ACLS / PALS / First Aid &amp; Heartsaver / Other). Use this to spot misaligned items fast.</div>
+  <div class="bar">
+    <span class="pill">Source: <b id="srcLabel"></b></span>
+    <span class="pill">Fetched: <b id="fetchedAt">—</b></span>
+    <span class="pill">Unique course types: <b id="courseCount">0</b></span>
+    <span class="pill">Sessions scanned: <b id="sessionCount">0</b></span>
+    <a class="btn" id="openRaw" target="_blank" rel="noopener">Open schedule.json</a>
+  </div>
+</header>
+
+<div class="row">
+  <div class="grid">
+    <section class="family col-6" id="fam-bls">
+      <h2>BLS</h2>
+      <div class="meta"><span id="count-bls">0</span> course types</div>
+      <div class="list" id="list-bls"></div>
+    </section>
+
+    <section class="family col-6" id="fam-acls">
+      <h2>ACLS</h2>
+      <div class="meta"><span id="count-acls">0</span> course types</div>
+      <div class="list" id="list-acls"></div>
+    </section>
+
+    <section class="family col-6" id="fam-pals">
+      <h2>PALS</h2>
+      <div class="meta"><span id="count-pals">0</span> course types</div>
+      <div class="list" id="list-pals"></div>
+    </section>
+
+    <section class="family col-6" id="fam-fa">
+      <h2>First Aid &amp; Heartsaver</h2>
+      <div class="meta"><span id="count-fa">0</span> course types</div>
+      <div class="list" id="list-fa"></div>
+    </section>
+
+    <section class="family col-12" id="fam-other">
+      <h2>Other / Unclassified</h2>
+      <div class="meta"><span id="count-other">0</span> course types</div>
+      <div class="list" id="list-other"></div>
+      <div class="why" style="margin-top:8px">
+        Anything here is a likely misalignment. Tell me which belong elsewhere; I’ll tighten the rules.
+      </div>
+    </section>
+
+    <section class="family col-12">
+      <h2>Debug dump</h2>
+      <details>
+        <summary>Show classification rules and examples</summary>
+        <div style="margin-top:10px">
+          <p>Heuristics (applied in order):</p>
+          <ol>
+            <li><b>Direct tokens</b> in title/course_title: BLS / ACLS / PALS / Heartsaver / First Aid.</li>
+            <li><b>Brand cues</b> normalized; ARC/HSI “BLS” → BLS family; ARC/HSI First Aid/CPR/AED → FA family.</li>
+            <li><b>Fallback</b> to Other when ambiguous; surface top 2 matching tokens as “why.”</li>
+          </ol>
+          <p>Sample of first 10 course keys after de-dup:</p>
+          <pre id="sampleDump" style="white-space:pre-wrap"></pre>
+        </div>
+      </details>
+    </section>
+  </div>
+</div>
+
+<footer>
+  <div class="status">
+    <span>Build:</span>
+    <span id="stamp" class="good">—</span>
+    <span>• If you just pushed, hard-refresh to bypass cache.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // --------- CONFIG
+  const DEFAULT_SRC = "./data/schedule.json"; // override via ?src=
+  const params = new URLSearchParams(location.search);
+  const SRC = params.get("src") || DEFAULT_SRC;
+
+  // --------- UTIL
+  const slug = s => (s||"").toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  const norm = s => (s||"").toLowerCase();
+  const brandFrom = (t) => {
+    const s = norm(t);
+    if (s.includes("american heart") || s.includes("aha")) return "AHA";
+    if (s.includes("red cross") || s.startsWith("arc ") || s.includes(" arc ")) return "ARC";
+    if (s.includes("hsi")) return "HSI";
+    return null;
+  };
+
+  // Family classifier: returns {family, why, brand}
+  function classifyCourse(title){
+    const s = norm(title);
+
+    // Tokens
+    const tok = {
+      bls: /\bbls\b|basic life support/.test(s),
+      acls: /\bacls\b|advanced cardiovascular/.test(s),
+      pals: /\bpals\b|pediatric advanced/.test(s),
+      fa: /heartsaver|first aid|cpr\/?aed|cpr aed|pediatric first aid/.test(s),
+    };
+
+    const reasons = [];
+    if (tok.bls) reasons.push("BLS token");
+    if (tok.acls) reasons.push("ACLS token");
+    if (tok.pals) reasons.push("PALS token");
+    if (tok.fa) reasons.push("FA/Heartsaver token");
+
+    // Brand cues
+    const brand = brandFrom(s);
+
+    // Direct route
+    if (tok.bls && !tok.acls && !tok.pals) return {family:"BLS", why:reasons.join(", "), brand};
+    if (tok.acls && !tok.bls && !tok.pals) return {family:"ACLS", why:reasons.join(", "), brand};
+    if (tok.pals && !tok.bls && !tok.acls) return {family:"PALS", why:reasons.join(", "), brand};
+    if (tok.fa && !tok.bls && !tok.acls && !tok.pals) return {family:"FA", why:reasons.join(", "), brand};
+
+    // Brand-guided nudges
+    if (brand === "ARC" || brand === "HSI"){
+      if (tok.bls) return {family:"BLS", why:(reasons.join(", ")||"Brand BLS"), brand};
+      if (tok.fa)  return {family:"FA",  why:(reasons.join(", ")||"Brand FA"),  brand};
+    }
+
+    // If multiple tokens show up, prefer specificity order
+    if (tok.acls) return {family:"ACLS", why:"Multiple tokens; favored ACLS", brand};
+    if (tok.pals) return {family:"PALS", why:"Multiple tokens; favored PALS", brand};
+    if (tok.bls)  return {family:"BLS",  why:"Multiple tokens; favored BLS",  brand};
+    if (tok.fa)   return {family:"FA",   why:"Multiple tokens; favored FA",   brand};
+
+    // Fallback
+    return {family:"Other", why:"No decisive tokens", brand};
+  }
+
+  // Deduplicate into course-types:
+  // key = course_id if present else normalized course_title
+  function dedupeCourses(sessions){
+    const map = new Map();
+    for (const s of sessions){
+      const courseKey = s.course_id || ("t:" + norm(s.course_title || s.title || ""));
+      if (!courseKey) continue;
+      if (!map.has(courseKey)){
+        map.set(courseKey, {
+          key: courseKey,
+          course_id: s.course_id || null,
+          course_title: (s.course_title || s.title || "").trim(),
+          sample_url: s.url,
+          sample_location: s.location || null,
+          sample_start: s.start || s.start_text || null
+        });
+      }
+    }
+    return [...map.values()];
+  }
+
+  // Render helpers
+  function badgeBrand(brand){
+    if (!brand) return "";
+    const cls = brand === "AHA" ? "brand-AHA" : brand === "ARC" ? "brand-ARC" : "brand-HSI";
+    return `<span class="badge ${cls}">Brand: ${brand}</span>`;
+  }
+
+  function renderItem(c, result){
+    const cid = c.course_id ? `ct${c.course_id}` : "(no id)";
+    const why = result.why || "—";
+    const brandChip = badgeBrand(result.brand);
+    return `
+      <div class="item">
+        <div class="t">
+          <span class="badge">ID: ${cid}</span>
+          ${brandChip}
+        </div>
+        <div style="font-weight:600; margin-bottom:4px">${escapeHtml(c.course_title || "(untitled)")}</div>
+        <div class="why">Why: ${why}</div>
+        <div class="why">Example: <a href="${c.sample_url}" target="_blank" rel="noopener">${c.sample_start || "link"}</a> • ${escapeHtml(c.sample_location || "")}</div>
+      </div>
+    `;
+  }
+
+  function escapeHtml(s){
+    return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  // Wire up
+  document.getElementById("srcLabel").textContent = SRC;
+  document.getElementById("openRaw").href = SRC;
+
+  fetch(SRC, {cache:"no-store"})
+    .then(r => {
+      if (!r.ok) throw new Error("Failed to fetch schedule.json: "+r.status);
+      return r.json();
+    })
+    .then(data => {
+      const sessions = Array.isArray(data.sessions) ? data.sessions : [];
+      const fetchedAt = (data.meta && (data.meta.fetched_at || data.meta.fetchedAt)) || "—";
+      const stamp = new Date().toISOString();
+      document.getElementById("fetchedAt").textContent = fetchedAt;
+      document.getElementById("sessionCount").textContent = String(sessions.length);
+      document.getElementById("stamp").textContent = `Rendered ${stamp}`;
+
+      const courses = dedupeCourses(sessions);
+      document.getElementById("courseCount").textContent = String(courses.length);
+
+      // classify
+      const buckets = { BLS:[], ACLS:[], PALS:[], FA:[], Other:[] };
+
+      for (const c of courses){
+        const res = classifyCourse(c.course_title || "");
+        (buckets[res.family] || buckets.Other).push({course:c, res});
+      }
+
+      // sort each by title
+      for (const k of Object.keys(buckets)){
+        buckets[k].sort((a,b)=> (a.course.course_title||"").localeCompare(b.course.course_title||""));
+      }
+
+      // render
+      function mount(fam, listId, countId){
+        const elList = document.getElementById(listId);
+        const elCount = document.getElementById(countId);
+        elList.innerHTML = buckets[fam].map(x => renderItem(x.course, x.res)).join("") || `<div class="why">No matches.</div>`;
+        elCount.textContent = String(buckets[fam].length);
+      }
+
+      mount("BLS","list-bls","count-bls");
+      mount("ACLS","list-acls","count-acls");
+      mount("PALS","list-pals","count-pals");
+      mount("FA","list-fa","count-fa");
+      mount("Other","list-other","count-other");
+
+      // debug sample
+      const sample = (courses.slice(0,10)).map(c=>{
+        const r = classifyCourse(c.course_title||"");
+        return {
+          key: c.course_id || slug(c.course_title||""),
+          title: c.course_title,
+          family: r.family,
+          why: r.why,
+          brand: r.brand
+        };
+      });
+      document.getElementById("sampleDump").textContent = JSON.stringify(sample,null,2);
+    })
+    .catch(err=>{
+      console.error(err);
+      document.querySelector("header .sub").innerHTML = `<span class="bad">Error: ${escapeHtml(String(err.message||err))}</span>`;
+    });
+
+})();
+</script>
+</body>
+</html>
