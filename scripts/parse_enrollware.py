@@ -2,20 +2,21 @@
 """
 parse_enrollware.py
 
-Parse a saved copy of the Enrollware schedule page and produce SCHEDULE.JSON.
+Parse a saved copy of the Enrollware schedule page and produce schedule.json.
 
-- Reads:  view-source_https___coastalcprtraining.enrollware.com_schedule.html
-- Writes: SCHEDULE.JSON
+Default paths (relative to repo root):
+- Input  HTML: docs/data/enrollware-schedule.html
+- Output JSON: docs/data/schedule.json
 
-Structure of output:
+Structure of output (Option B):
 
 [
   {
     "course_id": "241108",
-    "option_title_html": "<inner HTML from <option value='241108'>...</option>",
-    "panel_value_html": "<value='' attribute from <div class='enrpanel'>",
-    "description_html": "<HTML from .enrpanel-body before <ul class='enrclass-list'>",
-    "description_text": "Plain-text version of description_html",
+    "option_title_html": "...",      # raw <option> innerHTML from dropdown
+    "panel_value_html": "...",       # raw value="" from <div class="enrpanel">
+    "description_html": "...",       # full ugly description HTML before the class list
+    "description_text": "...",       # plain-text version of description_html
     "classes": [
       {
         "course_id": "241108",
@@ -26,7 +27,7 @@ Structure of output:
         "time_text": "9:00 AM",
         "seats_left": 5,
         "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-        "raw_text": "Monday, November 17, 2025 at 9:00 AM (5 seats  left)"
+        "raw_text": "Monday, November 17, 2025 at 9:00 AM (5 seats left)"
       },
       ...
     ]
@@ -34,11 +35,22 @@ Structure of output:
   ...
 ]
 
-You can rename INPUT_HTML / OUTPUT_JSON if you like.
+You can override the input and output paths via command-line:
+
+    python scripts/parse_enrollware.py [input_html] [output_json]
+
+Examples:
+
+    # Use defaults:
+    python scripts/parse_enrollware.py
+
+    # Explicit paths:
+    python scripts/parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
 """
 
 import json
 import re
+import sys
 import datetime
 from pathlib import Path
 
@@ -49,8 +61,9 @@ from bs4 import BeautifulSoup
 # Config
 # ---------------------------------------------------------------------------
 
-INPUT_HTML = "view-source_https___coastalcprtraining.enrollware.com_schedule.html"
-OUTPUT_JSON = "SCHEDULE.JSON"
+# Default locations inside the repo
+DEFAULT_INPUT_HTML = "docs/data/enrollware-schedule.html"
+DEFAULT_OUTPUT_JSON = "docs/data/schedule.json"
 
 
 # ---------------------------------------------------------------------------
@@ -58,26 +71,31 @@ OUTPUT_JSON = "SCHEDULE.JSON"
 # ---------------------------------------------------------------------------
 
 def load_soup(path: str) -> BeautifulSoup:
-    """Load HTML from disk and return a BeautifulSoup DOM."""
+    """
+    Load HTML from disk and return a BeautifulSoup DOM.
+    """
     p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"Input HTML not found: {p}")
     with p.open("r", encoding="utf-8") as f:
         return BeautifulSoup(f, "html.parser")
 
 
 def build_course_map(soup: BeautifulSoup) -> dict:
     """
-    Build a mapping from course_id -> option inner HTML from the dropdown:
+    Build a mapping from course_id -> <option> inner HTML from the dropdown:
 
-      <select name="ctl00$maincontent$courseList">
-        <option value="241108">AHA - ACLS Provider - In-person Initial ...</option>
-        ...
-      </select>
+        <select name="ctl00$maincontent$courseList" ...>
+            <option value="241108">AHA - ACLS Provider - In-person Initial ...</option>
+            ...
+        </select>
 
     Returns:
-      {
-        "241108": "AHA - ACLS Provider - In-person Initial &lt;img ...&gt; ...",
-        ...
-      }
+
+        {
+            "241108": "AHA - ACLS Provider - In-person Initial <img ...> ...",
+            ...
+        }
     """
     course_map: dict[str, str] = {}
 
@@ -99,8 +117,9 @@ def build_course_map(soup: BeautifulSoup) -> dict:
 
 def extract_description_html(body_div) -> str:
     """
-    From a <div class="enrpanel-body">, return everything from the top of the
-    body up to (but not including) <ul class="enrclass-list"> as an HTML string.
+    From a <div class="enrpanel-body">, return everything from the top of
+    the body up to (but not including) <ul class="enrclass-list"> as an HTML
+    string.
 
     This preserves your "ugly" description exactly as rendered by Enrollware.
     """
@@ -113,6 +132,8 @@ def extract_description_html(body_div) -> str:
         return body_div.decode_contents().strip()
 
     parts: list[str] = []
+
+    # Collect siblings up to (but not including) the <ul class="enrclass-list">
     for child in body_div.children:
         if child is ul_classes:
             break
@@ -136,7 +157,7 @@ def parse_class_li(li, course_id: str) -> dict | None:
     """
     Parse one <li> inside <ul class="enrclass-list">.
 
-    - Skip "Registration is closed" or <a class="greylink"> entries.
+    - Skip "Registration is closed" entries.
     - For open classes, return a dict with fields:
         course_id, class_id, url, date_text, date_iso, time_text,
         seats_left, location, raw_text
@@ -156,7 +177,7 @@ def parse_class_li(li, course_id: str) -> dict | None:
     m_id = re.search(r"id=(\d+)", href)
     class_id = m_id.group(1) if m_id else None
 
-    # Build text from <a> contents before any <span> (date/time/seats string)
+    # Build text from <a> contents BEFORE any <span> (date/time/seats string)
     text_nodes = []
     for node in a.contents:
         if getattr(node, "name", None) == "span":
@@ -165,9 +186,9 @@ def parse_class_li(li, course_id: str) -> dict | None:
 
     # Clean HTML → text
     main_text = BeautifulSoup("".join(text_nodes), "html.parser").get_text(" ", strip=True)
-
     # Example main_text:
-    # "Monday, November 17, 2025 at 9:00 AM (5 seats  left)"
+    # "Monday, November 17, 2025 at 9:00 AM (5 seats left)"
+
     seats_left = None
     m_seats = re.search(r"\((\d+)\s+seat", main_text)
     if m_seats:
@@ -175,6 +196,8 @@ def parse_class_li(li, course_id: str) -> dict | None:
             seats_left = int(m_seats.group(1))
         except ValueError:
             seats_left = None
+
+    if m_seats:
         main_text_wo_seats = main_text[:m_seats.start()].strip()
     else:
         main_text_wo_seats = main_text
@@ -198,7 +221,7 @@ def parse_class_li(li, course_id: str) -> dict | None:
         # If format changes, just leave date_iso as None; raw text is still there.
         pass
 
-    # Location from <span> ... </span>
+    # Location from <span>...</span>
     span = a.find("span")
     location = span.get_text(" ", strip=True) if span else ""
 
@@ -223,7 +246,7 @@ def parse_schedule(soup: BeautifulSoup, course_map: dict) -> list[dict]:
       - course_id
       - option_title_html (from dropdown)
       - panel_value_html (from div.enrpanel)
-      - description_html (ugly HTML body before class list)
+      - description_html (from div.enrpanel-body before the class list)
       - description_text (plain-text version of description_html)
       - classes[] (parsed live class instances)
     """
@@ -272,16 +295,30 @@ def parse_schedule(soup: BeautifulSoup, course_map: dict) -> list[dict]:
 # Main
 # ---------------------------------------------------------------------------
 
-def main() -> None:
-    soup = load_soup(INPUT_HTML)
+def main(argv: list[str] | None = None) -> None:
+    """
+    CLI entry point.
+
+    argv[0] = optional input HTML path  (defaults to DEFAULT_INPUT_HTML)
+    argv[1] = optional output JSON path (defaults to DEFAULT_OUTPUT_JSON)
+    """
+    if argv is None:
+        argv = sys.argv[1:]
+
+    input_html = argv[0] if len(argv) >= 1 else DEFAULT_INPUT_HTML
+    output_json = argv[1] if len(argv) >= 2 else DEFAULT_OUTPUT_JSON
+
+    soup = load_soup(input_html)
     course_map = build_course_map(soup)
     courses = parse_schedule(soup, course_map)
 
-    out_path = Path(OUTPUT_JSON)
+    out_path = Path(output_json)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
     with out_path.open("w", encoding="utf-8") as f:
         json.dump(courses, f, ensure_ascii=False, indent=2)
 
-    print(f"Wrote {len(courses)} courses to {out_path}.")
+    print(f"Wrote {len(courses)} courses to {out_path} from {input_html}.")
 
 
 if __name__ == "__main__":
