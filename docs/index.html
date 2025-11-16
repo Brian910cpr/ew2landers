@@ -1,866 +1,543 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>910CPR • Course Families</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-
-    /* Finder top section */
-    .finder-section {
-      margin-top: 18px;
-      padding: 16px 18px 18px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 6px 18px rgba(9, 30, 66, 0.08);
-      border: 1px solid var(--border-soft);
-      display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
-      gap: 20px;
-    }
-
-    @media (max-width: 900px) {
-      .finder-section {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .finder-panel-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-
-    .finder-panel h2 {
-      font-size: 1.1rem;
-      margin: 0 0 8px;
-      color: var(--text-main);
-    }
-
-    .finder-panel p {
-      margin: 0 0 10px;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .finder-search-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .finder-search-input {
-      flex: 1 1 180px;
-      min-width: 0;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .finder-search-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(11, 94, 215, 0.1);
-    }
-
-    .finder-shortcuts {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .chip-button {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      background: var(--badge-bg);
-      font-size: 0.85rem;
-      cursor: pointer;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
-    }
-
-    .chip-button:hover {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    .chip-button.primary {
-      border-color: var(--accent);
-    }
-
-    .finder-pill-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .finder-results-note {
-      margin-top: 6px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .highlight-course {
-      background: #fff8e1;
-    }
-
-    :root {
-      --bg-top: #ffffff;
-      --bg-bottom: #e9f4ff;
-      --accent: #0b5ed7;
-      --accent-soft: #e0ecff;
-      --border-soft: #d0d7e2;
-      --text-main: #16202a;
-      --text-muted: #5f6b7a;
-      --badge-bg: #f3f5f9;
-      --danger: #c62828;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .page {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 18px 18px 40px;
-    }
-
-    header {
-      margin-bottom: 10px;
-    }
-
-    header h1 {
-      font-size: 1.6rem;
-      margin: 0 0 4px;
-      letter-spacing: 0.02em;
-    }
-
-    header p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .status-bar {
-      margin-top: 14px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.9);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 3px 10px rgba(9, 30, 66, 0.08);
-      border: 1px solid var(--border-soft);
-      flex-wrap: wrap;
-    }
-
-    .status-pill {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .status-pill.ok {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-
-    .status-pill.warn {
-      background: #fff3cd;
-      color: #8d6b00;
-    }
-
-    .status-text {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .status-text span::after {
-      content: "•";
-      margin: 0 4px;
-      opacity: 0.7;
-    }
-
-    .status-text span:last-child::after {
-      content: "";
-      margin: 0;
-    }
-
-    #errors {
-      margin-top: 12px;
-    }
-
-    .family-grid {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-    }
-
-    .family-card {
-      background: rgba(255, 255, 255, 0.96);
-      border-radius: 18px;
-      border: 1px solid var(--border-soft);
-      padding: 14px 10px;
-      box-shadow: 0 4px 10px rgba(9, 30, 66, 0.06);
-      display: flex;
-      flex-direction: column;
-      min-height: 120px;
-    }
-
-    .family-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-      gap: 8px;
-    }
-
-    .family-name {
-      font-size: 0.98rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      color: var(--text-main);
-    }
-
-    .family-meta {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .course-list {
-      list-style: none;
-      padding: 0;
-      margin: 4px 0 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .course-item {
-      padding: 6px 8px;
-      border-radius: 10px;
-      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
-      cursor: default;
-      border: 1px solid transparent;
-    }
-
-    .course-item:hover {
-      background: var(--accent-soft);
-      box-shadow: 0 2px 6px rgba(9, 30, 66, 0.12);
-      transform: translateY(-1px);
-      border-color: #c5d7ff;
-    }
-
-    .course-title-line {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: baseline;
-    }
-
-    .course-title {
-      font-size: 0.87rem;
-      font-weight: 500;
-    }
-
-    .badge-row {
-      margin-top: 2px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2px 6px;
-      font-size: 0.75rem;
-      border-radius: 999px;
-      border: 1px solid var(--border-soft);
-      background: var(--badge-bg);
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .badge.sessions {
-      border-color: #1976d2;
-      color: #0d47a1;
-    }
-
-    .badge.count {
-      border-color: #388e3c;
-    }
-
-    .badge.empty {
-      border-color: var(--danger);
-      color: var(--danger);
-    }
-
-    .course-subtext {
-      margin-top: 2px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .debug-note {
-      margin-top: 18px;
-      font-size: 0.78rem;
-      color: #7a869a;
-    }
-
-    .error-box {
-      margin: 12px 0 20px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #f44336;
-      background: #ffebee;
-      color: #b71c1c;
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 640px) {
-      .status-bar {
-        border-radius: 14px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="page">
-    <header>
-      <h1>910CPR Course Families (from Enrollware)</h1>
-      <p>Live view of active course families based on the latest Enrollware schedule snapshot.</p>
-    </header>
-
-    <div id="status" class="status-bar">
-      <div class="status-pill warn">Loading…</div>
-      <div class="status-text">Reading data/status.json and data/courses.json…</div>
-    </div>
-
-    <div id="errors"></div>
-
-    <section class="finder-section" id="finder">
-      <div class="finder-panel" id="finder-by-course">
-        <div class="finder-panel-title">Option 1</div>
-        <h2>I already know what class I need.</h2>
-        <p>Start typing the class name (for example, BLS, ACLS Renewal, PALS, Heartsaver) or tap one of the quick buttons below.</p>
-
-        <div class="finder-search-row">
-          <input type="search" id="course-search-input" class="finder-search-input" placeholder="Search by course name…" autocomplete="off" />
-        </div>
-
-        <div class="finder-shortcuts">
-          <button type="button" class="chip-button primary" data-course-shortcut="BLS">BLS</button>
-          <button type="button" class="chip-button primary" data-course-shortcut="ACLS">ACLS</button>
-          <button type="button" class="chip-button primary" data-course-shortcut="PALS">PALS</button>
-          <button type="button" class="chip-button" data-course-shortcut="First Aid / CPR / AED">CPR / First Aid / AED</button>
-        </div>
-
-        <div class="finder-results-note" id="course-search-note"></div>
-      </div>
-
-      <div class="finder-panel" id="finder-by-job">
-        <div class="finder-panel-title">Option 2</div>
-        <h2>I know my job or program, not the class name.</h2>
-        <p>Choose a common job or school program, or start typing your role (for example, nursing student, dental assistant, childcare teacher).</p>
-
-        <div class="finder-search-row">
-          <input type="search" id="job-search-input" class="finder-search-input" placeholder="Search by job or program…" autocomplete="off" />
-        </div>
-
-        <div class="finder-shortcuts" id="job-shortcuts">
-          <button type="button" class="chip-button" data-job-family="BLS">Nurse / CNA / Hospital staff</button>
-          <button type="button" class="chip-button" data-job-family="BLS">Medical / Dental office staff</button>
-          <button type="button" class="chip-button" data-job-family="BLS">EMT / First responder</button>
-          <button type="button" class="chip-button" data-job-family="FA_CPR_AED">Childcare / DCDEE / daycare</button>
-          <button type="button" class="chip-button" data-job-family="FA_CPR_AED">Teachers / coaches / school staff</button>
-          <button type="button" class="chip-button" data-job-family="OSHA_10_30">Construction / workplace safety</button>
-          <button type="button" class="chip-button" data-job-family="USCG_MARITIME">Coast Guard / maritime</button>
-          <button type="button" class="chip-button" data-job-family="OTHER">Parents / new baby care</button>
-        </div>
-
-        <div class="finder-results-note" id="job-search-note"></div>
-      </div>
-    </section>
-
-    <section id="families">
-      <div class="family-grid" id="family-grid">
-        <!-- Filled by JS -->
-      </div>
-    </section>
-
-    <div class="debug-note" id="debug-note"></div>
-  </div>
-
-  <script>
-    const FAMILY_LABELS = {
-      "BLS": "BLS – Basic Life Support",
-      "ACLS": "ACLS – Advanced Cardiac Life Support",
-      "PALS": "PALS – Pediatric Advanced Life Support",
-      "PEARS": "PEARS – Pediatric Emergency Assessment",
-      "ASLS": "ASLS – Advanced Stroke Life Support",
-      "FA_CPR_AED": "First Aid / CPR / AED",
-      "CPR_AED": "CPR / AED Only",
-      "PED_FA_CPR_AED": "Pediatric First Aid / CPR / AED",
-      "OSHA_10_30": "OSHA 10 / 30 & Workplace Safety",
-      "USCG_MARITIME": "USCG / Maritime Requirements",
-      "OTHER": "Other & Specialized Programs"
-    };
-
-    const DELIVERY_LABELS = {
-      "in_person": "In-Person",
-      "blended": "Blended (Online + Skills)",
-      "online_only": "Online Only",
-      "unknown": "Delivery Mode"
-    };
-
-    const CERT_BODY_LABELS = {
-      "AHA": "AHA",
-      "ARC": "ARC",
-      "HSI": "HSI",
-      "USCG": "USCG / Maritime",
-      "OTHER": "Other"
-    };
-
-    function niceFamilyLabel(key) {
-      return FAMILY_LABELS[key] || key || "Other";
-    }
-
-    function niceMode(mode) {
-      if (!mode) return DELIVERY_LABELS.unknown;
-      return DELIVERY_LABELS[mode] || mode;
-    }
-
-    function niceCertBody(body) {
-      if (!body) return CERT_BODY_LABELS.OTHER;
-      return CERT_BODY_LABELS[body] || body;
-    }
-
-    function stripHtmlTitle(str) {
-      if (!str) return "";
-      return String(str)
-        .replace(/<br\s*\/?>/gi, " ")
-        .replace(/<[^>]+>/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-
-    function renderDebugNote(courses) {
-      const note = document.getElementById("debug-note");
-      if (!note) return;
-      note.textContent =
-        "Debug note: this page groups courses by family using data/courses.json. Only courses with at least one upcoming session (session_ids.length > 0) are shown. If something is mis-filed, we can adjust the family/certBody rules in parse_enrollware.py.";
-    }
-
-    function showError(message) {
-      const box = document.getElementById("errors");
-      const div = document.createElement("div");
-      div.className = "error-box";
-      div.textContent = message;
-      box.appendChild(div);
-    }
-
-    let ALL_COURSES = [];
-
-    function initFinder(courses) {
-      ALL_COURSES = Array.isArray(courses) ? courses.slice() : [];
-
-      const courseInput = document.getElementById("course-search-input");
-      const courseNote = document.getElementById("course-search-note");
-      const jobInput = document.getElementById("job-search-input");
-      const jobNote = document.getElementById("job-search-note");
-
-      function applyFilter(opts) {
-        if (!ALL_COURSES.length) return;
-        renderFamilies(ALL_COURSES, opts || {});
-      }
-
-      function handleCourseSearch() {
-        const q = courseInput.value || "";
-        const trimmed = q.trim();
-        if (!trimmed) {
-          courseNote.textContent = "";
-          applyFilter({});
-        } else {
-          courseNote.textContent = "Showing courses that match \"" + trimmed + "\".";
-          applyFilter({ query: trimmed });
-        }
-      }
-
-      function handleJobSearch() {
-        const raw = jobInput.value || "";
-        const q = raw.trim().toLowerCase();
-        let fam = "";
-
-        if (!q) {
-          fam = "";
-        } else if (/nurse|rn|lpn|cna|tech|hospital|medic|emt|paramedic/.test(q)) {
-          fam = "BLS";
-        } else if (/acls|icu|critical care|er|ed|ccu/.test(q)) {
-          fam = "ACLS";
-        } else if (/peds|pediatric|pals|nicu|picu/.test(q)) {
-          fam = "PALS";
-        } else if (/childcare|daycare|dcdee|teacher|coach|school|camp/.test(q)) {
-          fam = "FA_CPR_AED";
-        } else if (/construction|osha|safety|general industry|forklift|warehouse/.test(q)) {
-          fam = "OSHA_10_30";
-        } else if (/coast guard|uscg|maritime|boat|captain|charter/.test(q)) {
-          fam = "USCG_MARITIME";
-        } else if (/parent|mom|dad|baby|newborn|sitter|grandparent/.test(q)) {
-          fam = "FA_CPR_AED";
-        }
-
-        if (!fam) {
-          jobNote.textContent = q ? "Showing all course families (no direct match for that job yet)." : "";
-          applyFilter({});
-        } else {
-          jobNote.textContent = "Showing the best-match course family for that role.";
-          applyFilter({ family: fam });
-        }
-      }
-
-      if (courseInput) {
-        courseInput.addEventListener("input", handleCourseSearch);
-      }
-
-      document.querySelectorAll("[data-course-shortcut]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const val = btn.getAttribute("data-course-shortcut") || "";
-          courseInput.value = val;
-          handleCourseSearch();
-          courseInput.focus();
-          courseInput.setSelectionRange(courseInput.value.length, courseInput.value.length);
-        });
-      });
-
-      if (jobInput) {
-        jobInput.addEventListener("input", handleJobSearch);
-      }
-
-      document.querySelectorAll("[data-job-family]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const fam = btn.getAttribute("data-job-family") || "";
-          if (fam === "BLS") {
-            jobInput.value = "nurse";
-          } else if (fam === "FA_CPR_AED") {
-            jobInput.value = "teacher";
-          } else if (fam === "OSHA_10_30") {
-            jobInput.value = "construction";
-          } else if (fam === "USCG_MARITIME") {
-            jobInput.value = "coast guard";
-          } else {
-            jobInput.value = "";
-          }
-          handleJobSearch();
-        });
-      });
-    }
-
-    async function fetchJson(path) {
-      const res = await fetch(path, { cache: "no-store" });
-      if (!res.ok) {
-        throw new Error("Failed to load " + path + " (" + res.status + ")");
-      }
-      return res.json();
-    }
-
-    function renderStatus(statusData, coursesData) {
-      const statusEl = document.getElementById("status");
-      if (!statusData) {
-        statusEl.innerHTML = "<div class='status-pill warn'>No status.json</div><div class='status-text'>status.json not found.</div>";
-        return;
-      }
-
-      const updatedAt = statusData.updated_at || "n/a";
-      const schedBytes = statusData.schedule && typeof statusData.schedule.bytes === "number"
-        ? statusData.schedule.bytes
-        : "n/a";
-      const snapBytes = statusData.snapshot && typeof statusData.snapshot.bytes === "number"
-        ? statusData.snapshot.bytes
-        : "n/a";
-
-      const courseCount = coursesData && coursesData.meta && coursesData.meta.course_count
-        ? coursesData.meta.course_count
-        : (coursesData && Array.isArray(coursesData.courses) ? coursesData.courses.length : "n/a");
-
-      const ok = statusData.schedule && statusData.schedule.exists && schedBytes > 0;
-
-      const indexLastMod = document.lastModified || "";
-
-      statusEl.innerHTML = "";
-      const pill =
-        document.createElement("div");
-      pill.className = "status-pill " + (ok ? "ok" : "warn");
-      pill.textContent = ok ? "Data status: OK" : "Data status: CHECK";
-
-      const textDiv =
-        document.createElement("div");
-      textDiv.className = "status-text";
-
-      function addStatus(text) {
-        const span = document.createElement("span");
-        span.textContent = text;
-        textDiv.appendChild(span);
-      }
-
-      addStatus("updated " + updatedAt);
-      addStatus("snapshot.html " + snapBytes + " bytes");
-      addStatus("schedule.json " + schedBytes + " bytes");
-      addStatus("courses.json " + courseCount + " courses");
-      addStatus("index last modified: " + indexLastMod);
-
-      statusEl.appendChild(pill);
-      statusEl.appendChild(textDiv);
-    }
-
-    function renderFamilies(courses, opts) {
-      const grid = document.getElementById("family-grid");
-      grid.innerHTML = "";
-
-      if (!Array.isArray(courses) || courses.length === 0) {
-        grid.innerHTML = "<p>No courses found in courses.json.</p>";
-        return;
-      }
-
-      const base = courses.filter(c => {
-        const title = stripHtmlTitle(c.cleanTitle || c.uglyTitle || "");
-        if (!title) return false;
-        if (/quick reference guide/i.test(title)) return false;
-        if (!Array.isArray(c.session_ids) || c.session_ids.length === 0) return false;
-        return true;
-      });
-
-      const query = opts && typeof opts.query === "string"
-        ? opts.query.trim().toLowerCase()
-        : "";
-      const familyFilter = opts && opts.family
-        ? String(opts.family)
-        : "";
-
-      let filtered = base;
-      if (familyFilter) {
-        filtered = filtered.filter(c => String(c.family || "OTHER") === familyFilter);
-      }
-      if (query) {
-        filtered = filtered.filter(c => {
-          const title = stripHtmlTitle(c.cleanTitle || c.uglyTitle || "");
-          return title.toLowerCase().includes(query);
-        });
-      }
-
-      if (filtered.length === 0) {
-        grid.innerHTML = "<p>No active course families with upcoming sessions for that search.</p>";
-        return;
-      }
-
-      const famMap = new Map();
-      for (const course of filtered) {
-        const fam = course.family || "OTHER";
-        if (!famMap.has(fam)) {
-          famMap.set(fam, []);
-        }
-        famMap.get(fam).push(course);
-      }
-
-      const order = [
-        "BLS",
-        "ACLS",
-        "PALS",
-        "PEARS",
-        "ASLS",
-        "FA_CPR_AED",
-        "CPR_AED",
-        "PED_FA_CPR_AED",
-        "OSHA_10_30",
-        "USCG_MARITIME",
-        "OTHER"
-      ];
-
-      const famKeys =
-        Array.from(famMap.keys()).sort((a, b) => {
-          const ia = order.indexOf(a);
-          const ib = order.indexOf(b);
-          if (ia === -1 && ib === -1) {
-            return niceFamilyLabel(a).localeCompare(niceFamilyLabel(b));
-          }
-          if (ia === -1) return 1;
-          if (ib === -1) return -1;
-          return ia - ib;
-        });
-
-      for (const fam of famKeys) {
-        const list = famMap.get(fam) || [];
-        if (!list.length) continue;
-
-        const totalSessions =
-          list.reduce((s, c) =>
-            s + (Array.isArray(c.session_ids) ? c.session_ids.length : 0), 0);
-
-        list.sort((a, b) => {
-          const keyA =
-            (a.certBody || "") +
-            stripHtmlTitle(a.cleanTitle || a.uglyTitle || "");
-          const keyB =
-            (b.certBody || "") +
-            stripHtmlTitle(b.cleanTitle || b.uglyTitle || "");
-          return keyA.localeCompare(keyB);
-        });
-
-        const card = document.createElement("div");
-        card.className = "family-card";
-
-        const header = document.createElement("div");
-        header.className = "family-header";
-
-        const name =
-          document.createElement("div");
-        name.className = "family-name";
-        name.textContent = niceFamilyLabel(fam);
-
-        const meta = document.createElement("div");
-        meta.className = "family-meta";
-        meta.textContent =
-          list.length +
-          " course" +
-          (list.length !== 1 ? "s" : "") +
-          " • " +
-          totalSessions +
-          " session" +
-          (totalSessions !== 1 ? "s" : "");
-
-        header.appendChild(name);
-        header.appendChild(meta);
-        card.appendChild(header);
-
-        const ul = document.createElement("ul");
-        ul.className = "course-list";
-
-        for (const course of list) {
-          const li = document.createElement("li");
-          li.className = "course-item";
-
-          const titleLine = document.createElement("div");
-          titleLine.className = "course-title-line";
-
-          const titleEl = document.createElement("div");
-          titleEl.className = "course-title";
-          titleEl.textContent =
-            stripHtmlTitle(course.cleanTitle || course.uglyTitle || "");
-
-          const count =
-            Array.isArray(course.session_ids)
-              ? course.session_ids.length
-              : 0;
-
-          const countBadge = document.createElement("span");
-          countBadge.className = "badge sessions";
-          if (count === 0) {
-            countBadge.classList.add("empty");
-          }
-          countBadge.textContent =
-            count + " session" + (count !== 1 ? "s" : "");
-
-          titleLine.appendChild(titleEl);
-          titleLine.appendChild(countBadge);
-          li.appendChild(titleLine);
-
-          const badgeRow = document.createElement("div");
-          badgeRow.className = "badge-row";
-
-          const certBadge =
-            document.createElement("span");
-          certBadge.className = "badge cert";
-          certBadge.textContent = niceCertBody(course.certBody);
-          badgeRow.appendChild(certBadge);
-
-          const modeBadge =
-            document.createElement("span");
-          modeBadge.className = "badge mode";
-          modeBadge.textContent = niceMode(course.deliveryMode);
-          badgeRow.appendChild(modeBadge);
-
-          li.appendChild(badgeRow);
-
-          const sub = document.createElement("div");
-          sub.className = "course-subtext";
-          sub.textContent =
-            "course_id: " +
-            course.course_id +
-            " • family: " +
-            fam;
-          li.appendChild(sub);
-
-          ul.appendChild(li);
-        }
-
-        card.appendChild(ul);
-        grid.appendChild(card);
-      }
-
-      renderDebugNote(filtered);
-    }
-
-    async function init() {
-      try {
-        const [statusData, coursesData] = await Promise.all([
-          fetchJson("data/status.json").catch(() => null),
-          fetchJson("data/courses.json")
-        ]);
-
-        renderStatus(statusData, coursesData);
-        if (!coursesData || !Array.isArray(coursesData.courses)) {
-          showError("courses.json did not contain a courses[] array.");
-          return;
-        }
-
-        initFinder(coursesData.courses);
-        renderFamilies(coursesData.courses, {});
-      } catch (err) {
-        console.error(err);
-        showError("Error loading JSON: " + (err && err.message ? err.message : err));
-      }
-    }
-
-    init();
-  </script>
-
-</body>
-</html>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 18px 40px;
+}
+
+header {
+  margin-bottom: 10px;
+}
+
+header h1 {
+  font-size: 1.6rem;
+  margin: 0 0 4px;
+  letter-spacing: 0.02em;
+}
+
+header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.status-bar {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 3px 10px rgba(9, 30, 66, 0.08);
+  border: 1px solid var(--border-soft);
+  flex-wrap: wrap;
+}
+
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-pill.ok {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-pill.warn {
+  background: #fff3cd;
+  color: #8d6b00;
+}
+
+.status-text {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.status-text span::after {
+  content: "•";
+  margin: 0 4px;
+  opacity: 0.7;
+}
+
+.status-text span:last-child::after {
+  content: "";
+  margin: 0;
+}
+
+#errors {
+  margin-top: 12px;
+}
+
+.error-box {
+  margin: 12px 0 20px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #f44336;
+  background: #ffebee;
+  color: #b71c1c;
+  font-size: 0.85rem;
+}
+
+/* Finder section */
+
+.finder-section {
+  margin-top: 18px;
+  padding: 16px 18px 18px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 18px rgba(9, 30, 66, 0.08);
+  border: 1px solid var(--border-soft);
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .finder-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.finder-panel-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.finder-panel h2 {
+  font-size: 1.1rem;
+  margin: 0 0 6px;
+  color: var(--text-main);
+}
+
+.finder-panel p {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.finder-search-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.finder-search-input {
+  flex: 1 1 180px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.finder-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(11, 94, 215, 0.1);
+}
+
+.finder-shortcuts {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip-button {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--badge-bg);
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+
+.chip-button:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.chip-button.primary {
+  border-color: var(--accent);
+}
+
+.finder-results-note {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.job-recommendations {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-soft);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.job-recommendations-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* Next available classes panel */
+
+.next-classes {
+  margin-top: 18px;
+  padding: 14px 16px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 6px 18px rgba(9, 30, 66, 0.08);
+  border: 1px solid var(--border-soft);
+}
+
+.next-classes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.next-classes-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.next-classes-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.session-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.session-card {
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  background: #ffffff;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+
+.session-topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.session-date {
+  font-weight: 600;
+}
+
+.session-location {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.session-course {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.session-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  border: 1px solid var(--border-soft);
+  background: var(--badge-bg);
+  white-space: nowrap;
+}
+
+.pill.cert-aha {
+  border-color: #c8102e;
+  color: #7b0019;
+}
+
+.pill.cert-arc {
+  border-color: #d50000;
+  color: #880000;
+}
+
+.pill.cert-hsi {
+  border-color: #00838f;
+  color: #004d56;
+}
+
+.pill.cert-uscg {
+  border-color: #0d47a1;
+  color: #0d47a1;
+}
+
+.pill.seats-low {
+  border-color: #f57c00;
+  color: #e65100;
+}
+
+.session-actions {
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-register {
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-register:hover {
+  opacity: 0.9;
+}
+
+.link-more {
+  font-size: 0.78rem;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.link-more:hover {
+  text-decoration: underline;
+}
+
+/* Family grid */
+
+.family-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.family-card {
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 18px;
+  border: 1px solid var(--border-soft);
+  padding: 14px 10px;
+  box-shadow: 0 4px 10px rgba(9, 30, 66, 0.06);
+  display: flex;
+  flex-direction: column;
+  min-height: 120px;
+}
+
+.family-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.family-name {
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-main);
+}
+
+.family-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.course-list {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.course-item {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 6px 8px;
+  border-radius: 10px;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+  cursor: default;
+  border: 1px solid transparent;
+}
+
+.course-item:hover {
+  background: var(--accent-soft);
+  box-shadow: 0 2px 6px rgba(9, 30, 66, 0.12);
+  transform: translateY(-1px);
+  border-color: #c5d7ff;
+}
+
+.course-flag {
+  width: 6px;
+  border-radius: 6px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.course-flag.aha {
+  background: #c8102e;
+}
+
+.course-flag.arc {
+  background: #d50000;
+}
+
+.course-flag.hsi {
+  background: #00838f;
+}
+
+.course-flag.uscg {
+  background: linear-gradient(135deg, #b71c1c 0, #ffffff 50%, #0d47a1 100%);
+}
+
+.course-flag.other {
+  background: #b0bec5;
+}
+
+.course-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.course-title-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.course-title {
+  font-size: 0.87rem;
+  font-weight: 500;
+}
+
+.badge-row {
+  margin-top: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--badge-bg);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.badge.sessions {
+  border-color: #1976d2;
+  color: #0d47a1;
+}
+
+.badge.empty {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.badge.cert-aha {
+  border-color: #c8102e;
+}
+
+.badge.cert-arc {
+  border-color: #d50000;
+}
+
+.badge.cert-hsi {
+  border-color: #00838f;
+}
+
+.badge.cert-uscg {
+  border-color: #0d47a1;
+}
+
+.course-subtext {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.debug-note {
+  margin-top: 18px;
+  font-size: 0.78rem;
+  color: #7a869a;
+}
+
+@media (max-width: 640px) {
+  .status-bar {
+    border-radius: 14px;
+  }
+}
