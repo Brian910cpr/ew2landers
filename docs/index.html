@@ -5,6 +5,120 @@
   <title>910CPR • Course Families</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+
+    /* Finder top section */
+    .finder-section {
+      margin-top: 18px;
+      padding: 16px 18px 18px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 18px rgba(9, 30, 66, 0.08);
+      border: 1px solid var(--border-soft);
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .finder-section {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .finder-panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .finder-panel h2 {
+      font-size: 1.1rem;
+      margin: 0 0 8px;
+      color: var(--text-main);
+    }
+
+    .finder-panel p {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .finder-search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .finder-search-input {
+      flex: 1 1 180px;
+      min-width: 0;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .finder-search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(11, 94, 215, 0.1);
+    }
+
+    .finder-shortcuts {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip-button {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: var(--badge-bg);
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+    }
+
+    .chip-button:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .chip-button.primary {
+      border-color: var(--accent);
+    }
+
+    .finder-pill-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .finder-results-note {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .highlight-course {
+      background: #fff8e1;
+    }
+
     :root {
       --bg-top: #ffffff;
       --bg-bottom: #e9f4ff;
@@ -14,8 +128,7 @@
       --text-main: #16202a;
       --text-muted: #5f6b7a;
       --badge-bg: #f3f5f9;
-      --badge-border: #c7cfdd;
-      --danger: #b3261e;
+      --danger: #c62828;
     }
 
     * {
@@ -25,81 +138,103 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
       color: var(--text-main);
-      background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
-      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
     .page {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 20px 16px 40px;
+      padding: 18px 18px 40px;
     }
 
     header {
-      margin-bottom: 16px;
+      margin-bottom: 10px;
     }
 
     header h1 {
+      font-size: 1.6rem;
       margin: 0 0 4px;
-      font-size: 1.8rem;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.02em;
     }
 
     header p {
       margin: 0;
+      font-size: 0.9rem;
       color: var(--text-muted);
-      font-size: 0.95rem;
     }
 
     .status-bar {
-      margin: 16px 0 24px;
+      margin-top: 14px;
       padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border-soft);
-      background: rgba(255, 255, 255, 0.85);
-      font-size: 0.85rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px 16px;
       align-items: center;
+      gap: 12px;
+      box-shadow: 0 3px 10px rgba(9, 30, 66, 0.08);
+      border: 1px solid var(--border-soft);
+      flex-wrap: wrap;
     }
 
     .status-pill {
-      padding: 2px 8px;
+      padding: 4px 10px;
       border-radius: 999px;
+      font-size: 0.8rem;
       font-weight: 600;
-      border: 1px solid var(--badge-border);
-      background: var(--badge-bg);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .status-pill.ok {
-      border-color: #2e7d32;
-      color: #1b5e20;
       background: #e8f5e9;
+      color: #2e7d32;
     }
 
     .status-pill.warn {
-      border-color: #f57c00;
-      color: #e65100;
-      background: #fff3e0;
+      background: #fff3cd;
+      color: #8d6b00;
     }
 
-    .status-text span + span {
-      margin-left: 12px;
+    .status-text {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .status-text span::after {
+      content: "•";
+      margin: 0 4px;
+      opacity: 0.7;
+    }
+
+    .status-text span:last-child::after {
+      content: "";
+      margin: 0;
+    }
+
+    #errors {
+      margin-top: 12px;
     }
 
     .family-grid {
+      margin-top: 18px;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
     }
 
     .family-card {
-      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 18px;
       border: 1px solid var(--border-soft);
-      background: rgba(255, 255, 255, 0.94);
-      padding: 14px 14px 10px;
+      padding: 14px 10px;
       box-shadow: 0 4px 10px rgba(9, 30, 66, 0.06);
       display: flex;
       flex-direction: column;
@@ -115,72 +250,78 @@
     }
 
     .family-name {
-      font-weight: 700;
       font-size: 0.98rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--accent);
+      color: var(--text-main);
     }
 
     .family-meta {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       white-space: nowrap;
     }
 
     .course-list {
       list-style: none;
-      padding-left: 0;
+      padding: 0;
       margin: 4px 0 0;
-      font-size: 0.88rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .course-item {
-      padding: 6px 0;
-      border-top: 1px solid #edf0f6;
+      padding: 6px 8px;
+      border-radius: 10px;
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+      cursor: default;
+      border: 1px solid transparent;
     }
 
-    .course-item:first-child {
-      border-top: none;
+    .course-item:hover {
+      background: var(--accent-soft);
+      box-shadow: 0 2px 6px rgba(9, 30, 66, 0.12);
+      transform: translateY(-1px);
+      border-color: #c5d7ff;
     }
 
     .course-title-line {
       display: flex;
       justify-content: space-between;
-      gap: 6px;
-      align-items: flex-start;
+      gap: 8px;
+      align-items: baseline;
     }
 
     .course-title {
-      font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.87rem;
+      font-weight: 500;
     }
 
     .badge-row {
+      margin-top: 2px;
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
-      margin-top: 2px;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      padding: 1px 6px;
+      justify-content: center;
+      padding: 2px 6px;
+      font-size: 0.75rem;
       border-radius: 999px;
-      border: 1px solid var(--badge-border);
+      border: 1px solid var(--border-soft);
       background: var(--badge-bg);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      white-space: nowrap;
     }
 
-    .badge.cert {
+    .badge.sessions {
       border-color: #1976d2;
-    }
-
-    .badge.mode {
-      border-style: dashed;
+      color: #0d47a1;
     }
 
     .badge.count {
@@ -211,22 +352,17 @@
       border: 1px solid #f44336;
       background: #ffebee;
       color: #b71c1c;
-      font-size: 0.86rem;
+      font-size: 0.85rem;
     }
 
-    @media (max-width: 600px) {
-      .page {
-        padding: 14px 12px 32px;
-      }
-      header h1 {
-        font-size: 1.45rem;
-      }
+    @media (max-width: 640px) {
       .status-bar {
-        padding: 8px 10px;
+        border-radius: 14px;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="page">
     <header>
@@ -240,6 +376,50 @@
     </div>
 
     <div id="errors"></div>
+
+    <section class="finder-section" id="finder">
+      <div class="finder-panel" id="finder-by-course">
+        <div class="finder-panel-title">Option 1</div>
+        <h2>I already know what class I need.</h2>
+        <p>Start typing the class name (for example, BLS, ACLS Renewal, PALS, Heartsaver) or tap one of the quick buttons below.</p>
+
+        <div class="finder-search-row">
+          <input type="search" id="course-search-input" class="finder-search-input" placeholder="Search by course name…" autocomplete="off" />
+        </div>
+
+        <div class="finder-shortcuts">
+          <button type="button" class="chip-button primary" data-course-shortcut="BLS">BLS</button>
+          <button type="button" class="chip-button primary" data-course-shortcut="ACLS">ACLS</button>
+          <button type="button" class="chip-button primary" data-course-shortcut="PALS">PALS</button>
+          <button type="button" class="chip-button" data-course-shortcut="First Aid / CPR / AED">CPR / First Aid / AED</button>
+        </div>
+
+        <div class="finder-results-note" id="course-search-note"></div>
+      </div>
+
+      <div class="finder-panel" id="finder-by-job">
+        <div class="finder-panel-title">Option 2</div>
+        <h2>I know my job or program, not the class name.</h2>
+        <p>Choose a common job or school program, or start typing your role (for example, nursing student, dental assistant, childcare teacher).</p>
+
+        <div class="finder-search-row">
+          <input type="search" id="job-search-input" class="finder-search-input" placeholder="Search by job or program…" autocomplete="off" />
+        </div>
+
+        <div class="finder-shortcuts" id="job-shortcuts">
+          <button type="button" class="chip-button" data-job-family="BLS">Nurse / CNA / Hospital staff</button>
+          <button type="button" class="chip-button" data-job-family="BLS">Medical / Dental office staff</button>
+          <button type="button" class="chip-button" data-job-family="BLS">EMT / First responder</button>
+          <button type="button" class="chip-button" data-job-family="FA_CPR_AED">Childcare / DCDEE / daycare</button>
+          <button type="button" class="chip-button" data-job-family="FA_CPR_AED">Teachers / coaches / school staff</button>
+          <button type="button" class="chip-button" data-job-family="OSHA_10_30">Construction / workplace safety</button>
+          <button type="button" class="chip-button" data-job-family="USCG_MARITIME">Coast Guard / maritime</button>
+          <button type="button" class="chip-button" data-job-family="OTHER">Parents / new baby care</button>
+        </div>
+
+        <div class="finder-results-note" id="job-search-note"></div>
+      </div>
+    </section>
 
     <section id="families">
       <div class="family-grid" id="family-grid">
@@ -268,31 +448,150 @@
     const DELIVERY_LABELS = {
       "in_person": "In-Person",
       "blended": "Blended (Online + Skills)",
-      "online": "Online Course",
-      "unknown": "Delivery Mode N/A"
+      "online_only": "Online Only",
+      "unknown": "Delivery Mode"
     };
 
-    function stripHtmlTitle(html) {
-      if (!html) return "";
-      const div = document.createElement("div");
-      div.innerHTML = html;
-      const text = div.textContent || div.innerText || "";
-      return text.replace(/\s+/g, " ").trim();
-    }
+    const CERT_BODY_LABELS = {
+      "AHA": "AHA",
+      "ARC": "ARC",
+      "HSI": "HSI",
+      "USCG": "USCG / Maritime",
+      "OTHER": "Other"
+    };
 
     function niceFamilyLabel(key) {
-      if (!key) return "Unclassified";
-      return FAMILY_LABELS[key] || key;
-    }
-
-    function niceCertBody(certBody) {
-      if (!certBody) return "Unspecified";
-      return certBody.toUpperCase();
+      return FAMILY_LABELS[key] || key || "Other";
     }
 
     function niceMode(mode) {
-      if (!mode) return "Mode N/A";
+      if (!mode) return DELIVERY_LABELS.unknown;
       return DELIVERY_LABELS[mode] || mode;
+    }
+
+    function niceCertBody(body) {
+      if (!body) return CERT_BODY_LABELS.OTHER;
+      return CERT_BODY_LABELS[body] || body;
+    }
+
+    function stripHtmlTitle(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/<br\s*\/?>/gi, " ")
+        .replace(/<[^>]+>/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function renderDebugNote(courses) {
+      const note = document.getElementById("debug-note");
+      if (!note) return;
+      note.textContent =
+        "Debug note: this page groups courses by family using data/courses.json. Only courses with at least one upcoming session (session_ids.length > 0) are shown. If something is mis-filed, we can adjust the family/certBody rules in parse_enrollware.py.";
+    }
+
+    function showError(message) {
+      const box = document.getElementById("errors");
+      const div = document.createElement("div");
+      div.className = "error-box";
+      div.textContent = message;
+      box.appendChild(div);
+    }
+
+    let ALL_COURSES = [];
+
+    function initFinder(courses) {
+      ALL_COURSES = Array.isArray(courses) ? courses.slice() : [];
+
+      const courseInput = document.getElementById("course-search-input");
+      const courseNote = document.getElementById("course-search-note");
+      const jobInput = document.getElementById("job-search-input");
+      const jobNote = document.getElementById("job-search-note");
+
+      function applyFilter(opts) {
+        if (!ALL_COURSES.length) return;
+        renderFamilies(ALL_COURSES, opts || {});
+      }
+
+      function handleCourseSearch() {
+        const q = courseInput.value || "";
+        const trimmed = q.trim();
+        if (!trimmed) {
+          courseNote.textContent = "";
+          applyFilter({});
+        } else {
+          courseNote.textContent = "Showing courses that match \"" + trimmed + "\".";
+          applyFilter({ query: trimmed });
+        }
+      }
+
+      function handleJobSearch() {
+        const raw = jobInput.value || "";
+        const q = raw.trim().toLowerCase();
+        let fam = "";
+
+        if (!q) {
+          fam = "";
+        } else if (/nurse|rn|lpn|cna|tech|hospital|medic|emt|paramedic/.test(q)) {
+          fam = "BLS";
+        } else if (/acls|icu|critical care|er|ed|ccu/.test(q)) {
+          fam = "ACLS";
+        } else if (/peds|pediatric|pals|nicu|picu/.test(q)) {
+          fam = "PALS";
+        } else if (/childcare|daycare|dcdee|teacher|coach|school|camp/.test(q)) {
+          fam = "FA_CPR_AED";
+        } else if (/construction|osha|safety|general industry|forklift|warehouse/.test(q)) {
+          fam = "OSHA_10_30";
+        } else if (/coast guard|uscg|maritime|boat|captain|charter/.test(q)) {
+          fam = "USCG_MARITIME";
+        } else if (/parent|mom|dad|baby|newborn|sitter|grandparent/.test(q)) {
+          fam = "FA_CPR_AED";
+        }
+
+        if (!fam) {
+          jobNote.textContent = q ? "Showing all course families (no direct match for that job yet)." : "";
+          applyFilter({});
+        } else {
+          jobNote.textContent = "Showing the best-match course family for that role.";
+          applyFilter({ family: fam });
+        }
+      }
+
+      if (courseInput) {
+        courseInput.addEventListener("input", handleCourseSearch);
+      }
+
+      document.querySelectorAll("[data-course-shortcut]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const val = btn.getAttribute("data-course-shortcut") || "";
+          courseInput.value = val;
+          handleCourseSearch();
+          courseInput.focus();
+          courseInput.setSelectionRange(courseInput.value.length, courseInput.value.length);
+        });
+      });
+
+      if (jobInput) {
+        jobInput.addEventListener("input", handleJobSearch);
+      }
+
+      document.querySelectorAll("[data-job-family]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const fam = btn.getAttribute("data-job-family") || "";
+          if (fam === "BLS") {
+            jobInput.value = "nurse";
+          } else if (fam === "FA_CPR_AED") {
+            jobInput.value = "teacher";
+          } else if (fam === "OSHA_10_30") {
+            jobInput.value = "construction";
+          } else if (fam === "USCG_MARITIME") {
+            jobInput.value = "coast guard";
+          } else {
+            jobInput.value = "";
+          }
+          handleJobSearch();
+        });
+      });
     }
 
     async function fetchJson(path) {
@@ -311,47 +610,48 @@
       }
 
       const updatedAt = statusData.updated_at || "n/a";
-      const schedBytes = statusData.schedule && statusData.schedule.bytes || 0;
-      const snapBytes = statusData.snapshot && statusData.snapshot.bytes || 0;
-      const courseCount = coursesData && coursesData.meta && coursesData.meta.course_count || (coursesData && coursesData.courses ? coursesData.courses.length : "n/a");
+      const schedBytes = statusData.schedule && typeof statusData.schedule.bytes === "number"
+        ? statusData.schedule.bytes
+        : "n/a";
+      const snapBytes = statusData.snapshot && typeof statusData.snapshot.bytes === "number"
+        ? statusData.snapshot.bytes
+        : "n/a";
+
+      const courseCount = coursesData && coursesData.meta && coursesData.meta.course_count
+        ? coursesData.meta.course_count
+        : (coursesData && Array.isArray(coursesData.courses) ? coursesData.courses.length : "n/a");
 
       const ok = statusData.schedule && statusData.schedule.exists && schedBytes > 0;
 
       const indexLastMod = document.lastModified || "";
 
       statusEl.innerHTML = "";
-      const pill = document.createElement("div");
+      const pill =
+        document.createElement("div");
       pill.className = "status-pill " + (ok ? "ok" : "warn");
       pill.textContent = ok ? "Data status: OK" : "Data status: CHECK";
 
-      const textDiv = document.createElement("div");
+      const textDiv =
+        document.createElement("div");
       textDiv.className = "status-text";
 
-      const span1 = document.createElement("span");
-      span1.textContent = "updated " + updatedAt;
-      textDiv.appendChild(span1);
+      function addStatus(text) {
+        const span = document.createElement("span");
+        span.textContent = text;
+        textDiv.appendChild(span);
+      }
 
-      const span2 = document.createElement("span");
-      span2.textContent = "snapshot.html " + snapBytes + " bytes";
-      textDiv.appendChild(span2);
-
-      const span3 = document.createElement("span");
-      span3.textContent = "schedule.json " + schedBytes + " bytes";
-      textDiv.appendChild(span3);
-
-      const span4 = document.createElement("span");
-      span4.textContent = "courses.json " + courseCount + " courses";
-      textDiv.appendChild(span4);
-
-      const span5 = document.createElement("span");
-      span5.textContent = "index last modified: " + indexLastMod;
-      textDiv.appendChild(span5);
+      addStatus("updated " + updatedAt);
+      addStatus("snapshot.html " + snapBytes + " bytes");
+      addStatus("schedule.json " + schedBytes + " bytes");
+      addStatus("courses.json " + courseCount + " courses");
+      addStatus("index last modified: " + indexLastMod);
 
       statusEl.appendChild(pill);
       statusEl.appendChild(textDiv);
     }
 
-    function renderFamilies(courses) {
+    function renderFamilies(courses, opts) {
       const grid = document.getElementById("family-grid");
       grid.innerHTML = "";
 
@@ -360,32 +660,46 @@
         return;
       }
 
-      // Filter out BLS Quick Reference or other non-real “courses”
-      const filtered = courses.filter(c => {
+      const base = courses.filter(c => {
         const title = stripHtmlTitle(c.cleanTitle || c.uglyTitle || "");
         if (!title) return false;
         if (/quick reference guide/i.test(title)) return false;
-        // Hide courses that truly have no sessions
         if (!Array.isArray(c.session_ids) || c.session_ids.length === 0) return false;
         return true;
       });
 
+      const query = opts && typeof opts.query === "string"
+        ? opts.query.trim().toLowerCase()
+        : "";
+      const familyFilter = opts && opts.family
+        ? String(opts.family)
+        : "";
+
+      let filtered = base;
+      if (familyFilter) {
+        filtered = filtered.filter(c => String(c.family || "OTHER") === familyFilter);
+      }
+      if (query) {
+        filtered = filtered.filter(c => {
+          const title = stripHtmlTitle(c.cleanTitle || c.uglyTitle || "");
+          return title.toLowerCase().includes(query);
+        });
+      }
+
       if (filtered.length === 0) {
-        grid.innerHTML = "<p>No active course families with upcoming sessions.</p>";
+        grid.innerHTML = "<p>No active course families with upcoming sessions for that search.</p>";
         return;
       }
 
-      // Group by family
       const famMap = new Map();
       for (const course of filtered) {
-        const famKey = course.family || "OTHER";
-        if (!famMap.has(famKey)) {
-          famMap.set(famKey, []);
+        const fam = course.family || "OTHER";
+        if (!famMap.has(fam)) {
+          famMap.set(fam, []);
         }
-        famMap.get(famKey).push(course);
+        famMap.get(fam).push(course);
       }
 
-      // Sort families by a fixed order, then alphabetically
       const order = [
         "BLS",
         "ACLS",
@@ -400,28 +714,34 @@
         "OTHER"
       ];
 
-      const famKeys = Array.from(famMap.keys());
-      famKeys.sort((a, b) => {
-        const ia = order.indexOf(a);
-        const ib = order.indexOf(b);
-        if (ia === -1 && ib === -1) return a.localeCompare(b);
-        if (ia === -1) return 1;
-        if (ib === -1) return -1;
-        return ia - ib;
-      });
+      const famKeys =
+        Array.from(famMap.keys()).sort((a, b) => {
+          const ia = order.indexOf(a);
+          const ib = order.indexOf(b);
+          if (ia === -1 && ib === -1) {
+            return niceFamilyLabel(a).localeCompare(niceFamilyLabel(b));
+          }
+          if (ia === -1) return 1;
+          if (ib === -1) return -1;
+          return ia - ib;
+        });
 
-      for (const famKey of famKeys) {
-        const list = famMap.get(famKey) || [];
+      for (const fam of famKeys) {
+        const list = famMap.get(fam) || [];
         if (!list.length) continue;
 
-        // Total sessions for family
-        const totalSessions = list.reduce((sum, c) => sum + (Array.isArray(c.session_ids) ? c.session_ids.length : 0), 0);
+        const totalSessions =
+          list.reduce((s, c) =>
+            s + (Array.isArray(c.session_ids) ? c.session_ids.length : 0), 0);
 
-        // Sort courses by certBody + title
         list.sort((a, b) => {
-          const ab = (a.certBody || "") + stripHtmlTitle(a.cleanTitle || a.uglyTitle || "");
-          const bb = (b.certBody || "") + stripHtmlTitle(b.cleanTitle || b.uglyTitle || "");
-          return ab.localeCompare(bb);
+          const keyA =
+            (a.certBody || "") +
+            stripHtmlTitle(a.cleanTitle || a.uglyTitle || "");
+          const keyB =
+            (b.certBody || "") +
+            stripHtmlTitle(b.cleanTitle || b.uglyTitle || "");
+          return keyA.localeCompare(keyB);
         });
 
         const card = document.createElement("div");
@@ -430,14 +750,21 @@
         const header = document.createElement("div");
         header.className = "family-header";
 
-        const name = document.createElement("div");
+        const name =
+          document.createElement("div");
         name.className = "family-name";
-        name.textContent = niceFamilyLabel(famKey);
+        name.textContent = niceFamilyLabel(fam);
 
         const meta = document.createElement("div");
         meta.className = "family-meta";
-        meta.textContent = list.length + " course" + (list.length !== 1 ? "s" : "") + " • " +
-          totalSessions + " session" + (totalSessions !== 1 ? "s" : "");
+        meta.textContent =
+          list.length +
+          " course" +
+          (list.length !== 1 ? "s" : "") +
+          " • " +
+          totalSessions +
+          " session" +
+          (totalSessions !== 1 ? "s" : "");
 
         header.appendChild(name);
         header.appendChild(meta);
@@ -455,13 +782,21 @@
 
           const titleEl = document.createElement("div");
           titleEl.className = "course-title";
-          const cleanTitle = stripHtmlTitle(course.cleanTitle || course.uglyTitle || "");
-          titleEl.textContent = cleanTitle || "(Untitled course)";
+          titleEl.textContent =
+            stripHtmlTitle(course.cleanTitle || course.uglyTitle || "");
+
+          const count =
+            Array.isArray(course.session_ids)
+              ? course.session_ids.length
+              : 0;
 
           const countBadge = document.createElement("span");
-          countBadge.className = "badge count";
-          const count = Array.isArray(course.session_ids) ? course.session_ids.length : 0;
-          countBadge.textContent = count + " session" + (count !== 1 ? "s" : "");
+          countBadge.className = "badge sessions";
+          if (count === 0) {
+            countBadge.classList.add("empty");
+          }
+          countBadge.textContent =
+            count + " session" + (count !== 1 ? "s" : "");
 
           titleLine.appendChild(titleEl);
           titleLine.appendChild(countBadge);
@@ -470,22 +805,27 @@
           const badgeRow = document.createElement("div");
           badgeRow.className = "badge-row";
 
-          const certBadge = document.createElement("span");
+          const certBadge =
+            document.createElement("span");
           certBadge.className = "badge cert";
           certBadge.textContent = niceCertBody(course.certBody);
           badgeRow.appendChild(certBadge);
 
-          const modeBadge = document.createElement("span");
+          const modeBadge =
+            document.createElement("span");
           modeBadge.className = "badge mode";
           modeBadge.textContent = niceMode(course.deliveryMode);
           badgeRow.appendChild(modeBadge);
 
           li.appendChild(badgeRow);
 
-          // Optional subtle subtext: show course_id anchor and family key for debugging
           const sub = document.createElement("div");
           sub.className = "course-subtext";
-          sub.textContent = "course_id: " + course.course_id + " • family: " + famKey;
+          sub.textContent =
+            "course_id: " +
+            course.course_id +
+            " • family: " +
+            fam;
           li.appendChild(sub);
 
           ul.appendChild(li);
@@ -495,19 +835,7 @@
         grid.appendChild(card);
       }
 
-      const debug = document.getElementById("debug-note");
-      debug.textContent =
-        "Debug note: this page groups courses by family using data/courses.json. " +
-        "Only courses with at least one upcoming session (session_ids.length > 0) are shown. " +
-        "If something is mis-filed, we can adjust the family/certBody rules in parse_enrollware.py.";
-    }
-
-    function showError(message) {
-      const box = document.getElementById("errors");
-      const div = document.createElement("div");
-      div.className = "error-box";
-      div.textContent = message;
-      box.appendChild(div);
+      renderDebugNote(filtered);
     }
 
     async function init() {
@@ -522,7 +850,9 @@
           showError("courses.json did not contain a courses[] array.");
           return;
         }
-        renderFamilies(coursesData.courses);
+
+        initFinder(coursesData.courses);
+        renderFamilies(coursesData.courses, {});
       } catch (err) {
         console.error(err);
         showError("Error loading JSON: " + (err && err.message ? err.message : err));
@@ -531,5 +861,6 @@
 
     init();
   </script>
+
 </body>
 </html>
