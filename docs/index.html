@@ -1,543 +1,967 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-  color: var(--text-main);
-  -webkit-font-smoothing: antialiased;
-}
-
-.page {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 18px 18px 40px;
-}
-
-header {
-  margin-bottom: 10px;
-}
-
-header h1 {
-  font-size: 1.6rem;
-  margin: 0 0 4px;
-  letter-spacing: 0.02em;
-}
-
-header p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.status-bar {
-  margin-top: 14px;
-  padding: 10px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 3px 10px rgba(9, 30, 66, 0.08);
-  border: 1px solid var(--border-soft);
-  flex-wrap: wrap;
-}
-
-.status-pill {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.status-pill.ok {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.status-pill.warn {
-  background: #fff3cd;
-  color: #8d6b00;
-}
-
-.status-text {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.status-text span::after {
-  content: "•";
-  margin: 0 4px;
-  opacity: 0.7;
-}
-
-.status-text span:last-child::after {
-  content: "";
-  margin: 0;
-}
-
-#errors {
-  margin-top: 12px;
-}
-
-.error-box {
-  margin: 12px 0 20px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #f44336;
-  background: #ffebee;
-  color: #b71c1c;
-  font-size: 0.85rem;
-}
-
-/* Finder section */
-
-.finder-section {
-  margin-top: 18px;
-  padding: 16px 18px 18px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 6px 18px rgba(9, 30, 66, 0.08);
-  border: 1px solid var(--border-soft);
-  display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
-  gap: 20px;
-}
-
-@media (max-width: 900px) {
-  .finder-section {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.finder-panel-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 4px;
-}
-
-.finder-panel h2 {
-  font-size: 1.1rem;
-  margin: 0 0 6px;
-  color: var(--text-main);
-}
-
-.finder-panel p {
-  margin: 0 0 10px;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.finder-search-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-.finder-search-input {
-  flex: 1 1 180px;
-  min-width: 0;
-  padding: 8px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  font-size: 0.9rem;
-  outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.finder-search-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(11, 94, 215, 0.1);
-}
-
-.finder-shortcuts {
-  margin-top: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.chip-button {
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: var(--badge-bg);
-  font-size: 0.85rem;
-  cursor: pointer;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
-}
-
-.chip-button:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-  transform: translateY(-1px);
-}
-
-.chip-button.primary {
-  border-color: var(--accent);
-}
-
-.finder-results-note {
-  margin-top: 6px;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.job-recommendations {
-  margin-top: 8px;
-  padding-top: 6px;
-  border-top: 1px dashed var(--border-soft);
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.job-recommendations-title {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-/* Next available classes panel */
-
-.next-classes {
-  margin-top: 18px;
-  padding: 14px 16px 16px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 6px 18px rgba(9, 30, 66, 0.08);
-  border: 1px solid var(--border-soft);
-}
-
-.next-classes-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.next-classes-title {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.next-classes-sub {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.session-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 10px;
-  margin-top: 6px;
-}
-
-.session-card {
-  border-radius: 12px;
-  border: 1px solid var(--border-soft);
-  background: #ffffff;
-  padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.85rem;
-}
-
-.session-topline {
-  display: flex;
-  justify-content: space-between;
-  gap: 6px;
-  align-items: baseline;
-}
-
-.session-date {
-  font-weight: 600;
-}
-
-.session-location {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.session-course {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.session-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  align-items: center;
-  margin-top: 2px;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px 6px;
-  border-radius: 999px;
-  font-size: 0.74rem;
-  border: 1px solid var(--border-soft);
-  background: var(--badge-bg);
-  white-space: nowrap;
-}
-
-.pill.cert-aha {
-  border-color: #c8102e;
-  color: #7b0019;
-}
-
-.pill.cert-arc {
-  border-color: #d50000;
-  color: #880000;
-}
-
-.pill.cert-hsi {
-  border-color: #00838f;
-  color: #004d56;
-}
-
-.pill.cert-uscg {
-  border-color: #0d47a1;
-  color: #0d47a1;
-}
-
-.pill.seats-low {
-  border-color: #f57c00;
-  color: #e65100;
-}
-
-.session-actions {
-  margin-top: 4px;
-  display: flex;
-  justify-content: space-between;
-  gap: 6px;
-  align-items: center;
-}
-
-.btn-register {
-  padding: 5px 10px;
-  border-radius: 999px;
-  border: none;
-  background: var(--accent);
-  color: #ffffff;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.btn-register:hover {
-  opacity: 0.9;
-}
-
-.link-more {
-  font-size: 0.78rem;
-  color: var(--accent);
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.link-more:hover {
-  text-decoration: underline;
-}
-
-/* Family grid */
-
-.family-grid {
-  margin-top: 18px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-}
-
-.family-card {
-  background: rgba(255, 255, 255, 0.96);
-  border-radius: 18px;
-  border: 1px solid var(--border-soft);
-  padding: 14px 10px;
-  box-shadow: 0 4px 10px rgba(9, 30, 66, 0.06);
-  display: flex;
-  flex-direction: column;
-  min-height: 120px;
-}
-
-.family-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 6px;
-  gap: 8px;
-}
-
-.family-name {
-  font-size: 0.98rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--text-main);
-}
-
-.family-meta {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.course-list {
-  list-style: none;
-  padding: 0;
-  margin: 4px 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.course-item {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  padding: 6px 8px;
-  border-radius: 10px;
-  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
-  cursor: default;
-  border: 1px solid transparent;
-}
-
-.course-item:hover {
-  background: var(--accent-soft);
-  box-shadow: 0 2px 6px rgba(9, 30, 66, 0.12);
-  transform: translateY(-1px);
-  border-color: #c5d7ff;
-}
-
-.course-flag {
-  width: 6px;
-  border-radius: 6px;
-  margin-right: 8px;
-  flex-shrink: 0;
-}
-
-.course-flag.aha {
-  background: #c8102e;
-}
-
-.course-flag.arc {
-  background: #d50000;
-}
-
-.course-flag.hsi {
-  background: #00838f;
-}
-
-.course-flag.uscg {
-  background: linear-gradient(135deg, #b71c1c 0, #ffffff 50%, #0d47a1 100%);
-}
-
-.course-flag.other {
-  background: #b0bec5;
-}
-
-.course-main {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.course-title-line {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  align-items: baseline;
-}
-
-.course-title {
-  font-size: 0.87rem;
-  font-weight: 500;
-}
-
-.badge-row {
-  margin-top: 2px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px 6px;
-  font-size: 0.75rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: var(--badge-bg);
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.badge.sessions {
-  border-color: #1976d2;
-  color: #0d47a1;
-}
-
-.badge.empty {
-  border-color: var(--danger);
-  color: var(--danger);
-}
-
-.badge.cert-aha {
-  border-color: #c8102e;
-}
-
-.badge.cert-arc {
-  border-color: #d50000;
-}
-
-.badge.cert-hsi {
-  border-color: #00838f;
-}
-
-.badge.cert-uscg {
-  border-color: #0d47a1;
-}
-
-.course-subtext {
-  margin-top: 2px;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.debug-note {
-  margin-top: 18px;
-  font-size: 0.78rem;
-  color: #7a869a;
-}
-
-@media (max-width: 640px) {
-  .status-bar {
-    border-radius: 14px;
-  }
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>910CPR Course Finder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg-top: #e6f4ff;
+      --bg-bottom: #ffffff;
+      --card-bg: #ffffff;
+      --accent: #0b72b9;
+      --accent-soft: rgba(11, 114, 185, 0.12);
+      --accent-dark: #06406a;
+      --text-main: #102a43;
+      --text-muted: #5a7184;
+      --danger: #c53030;
+      --border-soft: #d3e2f2;
+      --badge-ok-bg: #e6fffa;
+      --badge-ok-text: #047857;
+      --chip-bg: #f1f5f9;
+      --chip-border: #cbd5f5;
+      --shadow-soft: 0 14px 35px rgba(15, 35, 52, 0.12);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      color: var(--text-main);
+      background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom) 60%);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 16px 32px;
+    }
+
+    header {
+      margin-bottom: 18px;
+    }
+
+    header h1 {
+      margin: 0 0 6px;
+      font-size: 1.7rem;
+      letter-spacing: 0.01em;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .status-bar {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: var(--radius-lg);
+      background: #ffffff;
+      border: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      box-shadow: 0 4px 16px rgba(15, 35, 52, 0.08);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--badge-ok-bg);
+      color: var(--badge-ok-text);
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .status-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.24);
+    }
+
+    .status-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .status-meta span {
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: #f8fafc;
+    }
+
+    /* Finder layout */
+
+    .finder-grid {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 20px;
+    }
+
+    .finder-main {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .finder-panel {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px 18px;
+      border: 1px solid #dbe4f0;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .finder-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        circle at top left,
+        rgba(59, 130, 246, 0.13),
+        transparent 60%
+      );
+      opacity: 0.7;
+      mix-blend-mode: soft-light;
+    }
+
+    .finder-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .finder-title {
+      font-size: 1.02rem;
+      font-weight: 650;
+    }
+
+    .finder-subtitle {
+      margin: 0 0 10px;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    .tag-pill {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.02);
+      color: #64748b;
+      white-space: nowrap;
+    }
+
+    .search-bar {
+      position: relative;
+      margin-top: 4px;
+      z-index: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 13px 10px 30px;
+      border-radius: 11px;
+      border: 1px solid #cbd5f5;
+      font-size: 0.9rem;
+      outline: none;
+      background: #f8fafc;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease,
+        background 0.15s ease;
+    }
+
+    .search-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      background: #ffffff;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+
+    .quick-buttons {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .quick-button {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--chip-border);
+      background: var(--chip-bg);
+      font-size: 0.8rem;
+      color: #0f172a;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s ease, box-shadow 0.15s ease,
+        transform 0.08s ease, border-color 0.15s ease;
+    }
+
+    .quick-button span {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #64748b;
+    }
+
+    .quick-button:hover {
+      background: #e0f2fe;
+      border-color: #93c5fd;
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.26);
+      transform: translateY(-1px);
+    }
+
+    .quick-button:active {
+      transform: translateY(0px) scale(0.99);
+      box-shadow: 0 2px 7px rgba(15, 23, 42, 0.25);
+    }
+
+    .finder-side {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .finder-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      line-height: 1.4;
+      position: relative;
+      z-index: 1;
+    }
+
+    .finder-note strong {
+      color: var(--accent-dark);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      background: #f1f5f9;
+      border: 1px solid #dbe4f0;
+      color: #0f172a;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .chip[data-tier="higher"] {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+    }
+
+    .chip[data-tier="basic"] {
+      border-style: dashed;
+    }
+
+    /* Family browser */
+
+    .families-wrapper {
+      margin-top: 32px;
+      margin-bottom: 8px;
+    }
+
+    .families-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .families-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .families-header p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .families-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .family-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 12px 12px 14px;
+      border: 1px solid #d3e2f2;
+      box-shadow: 0 10px 24px rgba(15, 35, 52, 0.12);
+      display: flex;
+      flex-direction: column;
+      max-height: 360px;
+    }
+
+    .family-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .family-title {
+      font-size: 0.9rem;
+      font-weight: 650;
+      text-transform: uppercase;
+      color: var(--accent-dark);
+      letter-spacing: 0.06em;
+    }
+
+    .family-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .family-meta span {
+      display: inline-block;
+    }
+
+    .family-meta span + span::before {
+      content: "•";
+      margin: 0 4px;
+      color: #cbd5f5;
+    }
+
+    .course-list {
+      margin: 4px 0 0;
+      padding: 0;
+      list-style: none;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+
+    .course-item {
+      border-radius: 12px;
+      padding: 7px 8px;
+      border: 1px solid rgba(203, 213, 225, 0.9);
+      margin-bottom: 6px;
+      background: #f8fafc;
+    }
+
+    .course-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .course-sub {
+      font-size: 0.72rem;
+      color: #64748b;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      background: #ffffff;
+      white-space: nowrap;
+    }
+
+    .badge.badge-aha {
+      border-color: #ef4444;
+      color: #991b1b;
+      background: #fee2e2;
+    }
+
+    .badge.badge-arc {
+      border-color: #b91c1c;
+      color: #7f1d1d;
+      background: #fee2e2;
+    }
+
+    .badge.badge-hsi {
+      border-color: #15803d;
+      color: #065f46;
+      background: #dcfce7;
+    }
+
+    .badge.badge-other {
+      border-color: #4b5563;
+      color: #111827;
+      background: #e5e7eb;
+    }
+
+    .badge.sessions {
+      border-color: #2563eb;
+      color: #1d4ed8;
+      background: #dbeafe;
+      font-weight: 600;
+    }
+
+    .course-subtext {
+      margin-left: auto;
+      font-size: 0.7rem;
+      color: #94a3b8;
+    }
+
+    .debug-note {
+      margin-top: 18px;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      color: #4b5563;
+    }
+
+    .debug-note code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      font-size: 0.75rem;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 900px) {
+      .finder-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .families-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (min-width: 901px) and (max-width: 1120px) {
+      .families-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header>
+      <h1>910CPR Course Finder</h1>
+      <p>
+        Start with your course name, your job or school program, or just browse
+        the main CPR &amp; First Aid course families we teach every week.
+      </p>
+
+      <div class="status-bar">
+        <div class="status-pill">
+          <span class="status-pill-dot"></span>
+          <span>Data status: OK</span>
+        </div>
+        <div class="status-meta">
+          <span>Source: Enrollware schedule export</span>
+          <span>View only shows courses with at least one upcoming class</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- TOP FINDER PANELS -->
+    <section class="finder-grid" aria-label="Ways to find your class">
+      <div class="finder-main">
+        <!-- PANEL A: COURSE NAME -->
+        <section class="finder-panel" id="finder-by-course">
+          <div class="finder-heading">
+            <div class="finder-title">I already know the course name</div>
+            <div class="tag-pill">Fastest route</div>
+          </div>
+          <p class="finder-subtitle">
+            Start typing “BLS,” “ACLS,” “PALS,” “Heartsaver,” “HSI,” etc. We’ll
+            narrow your options to the exact program you need.
+          </p>
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input
+              class="search-input"
+              type="search"
+              placeholder="Example: &quot;AHA BLS Provider Renewal&quot; or &quot;HSI Adult First Aid&quot;"
+              aria-label="Search by course name"
+            />
+          </div>
+
+          <div class="quick-buttons" aria-label="Most common course shortcuts">
+            <a
+              class="quick-button"
+              href="https://www.enrollware.com/site/coastalcprtraining/class/BLS-InPerson"
+              target="_blank"
+              rel="noopener"
+            >
+              BLS Provider
+              <span>AHA</span>
+            </a>
+            <a
+              class="quick-button"
+              href="https://www.enrollware.com/site/coastalcprtraining/class/ACLS"
+              target="_blank"
+              rel="noopener"
+            >
+              ACLS Provider
+              <span>AHA</span>
+            </a>
+            <a
+              class="quick-button"
+              href="https://www.enrollware.com/site/coastalcprtraining/class/PALS"
+              target="_blank"
+              rel="noopener"
+            >
+              PALS Provider
+              <span>AHA</span>
+            </a>
+            <button class="quick-button" type="button">
+              CPR / AED / First Aid
+              <span>All brands</span>
+            </button>
+          </div>
+
+          <p class="finder-note">
+            Not sure which exact version (online vs. in-person, initial vs.
+            renewal)? Pick the closest match above and we’ll explain the
+            options on that page.
+          </p>
+        </section>
+
+        <!-- PANEL B: JOB / PROGRAM -->
+        <section class="finder-panel" id="finder-by-job">
+          <div class="finder-heading">
+            <div class="finder-title">
+              Help me match the class to my job or school program
+            </div>
+            <div class="tag-pill">Guided match</div>
+          </div>
+          <p class="finder-subtitle">
+            Type your role (for example, “ER nurse,” “dental assistant,”
+            “childcare,” “construction,” “EMT student”) and we’ll suggest the
+            safest certification to choose.
+          </p>
+          <div class="search-bar">
+            <span class="search-icon">💼</span>
+            <input
+              class="search-input"
+              type="search"
+              placeholder="Example: &quot;ICU nurse&quot;, &quot;medical assistant&quot;, &quot;teacher&quot;, &quot;home health aide&quot;"
+              aria-label="Search by job or school program"
+            />
+          </div>
+
+          <div class="chip-row" aria-label="Common jobs we serve">
+            <div class="chip" data-tier="higher">Hospital / ICU nurse</div>
+            <div class="chip" data-tier="higher">Nursing student</div>
+            <div class="chip" data-tier="higher">EMT / Paramedic</div>
+            <div class="chip" data-tier="higher">Doctor / PA / NP</div>
+            <div class="chip" data-tier="basic">Medical assistant</div>
+            <div class="chip" data-tier="basic">CNA / Tech</div>
+            <div class="chip" data-tier="basic">Dental office staff</div>
+            <div class="chip" data-tier="basic">Childcare / daycare</div>
+            <div class="chip" data-tier="basic">Teacher / coach</div>
+            <div class="chip" data-tier="basic">Construction / OSHA</div>
+            <div class="chip" data-tier="basic">Parent / foster parent</div>
+          </div>
+
+          <p class="finder-note">
+            <strong>Higher-risk medical roles</strong> (hospital / ED / ICU /
+            EMS) almost always need
+            <strong>BLS</strong>, and often <strong>ACLS</strong> and
+            <strong>PALS</strong> as well. Non-medical jobs usually need an
+            OSHA-acceptable
+            <strong>CPR/AED or First Aid/CPR/AED</strong> course instead of BLS.
+          </p>
+        </section>
+      </div>
+
+      <!-- PANEL C: FAMILIES -->
+      <aside class="finder-side">
+        <section class="finder-panel" id="finder-by-family">
+          <div class="finder-heading">
+            <div class="finder-title">Browse by course family</div>
+            <div class="tag-pill">Big picture</div>
+          </div>
+          <p class="finder-subtitle">
+            See every active class grouped into major families. This is handy if
+            you’re comparing AHA vs. HSI vs. Red Cross, or you book training for
+            a whole team.
+          </p>
+
+          <div class="chip-row">
+            <a href="#families-bls" class="chip" data-tier="higher">BLS</a>
+            <a href="#families-acls" class="chip" data-tier="higher">ACLS</a>
+            <a href="#families-pals" class="chip" data-tier="higher">PALS</a>
+            <a href="#families-cpraed" class="chip">CPR / AED</a>
+            <a href="#families-firstaid" class="chip">First Aid + CPR/AED</a>
+            <a href="#families-other" class="chip">Family &amp; Friends / Other</a>
+          </div>
+
+          <p class="finder-note">
+            Scroll down to the <strong>Course Families</strong> grid and open
+            any family to see which certifying body (AHA, Red Cross, HSI, USCG)
+            is behind each option, plus how many upcoming class dates we
+            currently have.
+          </p>
+        </section>
+      </aside>
+    </section>
+
+    <!-- COURSE FAMILIES GRID (STATIC SAMPLE) -->
+    <!-- This section is intentionally static HTML so the page works even before JS wiring. -->
+    <section class="families-wrapper" aria-label="Course families overview">
+      <div class="families-header">
+        <h2>Course Families (live from Enrollware export)</h2>
+        <p>
+          Each card groups similar classes together. Counts are from your latest
+          schedule export.
+        </p>
+      </div>
+
+      <div class="families-grid">
+        <!-- BLS -->
+        <article class="family-card" id="families-bls">
+          <div class="family-card-header">
+            <div class="family-title">BLS – Basic Life Support</div>
+            <div class="family-meta">
+              <span>8 courses</span>
+              <span>~700 sessions</span>
+            </div>
+          </div>
+          <ul class="course-list">
+            <li class="course-item">
+              <div class="course-title">AHA – BLS Provider</div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">93 sessions</span>
+                <span class="course-subtext">Core BLS card</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                AHA – BLS Provider – In-person Initial for Expired or New BLS
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">79 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                AHA – BLS Provider Renewal Instructor-Led Classroom
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">92 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                ARC – BLS In-Person Classroom for Expired or New BLS
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-arc">Red Cross</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">68 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                HSI BLS &amp; Adult First Aid | Blended Online + Skills
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-hsi">HSI</span>
+                <span class="badge">Blended + skills</span>
+                <span class="badge sessions">68 sessions</span>
+              </div>
+            </li>
+          </ul>
+        </article>
+
+        <!-- ACLS -->
+        <article class="family-card" id="families-acls">
+          <div class="family-card-header">
+            <div class="family-title">ACLS – Advanced Cardiac Life Support</div>
+            <div class="family-meta">
+              <span>3 courses</span>
+              <span>~68 sessions</span>
+            </div>
+          </div>
+          <ul class="course-list">
+            <li class="course-item">
+              <div class="course-title">
+                AHA – ACLS Provider – Initial Instructor-Led Classroom
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">27 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                AHA – ACLS Provider – Online or Skills Session (HeartCode)
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">Blended online + skills</span>
+                <span class="badge sessions">14 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                AHA – ACLS Provider Renewal – In-person
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">27 sessions</span>
+              </div>
+            </li>
+          </ul>
+        </article>
+
+        <!-- PALS -->
+        <article class="family-card" id="families-pals">
+          <div class="family-card-header">
+            <div class="family-title">
+              PALS – Pediatric Advanced Life Support
+            </div>
+            <div class="family-meta">
+              <span>2 courses</span>
+              <span>~54 sessions</span>
+            </div>
+          </div>
+          <ul class="course-list">
+            <li class="course-item">
+              <div class="course-title">
+                AHA – PALS Provider – Initial Instructor-Led Classroom
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">27 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                AHA – PALS Provider – Renewal Instructor-Led Classroom
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">27 sessions</span>
+              </div>
+            </li>
+          </ul>
+        </article>
+
+        <!-- CPR / AED -->
+        <article class="family-card" id="families-cpraed">
+          <div class="family-card-header">
+            <div class="family-title">CPR / AED</div>
+            <div class="family-meta">
+              <span>1 course</span>
+              <span>~27 sessions</span>
+            </div>
+          </div>
+          <ul class="course-list">
+            <li class="course-item">
+              <div class="course-title">ARC – Adult CPR/AED Online</div>
+              <div class="course-sub">
+                <span class="badge badge-arc">Red Cross</span>
+                <span class="badge">In-person skills</span>
+                <span class="badge sessions">27 sessions</span>
+              </div>
+            </li>
+          </ul>
+        </article>
+
+        <!-- First Aid / CPR AED -->
+        <article class="family-card" id="families-firstaid">
+          <div class="family-card-header">
+            <div class="family-title">First Aid / CPR AED</div>
+            <div class="family-meta">
+              <span>10 courses</span>
+              <span>~301 sessions</span>
+            </div>
+          </div>
+          <ul class="course-list">
+            <li class="course-item">
+              <div class="course-title">
+                AHA – Heartsaver CPR AED (No First Aid) – In-person
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">28 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                AHA – Heartsaver First Aid CPR AED – In-person
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">40 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                HSI Adult First Aid | Adult/Child/Infant CPR AED – Traditional
+                Classroom
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-hsi">HSI</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">41 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                HSI Adult First Aid | Adult/Child/Infant CPR AED – Blended
+                Online + Skills
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-hsi">HSI</span>
+                <span class="badge">Blended + skills</span>
+                <span class="badge sessions">40 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                ARC – Adult and Pediatric First Aid/CPR/AED
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-arc">Red Cross</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">54 sessions</span>
+              </div>
+            </li>
+          </ul>
+        </article>
+
+        <!-- OTHER -->
+        <article class="family-card" id="families-other">
+          <div class="family-card-header">
+            <div class="family-title">Other / Family &amp; Friends</div>
+            <div class="family-meta">
+              <span>3 courses</span>
+              <span>~33 sessions</span>
+            </div>
+          </div>
+          <ul class="course-list">
+            <li class="course-item">
+              <div class="course-title">AHA – Family &amp; Friends CPR</div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">2 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">
+                AHA – Online Heartsaver Programs (non-certification)
+              </div>
+              <div class="course-sub">
+                <span class="badge badge-aha">AHA</span>
+                <span class="badge">Online</span>
+                <span class="badge sessions">29 sessions</span>
+              </div>
+            </li>
+            <li class="course-item">
+              <div class="course-title">Infant CPR &amp; Choking Relief Class</div>
+              <div class="course-sub">
+                <span class="badge badge-other">910CPR</span>
+                <span class="badge">In-person</span>
+                <span class="badge sessions">2 sessions</span>
+              </div>
+            </li>
+          </ul>
+        </article>
+      </div>
+
+      <p class="debug-note">
+        Debug note: this page can later be wired to your real
+        <code>docs/data/courses.json</code> and
+        <code>docs/data/schedule.json</code> files so the counts and titles are
+        fully automatic from the Enrollware snapshot. For now, this HTML is
+        static so you can safely paste it into
+        <code>index.html</code> and get a working layout again.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
