@@ -1,10 +1,79 @@
 {
-  "meta": {
-    "source": "docs\\data\\enrollware-schedule.html",
-    "fetched_at": "2025-11-17T23:25:24.294483Z",
-    "panel_count": 0,
-    "session_count": 0
-  },
-  "courses": [],
-  "sessions": []
+"fetched_at": "2025-11-17T12:00:00Z",
+"source": "manual-seed",
+"courses": [],
+"sessions": [
+{
+"session_id": 10657559,
+"course_id": 359474,
+"title": "AHA - BLS Provider - In Person",
+"cleanTitle": "BLS for Healthcare Providers (AHA)",
+"family": "BLS",
+"certBody": "AHA",
+"deliveryMode": "in-person",
+"location": "Wilmington; 4018 Shipyard Blvd",
+"start": "2025-11-20T09:00:00-05:00",
+"seats": 6
+},
+{
+"session_id": 10657560,
+"course_id": 359474,
+"title": "AHA - BLS Provider - HeartCode Skills",
+"cleanTitle": "HeartCode BLS Skills Session",
+"family": "BLS",
+"certBody": "AHA",
+"deliveryMode": "heartcode",
+"location": "Burgaw; 111 S Wright St",
+"start": "2025-11-22T13:00:00-05:00",
+"seats": 2
+},
+{
+"session_id": 10657561,
+"course_id": 359475,
+"title": "AHA - ACLS Provider Renewal - In Person",
+"cleanTitle": "ACLS Renewal (AHA)",
+"family": "ACLS",
+"certBody": "AHA",
+"deliveryMode": "in-person",
+"location": "Wilmington; 4018 Shipyard Blvd",
+"start": "2025-11-25T09:00:00-05:00",
+"seats": 4
+},
+{
+"session_id": 10657562,
+"course_id": 359476,
+"title": "AHA - PALS Provider Renewal - In Person",
+"cleanTitle": "PALS Renewal (AHA)",
+"family": "PALS",
+"certBody": "AHA",
+"deliveryMode": "in-person",
+"location": "Burgaw; 111 S Wright St",
+"start": "2025-11-27T10:00:00-05:00",
+"seats": 1
+},
+{
+"session_id": 10657563,
+"course_id": 400001,
+"title": "HSI Adult First Aid | CPR AED",
+"cleanTitle": "HSI First Aid/CPR/AED",
+"family": "HSI-FA-CPR-AED",
+"certBody": "HSI",
+"deliveryMode": "in-person",
+"location": "Wilmington; 4018 Shipyard Blvd",
+"start": "2025-11-23T14:00:00-05:00",
+"seats": 3
+},
+{
+"session_id": 10657564,
+"course_id": 400002,
+"title": "AHA - Family & Friends CPR",
+"cleanTitle": "Family & Friends CPR",
+"family": "FNF",
+"certBody": "AHA",
+"deliveryMode": "in-person",
+"location": "Wilmington; 4018 Shipyard Blvd",
+"start": "2025-11-30T18:00:00-05:00",
+"seats": 8
+}
+]
 }
