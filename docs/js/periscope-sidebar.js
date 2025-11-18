@@ -6,6 +6,7 @@ var sidebar = document.getElementById("periscope-sidebar");
 if (!sidebar) { return; }
 
 var listEl = sidebar.querySelector(".periscope-list");
+var footerLink = sidebar.querySelector(".periscope-all-dates");
 
 var scheduleUrl   = sidebar.getAttribute("data-schedule-url");
 var maxSessions   = parseInt(sidebar.getAttribute("data-max-sessions"), 10) || 4;
@@ -15,6 +16,21 @@ var state = {
   allSessions: [],
   lastFilter: { type: null, value: null }
 };
+
+// Generic GA / GTM event helper
+function trackEvent(action, params) {
+  try {
+    if (window.gtag) {
+      window.gtag("event", action, params || {});
+    } else if (window.dataLayer && Object.prototype.toString.call(window.dataLayer) === "[object Array]") {
+      var payload = params || {};
+      payload.event = action;
+      window.dataLayer.push(payload);
+    }
+  } catch (e) {
+    // ignore tracking errors
+  }
+}
 
 function setLoading() {
   if (!listEl) { return; }
@@ -81,7 +97,7 @@ function filterSessions() {
     if (type === "location_contains") {
       return (s.location || "").indexOf(value) !== -1;
     }
-    // Default: if we don’t recognize the filter, don’t exclude the class
+    // Unknown filter type → don’t exclude the class
     return true;
   });
 }
@@ -121,9 +137,9 @@ function buildCardHtml(session) {
   var title = session.cleanTitle || session.title || session.family || "CPR Class";
   var location = session.location || "Location TBA";
 
+  // Direct instance link for Register button
   var url = scheduleLink;
   if (session.session_id) {
-    // Direct link to that exact Enrollware class instance
     url = "https://coastalcprtraining.enrollware.com/enroll?id=" + session.session_id;
   }
 
@@ -162,12 +178,35 @@ function buildCardHtml(session) {
   htmlParts.push("</div>");
 
   htmlParts.push('<div class="periscope-card-actions">');
-  htmlParts.push('<a class="periscope-button periscope-button-primary" href="' + url + '">Register</a>');
+  htmlParts.push(
+    '<a class="periscope-button periscope-button-primary periscope-register-link" ' +
+    'data-course-id="' + (session.course_id || "") + '" ' +
+    'href="' + url + '">Register</a>'
+  );
   htmlParts.push("</div>");
 
   htmlParts.push("</div>");
 
   return htmlParts.join("");
+}
+
+function wireRegisterClickTracking() {
+  var links = sidebar.querySelectorAll(".periscope-register-link");
+  if (!links || !links.length) { return; }
+  for (var i = 0; i < links.length; i++) {
+    (function (link) {
+      link.addEventListener("click", function () {
+        try {
+          var courseId = link.getAttribute("data-course-id") || "";
+          var href = link.getAttribute("href") || "";
+          trackEvent("periscope_register_click", {
+            course_id: courseId,
+            destination: href
+          });
+        } catch (e) {}
+      });
+    })(links[i]);
+  }
 }
 
 function render() {
@@ -194,6 +233,18 @@ function render() {
 
   listEl.className = "periscope-list";
   listEl.innerHTML = htmlParts.join("");
+
+  // Update the "View full class schedule" link to a course-specific listing
+  if (footerLink && limited.length && scheduleLink) {
+    var firstCourseId = limited[0].course_id;
+    if (firstCourseId) {
+      footerLink.setAttribute("href", scheduleLink + "#ct" + firstCourseId);
+    } else {
+      footerLink.setAttribute("href", scheduleLink);
+    }
+  }
+
+  wireRegisterClickTracking();
 }
 
 function load() {
@@ -218,19 +269,32 @@ function load() {
       }
       state.allSessions = sessions;
       getCurrentFilter(); // initialize filter cache
+
+      trackEvent("periscope_schedule_loaded", {
+        item_count: sessions.length
+      });
+
       render();
     })
-    .catch(function () {
+    .catch(function (err) {
       setError("Unable to load live class times. Please open the full class schedule.");
+      trackEvent("periscope_schedule_error", {
+        message: (err && err.message) ? err.message : "unknown"
+      });
     });
 }
 
-// Expose API used by the inline GoDaddy script
+// API used by the inline GoDaddy script
 window.PeriscopeSidebar = window.PeriscopeSidebar || {};
 window.PeriscopeSidebar.refresh = function () {
-  // If we've already pulled the schedule, just re-render with the new filter
+  var f = getCurrentFilter();
+
+  trackEvent("periscope_filter_applied", {
+    filter_type: f.type || "",
+    filter_value: f.value || ""
+  });
+
   if (state.allSessions && state.allSessions.length) {
-    getCurrentFilter();
     render();
   } else {
     load();
