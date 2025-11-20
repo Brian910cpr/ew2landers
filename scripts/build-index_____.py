@@ -26,10 +26,91 @@ INDEX_TEMPLATE = dedent("""\
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>910CPR | CPR, BLS, ACLS &amp; PALS Classes in Wilmington &amp; Burgaw, NC</title>
-<meta name="description" content="Book CPR, BLS, ACLS, PALS and First Aid classes in Wilmington, Burgaw, and surrounding NC areas. Small classes, fast cards, late options, and on-site training for offices.">
+<title>CPR, BLS, ACLS &amp; First Aid Classes in Wilmington &amp; Burgaw, NC | 910CPR Class Schedule</title>
+<meta name="description" content="910CPR offers AHA and HSI CPR, BLS, ACLS, PALS and First Aid classes in Wilmington, Burgaw and onsite across southeastern North Carolina. Same-day cards, small classes, and flexible schedules for healthcare providers, workplaces, and the community.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://www.910cpr.com/">
+
+<!-- Basic 910CPR structured data (LocalBusiness + core Courses) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://www.910cpr.com/#business",
+      "name": "910CPR \u2013 Coastal CPR Training",
+      "url": "https://www.910cpr.com/",
+      "telephone": "+1-910-395-5193",
+      "image": [
+        "https://www.910cpr.com/images/910cpr_round.png"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "4018 Shipyard Blvd, Unit #2",
+        "addressLocality": "Wilmington",
+        "addressRegion": "NC",
+        "postalCode": "28403",
+        "addressCountry": "US"
+      },
+      "areaServed": [
+        "Wilmington NC",
+        "Burgaw NC",
+        "Jacksonville NC",
+        "New Hanover County NC",
+        "Pender County NC",
+        "Brunswick County NC"
+      ],
+      "sameAs": [
+        "https://coastalcprtraining.com/",
+        "https://www.facebook.com/CoastalCPRTraining",
+        "https://maps.app.goo.gl/",
+        "tel:+19103955193"
+      ]
+    },
+    {
+      "@type": "Course",
+      "name": "AHA BLS Provider \u2013 CPR for Healthcare Providers in Wilmington & Burgaw, NC",
+      "description": "American Heart Association Basic Life Support (BLS) CPR course for nurses, nursing students, EMS professionals, and other healthcare providers. Meets CPR requirements for CFCC, UNCW, and SCC nursing and allied health programs.",
+      "provider": {
+        "@type": "Organization",
+        "name": "910CPR \u2013 Coastal CPR Training",
+        "sameAs": "https://www.910cpr.com/"
+      }
+    },
+    {
+      "@type": "Course",
+      "name": "AHA ACLS Provider \u2013 Advanced Cardiac Life Support in Wilmington & Burgaw, NC",
+      "description": "Advanced Cardiac Life Support (ACLS) training for hospital and EMS clinicians who manage adult cardiac arrest, peri-arrest conditions, and post-resuscitation care.",
+      "provider": {
+        "@type": "Organization",
+        "name": "910CPR \u2013 Coastal CPR Training",
+        "sameAs": "https://www.910cpr.com/"
+      }
+    },
+    {
+      "@type": "Course",
+      "name": "AHA PALS Provider \u2013 Pediatric Advanced Life Support in Wilmington & Burgaw, NC",
+      "description": "Pediatric Advanced Life Support (PALS) course for nurses, physicians, and paramedics who care for critically ill or injured infants and children.",
+      "provider": {
+        "@type": "Organization",
+        "name": "910CPR \u2013 Coastal CPR Training",
+        "sameAs": "https://www.910cpr.com/"
+      }
+    },
+    {
+      "@type": "Course",
+      "name": "CPR, AED & First Aid Training for Workplaces, Schools & the Community",
+      "description": "CPR, AED and First Aid courses for workplaces, schools, childcare, coaches and the general public. Options include AHA Heartsaver and HSI First Aid/CPR/AED.",
+      "provider": {
+        "@type": "Organization",
+        "name": "910CPR \u2013 Coastal CPR Training",
+        "sameAs": "https://www.910cpr.com/"
+      }
+    }
+  ]
+}
+</script>
 
 <style>
 :root {
@@ -38,6 +119,7 @@ INDEX_TEMPLATE = dedent("""\
     --muted: #6c757d;
     --card-bg: #ffffff;
     --border: #dee2e6;
+    --accent: #0b64a0;
 }
 
 /* ===== Base layout ===== */
@@ -60,14 +142,129 @@ body {
     padding:16px;
 }
 
-/* Wrap the whole Enrollware block in a soft card */
+/* Keep main content narrower and centered for cleaner look */
+#hero,
+#schedule-section,
+#schedule-root {
+    max-width:900px;
+    margin:0 auto;
+}
 
-#schedule-root > #maincontent_schedPanel {
+/* ===== Header / nav ===== */
+
+.site-header {
+    max-width:900px;
+    margin:0 auto 16px auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+}
+
+.site-header .logo-wrap img {
+    max-height:56px;
+    width:auto;
+}
+
+.main-nav ul {
+    list-style:none;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 18px;
+    margin:0;
+    padding:0;
+    font-size:0.9rem;
+}
+
+.main-nav a {
+    text-decoration:none;
+    color:var(--text);
+    font-weight:500;
+}
+
+.main-nav a:hover {
+    color:var(--accent);
+    text-decoration:underline;
+}
+
+/* ===== Hero / intro ===== */
+
+#hero {
+    margin-bottom:18px;
+    background:#ffffff;
+    border-radius:10px;
+    border:1px solid var(--border);
+    padding:14px 16px;
+}
+
+#hero h1 {
+    font-size:1.4rem;
+    margin:0 0 6px 0;
+    text-align:center;
+}
+
+#hero p {
+    margin:4px 0;
+    font-size:0.95rem;
+}
+
+#hero .hero-highlight {
+    font-weight:600;
+}
+
+/* ===== Content sections ===== */
+
+.section {
+    margin-top:20px;
+    margin-bottom:8px;
+}
+
+.section h2 {
+    font-size:1.1rem;
+    margin:0 0 6px 0;
+}
+
+.section p,
+.section li {
+    font-size:0.95rem;
+}
+
+.section ul {
+    padding-left:18px;
+}
+
+/* ===== Screen reader utility ===== */
+
+.sr-only {
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+}
+
+/* Wrap the whole Enrollware block in a soft card and center it */
+
+#schedule-root #maincontent_schedPanel {
     background:var(--card-bg);
     border-radius:10px;
     border:1px solid var(--border);
-    padding:16px;
+    padding:16px 16px 20px 16px;
     box-shadow:0 3px 8px rgba(0,0,0,0.05);
+}
+
+/* Tighten the three header/quick-menu tables at the top */
+#maincontent_schedPanel > table {
+    margin:0 auto 10px auto !important;
+}
+
+/* Center text in contact paragraphs under the buttons */
+#maincontent_schedPanel > p {
+    text-align:center;
 }
 
 /* ===== Filter / search controls ===== */
@@ -111,13 +308,15 @@ body {
     display:none !important;
 }
 
+/* Filters row: center everything under the hero */
 @media (min-width: 768px) {
     #filters-row {
         display:flex;
         flex-wrap:wrap;
         gap:12px 24px;
         align-items:flex-end;
-        margin-bottom:10px;
+        justify-content:center;
+        margin:6px auto 10px auto;
     }
     #filters-row > div {
         flex:0 0 auto;
@@ -138,7 +337,7 @@ body {
 #enraccordion .enrpanel.family-header .enrpanel-heading a.enrtrigger {
     display:block;
     text-decoration:none;
-    cursor:default;
+    cursor:pointer;
     color:#ffffff;
 }
 
@@ -327,7 +526,7 @@ jQuery(function($){
 
         if ($search.length || $loc.length) {
             var $wrap = $('<div id="filters-row"></div>');
-            var $first = $search[0] ? $search : $loc;
+            var $first = $search.length ? $search : $loc;
             $wrap.insertBefore($first.first());
             if ($search.length) $search.appendTo($wrap);
             if ($loc.length) $loc.appendTo($wrap);
@@ -345,14 +544,15 @@ jQuery(function($){
         if (hasSelect) {
             $panel.addClass('family-header');
             $panel.find('.enrpanel-body').hide();
-            $panel.find('a.enrtrigger').off('click').css('cursor','default');
+            $panel.find('a.enrtrigger').off('click'); // we'll handle clicks ourselves
             familyPanels.push($panel);
         }
     });
 
     // 2) Group the course panels that come after each family header,
     //    and tag course panels by family type.
-    familyPanels.forEach(function($family){
+    for (var i = 0; i < familyPanels.length; i++) {
+        var $family = familyPanels[i];
         var headerText = ($family.find('.enrpanel-heading a.enrtrigger').text() || '').toLowerCase();
         var familyType = '';
 
@@ -392,7 +592,7 @@ jQuery(function($){
                 $move.addClass('family-' + familyType);
             }
         }
-    });
+    }
 
     // Any panels not tagged as family or moved yet are still course panels
     $accordion.find('.enrpanel').not('.family-header, .course-panel').addClass('course-panel');
@@ -448,9 +648,10 @@ jQuery(function($){
     // 5) Collapse all course bodies by default
     $('.course-panel .enrpanel-body').hide();
 
-    // 6) Accordion behavior: only one course panel open at a time,
+    // 6) Course accordion: only one course open at a time,
     //    and when you open one, scroll so the title stays in view.
-    $('.course-panel a.enrtrigger').on('click', function(){
+    $('.course-panel a.enrtrigger').on('click', function(e){
+        e.preventDefault();
         var $heading = $(this).closest('.enrpanel-heading');
         var $body = $heading.nextAll('.enrpanel-body').first();
 
@@ -459,11 +660,31 @@ jQuery(function($){
         } else {
             $('.course-panel .enrpanel-body:visible').slideUp();
             $body.slideDown(200, function(){
-                var offset = $heading.offset().top - 80; // leave a little margin
+                var offset = $heading.offset().top - 80;
                 $('html, body').animate({scrollTop: offset}, 200);
             });
         }
         return false;
+    });
+
+    // 7) FAMILY accordion: all family groups closed by default, only one open at a time
+    $('.course-family-group').hide();
+
+    $('.enrpanel.family-header a.enrtrigger').on('click', function(e){
+        e.preventDefault();
+        var $header = $(this).closest('.enrpanel.family-header');
+        var $group = $header.next('.course-family-group');
+        if (!$group.length) return;
+
+        if ($group.is(':visible')) {
+            $group.slideUp();
+        } else {
+            $('.course-family-group:visible').slideUp();
+            $group.slideDown(200, function(){
+                var offset = $header.offset().top - 80;
+                $('html, body').animate({scrollTop: offset}, 200);
+            });
+        }
     });
 
     /* === Filters: search + location only === */
@@ -516,10 +737,10 @@ jQuery(function($){
     $('#searchInput').on('input', applyFilters);
     $('#maincontent_locationList').on('change', applyFilters);
 
-    // 7) Mark each date/time/location link as a "session button" for styling
+    // 8) Mark each date/time/location link as a "session button" for styling
     $('.course-panel .enrclass-list li a').addClass('session-link');
 
-    // 8) Paginate long session lists: show first 10, "More times…" button for the rest
+    // 9) Paginate long session lists: show first 10, "More times…" button for the rest
     (function paginateSessions(){
         var PAGE = 10;
         $('.course-panel').each(function(){
@@ -536,7 +757,7 @@ jQuery(function($){
             $items.slice(PAGE).hide();
             var shown = PAGE;
 
-            var $btn = $('<button type="button" class="session-more-button">More times…</button>');
+            var $btn = $('<button type="button" class="session-more-button">More times\u2026</button>');
             $btn.on('click', function(){
                 shown += PAGE;
                 $items.slice(0, shown).show();
@@ -549,7 +770,7 @@ jQuery(function($){
         });
     })();
 
-    // 9) Final safety: make all images responsive
+    // 10) Final safety: make all images responsive
     $('#schedule-root img').css({maxWidth:'100%', height:'auto'});
 });
 </script>
@@ -558,9 +779,80 @@ jQuery(function($){
 <body id="enrollware-reg">
 <div id="page-wrap">
 
-    <div id="schedule-root">
+    <header class="site-header">
+        <div class="logo-wrap">
+            <a href="https://www.910cpr.com/">
+                <img src="https://coastalcprtraining.enrollware.com/sitefiles/coastalcprtraining/910cpr_round.png" alt="910CPR logo">
+            </a>
+        </div>
+        <nav class="main-nav" aria-label="Primary navigation">
+            <ul>
+                <li><a href="https://www.910cpr.com/">Class Schedule</a></li>
+                <li><a href="https://coastalcprtraining.com/classes" target="_blank" rel="noopener">Classes Overview</a></li>
+                <li><a href="https://coastalcprtraining.com/on-site-training" target="_blank" rel="noopener">On-Site Training</a></li>
+                <li><a href="https://coastalcprtraining.com/2025-price-list" target="_blank" rel="noopener">2025 Price List</a></li>
+                <li><a href="https://coastalcprtraining.com/about" target="_blank" rel="noopener">About 910CPR</a></li>
+                <li><a href="tel:+19103955193">Call 910-395-5193</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <h1>CPR, BLS, ACLS, PALS &amp; First Aid Classes in Wilmington &amp; Burgaw, NC</h1>
+        <p class="hero-highlight">
+            Live and blended CPR training for healthcare providers, workplaces, schools, and families across southeastern North Carolina.
+        </p>
+        <p>
+            910CPR is an American Heart Association, American Red Cross, and HSI training center providing small classes, fast certificate delivery,
+            and realistic practice in our Wilmington and Burgaw classrooms or at your location.
+        </p>
+        <p>
+            Use the schedule below to find the class, date, and location that works best for you. If you need help choosing the right course,
+            call or text <strong>910-395-5193</strong> during business hours.
+        </p>
+    </section>
+
+    <main>
+        <section id="schedule-section" class="section">
+            <h2 class="sr-only">Live CPR &amp; First Aid Class Schedule</h2>
+            <div id="schedule-root">
 {{SCHEDULE_PANEL}}
-    </div>
+            </div>
+        </section>
+
+        <section id="why-910cpr" class="section">
+            <h2>Why choose 910CPR for your CPR &amp; BLS class?</h2>
+            <ul>
+                <li><strong>Trusted locally.</strong> We have provided CPR, BLS, ACLS, PALS and First Aid training for hospitals, clinics, schools, dental offices, and small businesses throughout southeastern North Carolina.</li>
+                <li><strong>Same-day or fast cards.</strong> Most students receive their eCard shortly after class, so you can start a new job or clinical rotation without waiting weeks.</li>
+                <li><strong>Flexible options.</strong> In-person, blended/online + skills, and onsite group training are all available so you can match your schedule and learning style.</li>
+                <li><strong>Small, hands-on classes.</strong> Our instructors keep class sizes reasonable and focus on real-world scenarios, not just PowerPoint slides.</li>
+                <li><strong>Easy parking &amp; clear directions.</strong> Our Wilmington and Burgaw classrooms are easy to find, and we bring the class to you for onsite or group bookings.</li>
+            </ul>
+        </section>
+
+        <section id="faq" class="section">
+            <h2>Common questions about CPR classes at 910CPR</h2>
+            <h3>Which CPR class do I need for nursing or healthcare programs?</h3>
+            <p>
+                Most nursing, respiratory therapy, and allied health programs at <strong>CFCC</strong>, <strong>UNCW</strong>, and <strong>SCC</strong> require
+                the <strong>AHA BLS Provider</strong> course. If you are unsure, choose BLS or contact your school for their exact requirement and then match it to
+                the course titles on this page.
+            </p>
+
+            <h3>Do you offer onsite CPR training for offices and groups?</h3>
+            <p>
+                Yes. 910CPR provides onsite AHA, HSI and Red Cross classes for medical practices, construction companies, schools, churches and other groups.
+                Use the “On-Site Training” link above or call us to request a quote and available dates.
+            </p>
+
+            <h3>How quickly will I receive my CPR card?</h3>
+            <p>
+                Most students receive their eCard the same day or within a few business days after successful completion of class.
+                If you are on a deadline for a job or clinical rotation, let your instructor know at the beginning of class.
+            </p>
+        </section>
+    </main>
 
 </div>
 </body>
@@ -579,6 +871,7 @@ def extract_schedule_panel(soup: BeautifulSoup) -> str:
     panel = soup.find(id="maincontent_schedPanel")
     if panel is not None:
         return str(panel)
+    # Fallback: older or alternate markup
     alt = soup.find(id="enrmain") or soup.body
     if alt is None:
         raise RuntimeError("Could not find #maincontent_schedPanel or #enrmain in snapshot.")

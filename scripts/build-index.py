@@ -8,8 +8,8 @@ Generate a static docs/index.html for 910CPR using the latest
 Enrollware schedule snapshot.
 
 Defaults:
-input: docs/data/enrollware-schedule.html
-output: docs/index.html
+  input:  docs/data/enrollware-schedule.html
+  output: docs/index.html
 """
 
 import sys
@@ -22,8 +22,14 @@ DEFAULT_INPUT = Path("docs/data/enrollware-schedule.html")
 DEFAULT_OUTPUT = Path("docs/index.html")
 
 INDEX_TEMPLATE = dedent("""\
-
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>910CPR | CPR, BLS, ACLS &amp; PALS Classes in Wilmington &amp; Burgaw, NC</title> <meta name="description" content="Book CPR, BLS, ACLS, PALS and ...s, fast cards, late options, and on-site training for offices."> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <link rel="canonical" href="https://www.910cpr.com/">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>910CPR | CPR, BLS, ACLS &amp; PALS Classes in Wilmington &amp; Burgaw, NC</title>
+<meta name="description" content="Book CPR, BLS, ACLS, PALS and First Aid classes in Wilmington, Burgaw, and surrounding NC areas. Small classes, fast cards, late options, and on-site training for offices.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://www.910cpr.com/">
 
 <style>
 :root {
@@ -32,635 +38,566 @@ INDEX_TEMPLATE = dedent("""\
     --muted: #6c757d;
     --card-bg: #ffffff;
     --border: #dee2e6;
-    --accent: #0d6efd;
-    --accent-soft: rgba(13, 110, 253, 0.12);
-    --accent-dark: #084298;
-    --shadow-soft: 0 10px 25px rgba(15, 23, 42, 0.08);
-    --pill-family-aha: #0d6efd;
-    --pill-family-aha-soft: rgba(13, 110, 253, 0.08);
-    --pill-family-aha-alt: #0b5ed7;
-    --pill-family-aha-alt-soft: rgba(11, 94, 215, 0.08);
-    --pill-family-hsi: #198754;
-    --pill-family-hsi-soft: rgba(25, 135, 84, 0.08);
-    --pill-family-arc: #dc3545;
-    --pill-family-arc-soft: rgba(220, 53, 69, 0.08);
-    --pill-family-other: #6c757d;
-    --pill-family-other-soft: rgba(108, 117, 125, 0.08);
-    --pill-outline: rgba(15, 23, 42, 0.06);
-    --header-bg: linear-gradient(120deg, #0d6efd 0%, #6610f2 80%);
-    --header-overlay: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.75));
-    --family-pill-radius: 999px;
-    --transition-fast: 150ms ease-out;
-    --transition-med: 220ms ease-out;
-    --transition-slow: 320ms ease;
-    --ring: 0 0 0 2px rgba(13, 110, 253, 0.25);
-    --family-tag-bg: rgba(15, 23, 42, 0.08);
-    --family-tag-border: rgba(15, 23, 42, 0.14);
 }
 
-*,
-*::before,
-*::after {
+/* ===== Base layout ===== */
+
+* {
     box-sizing: border-box;
 }
 
-html,
 body {
-    margin: 0;
-    padding: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    -webkit-font-smoothing: antialiased;
+    margin:0;
+    padding:0;
+    font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-    border: 0;
-}
-
-/* Outer wrapper */
 #page-wrap {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background:
-        radial-gradient(circle at top left, rgba(13, 110, 253, 0.06), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(102, 16, 242, 0.05), transparent 50%),
-        var(--bg);
+    max-width:1200px;
+    margin:auto;
+    padding:16px;
 }
 
-/* Header band */
-#page-header {
-    position: relative;
-    padding: 1.75rem 1rem 1.75rem;
-    background: var(--header-bg);
-    color: #f8f9fa;
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.5);
-    z-index: 1;
+/* Wrap the whole Enrollware block in a soft card */
+
+#schedule-root > #maincontent_schedPanel {
+    background:var(--card-bg);
+    border-radius:10px;
+    border:1px solid var(--border);
+    padding:16px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.05);
 }
 
-#page-header::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(circle at top left, rgba(255, 255, 255, 0.14), transparent 60%),
-        radial-gradient(circle at bottom right, rgba(13, 110, 253, 0.55), transparent 60%);
-    opacity: 0.55;
-    mix-blend-mode: screen;
-    pointer-events: none;
+/* ===== Filter / search controls ===== */
+
+#searchPnl,
+#maincontent_locationPnl,
+#maincontent_coursePanel {
+    margin-bottom:8px;
 }
 
-#page-header::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.7));
-    mix-blend-mode: multiply;
-    opacity: 0.8;
-    pointer-events: none;
-    z-index: 0;
+#searchPnl {
+    margin-bottom:10px;
 }
 
-/* Header content */
-.header-inner {
-    position: relative;
-    z-index: 1;
-    max-width: 1120px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
-    gap: 1.75rem;
-    align-items: center;
+#searchInput,
+#maincontent_locationList,
+#maincontent_courseList {
+    width:100%;
+    max-width:320px;
+    padding:6px 10px;
+    font-size:0.9rem;
+    border-radius:999px;
+    border:1px solid var(--border);
 }
 
-.header-left {
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
+#maincontent_locationList,
+#maincontent_courseList {
+    border-radius:8px;
 }
 
-.brand-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+#maincontent_loclbl,
+#maincontent_courseLabel {
+    display:block;
+    font-size:0.85rem;
+    color:var(--muted);
+    margin:4px 0;
 }
 
-.brand-logo {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    border-radius: 999px;
-    background: radial-gradient(circle at 20% 0%, #ffffff, #d0d7ff 60%, #98a6ff 100%);
-    box-shadow:
-        0 0 0 4px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(255, 255, 255, 0.1),
-        0 12px 30px rgba(15, 23, 42, 0.8);
+/* Hide course filter completely */
+#maincontent_coursePanel {
+    display:none !important;
 }
 
-.brand-logo img {
-    display: block;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
+@media (min-width: 768px) {
+    #filters-row {
+        display:flex;
+        flex-wrap:wrap;
+        gap:12px 24px;
+        align-items:flex-end;
+        margin-bottom:10px;
+    }
+    #filters-row > div {
+        flex:0 0 auto;
+    }
 }
 
-.brand-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+/* ===== Family headers (the big category pills) ===== */
+
+#enraccordion .enrpanel.family-header .enrpanel-heading {
+    margin:26px auto 0 auto;
+    max-width:720px;
+    border-radius:999px 999px 0 0;
+    overflow:hidden;
+    border:1px solid var(--border);
 }
 
-.brand-text h1 {
-    font-size: clamp(1.35rem, 2.4vw, 1.65rem);
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    font-weight: 700;
-    margin: 0;
-    color: #f8f9fa;
+/* Keep family header text white on colored backgrounds */
+#enraccordion .enrpanel.family-header .enrpanel-heading a.enrtrigger {
+    display:block;
+    text-decoration:none;
+    cursor:pointer;
+    color:#ffffff;
 }
 
-.brand-subtitle {
-    margin: 0;
-    font-size: 0.95rem;
-    color: rgba(248, 249, 250, 0.85);
+/* Family header body never opens */
+#enraccordion .enrpanel.family-header .enrpanel-body {
+    display:none !important;
 }
 
-.header-highlight {
-    font-size: clamp(1.35rem, 2.45vw, 1.7rem);
-    font-weight: 650;
-    margin: 0.3rem 0 0.2rem;
-    color: #f8f9fa;
+/* ===== Course type panels under each family ===== */
+
+.course-family-group {
+    margin-top:0;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:12px;
+    padding:16px 12px 18px;
+    border-radius:0 0 40px 40px;
 }
 
-.header-highlight strong {
-    color: #ffeb3b;
-    font-weight: 800;
+/* Colors that match each family pill */
+
+.course-family-group.family-bls,
+#enraccordion .enrpanel.family-header.family-bls .enrpanel-heading {
+    background:#0b64a0;
 }
 
-.header-tagline {
-    margin: 0;
-    max-width: 34rem;
-    font-size: 0.95rem;
-    color: rgba(248, 249, 250, 0.87);
+.course-family-group.family-acls,
+#enraccordion .enrpanel.family-header.family-acls .enrpanel-heading {
+    background:#b5212f;
 }
 
-/* Quick badges */
-.header-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.6rem;
+.course-family-group.family-pals,
+#enraccordion .enrpanel.family-header.family-pals .enrpanel-heading {
+    background:#6e3b9f;
 }
 
-.badge-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    border: 1px solid rgba(255, 255, 255, 0.26);
-    color: #f8f9fa;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.32), rgba(13, 110, 253, 0.7));
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.65);
+.course-family-group.family-asls,
+#enraccordion .enrpanel.family-header.family-asls .enrpanel-heading {
+    background:#4b4b4b;
 }
 
-.badge-pill .dot {
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 999px;
-    background: #22c55e;
-    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35);
+.course-family-group.family-cprfa,
+#enraccordion .enrpanel.family-header.family-cprfa .enrpanel-heading {
+    background:#6b6b6b;
 }
 
-.badge-pill.badge-alt {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.35), rgba(102, 16, 242, 0.75));
+.course-family-group.family-cpron,
+#enraccordion .enrpanel.family-header.family-cpron .enrpanel-heading {
+    background:#777777;
 }
 
-.badge-pill.badge-muted {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.55), rgba(108, 117, 125, 0.9));
+.course-family-group.family-instructor,
+#enraccordion .enrpanel.family-header.family-instructor .enrpanel-heading {
+    background:#555555;
 }
 
-/* Hero / “Where do you fit?” */
-.hero-card {
-    position: relative;
-    margin-top: 0.9rem;
-    padding: 0.9rem 1rem;
-    border-radius: 1rem;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.94));
-    border: 1px solid rgba(148, 163, 184, 0.55);
-    box-shadow:
-        0 16px 40px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(15, 23, 42, 0.8);
+.course-family-group.family-other,
+#enraccordion .enrpanel.family-header.family-other .enrpanel-heading {
+    background:#ffffff;
 }
 
-.hero-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background:
-        radial-gradient(circle at 10% 0%, rgba(59, 130, 246, 0.42), transparent 60%),
-        radial-gradient(circle at 90% 100%, rgba(244, 114, 182, 0.55), transparent 60%);
-    opacity: 0.75;
-    mix-blend-mode: screen;
-    pointer-events: none;
-    z-index: 0;
+/* Grid cell shell */
+.course-panel {
+    border-radius:10px;
 }
 
-.hero-card-inner {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2.7fr);
-    gap: 1.1rem;
-    align-items: center;
+/* Inner pill that actually carries border and white background */
+.course-inner {
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:#ffffff;
+    overflow:hidden;
+    height:100%;
 }
 
-.hero-left h2 {
-    margin: 0 0 0.4rem;
-    font-size: 1rem;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    color: rgba(248, 249, 250, 0.88);
+/* Course heading pill */
+
+.course-panel .enrpanel-heading {
+    padding:0;
+    background:transparent;
 }
 
-hero-left h2 span {
-    color: #ffd54f;
+.course-panel .enrpanel-heading a.enrtrigger {
+    display:block;
+    padding:10px 12px;
+    border-radius:0;
+    background:transparent;
+    text-decoration:none;
+    font-weight:600;
+    color:var(--text);
 }
 
-/* ... ENTIRE ORIGINAL CSS CONTINUES HERE UNCHANGED ... */
+/* Under-title blurbs for SEO / guidance */
 
-/* (For brevity in this chat window I’m not re-commenting every line.
-   In your pasted file, everything from your uploaded build-index.py
-   template remains exactly as-is down through the closing </style>
-   and <script> tags, then: */
-
-</style> <script>
-// Simple helper: debounce typing
-function debounce(fn, delay) {
-    let timeoutId;
-    return function () {
-        const context = this;
-        const args = arguments;
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
-            fn.apply(context, args);
-        }, delay);
-    };
+.course-blurb {
+    font-size:0.85rem;
+    font-style:italic;
+    color:#555;
+    padding:0 12px 6px 12px;
 }
 
-// Normalize strings for looser matching
-function normalize(str) {
-    return (str || "")
-        .toString()
-        .toLowerCase()
-        .replace(/&amp;/g, "and")
-        .replace(/[^a-z0-9]+/g, " ")
-        .trim();
+/* Description block */
+
+.course-panel .enrpanel-body {
+    display:none;
+    padding:10px 16px 14px 24px;
+    background:transparent;
 }
 
-// Filtering logic
-function setupScheduleFilters() {
-    var searchInput = document.getElementById("searchInput");
-    var locationSelect = document.getElementById("maincontent_locationList");
-    var familyPills = document.querySelectorAll(".family-pill");
-    var familyGroups = document.querySelectorAll(".course-family-group");
-    var accordionPanels = document.querySelectorAll("#enraccordion .enrpanel");
+/* ===== Date/Time/Location as “session buttons” ===== */
 
-    var currentFamily = "all";
+.course-panel .enrclass-list {
+    list-style:none;
+    margin:14px 0 0 0;
+    padding:0;
+}
+
+.course-panel .enrclass-list li + li {
+    margin-top:8px;
+}
+
+.course-panel .enrclass-list li a.session-link {
+    display:block;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#f8f9fa;
+    text-decoration:none;
+    font-size:0.95rem;
+    font-weight:500;
+}
+
+.course-panel .enrclass-list li a.session-link span {
+    display:block;
+    margin-top:3px;
+    font-size:0.85rem;
+    color:var(--muted);
+}
+
+.course-panel .enrclass-list li a.session-link:hover {
+    border-color:#0d6efd;
+    box-shadow:0 0 0 1px rgba(13,110,253,0.2);
+}
+
+/* More-times pagination button */
+
+.session-more-button {
+    display:inline-block;
+    margin:10px 0 4px 12px;
+    padding:6px 14px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:#f5f7fb;
+    font-size:0.85rem;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.session-more-button:hover {
+    background:#e3e8f5;
+}
+
+/* ===== Responsive images inside schedule ===== */
+
+#schedule-root img {
+    max-width:100%;
+    height:auto;
+}
+</style>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-migrate-3.5.2.min.js"></script>
+
+<script>
+jQuery(function($){
+
+    var $accordion = $('#enraccordion');
+    if (!$accordion.length) return;
+
+    /* === Wrap filters in a flex row container on larger screens === */
+    (function setupFiltersRow(){
+        var $search = $('#searchPnl');
+        var $loc = $('#maincontent_locationPnl');
+
+        if ($search.length || $loc.length) {
+            var $wrap = $('<div id="filters-row"></div>');
+            var $first = $search.length ? $search : $loc;
+            $wrap.insertBefore($first.first());
+            if ($search.length) $search.appendTo($wrap);
+            if ($loc.length) $loc.appendTo($wrap);
+        }
+    })();
+
+    // 1) Identify "family header" panels by the “Select a Program Below” text
+    var familyPanels = [];
+    $accordion.find('.enrpanel').each(function(){
+        var $panel = $(this);
+        var hasSelect = $panel.find('.enrclass-list a').filter(function(){
+            return $(this).text().indexOf('Select a Program Below') !== -1;
+        }).length > 0;
+
+        if (hasSelect) {
+            $panel.addClass('family-header');
+            $panel.find('.enrpanel-body').hide();
+            $panel.find('a.enrtrigger').off('click'); // we'll handle clicks ourselves
+            familyPanels.push($panel);
+        }
+    });
+
+    // 2) Group the course panels that come after each family header,
+    //    and tag course panels by family type.
+    for (var i = 0; i < familyPanels.length; i++) {
+        var $family = familyPanels[i];
+        var headerText = ($family.find('.enrpanel-heading a.enrtrigger').text() || '').toLowerCase();
+        var familyType = '';
+
+        if (headerText.indexOf('bls course') !== -1) {
+            familyType = 'bls';
+        } else if (headerText.indexOf('acls course') !== -1) {
+            familyType = 'acls';
+        } else if (headerText.indexOf('pals course') !== -1) {
+            familyType = 'pals';
+        } else if (headerText.indexOf('asls course') !== -1) {
+            familyType = 'asls';
+        } else if (headerText.indexOf('cpr / aed & first aid') !== -1 ||
+                   headerText.indexOf('cpr / aed &amp; first aid') !== -1) {
+            familyType = 'cprfa';
+        } else if (headerText.indexOf('cpr / aed only') !== -1 ||
+                   headerText.indexOf('cpr/aed only') !== -1) {
+            familyType = 'cpron';
+        } else if (headerText.indexOf('instructor') !== -1) {
+            familyType = 'instructor';
+        } else if (headerText.indexOf('other programs') !== -1) {
+            familyType = 'other';
+        }
+
+        var $group = $('<div class="course-family-group"></div>');
+        if (familyType) {
+            $group.addClass('family-' + familyType);
+            $family.addClass('family-' + familyType);
+        }
+        $group.insertAfter($family);
+
+        var $next = $family.next();
+        while ($next.length && !$next.hasClass('family-header')) {
+            var $move = $next;
+            $next = $next.next();
+            $move.appendTo($group).addClass('course-panel');
+            if (familyType) {
+                $move.addClass('family-' + familyType);
+            }
+        }
+    }
+
+    // Any panels not tagged as family or moved yet are still course panels
+    $accordion.find('.enrpanel').not('.family-header, .course-panel').addClass('course-panel');
+
+    // 3) Add under-title blurbs for key course types,
+    //    but skip Instructor, CPR/AED Only, and Other families.
+    (function addCourseBlurbs(){
+        $('.course-panel .enrpanel-heading a.enrtrigger').each(function(){
+            var $a = $(this);
+            var $panel = $a.closest('.course-panel');
+            var headingText = ($a.text() || '').trim();
+            var lower = headingText.toLowerCase();
+
+            if ($panel.hasClass('family-instructor') ||
+                $panel.hasClass('family-cpron') ||
+                $panel.hasClass('family-other')) {
+                return;
+            }
+
+            if ($a.closest('.enrpanel-heading').next('.course-blurb').length) {
+                return;
+            }
+
+            var blurbText = null;
+
+            if (lower.indexOf('aha') !== -1 && lower.indexOf('bls') !== -1) {
+                blurbText = 'Common choice for CFCC, UNCW & SCC Nursing / Allied Health students.';
+            } else if (lower.indexOf('aha') !== -1 && lower.indexOf('acls') !== -1) {
+                blurbText = 'Ideal for hospital-based clinicians, advanced providers, and code team members.';
+            } else if (lower.indexOf('aha') !== -1 && lower.indexOf('pals') !== -1) {
+                blurbText = 'Commonly needed for pediatric ER/ICU nurses, paramedics, and providers who care for children.';
+            } else if (lower.indexOf('heartsaver') !== -1) {
+                blurbText = 'Popular with childcare providers, foster parents, coaches, and workplace responders.';
+            } else if (lower.indexOf('hsi') !== -1 && lower.indexOf('first aid') !== -1) {
+                blurbText = 'Great option for OSHA-focused workplace safety and industrial teams.';
+            }
+
+            if (blurbText) {
+                var $blurb = $('<div class="course-blurb"></div>').text(blurbText);
+                $a.closest('.enrpanel-heading').after($blurb);
+            }
+        });
+    })();
+
+    // 4) Wrap course-panel contents in .course-inner so the pill bg doesn't bleed
+    $('.course-panel').each(function(){
+        var $panel = $(this);
+        if (!$panel.children('.course-inner').length) {
+            $panel.wrapInner('<div class="course-inner"></div>');
+        }
+    });
+
+    // 5) Collapse all course bodies by default
+    $('.course-panel .enrpanel-body').hide();
+
+    // 6) Course accordion: only one course open at a time,
+    //    and when you open one, scroll so the title stays in view.
+    $('.course-panel a.enrtrigger').on('click', function(e){
+        e.preventDefault();
+        var $heading = $(this).closest('.enrpanel-heading');
+        var $body = $heading.nextAll('.enrpanel-body').first();
+
+        if ($body.is(':visible')) {
+            $body.slideUp();
+        } else {
+            $('.course-panel .enrpanel-body:visible').slideUp();
+            $body.slideDown(200, function(){
+                var offset = $heading.offset().top - 80;
+                $('html, body').animate({scrollTop: offset}, 200);
+            });
+        }
+        return false;
+    });
+
+    // 7) FAMILY accordion: all family groups closed by default, only one open at a time
+    $('.course-family-group').hide();
+
+    $('.enrpanel.family-header a.enrtrigger').on('click', function(e){
+        e.preventDefault();
+        var $header = $(this).closest('.enrpanel.family-header');
+        var $group = $header.next('.course-family-group');
+        if (!$group.length) return;
+
+        if ($group.is(':visible')) {
+            $group.slideUp();
+        } else {
+            $('.course-family-group:visible').slideUp();
+            $group.slideDown(200, function(){
+                var offset = $header.offset().top - 80;
+                $('html, body').animate({scrollTop: offset}, 200);
+            });
+        }
+    });
+
+    /* === Filters: search + location only === */
+    function normalize(str) {
+        return (str || '').toLowerCase().replace(/\\s+/g, ' ').trim();
+    }
 
     function applyFilters() {
-        var searchTerm = normalize(searchInput ? searchInput.value : "");
-        var selectedLocation = locationSelect ? locationSelect.value : "";
+        var term = normalize($('#searchInput').val());
 
-        accordionPanels.forEach(function (panel) {
-            var panelEl = panel;
-            var panelFamily = "other";
-            if (panelEl.classList.contains("family-aha")) {
-                panelFamily = "aha";
-            } else if (panelEl.classList.contains("family-hsi")) {
-                panelFamily = "hsi";
-            } else if (panelEl.classList.contains("family-arc")) {
-                panelFamily = "arc";
-            } else if (panelEl.classList.contains("family-instructor")) {
-                panelFamily = "instructor";
-            }
+        var locText = '';
+        var $locSel = $('#maincontent_locationList');
+        if ($locSel.length) {
+            locText = $locSel.find('option:selected').text();
+        }
+        var locFilter = normalize(locText);
+        if (locFilter === 'all locations') locFilter = '';
 
-            var matchFamily = currentFamily === "all" || currentFamily === panelFamily;
+        $('.course-panel').each(function(){
+            var $panel = $(this);
 
-            var matchSearch = true;
-            var matchLocation = true;
+            var headingText = ($panel.find('.enrpanel-heading a.enrtrigger').text() || '');
+            var valueAttr = ($panel.attr('value') || '');
+            var headingNorm = normalize(headingText);
+            var valueNorm = normalize(valueAttr);
+            var searchable = headingNorm + ' ' + valueNorm;
 
-            if (searchTerm) {
-                matchSearch = false;
-                var panelText = normalize(panelEl.textContent || "");
-                if (panelText.indexOf(searchTerm) !== -1) {
-                    matchSearch = true;
-                }
-            }
+            var matchSearch = !term || searchable.indexOf(term) !== -1;
 
-            if (selectedLocation) {
-                matchLocation = false;
-                var locNodes = panelEl.querySelectorAll(".location-text, .location-label");
-                locNodes.forEach(function (node) {
-                    if (normalize(node.textContent).indexOf(normalize(selectedLocation)) !== -1) {
-                        matchLocation = true;
+            var matchLoc = true;
+            if (locFilter) {
+                matchLoc = false;
+                $panel.find('.enrclass-list li').each(function(){
+                    var t = normalize($(this).text());
+                    if (t.indexOf(locFilter) !== -1) {
+                        matchLoc = true;
+                        return false;
                     }
                 });
             }
 
-            if (matchFamily && matchSearch && matchLocation) {
-                panelEl.style.display = "";
+            if (matchSearch && matchLoc) {
+                $panel.show();
             } else {
-                panelEl.style.display = "none";
+                $panel.hide();
             }
         });
+    }
 
-        familyGroups.forEach(function (group) {
-            var anyVisible = false;
-            var groupPanels = group.querySelectorAll(".enrpanel");
-            groupPanels.forEach(function (p) {
-                if (p.style.display !== "none") {
-                    anyVisible = true;
+    $('#searchInput').on('input', applyFilters);
+    $('#maincontent_locationList').on('change', applyFilters);
+
+    // 8) Mark each date/time/location link as a "session button" for styling
+    $('.course-panel .enrclass-list li a').addClass('session-link');
+
+    // 9) Paginate long session lists: show first 10, "More times…" button for the rest
+    (function paginateSessions(){
+        var PAGE = 10;
+        $('.course-panel').each(function(){
+            var $panel = $(this);
+
+            // Clean up any existing buttons if this ever runs twice
+            $panel.find('.session-more-button').remove();
+
+            var $lists = $panel.find('.enrclass-list');
+            var $items = $lists.find('li');
+            if ($items.length <= PAGE) return;
+
+            $items.show();
+            $items.slice(PAGE).hide();
+            var shown = PAGE;
+
+            var $btn = $('<button type="button" class="session-more-button">More times…</button>');
+            $btn.on('click', function(){
+                shown += PAGE;
+                $items.slice(0, shown).show();
+                if (shown >= $items.length) {
+                    $btn.remove();
                 }
             });
-            group.style.display = anyVisible ? "" : "none";
+
+            $lists.last().after($btn);
         });
-    }
+    })();
 
-    if (searchInput) {
-        searchInput.addEventListener(
-            "input",
-            debounce(function () {
-                applyFilters();
-            }, 180)
-        );
-    }
-
-    if (locationSelect) {
-        locationSelect.addEventListener("change", function () {
-            applyFilters();
-        });
-    }
-
-    familyPills.forEach(function (pill) {
-        pill.addEventListener("click", function () {
-            var family = pill.getAttribute("data-family") || "all";
-            currentFamily = family;
-
-            familyPills.forEach(function (p) {
-                p.classList.toggle("active", p === pill);
-            });
-
-            applyFilters();
-        });
-    });
-
-    applyFilters();
-}
-
-function buildCourseBlurbs() {
-    var panels = document.querySelectorAll("#enraccordion .enrpanel");
-
-    panels.forEach(function (panel) {
-        var headingLink = panel.querySelector(".enrpanel-heading a");
-        if (!headingLink) return;
-
-        var rawText = headingLink.textContent || "";
-        var lower = rawText.toLowerCase();
-
-        if (panel.querySelector(".course-blurb")) {
-            return;
-        }
-
-        if (panel.classList.contains("family-instructor") ||
-            panel.classList.contains("family-other")) {
-            return;
-        }
-
-        var blurbText = null;
-
-        if (panel.classList.contains("family-aha")) {
-            if (lower.indexOf("bls") !== -1) {
-                blurbText = "Common choice for CFCC, UNCW & SCC Nursing / Allied Health students.";
-            } else if (lower.indexOf("acls") !== -1) {
-                blurbText = "Ideal for hospital-based clinicians, advanced providers, and code team members.";
-            } else if (lower.indexOf("pals") !== -1) {
-                blurbText = "For pediatric / PICU / ED providers or anyone on the pediatric resuscitation team.";
-            }
-        } else if (panel.classList.contains("family-hsi")) {
-            blurbText = "Best for workplace teams, childcare, teachers, fitness, and general OSHA needs.";
-        } else if (panel.classList.contains("family-arc")) {
-            blurbText = "Red Cross options for BLS and targeted CPR programs.";
-        }
-
-        if (!blurbText) return;
-
-        var blurb = document.createElement("p");
-        blurb.className = "course-blurb";
-        blurb.textContent = blurbText;
-
-        var heading = panel.querySelector(".enrpanel-heading");
-        if (heading && heading.parentNode) {
-            heading.parentNode.insertBefore(blurb, heading.nextSibling);
-        }
-    });
-}
-
-function adjustFamilyGrouping() {
-    var panels = document.querySelectorAll("#enraccordion .enrpanel");
-    var root = document.getElementById("enraccordion");
-    if (!root) return;
-
-    var wrapper = document.createElement("div");
-
-    var families = ["aha", "hsi", "arc", "other", "instructor"];
-    var groups = {};
-
-    families.forEach(function (fam) {
-        var group = document.createElement("section");
-        group.className = "course-family-group family-" + fam;
-        var header = document.createElement("div");
-        header.className = "course-family-group-header";
-        var meta = document.createElement("div");
-        meta.className = "course-family-meta";
-
-        var titleRow = document.createElement("div");
-        titleRow.className = "course-family-title";
-
-        var title = document.createElement("h3");
-        var tag = document.createElement("span");
-        tag.className = "course-family-tag";
-        var dot = document.createElement("span");
-        dot.className = "dot";
-
-        var tagLabel = document.createElement("span");
-        tagLabel.textContent = "Course group";
-
-        tag.appendChild(dot);
-        tag.appendChild(tagLabel);
-
-        if (fam == "aha") {
-            title.textContent = "American Heart Association – BLS, ACLS & PALS";
-        } else if (fam == "hsi") {
-            title.textContent = "HSI – Workplace & Community CPR / First Aid";
-        } else if (fam == "arc") {
-            title.textContent = "American Red Cross – BLS & CPR";
-        } else if (fam == "instructor") {
-            title.textContent = "Instructor & Alignment Resources";
-        } else {
-            title.textContent = "Other & Specialty Courses";
-        }
-
-        titleRow.appendChild(title);
-        titleRow.appendChild(tag);
-
-        var desc = document.createElement("p");
-        desc.className = "course-family-desc";
-
-        if (fam == "aha") {
-            desc.textContent = "Hospital, EMS and advanced providers: BLS, ACLS and PALS in one view.";
-        } else if (fam == "hsi") {
-            desc.textContent = "OSHA-friendly First Aid / CPR / AED for workplaces, childcare & more.";
-        } else if (fam == "arc") {
-            desc.textContent = "Red Cross options for BLS and targeted CPR programs.";
-        } else if (fam == "instructor") {
-            desc.textContent = "Internal instructor development, alignment, and train-the-trainer offerings.";
-        } else {
-            desc.textContent = "Specialty programs and courses that don&apos;t fit the main buckets above.";
-        }
-
-        meta.appendChild(titleRow);
-        meta.appendChild(desc);
-
-        header.appendChild(meta);
-
-        group.appendChild(header);
-
-        var body = document.createElement("div");
-        body.className = "course-panel";
-        group.appendChild(body);
-
-        groups[fam] = {
-            section: group,
-            body: body
-        };
-    });
-
-    var familyPillsRow = document.createElement("div");
-    familyPillsRow.className = "family-pill-row";
-
-    var familiesForPills = [
-        { key: "all", label: "All", helper: "Show everything" },
-        { key: "aha", label: "AHA", helper: "Hospital & advanced providers" },
-        { key: "hsi", label: "HSI", helper: "Workplace & community" },
-        { key: "arc", label: "Red Cross", helper: "ARC options" },
-        { key: "other", label: "Other", helper: "Specialty programs" }
-    ];
-
-    familiesForPills.forEach(function (item) {
-        var pill = document.createElement("button");
-        pill.type = "button";
-        pill.className = "family-pill family-" + item.key;
-        pill.setAttribute("data-family", item.key);
-
-        var dot = document.createElement("span");
-        dot.className = "dot";
-
-        var label = document.createElement("span");
-        label.className = "label";
-        label.textContent = item.label;
-
-        var helper = document.createElement("span");
-        helper.className = "helper";
-        helper.textContent = item.helper;
-
-        pill.appendChild(dot);
-        pill.appendChild(label);
-        pill.appendChild(helper);
-
-        familyPillsRow.appendChild(pill);
-    });
-
-    root.parentNode.insertBefore(familyPillsRow, root);
-
-    families.forEach(function (fam) {
-        wrapper.appendChild(groups[fam].section);
-    });
-
-    panels.forEach(function (panel) {
-        var famClass = "other";
-        if (panel.classList.contains("family-aha")) {
-            famClass = "aha";
-        } else if (panel.classList.contains("family-hsi")) {
-            famClass = "hsi";
-        } else if (panel.classList.contains("family-arc")) {
-            famClass = "arc";
-        } else if (panel.classList.contains("family-instructor")) {
-            famClass = "instructor";
-        }
-
-        var group = groups[famClass];
-        if (group) {
-            group.body.appendChild(panel);
-        }
-    });
-
-    root.parentNode.replaceChild(wrapper, root);
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    try {
-        adjustFamilyGrouping();
-    } catch (e) {
-        console.error("Family grouping error:", e);
-    }
-    try {
-        buildCourseBlurbs();
-    } catch (e) {
-        console.error("Course blurb error:", e);
-    }
-    try {
-        setupScheduleFilters();
-    } catch (e) {
-        console.error("Filter setup error:", e);
-    }
+    // 10) Final safety: make all images responsive
+    $('#schedule-root img').css({maxWidth:'100%', height:'auto'});
 });
-</script> </head> <body id="enrollware-reg"> <div id="page-wrap">
-<div id="schedule-root">
+</script>
+</head>
 
+<body id="enrollware-reg">
+<div id="page-wrap">
 
+    <div id="schedule-root">
 {{SCHEDULE_PANEL}}
+    </div>
+
 </div>
-
-</div> </body> </html> """)
-
+</body>
+</html>
+""")
 
 def parse_snapshot(path: Path) -> BeautifulSoup:
-    """
-    Load the latest Enrollware snapshot and return a BeautifulSoup document.
-    """
+    """Read and parse the Enrollware snapshot into BeautifulSoup."""
     if not path.is_file():
         raise FileNotFoundError(f"Input file not found: {path}")
     html = path.read_text(encoding="utf-8", errors="ignore")
     return BeautifulSoup(html, "html.parser")
 
-
 def extract_schedule_panel(soup: BeautifulSoup) -> str:
-    """
-    Pull the Enrollware schedule block from the snapshot.
-    Prefer #maincontent_schedPanel, fall back to #enrmain or <body>.
-    """
+    """Return the HTML for <div id="maincontent_schedPanel">...</div>."""
     panel = soup.find(id="maincontent_schedPanel")
     if panel is not None:
         return str(panel)
@@ -669,30 +606,22 @@ def extract_schedule_panel(soup: BeautifulSoup) -> str:
         raise RuntimeError("Could not find #maincontent_schedPanel or #enrmain in snapshot.")
     return str(alt)
 
-
 def build_index(input_path: Path, output_path: Path) -> None:
-    """
-    Read the Enrollware snapshot, splice in the schedule panel,
-    and write docs/index.html.
-    """
+    """Build index.html by injecting the schedule panel into the template."""
     soup = parse_snapshot(input_path)
     panel_html = extract_schedule_panel(soup)
+
     html = INDEX_TEMPLATE.replace("{{SCHEDULE_PANEL}}", panel_html)
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8")
     print(f"Wrote homepage: {output_path} (source: {input_path})")
 
-
 def main(argv=None):
-    """
-    CLI entry point:
-      python scripts/build-index.py [input_html] [output_html]
-    """
     argv = argv or sys.argv[1:]
     in_path = Path(argv[0]) if len(argv) >= 1 else DEFAULT_INPUT
     out_path = Path(argv[1]) if len(argv) >= 2 else DEFAULT_OUTPUT
     build_index(in_path, out_path)
-
 
 if __name__ == "__main__":
     main()
