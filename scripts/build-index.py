@@ -26,10 +26,91 @@ INDEX_TEMPLATE = dedent("""\
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>910CPR | CPR, BLS, ACLS &amp; PALS Classes in Wilmington &amp; Burgaw, NC</title>
-<meta name="description" content="Book CPR, BLS, ACLS, PALS and First Aid classes in Wilmington, Burgaw, and surrounding NC areas. Small classes, fast cards, late options, and on-site training for offices.">
+<title>CPR, BLS, ACLS &amp; First Aid Classes in Wilmington &amp; Burgaw, NC | 910CPR Class Schedule</title>
+<meta name="description" content="910CPR offers AHA and HSI CPR, BLS, ACLS, PALS and First Aid classes in Wilmington, Burgaw and onsite across southeastern North Carolina. Same-day cards, small classes, and flexible schedules for healthcare providers, workplaces, and the community.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://www.910cpr.com/">
+
+<!-- Basic 910CPR structured data (LocalBusiness + core Courses) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://www.910cpr.com/#business",
+      "name": "910CPR \u2013 Coastal CPR Training",
+      "url": "https://www.910cpr.com/",
+      "telephone": "+1-910-395-5193",
+      "image": [
+        "https://www.910cpr.com/images/910cpr_round.png"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "4018 Shipyard Blvd, Unit #2",
+        "addressLocality": "Wilmington",
+        "addressRegion": "NC",
+        "postalCode": "28403",
+        "addressCountry": "US"
+      },
+      "areaServed": [
+        "Wilmington NC",
+        "Burgaw NC",
+        "Jacksonville NC",
+        "New Hanover County NC",
+        "Pender County NC",
+        "Brunswick County NC"
+      ],
+      "sameAs": [
+        "https://coastalcprtraining.com/",
+        "https://www.facebook.com/CoastalCPRTraining",
+        "https://maps.app.goo.gl/",
+        "tel:+19103955193"
+      ]
+    },
+    {
+      "@type": "Course",
+      "name": "AHA BLS Provider \u2013 CPR for Healthcare Providers in Wilmington & Burgaw, NC",
+      "description": "American Heart Association Basic Life Support (BLS) CPR course for nurses, nursing students, EMS professionals, and other healthcare providers. Meets CPR requirements for CFCC, UNCW, and SCC nursing and allied health programs.",
+      "provider": {
+        "@type": "Organization",
+        "name": "910CPR \u2013 Coastal CPR Training",
+        "sameAs": "https://www.910cpr.com/"
+      }
+    },
+    {
+      "@type": "Course",
+      "name": "AHA ACLS Provider \u2013 Advanced Cardiac Life Support in Wilmington & Burgaw, NC",
+      "description": "Advanced Cardiac Life Support (ACLS) training for hospital and EMS clinicians who manage adult cardiac arrest, peri-arrest conditions, and post-resuscitation care.",
+      "provider": {
+        "@type": "Organization",
+        "name": "910CPR \u2013 Coastal CPR Training",
+        "sameAs": "https://www.910cpr.com/"
+      }
+    },
+    {
+      "@type": "Course",
+      "name": "AHA PALS Provider \u2013 Pediatric Advanced Life Support in Wilmington & Burgaw, NC",
+      "description": "Pediatric Advanced Life Support (PALS) course for nurses, physicians, and paramedics who care for critically ill or injured infants and children.",
+      "provider": {
+        "@type": "Organization",
+        "name": "910CPR \u2013 Coastal CPR Training",
+        "sameAs": "https://www.910cpr.com/"
+      }
+    },
+    {
+      "@type": "Course",
+      "name": "CPR, AED & First Aid Training for Workplaces, Schools & the Community",
+      "description": "CPR, AED and First Aid courses for workplaces, schools, childcare, coaches and the general public. Options include AHA Heartsaver and HSI First Aid/CPR/AED.",
+      "provider": {
+        "@type": "Organization",
+        "name": "910CPR \u2013 Coastal CPR Training",
+        "sameAs": "https://www.910cpr.com/"
+      }
+    }
+  ]
+}
+</script>
 
 <style>
 :root {
@@ -38,6 +119,7 @@ INDEX_TEMPLATE = dedent("""\
     --muted: #6c757d;
     --card-bg: #ffffff;
     --border: #dee2e6;
+    --accent: #0b64a0;
 }
 
 /* ===== Base layout ===== */
@@ -60,14 +142,129 @@ body {
     padding:16px;
 }
 
-/* Wrap the whole Enrollware block in a soft card */
+/* Keep main content narrower and centered for cleaner look */
+#hero,
+#schedule-section,
+#schedule-root {
+    max-width:900px;
+    margin:0 auto;
+}
 
-#schedule-root > #maincontent_schedPanel {
+/* ===== Header / nav ===== */
+
+.site-header {
+    max-width:900px;
+    margin:0 auto 16px auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+}
+
+.site-header .logo-wrap img {
+    max-height:56px;
+    width:auto;
+}
+
+.main-nav ul {
+    list-style:none;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 18px;
+    margin:0;
+    padding:0;
+    font-size:0.9rem;
+}
+
+.main-nav a {
+    text-decoration:none;
+    color:var(--text);
+    font-weight:500;
+}
+
+.main-nav a:hover {
+    color:var(--accent);
+    text-decoration:underline;
+}
+
+/* ===== Hero / intro ===== */
+
+#hero {
+    margin-bottom:18px;
+    background:#ffffff;
+    border-radius:10px;
+    border:1px solid var(--border);
+    padding:14px 16px;
+}
+
+#hero h1 {
+    font-size:1.4rem;
+    margin:0 0 6px 0;
+    text-align:center;
+}
+
+#hero p {
+    margin:4px 0;
+    font-size:0.95rem;
+}
+
+#hero .hero-highlight {
+    font-weight:600;
+}
+
+/* ===== Content sections ===== */
+
+.section {
+    max-width:900px;
+    margin:20px auto 8px auto;
+}
+
+.section h2 {
+    font-size:1.1rem;
+    margin:0 0 6px 0;
+}
+
+.section p,
+.section li {
+    font-size:0.95rem;
+}
+
+.section ul {
+    padding-left:18px;
+}
+
+/* ===== Screen reader utility ===== */
+
+.sr-only {
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+}
+
+/* Wrap the whole Enrollware block in a soft card and center it */
+
+#schedule-root #maincontent_schedPanel {
     background:var(--card-bg);
     border-radius:10px;
     border:1px solid var(--border);
-    padding:16px;
+    padding:16px 16px 20px 16px;
     box-shadow:0 3px 8px rgba(0,0,0,0.05);
+}
+
+/* Tighten the three header/quick-menu tables at the top */
+#maincontent_schedPanel > table {
+    margin:0 auto 10px auto !important;
+}
+
+/* Center text in contact paragraphs under the buttons */
+#maincontent_schedPanel > p {
+    text-align:center;
 }
 
 /* ===== Filter / search controls ===== */
@@ -111,13 +308,15 @@ body {
     display:none !important;
 }
 
+/* Filters row: center everything under the hero */
 @media (min-width: 768px) {
     #filters-row {
         display:flex;
         flex-wrap:wrap;
         gap:12px 24px;
         align-items:flex-end;
-        margin-bottom:10px;
+        justify-content:center;
+        margin:6px auto 10px auto;
     }
     #filters-row > div {
         flex:0 0 auto;
@@ -147,15 +346,47 @@ body {
     display:none !important;
 }
 
-/* ===== Course type panels under each family ===== */
+/* ===== Family group layout (courses left, info right) ===== */
 
 .course-family-group {
     margin-top:0;
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-    gap:12px;
+    grid-template-columns:minmax(0,2.1fr) minmax(0,1.3fr);
+    gap:16px;
     padding:16px 12px 18px;
     border-radius:0 0 40px 40px;
+}
+
+/* Left column holds the course tiles */
+.family-courses {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:12px;
+}
+
+/* Right column: info block */
+.family-info {
+    align-self:flex-start;
+    background:rgba(255,255,255,0.96);
+    border-radius:14px;
+    border:1px solid var(--border);
+    padding:14px 16px;
+    font-size:0.9rem;
+    box-shadow:0 3px 8px rgba(0,0,0,0.06);
+}
+
+.family-info h3 {
+    margin:0 0 6px 0;
+    font-size:1rem;
+}
+
+.family-info p {
+    margin:4px 0;
+}
+
+.family-info ul {
+    margin:6px 0 0 0;
+    padding-left:18px;
 }
 
 /* Colors that match each family pill */
@@ -308,6 +539,16 @@ body {
     max-width:100%;
     height:auto;
 }
+
+/* Stack family columns on smaller screens */
+@media (max-width: 900px) {
+    .course-family-group {
+        grid-template-columns:1fr;
+    }
+    .family-info {
+        margin-top:4px;
+    }
+}
 </style>
 
 <!-- jQuery -->
@@ -350,8 +591,79 @@ jQuery(function($){
         }
     });
 
+    // Info-card HTML per family
+    var familyInfoHtml = {
+        bls:
+            '<div class="family-info family-info-bls">' +
+            '<h3>Healthcare Provider BLS (AHA)</h3>' +
+            '<p>AHA BLS Provider and Renewal classes are designed for nurses, nursing students, EMS, physicians, techs and other licensed providers who respond to cardiopulmonary arrests.</p>' +
+            '<p>These courses meet CPR requirements for many programs at CFCC, UNCW and SCC and are accepted by most hospitals and clinics in southeastern North Carolina.</p>' +
+            '<ul>' +
+            '<li>Hands-on CPR for adults, children and infants</li>' +
+            '<li>Team-based resuscitation and bag-mask skills</li>' +
+            '<li>Same-day or fast eCards in most cases</li>' +
+            '</ul>' +
+            '</div>',
+        acls:
+            '<div class="family-info family-info-acls">' +
+            '<h3>Advanced Cardiac Life Support (ACLS)</h3>' +
+            '<p>ACLS courses support hospital and EMS clinicians who manage adult cardiac arrest, peri-arrest conditions, and post-resuscitation care.</p>' +
+            '<p>Commonly required for critical care, ED, cath lab, anesthesia and advanced practice providers throughout our region.</p>' +
+            '<ul>' +
+            '<li>Initial and Renewal options, plus HeartCode skills</li>' +
+            '<li>Rhythm recognition, ACLS algorithms and megacode practice</li>' +
+            '<li>Small class sizes to keep megacode time meaningful</li>' +
+            '</ul>' +
+            '</div>',
+        pals:
+            '<div class="family-info family-info-pals">' +
+            '<h3>Pediatric Advanced Life Support (PALS)</h3>' +
+            '<p>PALS is for nurses, physicians, paramedics and other providers who care for critically ill or injured infants and children.</p>' +
+            '<p>Ideal for pediatric and emergency departments, PICU, NICU and transport teams in Wilmington, Burgaw and surrounding areas.</p>' +
+            '<ul>' +
+            '<li>Scenario-based practice with pediatric manikins</li>' +
+            '<li>Shock, respiratory distress, and peri-arrest management</li>' +
+            '<li>HeartCode and instructor-led options available</li>' +
+            '</ul>' +
+            '</div>',
+        asls:
+            '<div class="family-info family-info-asls">' +
+            '<h3>ASLS Stroke Life Support</h3>' +
+            '<p>Advanced Stroke Life Support training for prehospital and in-hospital teams who assess, stabilize and transport stroke patients.</p>' +
+            '<p>Great fit for EMS, ED, neurology, and stroke team members who want a structured approach to early stroke recognition and care.</p>' +
+            '</div>',
+        cprfa:
+            '<div class="family-info family-info-cprfa">' +
+            '<h3>CPR, AED &amp; First Aid for Workplaces &amp; Families</h3>' +
+            '<p>These classes are built for non-medical rescuers: teachers, childcare providers, foster parents, coaches, church volunteers and workplace responders.</p>' +
+            '<ul>' +
+            '<li>AHA Heartsaver and HSI First Aid/CPR/AED options</li>' +
+            '<li>Meets many OSHA and childcare licensing requirements</li>' +
+            '<li>On-site training available for groups across southeastern NC</li>' +
+            '</ul>' +
+            '</div>',
+        cpron:
+            '<div class="family-info family-info-cpron">' +
+            '<h3>CPR / AED Only Options</h3>' +
+            '<p>Short-format CPR/AED courses for people who do not need First Aid but want high-quality CPR skills and AED familiarity.</p>' +
+            '<p>Popular with fitness staff, small offices and community groups who already have basic First Aid plans in place.</p>' +
+            '</div>',
+        instructor:
+            '<div class="family-info family-info-instructor">' +
+            '<h3>Instructor Programs</h3>' +
+            '<p>Instructor development courses support professionals who want to teach CPR, First Aid, BLS or advanced life support through 910CPR or their own organization.</p>' +
+            '<p>If you’re considering an instructor path, please contact us so we can match you with the right program and alignment options.</p>' +
+            '</div>',
+        other:
+            '<div class="family-info family-info-other">' +
+            '<h3>Other &amp; Specialized Programs</h3>' +
+            '<p>Additional courses such as OSHA-focused training, safety refreshers and specialty programs are listed here as they are offered.</p>' +
+            '<p>Don’t see what you need? Reach out and we can often schedule a session or help you find the best fit.</p>' +
+            '</div>'
+    };
+
     // 2) Group the course panels that come after each family header,
-    //    and tag course panels by family type.
+    //    and tag course panels by family type. Also create left/right layout.
     for (var i = 0; i < familyPanels.length; i++) {
         var $family = familyPanels[i];
         var headerText = ($family.find('.enrpanel-heading a.enrtrigger').text() || '').toLowerCase();
@@ -378,6 +690,9 @@ jQuery(function($){
         }
 
         var $group = $('<div class="course-family-group"></div>');
+        var $coursesWrap = $('<div class="family-courses"></div>');
+        $group.append($coursesWrap);
+
         if (familyType) {
             $group.addClass('family-' + familyType);
             $family.addClass('family-' + familyType);
@@ -388,10 +703,15 @@ jQuery(function($){
         while ($next.length && !$next.hasClass('family-header')) {
             var $move = $next;
             $next = $next.next();
-            $move.appendTo($group).addClass('course-panel');
+            $move.appendTo($coursesWrap).addClass('course-panel');
             if (familyType) {
                 $move.addClass('family-' + familyType);
             }
+        }
+
+        // Attach the info card on the right side if we have content
+        if (familyType && familyInfoHtml[familyType]) {
+            $group.append($(familyInfoHtml[familyType]));
         }
     }
 
@@ -558,7 +878,7 @@ jQuery(function($){
             $items.slice(PAGE).hide();
             var shown = PAGE;
 
-            var $btn = $('<button type="button" class="session-more-button">More times…</button>');
+            var $btn = $('<button type="button" class="session-more-button">More times\u2026</button>');
             $btn.on('click', function(){
                 shown += PAGE;
                 $items.slice(0, shown).show();
@@ -580,9 +900,80 @@ jQuery(function($){
 <body id="enrollware-reg">
 <div id="page-wrap">
 
-    <div id="schedule-root">
+    <header class="site-header">
+        <div class="logo-wrap">
+            <a href="https://www.910cpr.com/">
+                <img src="https://coastalcprtraining.enrollware.com/sitefiles/coastalcprtraining/910cpr_round.png" alt="910CPR logo">
+            </a>
+        </div>
+        <nav class="main-nav" aria-label="Primary navigation">
+            <ul>
+                <li><a href="https://www.910cpr.com/">Class Schedule</a></li>
+                <li><a href="https://coastalcprtraining.com/classes" target="_blank" rel="noopener">Classes Overview</a></li>
+                <li><a href="https://coastalcprtraining.com/on-site-training" target="_blank" rel="noopener">On-Site Training</a></li>
+                <li><a href="https://coastalcprtraining.com/2025-price-list" target="_blank" rel="noopener">2025 Price List</a></li>
+                <li><a href="https://coastalcprtraining.com/about" target="_blank" rel="noopener">About 910CPR</a></li>
+                <li><a href="tel:+19103955193">Call 910-395-5193</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <h1>CPR, BLS, ACLS, PALS &amp; First Aid Classes in Wilmington &amp; Burgaw, NC</h1>
+        <p class="hero-highlight">
+            Live and blended CPR training for healthcare providers, workplaces, schools, and families across southeastern North Carolina.
+        </p>
+        <p>
+            910CPR is an American Heart Association, American Red Cross, and HSI training center providing small classes, fast certificate delivery,
+            and realistic practice in our Wilmington and Burgaw classrooms or at your location.
+        </p>
+        <p>
+            Use the schedule below to find the class, date, and location that works best for you. If you need help choosing the right course,
+            call or text <strong>910-395-5193</strong> during business hours.
+        </p>
+    </section>
+
+    <main>
+        <section id="schedule-section" class="section">
+            <h2 class="sr-only">Live CPR &amp; First Aid Class Schedule</h2>
+            <div id="schedule-root">
 {{SCHEDULE_PANEL}}
-    </div>
+            </div>
+        </section>
+
+        <section id="why-910cpr" class="section">
+            <h2>Why choose 910CPR for your CPR &amp; BLS class?</h2>
+            <ul>
+                <li><strong>Trusted locally.</strong> We have provided CPR, BLS, ACLS, PALS and First Aid training for hospitals, clinics, schools, dental offices, and small businesses throughout southeastern North Carolina.</li>
+                <li><strong>Same-day or fast cards.</strong> Most students receive their eCard shortly after class, so you can start a new job or clinical rotation without waiting weeks.</li>
+                <li><strong>Flexible options.</strong> In-person, blended/online + skills, and onsite group training are all available so you can match your schedule and learning style.</li>
+                <li><strong>Small, hands-on classes.</strong> Our instructors keep class sizes reasonable and focus on real-world scenarios, not just PowerPoint slides.</li>
+                <li><strong>Easy parking &amp; clear directions.</strong> Our Wilmington and Burgaw classrooms are easy to find, and we bring the class to you for onsite or group bookings.</li>
+            </ul>
+        </section>
+
+        <section id="faq" class="section">
+            <h2>Common questions about CPR classes at 910CPR</h2>
+            <h3>Which CPR class do I need for nursing or healthcare programs?</h3>
+            <p>
+                Most nursing, respiratory therapy, and allied health programs at <strong>CFCC</strong>, <strong>UNCW</strong>, and <strong>SCC</strong> require
+                the <strong>AHA BLS Provider</strong> course. If you are unsure, choose BLS or contact your school for their exact requirement and then match it to
+                the course titles on this page.
+            </p>
+
+            <h3>Do you offer onsite CPR training for offices and groups?</h3>
+            <p>
+                Yes. 910CPR provides onsite AHA, HSI and Red Cross classes for medical practices, construction companies, schools, churches and other groups.
+                Use the “On-Site Training” link above or call us to request a quote and available dates.
+            </p>
+
+            <h3>How quickly will I receive my CPR card?</h3>
+            <p>
+                Most students receive their eCard the same day or within a few business days after successful completion of class.
+                If you are on a deadline for a job or clinical rotation, let your instructor know at the beginning of class.
+            </p>
+        </section>
+    </main>
 
 </div>
 </body>
@@ -601,6 +992,7 @@ def extract_schedule_panel(soup: BeautifulSoup) -> str:
     panel = soup.find(id="maincontent_schedPanel")
     if panel is not None:
         return str(panel)
+    # Fallback: older or alternate markup
     alt = soup.find(id="enrmain") or soup.body
     if alt is None:
         raise RuntimeError("Could not find #maincontent_schedPanel or #enrmain in snapshot.")

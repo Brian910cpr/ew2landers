@@ -215,8 +215,8 @@ body {
 /* ===== Content sections ===== */
 
 .section {
-    margin-top:20px;
-    margin-bottom:8px;
+    max-width:900px;
+    margin:20px auto 8px auto;
 }
 
 .section h2 {
@@ -346,15 +346,47 @@ body {
     display:none !important;
 }
 
-/* ===== Course type panels under each family ===== */
+/* ===== Family group layout (courses left, info right) ===== */
 
 .course-family-group {
     margin-top:0;
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-    gap:12px;
+    grid-template-columns:minmax(0,2.1fr) minmax(0,1.3fr);
+    gap:16px;
     padding:16px 12px 18px;
     border-radius:0 0 40px 40px;
+}
+
+/* Left column holds the course tiles */
+.family-courses {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:12px;
+}
+
+/* Right column: info block */
+.family-info {
+    align-self:flex-start;
+    background:rgba(255,255,255,0.96);
+    border-radius:14px;
+    border:1px solid var(--border);
+    padding:14px 16px;
+    font-size:0.9rem;
+    box-shadow:0 3px 8px rgba(0,0,0,0.06);
+}
+
+.family-info h3 {
+    margin:0 0 6px 0;
+    font-size:1rem;
+}
+
+.family-info p {
+    margin:4px 0;
+}
+
+.family-info ul {
+    margin:6px 0 0 0;
+    padding-left:18px;
 }
 
 /* Colors that match each family pill */
@@ -507,6 +539,16 @@ body {
     max-width:100%;
     height:auto;
 }
+
+/* Stack family columns on smaller screens */
+@media (max-width: 900px) {
+    .course-family-group {
+        grid-template-columns:1fr;
+    }
+    .family-info {
+        margin-top:4px;
+    }
+}
 </style>
 
 <!-- jQuery -->
@@ -549,8 +591,79 @@ jQuery(function($){
         }
     });
 
+    // Info-card HTML per family
+    var familyInfoHtml = {
+        bls:
+            '<div class="family-info family-info-bls">' +
+            '<h3>Healthcare Provider BLS (AHA)</h3>' +
+            '<p>AHA BLS Provider and Renewal classes are designed for nurses, nursing students, EMS, physicians, techs and other licensed providers who respond to cardiopulmonary arrests.</p>' +
+            '<p>These courses meet CPR requirements for many programs at CFCC, UNCW and SCC and are accepted by most hospitals and clinics in southeastern North Carolina.</p>' +
+            '<ul>' +
+            '<li>Hands-on CPR for adults, children and infants</li>' +
+            '<li>Team-based resuscitation and bag-mask skills</li>' +
+            '<li>Same-day or fast eCards in most cases</li>' +
+            '</ul>' +
+            '</div>',
+        acls:
+            '<div class="family-info family-info-acls">' +
+            '<h3>Advanced Cardiac Life Support (ACLS)</h3>' +
+            '<p>ACLS courses support hospital and EMS clinicians who manage adult cardiac arrest, peri-arrest conditions, and post-resuscitation care.</p>' +
+            '<p>Commonly required for critical care, ED, cath lab, anesthesia and advanced practice providers throughout our region.</p>' +
+            '<ul>' +
+            '<li>Initial and Renewal options, plus HeartCode skills</li>' +
+            '<li>Rhythm recognition, ACLS algorithms and megacode practice</li>' +
+            '<li>Small class sizes to keep megacode time meaningful</li>' +
+            '</ul>' +
+            '</div>',
+        pals:
+            '<div class="family-info family-info-pals">' +
+            '<h3>Pediatric Advanced Life Support (PALS)</h3>' +
+            '<p>PALS is for nurses, physicians, paramedics and other providers who care for critically ill or injured infants and children.</p>' +
+            '<p>Ideal for pediatric and emergency departments, PICU, NICU and transport teams in Wilmington, Burgaw and surrounding areas.</p>' +
+            '<ul>' +
+            '<li>Scenario-based practice with pediatric manikins</li>' +
+            '<li>Shock, respiratory distress, and peri-arrest management</li>' +
+            '<li>HeartCode and instructor-led options available</li>' +
+            '</ul>' +
+            '</div>',
+        asls:
+            '<div class="family-info family-info-asls">' +
+            '<h3>ASLS Stroke Life Support</h3>' +
+            '<p>Advanced Stroke Life Support training for prehospital and in-hospital teams who assess, stabilize and transport stroke patients.</p>' +
+            '<p>Great fit for EMS, ED, neurology, and stroke team members who want a structured approach to early stroke recognition and care.</p>' +
+            '</div>',
+        cprfa:
+            '<div class="family-info family-info-cprfa">' +
+            '<h3>CPR, AED &amp; First Aid for Workplaces &amp; Families</h3>' +
+            '<p>These classes are built for non-medical rescuers: teachers, childcare providers, foster parents, coaches, church volunteers and workplace responders.</p>' +
+            '<ul>' +
+            '<li>AHA Heartsaver and HSI First Aid/CPR/AED options</li>' +
+            '<li>Meets many OSHA and childcare licensing requirements</li>' +
+            '<li>On-site training available for groups across southeastern NC</li>' +
+            '</ul>' +
+            '</div>',
+        cpron:
+            '<div class="family-info family-info-cpron">' +
+            '<h3>CPR / AED Only Options</h3>' +
+            '<p>Short-format CPR/AED courses for people who do not need First Aid but want high-quality CPR skills and AED familiarity.</p>' +
+            '<p>Popular with fitness staff, small offices and community groups who already have basic First Aid plans in place.</p>' +
+            '</div>',
+        instructor:
+            '<div class="family-info family-info-instructor">' +
+            '<h3>Instructor Programs</h3>' +
+            '<p>Instructor development courses support professionals who want to teach CPR, First Aid, BLS or advanced life support through 910CPR or their own organization.</p>' +
+            '<p>If you’re considering an instructor path, please contact us so we can match you with the right program and alignment options.</p>' +
+            '</div>',
+        other:
+            '<div class="family-info family-info-other">' +
+            '<h3>Other &amp; Specialized Programs</h3>' +
+            '<p>Additional courses such as OSHA-focused training, safety refreshers and specialty programs are listed here as they are offered.</p>' +
+            '<p>Don’t see what you need? Reach out and we can often schedule a session or help you find the best fit.</p>' +
+            '</div>'
+    };
+
     // 2) Group the course panels that come after each family header,
-    //    and tag course panels by family type.
+    //    and tag course panels by family type. Also create left/right layout.
     for (var i = 0; i < familyPanels.length; i++) {
         var $family = familyPanels[i];
         var headerText = ($family.find('.enrpanel-heading a.enrtrigger').text() || '').toLowerCase();
@@ -577,6 +690,9 @@ jQuery(function($){
         }
 
         var $group = $('<div class="course-family-group"></div>');
+        var $coursesWrap = $('<div class="family-courses"></div>');
+        $group.append($coursesWrap);
+
         if (familyType) {
             $group.addClass('family-' + familyType);
             $family.addClass('family-' + familyType);
@@ -587,10 +703,15 @@ jQuery(function($){
         while ($next.length && !$next.hasClass('family-header')) {
             var $move = $next;
             $next = $next.next();
-            $move.appendTo($group).addClass('course-panel');
+            $move.appendTo($coursesWrap).addClass('course-panel');
             if (familyType) {
                 $move.addClass('family-' + familyType);
             }
+        }
+
+        // Attach the info card on the right side if we have content
+        if (familyType && familyInfoHtml[familyType]) {
+            $group.append($(familyInfoHtml[familyType]));
         }
     }
 
