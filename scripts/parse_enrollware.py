@@ -1,263 +1,216 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """
-910CPR – Enrollware Schedule Parser (Revised, Clean)
+parse_enrollware.py
 
-Parses an Enrollware HTML export into two JSON outputs:
+Reads the saved Enrollware schedule HTML and produces a simple JSON file:
+{
+  "generated_at": "...",
+  "courses": [...],
+  "sessions": [...]
+}
 
-1) docs/data/schedule.json
-   Rich canonical dataset
-
-2) docs/data/schedule-sidebar.json
-   Minimal dataset for GoDaddy Periscope Drawer
-
-Usage:
-  python scripts/parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
+This version is updated for the current Enrollware layout which uses
+accordion panels (.enrpanel) and <ul class="enrclass-list"> for the
+actual dated class sessions.
 """
 
-import sys
 import json
 import re
-from bs4 import BeautifulSoup
+import sys
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Tuple
+from urllib.parse import urljoin, urlparse, parse_qs
+
+from bs4 import BeautifulSoup  # type: ignore
 
 
-# -----------------------------------------------------------
-# Delivery Mode Normalizer
-# -----------------------------------------------------------
-def normalize_delivery_mode(title: str) -> str:
-    t = title.lower()
-
-    if "heartcode" in t:
-        return "HEARTCODE"
-    if "blended" in t:
-        return "BLENDED"
-    if "online" in t and "skills" not in t:
-        return "ONLINE"
-
-    return "ILT"  # default
+ENROLLWARE_BASE = "https://coastalcprtraining.enrollware.com"
 
 
-# -----------------------------------------------------------
-# Family Normalizer (canonical)
-# -----------------------------------------------------------
-def normalize_family(course_title: str) -> str:
-    t = course_title.lower()
-
-    if "bls" in t:
-        return "BLS"
-    if "acls" in t:
-        return "ACLS"
-    if "pals" in t:
-        return "PALS"
-    if "pears" in t:
-        return "PEARS"
-    if "asls" in t:
-        return "ASLS"
-
-    if "first aid" in t and "cpr" in t:
-        return "FA-CPR-AED"
-    if "cpr" in t and "aed" in t:
-        return "CPR-AED"
-
-    if "family" in t and "friends" in t:
-        return "FNF"
-
-    if "instructor" in t:
-        return "INSTRUCTOR"
-
-    return "OTHER"
+def load_html(path: Path) -> BeautifulSoup:
+    """Load the saved HTML file into BeautifulSoup."""
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    return BeautifulSoup(text, "html.parser")
 
 
-# -----------------------------------------------------------
-# Cert Body normalizer
-# -----------------------------------------------------------
-def normalize_cert_body(title: str) -> str:
-    t = title.lower()
-    if "aha" in t:
-        return "AHA"
-    if "red cross" in t or "arc" in t:
-        return "ARC"
-    if "hsi" in t:
-        return "HSI"
-    return "AHA"
+def normalize_course_name(raw: str) -> str:
+    """
+    Clean up the course name a bit.
+
+    We keep it simple here – strip whitespace and collapse spaces.
+    """
+    if not raw:
+        return ""
+    cleaned = BeautifulSoup(raw, "html.parser").get_text(" ", strip=True)
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    return cleaned
 
 
-# -----------------------------------------------------------
-# Parse Enrollware-style date/time
-# Example: "Thu 11/13/25 1:00p"
-# -----------------------------------------------------------
-def parse_enrollware_datetime(raw_dt: str):
-    if not raw_dt:
-        return None
+def extract_session_id_from_href(href: str) -> str:
+    """
+    Extract numeric session id from an enroll link like:
+      /enroll?id=11925103
+      https://coastalcprtraining.enrollware.com/enroll?id=11925103
+    """
+    if not href:
+        return ""
+    parsed = urlparse(href)
+    qs = parse_qs(parsed.query)
+    if "id" in qs and qs["id"]:
+        return qs["id"][0]
 
-    s = raw_dt.replace("\xa0", " ").strip()
-
-    if " - " in s:
-        s = s.split(" - ")[0].strip()
-
-    # Convert trailing 'a'/'p' to AM/PM
-    m = re.search(r'([ap])$', s)
-    if m:
-        s = s[:-1] + ("AM" if m.group(1) == "a" else "PM")
-
-    fmts = [
-        "%a %m/%d/%y %I:%M%p",
-        "%m/%d/%y %I:%M%p",
-        "%m/%d/%Y %I:%M%p",
-    ]
-
-    for fmt in fmts:
-        try:
-            return datetime.strptime(s, fmt)
-        except:
-            pass
-
-    return None
+    # Fallback: regex
+    m = re.search(r"id=(\d+)", href)
+    return m.group(1) if m else ""
 
 
-# -----------------------------------------------------------
-# Parse the Enrollware HTML table
-# -----------------------------------------------------------
-def parse_html(path):
-    with open(path, "r", encoding="utf-8") as f:
-        soup = BeautifulSoup(f.read(), "html.parser")
+def extract_date_text(a_tag) -> str:
+    """
+    In Enrollware's <ul class="enrclass-list">, each <a> looks like:
+      <a href="...">Wednesday, February 4, 2026 at 6:30 PM
+        <span>NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</span>
+      </a>
 
-    rows = soup.find_all("tr")
-    sessions = []
-    courses = {}
+    We want everything BEFORE the <span>.
+    """
+    parts: List[str] = []
+    for child in a_tag.children:
+        # Stop once we hit the span that contains the location
+        if getattr(child, "name", None) == "span":
+            break
+        if isinstance(child, str):
+            text = child.strip()
+            if text:
+                parts.append(text)
+    return " ".join(parts).strip()
 
-    for r in rows:
-        cols = r.find_all("td")
-        if len(cols) < 5:
+
+def parse_html(path: Path) -> Tuple[List[Dict], List[Dict]]:
+    """
+    Parse the Enrollware schedule HTML and return (courses, sessions).
+
+    courses:  list of { "id": int, "name": str }
+    sessions: list of {
+       "id": str,
+       "course_id": int,
+       "course_name": str,
+       "start_display": str,
+       "location": str,
+       "location_short": str,
+       "register_url": str,
+       ...
+    }
+    """
+    soup = load_html(path)
+
+    courses: List[Dict] = []
+    sessions: List[Dict] = []
+    course_index: Dict[str, int] = {}
+
+    # Each accordion section is an ".enrpanel" with a header and body.
+    # Inside the body we should see <ul class="enrclass-list"> with <li><a> entries.
+    panels = soup.select("#enraccordion .enrpanel")
+    if not panels:
+        # Fallback: try any .enrpanel in case the id changes.
+        panels = soup.select(".enrpanel")
+
+    for panel in panels:
+        # Try value="" attribute first (Enrollware uses this for searching)
+        raw_course_name = panel.get("value") or ""
+
+        if not raw_course_name:
+            title_el = panel.select_one(".enrpanel-title")
+            if title_el:
+                raw_course_name = title_el.get_text(" ", strip=True)
+
+        course_name = normalize_course_name(raw_course_name)
+        if not course_name:
+            # If we truly can't find a course name, skip this panel
             continue
 
-        raw_dt = cols[0].get_text(strip=True)
-        session_id_text = cols[1].get_text(strip=True)
-        title = cols[2].get_text(strip=True)
-        location = cols[3].get_text(strip=True)
-        enrolled_text = cols[-2].get_text(strip=True)
+        # Assign or reuse a numeric course_id
+        if course_name not in course_index:
+            cid = len(course_index) + 1
+            course_index[course_name] = cid
+            courses.append({"id": cid, "name": course_name})
+        course_id = course_index[course_name]
 
-        # Skip header rows
-        if not re.search(r"\d", session_id_text):
-            continue
+        # Now look for the actual dated classes under this panel
+        for ul in panel.select("ul.enrclass-list"):
+            for li in ul.find_all("li"):
+                a = li.find("a", href=True)
+                if not a:
+                    continue
 
-        dt = parse_enrollware_datetime(raw_dt)
-        if dt is None:
-            continue
+                href = a["href"]
+                # We only care about real enroll links, not internal anchors
+                if "enroll" not in href:
+                    continue
 
-        m = re.search(r"(\d{4,9})", session_id_text)
-        if m:
-            course_id = int(m.group(1))
-        else:
-            course_id = abs(hash(title)) % 10_000_000
+                session_id = extract_session_id_from_href(href)
+                start_display = extract_date_text(a)
+                # Location is in the <span> inside the link
+                span = a.find("span")
+                location = span.get_text(" ", strip=True) if span else ""
+                location_short = location  # you can shorten later if desired
 
-        # Compute seats remaining from "X / Y"
-        seats = 0
-        capacity = None
-        m2 = re.search(r"(\d+)\s*/\s*(\d+)", enrolled_text)
-        if m2:
-            enrolled_num = int(m2.group(1))
-            capacity = int(m2.group(2))
-            seats = max(0, capacity - enrolled_num)
+                register_url = urljoin(ENROLLWARE_BASE, href)
 
-        fam = normalize_family(title)
-        body = normalize_cert_body(title)
-        mode = normalize_delivery_mode(title)
-
-        # Save course object
-        if course_id not in courses:
-            courses[course_id] = {
-                "courseId": course_id,
-                "title": title,
-                "family": fam,
-                "certBody": body,
-                "deliveryMode": mode,
-                "price": 0.0
-            }
-
-        # Save session
-        sessions.append({
-            "session_id": session_id_text,
-            "course_id": course_id,
-            "title": title,
-            "family": fam,
-            "certBody": body,
-            "deliveryMode": mode,
-            "location": location,
-            "start": dt.isoformat(),
-            "date": dt.strftime("%Y-%m-%d"),
-            "time": dt.strftime("%I:%M %p").lstrip("0"),
-            "seats": seats,
-            "capacity": capacity
-        })
+                session = {
+                    "id": session_id,
+                    "course_id": course_id,
+                    "course_name": course_name,
+                    "start_display": start_display,
+                    "location": location,
+                    "location_short": location_short,
+                    "register_url": register_url,
+                }
+                sessions.append(session)
 
     return courses, sessions
 
 
-# -----------------------------------------------------------
-# Build sidebar-friendly sessions
-# -----------------------------------------------------------
-def build_sidebar_sessions(courses, sessions):
-    out = []
-
-    for s in sessions:
-        c = courses.get(s["course_id"], {})
-        session_id = s["session_id"]
-
-        register_url = f"https://coastalcprtraining.enrollware.com/enroll?id={session_id}"
-
-        out.append({
-            "sessionId": session_id,
-            "courseId": s["course_id"],
-            "family": s["family"],
-            "certBody": s["certBody"],
-            "deliveryMode": s["deliveryMode"],
-            "location": s["location"],
-            "date": s["date"],
-            "time": s["time"],
-            "seats": s["seats"],
-            "price": float(c.get("price", 0.0)),
-            "registerUrl": register_url
-        })
-
-    return out
+def write_schedule_json(
+    output_path: Path, courses: List[Dict], sessions: List[Dict]
+) -> None:
+    """Write the combined schedule.json file."""
+    payload = {
+        "generated_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+        "courses": courses,
+        "sessions": sessions,
+    }
+    output_path.write_text(
+        json.dumps(payload, indent=2, sort_keys=False),
+        encoding="utf-8",
+    )
 
 
-# -----------------------------------------------------------
-# Main runner
-# -----------------------------------------------------------
-def main():
-    if len(sys.argv) < 3:
-        print("Usage: python parse_enrollware.py input.html docs/data/schedule.json")
-        sys.exit(1)
+def main(argv: List[str]) -> int:
+    if len(argv) != 3:
+        print(
+            "Usage: parse_enrollware.py INPUT_HTML OUTPUT_JSON",
+            file=sys.stderr,
+        )
+        return 1
 
-    input_html = sys.argv[1]
-    output_json = sys.argv[2]
+    input_html = Path(argv[1])
+    output_json = Path(argv[2])
+
+    if not input_html.exists():
+        print(f"Input HTML not found: {input_html}", file=sys.stderr)
+        return 1
 
     courses, sessions = parse_html(input_html)
+    write_schedule_json(output_json, courses, sessions)
 
-    # Write rich canonical
-    rich = {
-        "generated_at": datetime.now().isoformat(),
-        "courses": list(courses.values()),
-        "sessions": sessions
-    }
-
-    with open(output_json, "w", encoding="utf-8") as f:
-        json.dump(rich, f, ensure_ascii=False, indent=2)
-
-    # Write sidebar format
-    sidebar = build_sidebar_sessions(courses, sessions)
-    sidebar_path = output_json.replace("schedule.json", "schedule-sidebar.json")
-
-    with open(sidebar_path, "w", encoding="utf-8") as f:
-        json.dump(sidebar, f, ensure_ascii=False, indent=2)
-
-    print(f"Wrote {len(courses)} courses and {len(sessions)} sessions")
-    print(f"Sidebar file: {sidebar_path}")
+    print(
+        f"Wrote {len(courses)} courses and {len(sessions)} sessions "
+        f"to {output_json}"
+    )
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main(sys.argv))
