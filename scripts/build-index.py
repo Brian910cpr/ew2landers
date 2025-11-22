@@ -4,32 +4,18 @@
 """
 build-index.py
 
-Generate a static docs/index.html for 910CPR using the hardened
-layout shell that loads schedule.json via accordion.js.
-
-Defaults:
-input:  docs/data/enrollware-schedule.html  (currently unused, kept for compatibility)
-output: docs/index.html
+Generate docs/index.html for 910CPR with:
+- Quick Select buttons (hard-coded)
+- Family-colored accordion ("curtain") fed by data/schedule.json
+- One accordion open at a time
+- BLS family open by default
 """
 
-import sys
 from pathlib import Path
-from textwrap import dedent
 
-# BeautifulSoup and snapshot parsing kept here only for forward compatibility.
-# Right now the index template does not inject the raw Enrollware schedule panel.
-try:
-    from bs4 import BeautifulSoup  # type: ignore
-except Exception:  # pragma: no cover
-    BeautifulSoup = None  # fall back if bs4 is not installed
+OUTPUT_PATH = Path("docs/index.html")
 
-
-DEFAULT_INPUT = Path("docs/data/enrollware-schedule.html")
-DEFAULT_OUTPUT = Path("docs/index.html")
-
-
-INDEX_TEMPLATE = dedent("""\
-<!DOCTYPE html>
+INDEX_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -791,7 +777,7 @@ INDEX_TEMPLATE = dedent("""\
 
         <div id="course-list-status" class="cct-status" aria-live="polite">
           <div class="cct-status-dot cct-status-loading"></div>
-          <span>Loading live course list&hellip;</span>
+          <span>Loading live course list…</span>
         </div>
 
         <div id="course-families" class="cct-accordion" aria-label="All active Enrollware course families"></div>
@@ -802,7 +788,7 @@ INDEX_TEMPLATE = dedent("""\
             <span>Live course list is temporarily unavailable.</span>
           </div>
           <div>
-            We&rsquo;re still teaching &mdash; this just means the JSON feed misbehaved.
+            We’re still teaching — this just means the JSON feed misbehaved.
             You can always see every active class directly on Enrollware.
           </div>
           <div class="cct-fallback-actions">
@@ -813,7 +799,7 @@ INDEX_TEMPLATE = dedent("""\
         </div>
 
         <div class="cct-footer-note">
-          Swapping logos or editing text here won&rsquo;t break the JSON loader or the curtain behavior.
+          Swapping logos or editing text here won’t break the JSON loader or the curtain behavior.
         </div>
       </section>
     </main>
@@ -821,65 +807,360 @@ INDEX_TEMPLATE = dedent("""\
   </div>
 </div>
 
-<script src="js/accordion.js"></script>
+<script>
+(function () {
+  var STATUS_EL = document.getElementById("course-list-status");
+  var FAMILIES_EL = document.getElementById("course-families");
+  var FALLBACK_EL = document.getElementById("course-list-fallback");
+
+  function setStatus(state, message) {
+    if (!STATUS_EL) return;
+    var dot = STATUS_EL.querySelector(".cct-status-dot");
+    if (dot) {
+      dot.classList.remove("cct-status-loading", "cct-status-error");
+      if (state === "loading") dot.classList.add("cct-status-loading");
+      if (state === "error") dot.classList.add("cct-status-error");
+    }
+    if (message) {
+      var span = STATUS_EL.querySelector("span");
+      if (span) span.textContent = message;
+    }
+  }
+
+  function showFallback() {
+    setStatus("error", "Showing backup link instead.");
+    if (FAMILIES_EL) {
+      FAMILIES_EL.innerHTML = "";
+      FAMILIES_EL.style.display = "none";
+    }
+    if (FALLBACK_EL) {
+      FALLBACK_EL.hidden = false;
+    }
+  }
+
+  function getCourseName(course) {
+    if (!course || typeof course !== "object") return "Untitled course";
+    return (
+      course.enrollware_name ||
+      course.original_name ||
+      course.html_title ||
+      course.title ||
+      course.name ||
+      "Untitled course"
+    );
+  }
+
+  function getCourseCode(course) {
+    if (!course || typeof course !== "object") return "";
+    return (
+      course.enrollware_code ||
+      course.code ||
+      course.course_code ||
+      ""
+    );
+  }
+
+  function getFamilyName(course) {
+    if (!course || typeof course !== "object") return "Other Courses";
+    return (
+      course.family ||
+      course.course_family ||
+      course.family_name ||
+      "Other Courses"
+    );
+  }
+
+  function getFamilyClass(family) {
+    if (!family) return "cct-family-other";
+    var f = String(family).toLowerCase();
+    if (f.indexOf("bls") !== -1) return "cct-family-bls";
+    if (f.indexOf("acls") !== -1) return "cct-family-acls";
+    if (f.indexOf("pals") !== -1) return "cct-family-pals";
+    if (f.indexOf("heartsaver") !== -1) return "cct-family-heartsaver";
+    if (f.indexOf("hsi") !== -1) return "cct-family-hsi";
+    return "cct-family-other";
+  }
+
+  function buildCourseRow(course) {
+    var row = document.createElement("div");
+    row.className = "cct-course-row";
+
+    var main = document.createElement("div");
+
+    var name = document.createElement("div");
+    name.className = "cct-course-name";
+    name.textContent = getCourseName(course);
+    main.appendChild(name);
+
+    var metaPieces = [];
+
+    var code = getCourseCode(course);
+    if (code) {
+      metaPieces.push("Code: " + code);
+    }
+
+    if (Array.isArray(course.sessions) && course.sessions.length > 0) {
+      var sessions = course.sessions.slice().sort(function (a, b) {
+        var at = a.start_local || a.start || "";
+        var bt = b.start_local || b.start || "";
+        if (at < bt) return -1;
+        if (at > bt) return 1;
+        return 0;
+      });
+      var upcoming = sessions.find(function (s) {
+        return s && s.is_past === false;
+      }) || sessions[0];
+
+      if (upcoming) {
+        var when = upcoming.friendly_date || upcoming.start_local || upcoming.start;
+        if (when) {
+          metaPieces.push("Next: " + when);
+        }
+        var whereParts = [];
+        if (upcoming.city) whereParts.push(upcoming.city);
+        if (upcoming.state) whereParts.push(upcoming.state);
+        if (whereParts.length > 0) {
+          metaPieces.push(whereParts.join(", "));
+        }
+      }
+    }
+
+    if (metaPieces.length > 0) {
+      var meta = document.createElement("div");
+      meta.className = "cct-course-meta";
+
+      var span = document.createElement("span");
+      span.innerHTML = metaPieces
+        .map(function (txt) {
+          if (txt.indexOf("Next:") === 0) {
+            return '<span class="cct-next-label">Next:</span> ' + txt.replace("Next:", "").trim();
+          }
+          return txt;
+        })
+        .join(" • ");
+      meta.appendChild(span);
+      main.appendChild(meta);
+    }
+
+    row.appendChild(main);
+
+    var actions = document.createElement("div");
+    actions.className = "cct-course-actions";
+
+    var scheduleUrl = course.schedule_url || course.catalog_url || "";
+    if (scheduleUrl) {
+      var btn = document.createElement("a");
+      btn.className = "cct-small-link-btn";
+      btn.href = scheduleUrl;
+      btn.target = "_blank";
+      btn.rel = "noopener";
+      btn.textContent = "See dates";
+      actions.appendChild(btn);
+    }
+
+    var enrollUrl = "";
+    if (Array.isArray(course.sessions) && course.sessions.length > 0) {
+      var first = course.sessions[0];
+      enrollUrl = first.enroll_url || first.register_url || "";
+    }
+    if (enrollUrl && enrollUrl.indexOf("enroll?") !== -1) {
+      var btn2 = document.createElement("a");
+      btn2.className = "cct-small-link-btn";
+      btn2.href = enrollUrl;
+      btn2.target = "_blank";
+      btn2.rel = "noopener";
+      btn2.textContent = "Register";
+      actions.appendChild(btn2);
+    }
+
+    if (actions.children.length > 0) {
+      row.appendChild(actions);
+    }
+
+    return row;
+  }
+
+  function buildFamilyItem(familyName, courses) {
+    var item = document.createElement("div");
+    item.className = "cct-accordion-item " + getFamilyClass(familyName);
+
+    var header = document.createElement("button");
+    header.type = "button";
+    header.className = "cct-accordion-header";
+
+    var wrap = document.createElement("div");
+    wrap.className = "cct-accordion-title-wrap";
+
+    var title = document.createElement("div");
+    title.className = "cct-accordion-title";
+    title.textContent = familyName;
+    wrap.appendChild(title);
+
+    var sub = document.createElement("div");
+    sub.className = "cct-accordion-sub";
+    sub.textContent = courses.length + " course" + (courses.length === 1 ? "" : "s");
+    wrap.appendChild(sub);
+
+    header.appendChild(wrap);
+
+    var chev = document.createElement("div");
+    chev.className = "cct-accordion-chevron";
+    chev.textContent = "›";
+    header.appendChild(chev);
+
+    item.appendChild(header);
+
+    var panel = document.createElement("div");
+    panel.className = "cct-accordion-panel";
+
+    var board = document.createElement("div");
+    board.className = "cct-accordion-board";
+
+    var list = document.createElement("div");
+    list.className = "cct-course-list";
+
+    courses
+      .slice()
+      .sort(function (a, b) {
+        var an = getCourseName(a).toUpperCase();
+        var bn = getCourseName(b).toUpperCase();
+        if (an < bn) return -1;
+        if (an > bn) return 1;
+        return 0;
+      })
+      .forEach(function (course) {
+        list.appendChild(buildCourseRow(course));
+      });
+
+    board.appendChild(list);
+    panel.appendChild(board);
+    item.appendChild(panel);
+
+    // header click: only one open at a time
+    header.addEventListener("click", function () {
+      if (!FAMILIES_EL) return;
+
+      var allItems = Array.prototype.slice.call(
+        FAMILIES_EL.querySelectorAll(".cct-accordion-item")
+      );
+      var isOpen = item.classList.contains("cct-open");
+
+      // close all
+      allItems.forEach(function (it) {
+        it.classList.remove("cct-open");
+        var pan = it.querySelector(".cct-accordion-panel");
+        if (pan) pan.style.maxHeight = "0px";
+      });
+
+      // open clicked, if it was closed
+      if (!isOpen) {
+        item.classList.add("cct-open");
+        if (panel) {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+      }
+    });
+
+    return item;
+  }
+
+  function renderFamilies(data) {
+    if (!FAMILIES_EL) return;
+    FAMILIES_EL.innerHTML = "";
+
+    var courses = null;
+    if (Array.isArray(data)) {
+      courses = data;
+    } else if (data && Array.isArray(data.courses)) {
+      courses = data.courses;
+    }
+
+    if (!courses || courses.length === 0) {
+      throw new Error("schedule.json did not contain a courses array.");
+    }
+
+    var groups = {};
+    courses.forEach(function (course) {
+      var fam = getFamilyName(course);
+      if (!groups[fam]) groups[fam] = [];
+      groups[fam].push(course);
+    });
+
+    var familyNames = Object.keys(groups).sort(function (a, b) {
+      return a.toUpperCase() < b.toUpperCase() ? -1 : a.toUpperCase() > b.toUpperCase() ? 1 : 0;
+    });
+
+    familyNames.forEach(function (famName) {
+      var item = buildFamilyItem(famName, groups[famName]);
+      FAMILIES_EL.appendChild(item);
+    });
+
+    // Open BLS family by default if present, otherwise first family
+    var defaultItem =
+      FAMILIES_EL.querySelector(".cct-accordion-item.cct-family-bls") ||
+      FAMILIES_EL.querySelector(".cct-accordion-item");
+
+    if (defaultItem) {
+      defaultItem.classList.add("cct-open");
+      var p = defaultItem.querySelector(".cct-accordion-panel");
+      if (p) {
+        p.style.maxHeight = p.scrollHeight + "px";
+      }
+    }
+
+    setStatus("ok", "Loaded " + courses.length + " course types in " + familyNames.length + " families.");
+  }
+
+  function init() {
+    try {
+      if (!window.fetch) {
+        showFallback();
+        return;
+      }
+      setStatus("loading", "Loading live course list…");
+
+      fetch("data/schedule.json", { cache: "no-store" })
+        .then(function (resp) {
+          if (!resp.ok) {
+            throw new Error("HTTP " + resp.status);
+          }
+          return resp.json();
+        })
+        .then(function (data) {
+          try {
+            renderFamilies(data);
+          } catch (e) {
+            console.error("Error rendering schedule.json:", e);
+            showFallback();
+          }
+        })
+        .catch(function (err) {
+          console.error("Error fetching schedule.json:", err);
+          showFallback();
+        });
+
+    } catch (outerErr) {
+      console.error("schedule.json loader crashed early:", outerErr);
+      showFallback();
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
 
 </body>
 </html>
-""")
+"""
 
-
-def parse_snapshot(path: Path):
-    """
-    Load the latest Enrollware snapshot and return a BeautifulSoup document.
-
-    Currently kept only for forward compatibility; the hardened index.html
-    shell does not inject the raw Enrollware HTML panel.
-    """
-    if BeautifulSoup is None:
-        raise RuntimeError("BeautifulSoup (bs4) is not installed.")
-    if not path.is_file():
-        raise FileNotFoundError(f"Input file not found: {path}")
-    html = path.read_text(encoding="utf-8", errors="ignore")
-    return BeautifulSoup(html, "html.parser")
-
-
-def extract_schedule_panel(soup) -> str:
-    """
-    Historically pulled the Enrollware schedule block from the snapshot.
-
-    For this hardened version, we no longer inject the raw panel, so this
-    returns an empty string. Left in place so old code paths don't explode.
-    """
-    return ""
-
-
-def build_index(input_path: Path, output_path: Path) -> None:
-    """
-    Write docs/index.html using the hardened layout shell.
-
-    input_path is accepted but currently unused (kept for CLI compatibility).
-    """
-    # If you ever want to revive snapshot parsing, this is where you would:
-    #   soup = parse_snapshot(input_path)
-    #   panel_html = extract_schedule_panel(soup)
-    #   html = INDEX_TEMPLATE.replace("{{SCHEDULE_PANEL}}", panel_html)
-    # For now, we just use INDEX_TEMPLATE as-is.
-    html = INDEX_TEMPLATE
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(html, encoding="utf-8")
-    print(f"Wrote homepage: {output_path}")
-
-
-def main(argv=None):
-    """
-    CLI entry point:
-      python scripts/build-index.py [input_html] [output_html]
-    """
-    argv = argv or sys.argv[1:]
-    in_path = Path(argv[0]) if len(argv) >= 1 else DEFAULT_INPUT
-    out_path = Path(argv[1]) if len(argv) >= 2 else DEFAULT_OUTPUT
-    build_index(in_path, out_path)
-
+def main():
+  OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+  OUTPUT_PATH.write_text(INDEX_HTML, encoding="utf-8")
+  print(f"Wrote homepage: {OUTPUT_PATH}")
 
 if __name__ == "__main__":
-    main()
+  main()
