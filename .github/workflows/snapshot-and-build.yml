@@ -26,10 +26,10 @@ jobs:
         run: |
           mkdir -p docs/data
           echo "Fetching latest Enrollware snapshot..."
-          curl -sSL "https://coastalcprtraining.enrollware.com/schedule" \
-            -o docs/data/enrollware-schedule.html || echo "Download failed."
+          curl -sSL "https://coastalcprtraining.enrollware.com/schedule" -o docs/data/enrollware-schedule.html || echo "Download failed."
           echo "Snapshot size:"
           wc -c docs/data/enrollware-schedule.html || true
+          test -s docs/data/enrollware-schedule.html || echo "<!-- empty snapshot placeholder -->" > docs/data/enrollware-schedule.html
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -43,10 +43,7 @@ jobs:
 
       - name: Parse snapshot into docs/data/schedule.json
         run: |
-          test -f scripts/parse_enrollware.py || {
-            echo "Missing scripts/parse_enrollware.py";
-            exit 1;
-          }
+          test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
           python scripts/parse_enrollware.py \
             docs/data/enrollware-schedule.html \
             docs/data/schedule.json
@@ -55,14 +52,14 @@ jobs:
 
       - name: Build docs/data/status.json
         run: |
-          test -f scripts/build_status_json.py || {
-            echo "Missing scripts/build_status_json.py";
-            exit 1;
-          }
+          test -f scripts/build_status_json.py || { echo "Missing scripts/build_status_json.py"; exit 1; }
           python scripts/build_status_json.py \
             --snapshot docs/data/enrollware-schedule.html \
             --schedule docs/data/schedule.json \
             --out docs/data/status.json
+
+      - name: Show status.json
+        run: |
           echo "status.json content:"
           cat docs/data/status.json
 
@@ -70,12 +67,10 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          if git diff --quiet -- docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json; then
+          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json
+          if git diff --cached --quiet; then
             echo "No changes to snapshot/schedule/status; nothing to commit."
             exit 0
           fi
-
-          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json
           git commit -m "chore: update enrollware snapshot + schedule.json"
           git push
