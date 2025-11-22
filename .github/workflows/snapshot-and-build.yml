@@ -1,10 +1,9 @@
 name: Snapshot Enrollware + Build schedule.json
 
 on:
-  # Run every hour at minute 17 (adjust if you like)
   schedule:
+    # Run every hour at minute 17 (adjust if you like)
     - cron: "17 * * * *"
-  # Allow manual runs from the Actions tab
   workflow_dispatch: {}
 
 permissions:
@@ -22,14 +21,15 @@ jobs:
         run: |
           mkdir -p docs/data
 
-     - name: Snapshot Enrollware schedule.html
-  run: |
-    mkdir -p docs/data
-    echo "Fetching latest Enrollware snapshot..."
-    curl -sSL "https://coastalcprtraining.enrollware.com/schedule" -o docs/data/enrollware-schedule.html || echo "Download failed."
-    echo "Snapshot size:"
-    wc -c docs/data/enrollware-schedule.html || true
-    test -s docs/data/enrollware-schedule.html || echo "<!-- empty snapshot placeholder -->" > docs/data/enrollware-schedule.html
+      - name: Snapshot Enrollware schedule.html
+        run: |
+          mkdir -p docs/data
+          echo "Fetching latest Enrollware snapshot..."
+          curl -sSL "https://coastalcprtraining.enrollware.com/schedule" \
+            -o docs/data/enrollware-schedule.html || echo "Download failed."
+          wc -c docs/data/enrollware-schedule.html || true
+          test -s docs/data/enrollware-schedule.html || \
+            echo "<!-- empty snapshot placeholder -->" > docs/data/enrollware-schedule.html
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -44,7 +44,8 @@ jobs:
       - name: Parse snapshot into docs/data/schedule.json
         run: |
           test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
-          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
+          python scripts/parse_enrollware.py \
+            docs/data/enrollware-schedule.html > docs/data/schedule.json
           echo "schedule.json size:"
           wc -c docs/data/schedule.json || true
 
@@ -58,7 +59,6 @@ jobs:
 
       - name: Show status.json
         run: |
-          echo "status.json content:"
           cat docs/data/status.json
 
       - name: Commit and push if changed
@@ -70,6 +70,7 @@ jobs:
 
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json
           git commit -m "chore: update enrollware snapshot + schedule.json"
           git push
