@@ -1,81 +1,12 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>CPR, BLS, ACLS &amp; First Aid Classes in Wilmington &amp; Burgaw, NC | 910CPR Class Schedule</title>
-<meta content="910CPR offers AHA and HSI CPR, BLS, ACLS, PALS, First Aid and more in Wilmington, Burgaw and surrounding SE North Carolina. Live and blended schedules for healthcare providers, workplaces, and the community." name="description"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://www.910cpr.com/" rel="canonical"/>
-<!-- Basic 910CPR structured data (LocalBusiness + core Courses) -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "LocalBusiness",
-      "@id": "https://www.910cpr.com/#localbusiness",
-      "name": "910CPR | Coastal CPR Training",
-      "description": "AHA and HSI CPR, BLS, ACLS, PALS and First Aid classes in Wilmington and Burgaw, NC. Live and blended training for healthcare providers, workplaces, students and the community.",
-      "url": "https://www.910cpr.com/",
-      "telephone": "+1-910-395-5193",
-      "image": "https://coastalcprtraining.enrollware.com/sitefiles/coastalcprtraining/910cpr_wave.jpg",
-      "priceRange": "$$",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "4018 Shipyard Blvd",
-        "addressLocality": "Wilmington",
-        "addressRegion": "NC",
-        "postalCode": "28403",
-        "addressCountry": "US"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 34.184,
-        "longitude": -77.915
-      },
-      "areaServed": [
-        "Wilmington NC",
-        "Burgaw NC",
-        "Jacksonville NC",
-        "New Hanover County NC",
-        "Pender County NC",
-        "Brunswick County NC"
-      ],
-      "sameAs": [
-        "http://coastalcprtraining.com/",
-        "https://www.facebook.com/CoastalCPRTraining",
-        "https://maps.app.goo.gl/",
-        "tel:+19103955193"
-      ]
-    },
-    {
-      "@type": "Course",
-      "name": "AHA BLS Provider – CPR for Healthcare Providers in Wilmington & Burgaw, NC",
-      "description": "American Heart Association Basic Life Support (BLS) Provider course for nurses, physicians, EMTs, students and other healthcare providers. Meets CPR requirements for CFCC, UNCW and SCC nursing / allied health programs when they specify AHA BLS.",
-      "provider": {
-        "@id": "https://www.910cpr.com/#localbusiness"
-      }
-    },
-    {
-      "@type": "Course",
-      "name": "AHA ACLS Provider – Advanced Cardiovascular Life Support in Wilmington & Burgaw, NC",
-      "description": "American Heart Association ACLS for hospital and critical-care providers. Offered as both full initial courses and renewal options with HeartCode blended learning.",
-      "provider": {
-        "@id": "https://www.910cpr.com/#localbusiness"
-      }
-    },
-    {
-      "@type": "Course",
-      "name": "AHA PALS Provider – Pediatric Advanced Life Support in Wilmington & Burgaw, NC",
-      "description": "American Heart Association PALS for providers caring for infants and children in emergency, critical care or acute care settings.",
-      "provider": {
-        "@id": "https://www.910cpr.com/#localbusiness"
-      }
-    }
-  ]
-}
-</script>
+<meta charset="utf-8">
+<title>910CPR | CPR, BLS, ACLS &amp; PALS Classes in Wilmington &amp; Burgaw, NC</title>
+<meta name="description" content="Book CPR, BLS, ACLS, PALS and First Aid classes in Wilmington, Burgaw, and surrounding NC areas. Small classes, fast cards, late options, and on-site training for offices.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://www.910cpr.com/">
+
 <style>
 :root {
     --bg: #f5f7fb;
@@ -83,7 +14,6 @@
     --muted: #6c757d;
     --card-bg: #ffffff;
     --border: #dee2e6;
-    --accent: #0b64a0;
 }
 
 /* ===== Base layout ===== */
@@ -106,653 +36,467 @@ body {
     padding:16px;
 }
 
-/* Keep main content narrower and centered for cleaner look */
-#hero,
-#schedule-section,
-#schedule-root {
-    max-width:900px;
-    margin:0 auto;
+/* Wrap the whole Enrollware block in a soft card */
+
+#schedule-root > #maincontent_schedPanel {
+    background:var(--card-bg);
+    border-radius:10px;
+    border:1px solid var(--border);
+    padding:16px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.05);
 }
 
-/* ===== Header / nav ===== */
+/* ===== Filter / search controls ===== */
 
-.site-header {
-    max-width:900px;
-    margin:0 auto 16px auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-}
-
-.site-header .logo-wrap img {
-    height:46px;
-    max-height:56px;
-    width:auto;
-    display:block;
-}
-@media (max-width: 800px) {
-    .site-header .logo-wrap img {
-        height:38px;
-        max-height:46px;
-    }
-}
-
-.main-nav ul {
-    list-style:none;
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px 18px;
-    margin:0;
-    padding:0;
-    font-size:0.9rem;
-}
-
-.main-nav a {
-    text-decoration:none;
-    color:var(--text);
-    font-weight:500;
-}
-
-.main-nav a:hover {
-    color:var(--accent);
-    text-decoration:underline;
-}
-
-/* ===== Hero / intro ===== */
-
-#hero {
-    margin-bottom:16px;
-    display:grid;
-    grid-template-columns:minmax(0,3fr) minmax(0,2fr);
-    gap:16px;
-}
-
-@media (max-width: 800px) {
-    #hero {
-        grid-template-columns:minmax(0,1fr);
-    }
-}
-
-.hero-main {
-    background:#ffffff;
-    border-radius:14px;
-    padding:14px 16px;
-    box-shadow:0 10px 25px rgba(15,23,42,0.08);
-    border:1px solid rgba(15,23,42,0.06);
-}
-
-.hero-main h1 {
-    margin:0 0 8px;
-    font-size:1.6rem;
-}
-
-.hero-main p {
-    margin:4px 0;
-    color:var(--muted);
-    font-size:0.94rem;
-}
-
-.hero-main .hero-nursing {
-    margin-top:8px;
-    font-size:0.9rem;
-}
-
-.hero-main .hero-nursing strong {
-    color:#0b4f82;
-}
-
-.hero-side {
-    background:linear-gradient(135deg,#0b64a0,#2274b6);
-    color:#ffffff;
-    border-radius:14px;
-    padding:14px 16px;
-    box-shadow:0 14px 35px rgba(15,23,42,0.25);
-    font-size:0.94rem;
-}
-
-.hero-side h2 {
-    margin:0 0 6px;
-    font-size:1.05rem;
-}
-
-.hero-side p {
-    margin:4px 0;
-}
-
-.hero-side a {
-    color:#ffffff;
-    font-weight:600;
-}
-
-/* ===== Quick link buttons ===== */
-
-.quick-link-table a {
-    display:block;
-    border-radius:8px;
-    padding:10px 0;
-    text-decoration:none;
-    font-weight:600;
-    background:#0b64a0;
-    color:#ffffff;
-}
-
-/* ===== Filters / search row ===== */
-
-#maincontent_schedPanel {
-    margin-top:12px;
-}
-
-/* Align search + location on one row if possible */
-#filters-row {
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px 12px;
-    margin-bottom:10px;
-    align-items:flex-end;
+#searchPnl,
+#maincontent_locationPnl,
+#maincontent_coursePanel {
+    margin-bottom:8px;
 }
 
 #searchPnl {
-    flex:1 1 220px;
+    margin-bottom:10px;
 }
 
-#maincontent_locationPnl {
-    flex:0 0 220px;
-}
-
-.enrsearchbox input[type="text"],
-#maincontent_locationList {
-    width:100% !important;
+#searchInput,
+#maincontent_locationList,
+#maincontent_courseList {
+    width:100%;
+    max-width:320px;
     padding:6px 10px;
+    font-size:0.9rem;
     border-radius:999px;
     border:1px solid var(--border);
-    font-size:0.9rem;
 }
 
-/* Hide original Enrollware “Filter by date” block if present */
-#maincontent_dateFilterPnl {
+#maincontent_locationList,
+#maincontent_courseList {
+    border-radius:8px;
+}
+
+#maincontent_loclbl,
+#maincontent_courseLabel {
+    display:block;
+    font-size:0.85rem;
+    color:var(--muted);
+    margin:4px 0;
+}
+
+/* Hide course filter completely */
+#maincontent_coursePanel {
     display:none !important;
 }
 
-/* ===== Schedule headings / helpers ===== */
-
-#schedule-section {
-    margin-top:10px;
-    margin-bottom:28px;
-}
-
-#schedule-section h2 {
-    margin:0 0 4px;
-    font-size:1.3rem;
-}
-
-#schedule-section p {
-    margin:2px 0;
-    font-size:0.9rem;
-    color:var(--muted);
+@media (min-width: 768px) {
+    #filters-row {
+        display:flex;
+        flex-wrap:wrap;
+        gap:12px 24px;
+        align-items:flex-end;
+        margin-bottom:10px;
+    }
+    #filters-row > div {
+        flex:0 0 auto;
+    }
 }
 
 /* ===== Family headers (the big category pills) ===== */
 
-.course-family-heading {
+#enraccordion .enrpanel.family-header .enrpanel-heading {
+    margin:26px auto 0 auto;
     max-width:720px;
-    margin:20px auto 0 auto;
-    border-radius:999px;
-    padding:8px 16px;
-    color:#ffffff;
-    background:#0b64a0;
-    font-weight:600;
-    font-size:0.98rem;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 10px 28px rgba(15,23,42,0.32);
-}
-
-.course-family-heading span {
-    font-size:0.8rem;
-    opacity:0.9;
-}
-
-/* Family container that holds course panels */
-.course-family-group {
-    margin:0 auto 24px auto;
-    max-width:900px;
-    border-radius:18px;
-    background:rgba(255,255,255,0.96);
-    border:1px solid rgba(15,23,42,0.06);
-    box-shadow:0 20px 40px rgba(15,23,42,0.15);
+    border-radius:999px 999px 0 0;
     overflow:hidden;
-    padding:6px 0 8px;
+    border:1px solid var(--border);
 }
 
-/* Tint the background per family */
-.course-family-group.family-bls {
-    background:linear-gradient(to bottom,#f3f8ff 0%,#ffffff 55%);
+/* Keep family header text white on colored backgrounds */
+#enraccordion .enrpanel.family-header .enrpanel-heading a.enrtrigger {
+    display:block;
+    text-decoration:none;
+    cursor:default;
+    color:#ffffff;
 }
 
-.course-family-group.family-acls {
-    background:linear-gradient(to bottom,#fff3f3 0%,#ffffff 55%);
+/* Family header body never opens */
+#enraccordion .enrpanel.family-header .enrpanel-body {
+    display:none !important;
 }
 
-.course-family-group.family-pals {
-    background:linear-gradient(to bottom,#f7f2ff 0%,#ffffff 55%);
+/* ===== Course type panels under each family ===== */
+
+.course-family-group {
+    margin-top:0;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:12px;
+    padding:16px 12px 18px;
+    border-radius:0 0 40px 40px;
 }
 
-.course-family-group.family-asls {
-    background:linear-gradient(to bottom,#f5f5f5 0%,#ffffff 55%);
+/* Colors that match each family pill */
+
+.course-family-group.family-bls,
+#enraccordion .enrpanel.family-header.family-bls .enrpanel-heading {
+    background:#0b64a0;
 }
 
-.course-family-group.family-cprfa {
-    background:linear-gradient(to bottom,#f8f8f8 0%,#ffffff 55%);
+.course-family-group.family-acls,
+#enraccordion .enrpanel.family-header.family-acls .enrpanel-heading {
+    background:#b5212f;
 }
 
-.course-family-group.family-cpron {
-    background:linear-gradient(to bottom,#f6f6f6 0%,#ffffff 55%);
+.course-family-group.family-pals,
+#enraccordion .enrpanel.family-header.family-pals .enrpanel-heading {
+    background:#6e3b9f;
 }
 
-.course-family-group.family-instructor {
-    background:linear-gradient(to bottom,#f4f4f4 0%,#ffffff 55%);
+.course-family-group.family-asls,
+#enraccordion .enrpanel.family-header.family-asls .enrpanel-heading {
+    background:#4b4b4b;
 }
 
-.course-family-group.family-other {
-    background:linear-gradient(to bottom,#f3f3f3 0%,#ffffff 55%);
+.course-family-group.family-cprfa,
+#enraccordion .enrpanel.family-header.family-cprfa .enrpanel-heading {
+    background:#6b6b6b;
 }
 
-/* Internal padding for course list inside the family container */
-.course-family-inner {
-    padding:4px 10px 10px;
+.course-family-group.family-cpron,
+#enraccordion .enrpanel.family-header.family-cpron .enrpanel-heading {
+    background:#777777;
 }
 
-/* === Individual course panels === */
+.course-family-group.family-instructor,
+#enraccordion .enrpanel.family-header.family-instructor .enrpanel-heading {
+    background:#555555;
+}
 
+.course-family-group.family-other,
+#enraccordion .enrpanel.family-header.family-other .enrpanel-heading {
+    background:#ffffff;
+}
+
+/* Grid cell shell */
 .course-panel {
     border-radius:10px;
-    margin:6px 0;
+}
+
+/* Inner pill that actually carries border and white background */
+.course-inner {
+    border-radius:10px;
+    border:1px solid var(--border);
     background:#ffffff;
-    border:1px solid rgba(15,23,42,0.05);
     overflow:hidden;
+    height:100%;
 }
 
-/* Panel heading (course title "pill") */
+/* Course heading pill */
+
 .course-panel .enrpanel-heading {
-    padding:8px 10px;
-    cursor:pointer;
-}
-
-.course-panel .enrpanel-heading a.enrtrigger {
-    text-decoration:none;
-    color:#222;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-weight:600;
-    font-size:0.95rem;
-}
-
-/* small indicator arrow on right */
-.course-panel .enrpanel-heading a.enrtrigger::after {
-    content:"▾";
-    margin-left:8px;
-    font-size:0.85rem;
-    opacity:0.7;
-}
-
-/* Open state arrow */
-.course-panel.open .enrpanel-heading a.enrtrigger::after {
-    transform:rotate(180deg);
-}
-
-/* Blurb text directly under headings */
-.course-panel .course-blurb {
-    font-size:0.8rem;
-    color:var(--muted);
-    margin-top:2px;
-}
-
-/* Panel body (sessions list) */
-.course-panel .enrpanel-body {
-    padding:0 10px 8px;
-    border-top:1px solid rgba(222,226,230,0.8);
+    padding:0;
     background:transparent;
 }
 
-/* Session list */
+.course-panel .enrpanel-heading a.enrtrigger {
+    display:block;
+    padding:10px 12px;
+    border-radius:0;
+    background:transparent;
+    text-decoration:none;
+    font-weight:600;
+    color:var(--text);
+}
+
+/* Under-title blurbs for SEO / guidance */
+
+.course-blurb {
+    font-size:0.85rem;
+    font-style:italic;
+    color:#555;
+    padding:0 12px 6px 12px;
+}
+
+/* Description block */
+
+.course-panel .enrpanel-body {
+    display:none;
+    padding:10px 16px 14px 24px;
+    background:transparent;
+}
+
+/* ===== Date/Time/Location as “session buttons” ===== */
+
 .course-panel .enrclass-list {
     list-style:none;
-    margin:6px 0 4px;
+    margin:14px 0 0 0;
     padding:0;
 }
 
-/* Each session row as a "pill" */
-.course-panel .enrclass-list > li {
-    margin:4px 0;
-    padding:8px 10px;
-    border-radius:999px;
-    border:1px solid rgba(222,226,230,0.9);
-    background:#f8f9ff;
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    gap:6px 10px;
+.course-panel .enrclass-list li + li {
+    margin-top:8px;
 }
 
-/* Date/time first, bold */
-.course-panel .enrclass-list > li strong {
-    font-weight:600;
+.course-panel .enrclass-list li a.session-link {
+    display:block;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#f8f9fa;
+    text-decoration:none;
+    font-size:0.95rem;
+    font-weight:500;
 }
 
-/* Location & instructor compressed */
-.course-panel .enrclass-list > li span {
-    font-size:0.84rem;
+.course-panel .enrclass-list li a.session-link span {
+    display:block;
+    margin-top:3px;
+    font-size:0.85rem;
     color:var(--muted);
 }
 
-/* Register link pill */
-.course-panel .enrclass-list > li a {
-    margin-left:auto;
-    background:#0b64a0;
-    color:#ffffff;
-    text-decoration:none;
+.course-panel .enrclass-list li a.session-link:hover {
+    border-color:#0d6efd;
+    box-shadow:0 0 0 1px rgba(13,110,253,0.2);
+}
+
+/* More-times pagination button */
+
+.session-more-button {
+    display:inline-block;
+    margin:10px 0 4px 12px;
+    padding:6px 14px;
     border-radius:999px;
-    padding:6px 10px;
-    font-size:0.82rem;
+    border:1px solid var(--border);
+    background:#f5f7fb;
+    font-size:0.85rem;
     font-weight:600;
+    cursor:pointer;
     white-space:nowrap;
 }
 
-/* "More times…" button under lists */
-.session-more-button {
-    display:inline-block;
-    margin:4px 2px 2px;
-    padding:4px 10px;
-    border-radius:999px;
-    border:1px dashed var(--accent);
-    background:rgba(11,100,160,0.03);
-    font-size:0.8rem;
-    cursor:pointer;
+.session-more-button:hover {
+    background:#e3e8f5;
 }
 
-/* Start with panel bodies hidden; JS will open one by default */
-.course-panel .enrpanel-body {
-    display:none;
-}
+/* ===== Responsive images inside schedule ===== */
 
-/* When panel is open */
-.course-panel.open .enrpanel-body {
-    display:block;
-}
-
-/* ===== Misc tweaks ===== */
-
-#enraccordion {
-    margin-top:12px;
-}
-
-/* Reduce visual clutter from default Enrollware headings */
-#enraccordion .enrpanel-heading h3 {
-    margin:0;
-}
-
-/* Hide "Other programs" direct heading in raw Enrollware markup if needed */
-.enrpanel-heading-text-other {
-    display:none;
-}
-
-/* Keep everything mobile-friendly */
-@media (max-width: 700px) {
-    .course-panel .enrclass-list > li {
-        flex-direction:column;
-        align-items:flex-start;
-    }
-    .course-panel .enrclass-list > li a {
-        margin-left:0;
-    }
+#schedule-root img {
+    max-width:100%;
+    height:auto;
 }
 </style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-migrate-3.5.2.min.js"></script>
+
 <script>
-/*
-  Custom 910CPR schedule enhancements:
-  - Wrap search + location filters into single flex row
-  - Group courses into families (BLS, ACLS, PALS, etc.)
-  - Only one course panel open at a time
-  - "More times…" link every N sessions per course
-  - Small blurbs under key course titles
-*/
-
 jQuery(function($){
-
-    // 1) Wrap search + location filters together (if found)
-    (function setupFiltersRow(){
-        var $search = $('#searchPnl');
-        var $loc = $('#maincontent_locationPnl');
-
-        if (!$search.length && !$loc.length) return;
-
-        var $wrap = $('<div id="filters-row"></div>');
-
-        var $first = $search.length ? $search : $loc;
-        $wrap.insertBefore($first);
-
-        if ($search.length) $search.appendTo($wrap);
-        if ($loc.length) $loc.appendTo($wrap);
-    })();
 
     var $accordion = $('#enraccordion');
     if (!$accordion.length) return;
 
-    // 2) Normalize headings slightly and mark family headers
-    function normalize(text) {
-        return $.trim((text || '').replace(/\s+/g, ' ').toLowerCase());
-    }
+    /* === Wrap filters in a flex row container on larger screens === */
+    (function setupFiltersRow(){
+        var $search = $('#searchPnl');
+        var $loc = $('#maincontent_locationPnl');
 
-    var families = [];
-    var familyBlocks = {};
-    var familyOrder = [
-        'bls',
-        'acls',
-        'pals',
-        'asls',
-        'cprfa',
-        'cpron',
-        'instructor',
-        'other'
-    ];
-
-    function detectFamily(text) {
-        var t = normalize(text);
-
-        if (t.indexOf('healthcare provider: bls course') !== -1 ||
-            t.indexOf('bls provider') !== -1) return 'bls';
-
-        if (t.indexOf('healthcare provider: acls course') !== -1 ||
-            t.indexOf('acls provider') !== -1) return 'acls';
-
-        if (t.indexOf('healthcare provider: pals course') !== -1 ||
-            t.indexOf('pals provider') !== -1) return 'pals';
-
-        if (t.indexOf('healthcare provider: asls course') !== -1) return 'asls';
-
-        if (t.indexOf('cpr / aed & first aid') !== -1 ||
-            t.indexOf('cpr / aed &amp; first aid') !== -1) return 'cprfa';
-
-        if (t.indexOf('cpr / aed only') !== -1 ||
-            t.indexOf('cpr/aed only') !== -1) return 'cpron';
-
-        if (t.indexOf('instructor programs') !== -1 ||
-            t.indexOf('instructor program') !== -1) return 'instructor';
-
-        if (t.indexOf('other programs') !== -1 || t.indexOf('other program') !== -1) return 'other';
-
-        return null;
-    }
-
-    // 3) Convert each Enrollware "panel" into .course-panel inside a family group
-    var $panels = $accordion.find('.enrpanel');
-    var coursePanels = [];
-
-    $panels.each(function(){
-        var $p = $(this);
-        var $heading = $p.find('.enrpanel-heading').first();
-        var titleText = $heading.text() || '';
-        var fam = detectFamily(titleText);
-
-        if (fam) {
-            // Flag as a family heading
-            $p.addClass('enr-family-header').data('family', fam);
-        } else {
-            // This is a real course panel
-            $p.addClass('course-panel');
-            coursePanels.push($p);
-        }
-    });
-
-    // Create wrapper for grouped families
-    var $familyWrap = $('<div id="course-families"></div>');
-    $accordion.before($familyWrap);
-
-    // 4) Build each family group in a fixed order
-    familyOrder.forEach(function(fam){
-        var $headers = $panels.filter('.enr-family-header').filter(function(){
-            return $(this).data('family') === fam;
-        });
-        if (!$headers.length) return;
-
-        // Build heading text from the first header
-        var familyTitle = $.trim($headers.first().find('.enrpanel-heading').text());
-
-        var $heading = $('<div class="course-family-heading"></div>');
-        $heading.text(familyTitle);
-        var $sub = $('<span></span>').text('Tap a course below to see dates & register');
-        $heading.append($('<span></span>').append($sub));
-
-        var $group = $('<section class="course-family-group"></section>')
-            .addClass('family-' + fam);
-
-        var $inner = $('<div class="course-family-inner"></div>');
-        $group.append($inner);
-
-        $familyWrap.append($heading).append($group);
-        familyBlocks[fam] = {
-            group: $group,
-            inner: $inner
-        };
-        families.push(fam);
-    });
-
-    // 5) Move course panels into their families (based on nearest preceding family header)
-    var lastFam = null;
-    $panels.each(function(){
-        var $p = $(this);
-        if ($p.hasClass('enr-family-header')) {
-            lastFam = $p.data('family');
-            return;
-        }
-        if (!$p.hasClass('course-panel')) return;
-
-        var fam = lastFam || 'other';
-        if (!familyBlocks[fam]) {
-            // no known block; create an "other" family if needed
-            fam = 'other';
-            if (!familyBlocks[fam]) {
-                var $heading = $('<div class="course-family-heading"></div>')
-                    .text('Other Programs');
-                var $sub = $('<span></span>').text('Additional courses and special offerings');
-                $heading.append($('<span></span>').append($sub));
-
-                var $group = $('<section class="course-family-group family-other"></section>');
-                var $inner = $('<div class="course-family-inner"></div>');
-                $group.append($inner);
-                $familyWrap.append($heading).append($group);
-                familyBlocks[fam] = {
-                    group: $group,
-                    inner: $inner
-                };
-                families.push(fam);
-            }
-        }
-        familyBlocks[fam].inner.append($p);
-    });
-
-    // Remove original accordion now that everything is grouped
-    $accordion.remove();
-
-    // 6) Add blurbs under key course titles
-    coursePanels.forEach(function($panel){
-        var $trigger = $panel.find('.enrpanel-heading .enrtrigger').first();
-        var txt = normalize($trigger.text());
-        var blurb = null;
-
-        if (txt.indexOf('bls provider') !== -1) {
-            blurb = 'Common choice for CFCC, UNCW & SCC nursing / allied health programs when AHA BLS is required.';
-        } else if (txt.indexOf('acls provider') !== -1) {
-            blurb = 'Recommended for ER, ICU, anesthesia and hospital-based providers who respond to adult codes.';
-        } else if (txt.indexOf('pals provider') !== -1) {
-            blurb = 'Typical requirement for pediatric / ED providers and some EMS agencies caring for infants and children.';
-        }
-
-        if (blurb) {
-            // Avoid duplicating blurbs
-            if (!$panel.find('.course-blurb').length) {
-                $('<div class="course-blurb"></div>').text(blurb).appendTo($panel.find('.enrpanel-heading'));
-            }
-        }
-    });
-
-    // 7) Only one course panel open at a time
-    function closeAllPanels() {
-        coursePanels.forEach(function($p){
-            $p.removeClass('open');
-            $p.find('.enrpanel-body').slideUp(120);
-        });
-    }
-
-    // Wire up click handlers
-    coursePanels.forEach(function($panel){
-        var $trigger = $panel.find('.enrpanel-heading .enrtrigger').first();
-        $trigger.off('click').on('click', function(e){
-            e.preventDefault();
-            var isOpen = $panel.hasClass('open');
-
-            closeAllPanels();
-
-            if (!isOpen) {
-                $panel.addClass('open');
-                $panel.find('.enrpanel-body').slideDown(140);
-            }
-        });
-    });
-
-    // Open a default panel (BLS if present, otherwise first course)
-    (function openDefaultPanel(){
-        var opened = false;
-
-        // Try to open first BLS course panel
-        families.forEach(function(fam){
-            if (opened) return;
-            if (fam !== 'bls') return;
-            var block = familyBlocks[fam];
-            if (!block) return;
-
-            var $firstCourse = block.inner.find('.course-panel').first();
-            if ($firstCourse.length) {
-                $firstCourse.addClass('open');
-                $firstCourse.find('.enrpanel-body').show();
-                opened = true;
-            }
-        });
-
-        // If nothing opened, open very first course panel
-        if (!opened && coursePanels.length) {
-            var $first = coursePanels[0];
-            $first.addClass('open');
-            $first.find('.enrpanel-body').show();
+        if ($search.length || $loc.length) {
+            var $wrap = $('<div id="filters-row"></div>');
+            var $first = $search[0] ? $search : $loc;
+            $wrap.insertBefore($first.first());
+            if ($search.length) $search.appendTo($wrap);
+            if ($loc.length) $loc.appendTo($wrap);
         }
     })();
 
-    // 8) Within each course panel, show sessions in pages with a "More times…" button
-    (function setupMoreTimes(){
+    // 1) Identify "family header" panels by the “Select a Program Below” text
+    var familyPanels = [];
+    $accordion.find('.enrpanel').each(function(){
+        var $panel = $(this);
+        var hasSelect = $panel.find('.enrclass-list a').filter(function(){
+            return $(this).text().indexOf('Select a Program Below') !== -1;
+        }).length > 0;
+
+        if (hasSelect) {
+            $panel.addClass('family-header');
+            $panel.find('.enrpanel-body').hide();
+            $panel.find('a.enrtrigger').off('click').css('cursor','default');
+            familyPanels.push($panel);
+        }
+    });
+
+    // 2) Group the course panels that come after each family header,
+    //    and tag course panels by family type.
+    familyPanels.forEach(function($family){
+        var headerText = ($family.find('.enrpanel-heading a.enrtrigger').text() || '').toLowerCase();
+        var familyType = '';
+
+        if (headerText.indexOf('bls course') !== -1) {
+            familyType = 'bls';
+        } else if (headerText.indexOf('acls course') !== -1) {
+            familyType = 'acls';
+        } else if (headerText.indexOf('pals course') !== -1) {
+            familyType = 'pals';
+        } else if (headerText.indexOf('asls course') !== -1) {
+            familyType = 'asls';
+        } else if (headerText.indexOf('cpr / aed & first aid') !== -1 ||
+                   headerText.indexOf('cpr / aed &amp; first aid') !== -1) {
+            familyType = 'cprfa';
+        } else if (headerText.indexOf('cpr / aed only') !== -1 ||
+                   headerText.indexOf('cpr/aed only') !== -1) {
+            familyType = 'cpron';
+        } else if (headerText.indexOf('instructor') !== -1) {
+            familyType = 'instructor';
+        } else if (headerText.indexOf('other programs') !== -1) {
+            familyType = 'other';
+        }
+
+        var $group = $('<div class="course-family-group"></div>');
+        if (familyType) {
+            $group.addClass('family-' + familyType);
+            $family.addClass('family-' + familyType);
+        }
+        $group.insertAfter($family);
+
+        var $next = $family.next();
+        while ($next.length && !$next.hasClass('family-header')) {
+            var $move = $next;
+            $next = $next.next();
+            $move.appendTo($group).addClass('course-panel');
+            if (familyType) {
+                $move.addClass('family-' + familyType);
+            }
+        }
+    });
+
+    // Any panels not tagged as family or moved yet are still course panels
+    $accordion.find('.enrpanel').not('.family-header, .course-panel').addClass('course-panel');
+
+    // 3) Add under-title blurbs for key course types,
+    //    but skip Instructor, CPR/AED Only, and Other families.
+    (function addCourseBlurbs(){
+        $('.course-panel .enrpanel-heading a.enrtrigger').each(function(){
+            var $a = $(this);
+            var $panel = $a.closest('.course-panel');
+            var headingText = ($a.text() || '').trim();
+            var lower = headingText.toLowerCase();
+
+            if ($panel.hasClass('family-instructor') ||
+                $panel.hasClass('family-cpron') ||
+                $panel.hasClass('family-other')) {
+                return;
+            }
+
+            if ($a.closest('.enrpanel-heading').next('.course-blurb').length) {
+                return;
+            }
+
+            var blurbText = null;
+
+            if (lower.indexOf('aha') !== -1 && lower.indexOf('bls') !== -1) {
+                blurbText = 'Common choice for CFCC, UNCW & SCC Nursing / Allied Health students.';
+            } else if (lower.indexOf('aha') !== -1 && lower.indexOf('acls') !== -1) {
+                blurbText = 'Ideal for hospital-based clinicians, advanced providers, and code team members.';
+            } else if (lower.indexOf('aha') !== -1 && lower.indexOf('pals') !== -1) {
+                blurbText = 'Commonly needed for pediatric ER/ICU nurses, paramedics, and providers who care for children.';
+            } else if (lower.indexOf('heartsaver') !== -1) {
+                blurbText = 'Popular with childcare providers, foster parents, coaches, and workplace responders.';
+            } else if (lower.indexOf('hsi') !== -1 && lower.indexOf('first aid') !== -1) {
+                blurbText = 'Great option for OSHA-focused workplace safety and industrial teams.';
+            }
+
+            if (blurbText) {
+                var $blurb = $('<div class="course-blurb"></div>').text(blurbText);
+                $a.closest('.enrpanel-heading').after($blurb);
+            }
+        });
+    })();
+
+    // 4) Wrap course-panel contents in .course-inner so the pill bg doesn't bleed
+    $('.course-panel').each(function(){
+        var $panel = $(this);
+        if (!$panel.children('.course-inner').length) {
+            $panel.wrapInner('<div class="course-inner"></div>');
+        }
+    });
+
+    // 5) Collapse all course bodies by default
+    $('.course-panel .enrpanel-body').hide();
+
+    // 6) Accordion behavior: only one course panel open at a time,
+    //    and when you open one, scroll so the title stays in view.
+    $('.course-panel a.enrtrigger').on('click', function(){
+        var $heading = $(this).closest('.enrpanel-heading');
+        var $body = $heading.nextAll('.enrpanel-body').first();
+
+        if ($body.is(':visible')) {
+            $body.slideUp();
+        } else {
+            $('.course-panel .enrpanel-body:visible').slideUp();
+            $body.slideDown(200, function(){
+                var offset = $heading.offset().top - 80; // leave a little margin
+                $('html, body').animate({scrollTop: offset}, 200);
+            });
+        }
+        return false;
+    });
+
+    /* === Filters: search + location only === */
+    function normalize(str) {
+        return (str || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    }
+
+    function applyFilters() {
+        var term = normalize($('#searchInput').val());
+
+        var locText = '';
+        var $locSel = $('#maincontent_locationList');
+        if ($locSel.length) {
+            locText = $locSel.find('option:selected').text();
+        }
+        var locFilter = normalize(locText);
+        if (locFilter === 'all locations') locFilter = '';
+
+        $('.course-panel').each(function(){
+            var $panel = $(this);
+
+            var headingText = ($panel.find('.enrpanel-heading a.enrtrigger').text() || '');
+            var valueAttr = ($panel.attr('value') || '');
+            var headingNorm = normalize(headingText);
+            var valueNorm = normalize(valueAttr);
+            var searchable = headingNorm + ' ' + valueNorm;
+
+            var matchSearch = !term || searchable.indexOf(term) !== -1;
+
+            var matchLoc = true;
+            if (locFilter) {
+                matchLoc = false;
+                $panel.find('.enrclass-list li').each(function(){
+                    var t = normalize($(this).text());
+                    if (t.indexOf(locFilter) !== -1) {
+                        matchLoc = true;
+                        return false;
+                    }
+                });
+            }
+
+            if (matchSearch && matchLoc) {
+                $panel.show();
+            } else {
+                $panel.hide();
+            }
+        });
+    }
+
+    $('#searchInput').on('input', applyFilters);
+    $('#maincontent_locationList').on('change', applyFilters);
+
+    // 7) Mark each date/time/location link as a "session button" for styling
+    $('.course-panel .enrclass-list li a').addClass('session-link');
+
+    // 8) Paginate long session lists: show first 10, "More times…" button for the rest
+    (function paginateSessions(){
         var PAGE = 10;
         $('.course-panel').each(function(){
             var $panel = $(this);
@@ -781,61 +525,17 @@ jQuery(function($){
         });
     })();
 
-    // 9) Tiny improvement: ensure family headings scroll into view nicely when clicked
-    $('.course-family-heading').on('click', function(){
-        var top = $(this).offset().top;
-        $('html,body').animate({scrollTop: top - 70}, 160);
-    });
-
-    // 10) Final safety: make all images responsive
+    // 9) Final safety: make all images responsive
     $('#schedule-root img').css({maxWidth:'100%', height:'auto'});
 });
 </script>
 </head>
+
 <body id="enrollware-reg">
 <div id="page-wrap">
-<header class="site-header">
-<div class="logo-wrap">
-<a href="https://www.910cpr.com/">
-<img alt="910CPR logo" src="https://coastalcprtraining.enrollware.com/sitefiles/coastalcprtraining/910cpr_wave.jpg"/>
-</a>
-</div>
-<nav aria-label="Primary navigation" class="main-nav">
-<ul>
-<li><a href="https://www.910cpr.com/">Class Schedule</a></li>
-<li><a href="http://coastalcprtraining.com/classes" rel="noopener" target="_blank">Classes Overview</a></li>
-<li><a href="http://coastalcprtraining.com/on-site-training" rel="noopener" target="_blank">On-Site Training</a></li>
-<li><a href="http://coastalcprtraining.com/2025-price-list" rel="noopener" target="_blank">2025 Price List</a></li>
-<li><a href="http://coastalcprtraining.com/about" rel="noopener" target="_blank">About 910CPR</a></li>
-<li><a href="tel:+19103955193">Call 910-395-5193</a></li>
-</ul>
-</nav>
-</header>
-<section id="hero">
-<div class="hero-main">
-<h1>910CPR Class Schedule – Wilmington &amp; Burgaw, NC</h1>
-<p>Find AHA BLS, ACLS, PALS, First Aid and more. Live classroom and blended online options with same-day or fast card delivery.</p>
-<p class="hero-nursing">
-                Many <strong>CFCC, UNCW and SCC</strong> nursing and allied-health programs specifically require <strong>AHA BLS Provider</strong>. If your school or employer says “AHA BLS”, this is usually the course you need.
-            </p>
-<p style="margin-top:6px; font-size:0.9rem; color:#555;">
-                We also support hospital, EMS, fire and workplace teams across southeastern North Carolina with on-site group training.
-            </p>
-</div>
-<aside class="hero-side">
-<h2>Not sure which class to choose?</h2>
-<p>Text or call <a href="tel:+19103955193">(910) 395-5193</a> and we’ll help you match the right CPR or advanced life support course to your program or employer.</p>
-<p style="margin-top:6px; font-size:0.85rem;">
-                We don’t cancel low-enrollment classes just because a day is light — if it’s on the calendar and you’re registered, we plan to run it.
-            </p>
-</aside>
-</section>
-<section id="schedule-section">
-<h2>Live &amp; Blended CPR Class Calendar</h2>
-<p>Use the search box or location dropdown to narrow results. Click a course name to see dates and register.</p>
-</section>
-<!-- This is where Enrollware's maincontent_schedPanel gets injected by build-index.py, or you can paste the block here directly -->
-<div id="schedule-root"><div id="maincontent_schedPanel">
+
+    <div id="schedule-root">
+<div id="maincontent_schedPanel">
 <!-- Header Section -->
 <table cellpadding="5" cellspacing="0" style="background-color: #f8f9fa; text-align: center; width: 100%; max-width: 800px; margin: auto;">
 <tbody>
@@ -2033,7 +1733,9 @@ document.getElementById('toggleEnglish').addEventListener('change', function() {
 <p style="text-align: justify;">Although the information above is free, to recieve a <em>STOP THE BLEED<sup>®</sup></em> certification, there is a nominal fee to cover materials and manikin wear.  There is no obligation to obtain the certification, but it is encouraged that you to choose the practial training to be confident in your understanding of the material.</p>
 <p> </p>
 </div><ul class="enrclass-list"><li><a class="enrsnglline" href="https://coastalcprtraining.enrollware.com/enroll?course=344486" title="Click to register without a schedule">I will call to schedule my classroom session</a></li></ul></div></div></div></div>
-</div></div>
+</div>
+    </div>
+
 </div>
 </body>
 </html>
