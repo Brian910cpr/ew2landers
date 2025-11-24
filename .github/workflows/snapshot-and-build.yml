@@ -1,75 +1,74 @@
-name: Snapshot Enrollware + Build schedule.json
+name: Snapshot and build schedule/status
 
 on:
-  # Run every hour at minute 17 (adjust if you like)
+  workflow_dispatch:
   schedule:
-    - cron: "17 * * * *"
-  # Allow manual runs from the Actions tab
-  workflow_dispatch: {}
+    - cron: "7 * * * *"
 
 permissions:
   contents: write
 
 jobs:
-  snapshot_and_build:
+  snapshot-and-build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Ensure docs/data directory exists
-        run: |
-          mkdir -p docs/data
-
-     - name: Snapshot Enrollware schedule.html
-  run: |
-    mkdir -p docs/data
-    echo "Fetching latest Enrollware snapshot..."
-    curl -sSL "https://coastalcprtraining.enrollware.com/schedule" -o docs/data/enrollware-schedule.html || echo "Download failed."
-    echo "Snapshot size:"
-    wc -c docs/data/enrollware-schedule.html || true
-    test -s docs/data/enrollware-schedule.html || echo "<!-- empty snapshot placeholder -->" > docs/data/enrollware-schedule.html
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.11"
 
-      - name: Install parser deps
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install beautifulsoup4 lxml python-dateutil
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install beautifulsoup4 requests
+          fi
 
-      - name: Parse snapshot into docs/data/schedule.json
+      - name: Fetch Enrollware schedule snapshot
         run: |
-          test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
-          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html > docs/data/schedule.json
-          echo "schedule.json size:"
-          wc -c docs/data/schedule.json || true
+          mkdir -p docs/data
+          curl -fSL \
+            "https://coastalcprtraining.enrollware.com/schedule" \
+            -H "User-Agent: ew2landers-actions-snapshot" \
+            -o docs/data/enrollware-schedule.html
+          wc -c docs/data/enrollware-schedule.html
 
-      - name: Build docs/data/status.json
+      - name: Build schedule.json
         run: |
-          test -f scripts/build_status_json.py || { echo "Missing scripts/build_status_json.py"; exit 1; }
-          python scripts/build_status_json.py \
+          # CHANGE THIS if your builder script has a different name/path
+          python build_schedule_json.py \
+            --html docs/data/enrollware-schedule.html \
+            --out docs/data/schedule.json
+
+      - name: Enrich schedule.json with real Enrollware course numbers
+        run: |
+          python scripts/enrich_schedule_with_course_ids.py \
+            --html docs/data/enrollware-schedule.html \
+            --schedule docs/data/schedule.json
+
+      - name: Build status.json
+        run: |
+          python build_status_json.py \
             --snapshot docs/data/enrollware-schedule.html \
             --schedule docs/data/schedule.json \
             --out docs/data/status.json
 
-      - name: Show status.json
+      - name: Commit snapshot and JSONs if changed
         run: |
-          echo "status.json content:"
-          cat docs/data/status.json
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit and push if changed
-        run: |
-          if git diff --quiet -- docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json; then
-            echo "No changes to snapshot/schedule/status; nothing to commit."
+          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json || true
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
             exit 0
           fi
 
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json
-          git commit -m "chore: update enrollware snapshot + schedule.json"
+          git commit -m "chore: refresh snapshot, schedule.json, and status.json"
           git push
