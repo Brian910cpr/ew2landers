@@ -1,33 +1,68 @@
-name: Refresh Enrollware Snapshot
+name: Build schedule.json and status.json
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "7 * * * *"
-
-permissions:
-  contents: write
+    - cron: "0 * * * *"    # every hour; adjust as needed
+  workflow_dispatch:
 
 jobs:
-  snapshot:
+  build-schedule:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - run: |
-          mkdir -p docs/data
-          curl -fSL \
-            "https://coastalcprtraining.enrollware.com/schedule" \
-            -H "User-Agent: ew2landers-actions-snapshot" \
-            -o docs/data/enrollware-schedule.html
-          wc -c docs/data/enrollware-schedule.html
-      - name: Commit snapshot if changed
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/enrollware-schedule.html || true
-          if git diff --cached --quiet; then
-            echo "No snapshot change."
-            exit 0
+          python -m pip install --upgrade pip
+          # If you already have requirements.txt, keep using it.
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install beautifulsoup4 requests
           fi
-          git commit -m "chore: refresh enrollware snapshot"
-          git push
+
+      - name: Fetch latest Enrollware snapshot (HTML)
+        run: |
+          # REPLACE this with whatever you currently use to grab the snapshot,
+          # if it's different. The important part is that this command writes:
+          #   docs/data/enrollware-schedule.html
+          python scripts/fetch_enrollware_snapshot.py \
+            --out docs/data/enrollware-schedule.html
+
+      - name: Build schedule.json
+        run: |
+          # REPLACE this with your existing builder command if the name/path differs.
+          # It just needs to output:
+          #   docs/data/schedule.json
+          python scripts/build_schedule_json.py \
+            --html docs/data/enrollware-schedule.html \
+            --out docs/data/schedule.json
+
+      - name: Enrich schedule.json with real Enrollware course numbers
+        run: |
+          python scripts/enrich_schedule_with_course_ids.py \
+            --html docs/data/enrollware-schedule.html \
+            --schedule docs/data/schedule.json
+
+      - name: Build status.json
+        run: |
+          python scripts/build_status_json.py \
+            --snapshot docs/data/enrollware-schedule.html \
+            --schedule docs/data/schedule.json \
+            --out docs/data/status.json
+
+      # Optional: commit artifacts back to the repo if that's what you do today
+      # - name: Commit updated JSON files
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
+      #     git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json
+      #     git commit -m "Update Enrollware snapshot, schedule.json, and status.json [ci skip]" || echo "No changes to commit"
+      #     git push
