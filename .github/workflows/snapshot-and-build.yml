@@ -1,79 +1,57 @@
-name: Snapshot and build schedule/status
+name: Snapshot & Build
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "7 * * * *"   # run at minute 7 every hour
-
-permissions:
-  contents: write
-
+  
 jobs:
-  snapshot-and-build:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            pip install beautifulsoup4 requests
-          fi
+          pip install beautifulsoup4
 
-      - name: Fetch Enrollware schedule snapshot
+      # 1) Parse the snapshot into schedule.json
+      - name: Parse HTML → schedule.json
         run: |
-          mkdir -p docs/data
-          curl -fSL \
-            "https://coastalcprtraining.enrollware.com/schedule" \
-            -H "User-Agent: ew2landers-actions-snapshot" \
-            -o docs/data/enrollware-schedule.html
-          wc -c docs/data/enrollware-schedule.html
+          python parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
 
-      # ⬇️ BUILD schedule.json from the HTML snapshot
-      # If your builder script has a different name/path, change this line only.
-      - name: Build schedule.json
-        run: |
-          python build_schedule_json.py \
-            --html docs/data/enrollware-schedule.html \
-            --out docs/data/schedule.json
-
-      # ⬇️ ENRICH schedule.json with real 6-digit Enrollware course numbers
-      - name: Enrich schedule.json with real Enrollware course numbers
+      # 2) Enrich with course numbers
+      - name: Enrich with course numbers
         run: |
           python enrich_schedule_with_course_ids.py \
             --html docs/data/enrollware-schedule.html \
             --schedule docs/data/schedule.json
 
-      # ⬇️ BUILD status.json from the final schedule.json
-      - name: Build status.json
+      # 3) Build pivot.json
+      - name: Build pivot
         run: |
-          python build_status_json.py \
-            --snapshot docs/data/enrollware-schedule.html \
-            --schedule docs/data/schedule.json \
-            --out docs/data/status.json
+          python build-index_test.py
 
-      # ⬇️ COMMIT everything if anything changed
-      - name: Commit snapshot and JSONs if changed
+      # 4) Convert pivot → legacy schedule.json
+      - name: Generate legacy schedule.json
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python pivot_to_legacy.py docs/data/pivot.json > docs/data/schedule.json
 
-          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json || true
+      # 5) Build homepage index.html
+      - name: Build index.html
+        run: |
+          python build-index.py
 
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
-
-          git commit -m "chore: refresh snapshot, schedule.json, and status.json"
+      # 6) Commit all build outputs
+      - name: Commit build artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/schedule.json docs/data/pivot.json docs/index.html
+          git add docs/data/status.json docs/data/schedule-sidebar.json || true
+          git commit -m "chore: rebuild schedule + index" || echo "No changes"
           git push
