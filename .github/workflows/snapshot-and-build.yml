@@ -49,12 +49,13 @@ jobs:
           wc -c docs/data/enrollware-schedule.html
           head -20 docs/data/enrollware-schedule.html || true
 
-      - name: Build schedule.json
-        run: |
-          set -x
-          python parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
-          echo "=== schedule.json (first 40 lines) ==="
-          head -40 docs/data/schedule.json || true
+- name: Build schedule.json
+  run: |
+    set -x
+    python parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
+    echo "=== schedule.json (first 40 lines) ==="
+    head -40 docs/data/schedule.json || true
+
 
 - name: Build schedule.json
   run: |
