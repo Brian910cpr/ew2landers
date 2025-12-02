@@ -1,79 +1,110 @@
 name: Snapshot and build schedule/status
 
 on:
-workflow_dispatch:
-schedule:
-- cron: "7 * * * *" # run at minute 7 every hour
+  workflow_dispatch:
+  schedule:
+    - cron: "7 * * * *"
 
 permissions:
-contents: write
+  contents: write
 
 jobs:
-snapshot-and-build:
-runs-on: ubuntu-latest
+  snapshot-and-build:
+    runs-on: ubuntu-latest
 
-steps:
-  - name: Checkout repo
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-  - name: Set up Python
-    uses: actions/setup-python@v5
-    with:
-      python-version: "3.11"
+      - name: Show repo tree
+        run: |
+          echo "=== Working Directory ==="
+          pwd
+          echo "=== Root ==="
+          ls
+          echo "=== docs/data ==="
+          ls docs/data || true
 
-  - name: Install Python dependencies
-    run: |
-      python -m pip install --upgrade pip
-      python -m pip install beautifulsoup4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-  - name: Fetch latest Enrollware HTML snapshot
-    run: |
-      mkdir -p docs/data
-      curl -fsSL "https://coastalcprtraining.enrollware.com/schedule" \
-        -H "User-Agent: ew2landers-actions-snapshot" \
-        -o docs/data/enrollware-schedule.html
-      wc -c docs/data/enrollware-schedule.html
+      - name: Install Python deps
+        run: |
+          set -x
+          python -m pip install --upgrade pip
+          python -m pip install beautifulsoup4
 
-  - name: Build docs/data/schedule.json from snapshot
-    run: |
-      python parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
+      - name: Fetch latest Enrollware HTML snapshot
+        run: |
+          set -x
+          mkdir -p docs/data
+          curl -fsSL "https://coastalcprtraining.enrollware.com/schedule" \
+            -H "User-Agent: ew2landers-snapshot" \
+            -o docs/data/enrollware-schedule.html
+          echo "=== Snapshot Head ==="
+          head -20 docs/data/enrollware-schedule.html || true
 
-  - name: Enrich schedule.json with real course numbers
-    run: |
-      python enrich_schedule_with_course_ids.py \
-        --html docs/data/enrollware-schedule.html \
-        --schedule docs/data/schedule.json
+      - name: Build schedule.json
+        run: |
+          set -x
+          python parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
+          echo "=== schedule.json (first 40 lines) ==="
+          head -40 docs/data/schedule.json || true
 
-  - name: Build docs/data/status.json (meta info)
-    run: |
-      python - << 'PY'
-      import json, pathlib, datetime
-      sched_path = pathlib.Path("docs/data/schedule.json")
-      data = json.loads(sched_path.read_text(encoding="utf-8"))
-      courses = data.get("courses", [])
-      sessions = data.get("sessions", [])
-      generated_at = data.get("generated_at") or datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z"
-      status = {
-          "generated_at": generated_at,
-          "course_count": len(courses),
-          "session_count": len(sessions),
-      }
-      pathlib.Path("docs/data/status.json").write_text(
-          json.dumps(status, indent=2), encoding="utf-8"
-      )
-      PY
+      - name: Enrich schedule.json
+        run: |
+          set -x
+          python enrich_schedule_with_course_ids.py \
+            --html docs/data/enrollware-schedule.html \
+            --schedule docs/data/schedule.json
+          echo "=== schedule.json after enrichment ==="
+          head -40 docs/data/schedule.json || true
 
-  - name: Commit snapshot and JSONs if changed
-    run: |
-      git config user.name  "github-actions[bot]"
-      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Write status.json
+        run: |
+          set -x
+          python - << 'PY'
+          import json, pathlib, datetime
+          p = pathlib.Path("docs/data/schedule.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          status = {
+              "generated_at": data.get("generated_at"),
+              "course_count": len(data.get("courses", [])),
+              "session_count": len(data.get("sessions", [])),
+          }
+          pathlib.Path("docs/data/status.json").write_text(
+              json.dumps(status, indent=2),
+              encoding="utf-8"
+          )
+          print("Wrote status.json")
+          PY
+          echo "=== status.json ==="
+          cat docs/data/status.json || true
 
-      git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json || true
+      - name: Build index.html
+        run: |
+          set -x
+          python build-index.py
+          echo "=== index.html head ==="
+          head -20 docs/index.html || true
 
-      if git diff --cached --quiet; then
-        echo "No changes to commit."
-        exit 0
-      fi
+      - name: Commit files if changed
+        run: |
+          set -x
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      git commit -m "chore: refresh snapshot, schedule.json, and status.json"
-      git push
+          git add docs/data/enrollware-schedule.html
+          git add docs/data/schedule.json
+          git add docs/data/status.json
+          git add docs/index.html
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: update schedule + snapshot + index"
+          git push

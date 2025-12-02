@@ -1,15 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-enrich_schedule_with_course_ids.py
+enrich_schedule_with_course_ids.py (verbose)
 
-Post-processes docs/data/schedule.json to inject REAL 6-digit Enrollware
-course numbers and schedule URLs, using enrollware-schedule.html as the source.
-
-Usage:
-  python enrich_schedule_with_course_ids.py \
-    --html docs/data/enrollware-schedule.html \
-    --schedule docs/data/schedule.json
+Injects real Enrollware 6-digit course numbers + schedule URLs into schedule.json.
 """
 
 from __future__ import annotations
@@ -18,83 +12,112 @@ import json
 import re
 import sys
 from pathlib import Path
-from bs4 import BeautifulSoup
+from typing import List
+
+from bs4 import BeautifulSoup  # type: ignore
+
+
+def log(msg: str) -> None:
+    print(f"[enrich_schedule] {msg}", flush=True)
 
 
 def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--html", required=True, help="Path to enrollware-schedule.html snapshot")
-    parser.add_argument("--schedule", required=True, help="Path to schedule.json (will be updated)")
+    parser = argparse.ArgumentParser(description="Verbose enrichment of schedule.json.")
+    parser.add_argument("--html", required=True)
+    parser.add_argument("--schedule", required=True)
     return parser.parse_args()
 
 
-def extract_course_ids_from_html(html_path: Path) -> list[int]:
+def extract_course_ids_from_html(html_path: Path) -> List[int | None]:
+    log(f"Reading HTML snapshot: {html_path}")
     html = html_path.read_text(encoding="utf-8", errors="ignore")
+    log(f"Snapshot size: {len(html)} bytes")
+
     soup = BeautifulSoup(html, "html.parser")
     panels = soup.select("div.enrpanel")
+    log(f"Found {len(panels)} .enrpanel panels.")
 
-    ids = []
-    for p in panels:
+    ids: List[int | None] = []
+
+    for idx, p in enumerate(panels, start=1):
         a = p.find("a", attrs={"name": True})
         if not a:
+            log(f"Panel #{idx}: no anchor with name attr -> None")
             ids.append(None)
             continue
 
         name = a.get("name", "")
         m = re.search(r"\d+", name)
         if not m:
+            log(f"Panel #{idx}: name={name!r} had no digits -> None")
             ids.append(None)
             continue
 
-        ids.append(int(m.group(0)))
+        cid = int(m.group(0))
+        log(f"Panel #{idx}: extracted course_id={cid}")
+        ids.append(cid)
+
     return ids
 
 
 def load_schedule(schedule_path: Path):
+    log(f"Loading schedule.json from {schedule_path}")
     data = json.loads(schedule_path.read_text(encoding="utf-8"))
-    if isinstance(data, dict) and "courses" in data and isinstance(data["courses"], list):
+
+    if isinstance(data, dict) and "courses" in data:
+        log("Detected dict container with 'courses'.")
         return data, data["courses"]
+
     if isinstance(data, list):
+        log("Detected list-only schedule.")
         return data, data
-    raise TypeError("schedule.json must be a list or a dict with 'courses' array")
+
+    raise TypeError("schedule.json must be a list or dict with 'courses'")
 
 
 def enrich_schedule_with_ids(container, courses, course_ids):
-    n = min(len(courses), len(course_ids))
-    for i in range(n):
-        cid = course_ids[i]
+    log("Beginning enrichment pass.")
+    limit = min(len(courses), len(course_ids))
+    updated = 0
+
+    for idx in range(limit):
+        cid = course_ids[idx]
         if cid is None:
             continue
-        c = courses[i]
-        if not isinstance(c, dict):
-            continue
-        c["course_number"] = cid
-        c["enrollware_schedule_url"] = f"https://coastalcprtraining.enrollware.com/schedule#ct{cid}"
+        c = courses[idx]
+        if isinstance(c, dict):
+            c["course_number"] = cid
+            c["enrollware_schedule_url"] = f"https://coastalcprtraining.enrollware.com/schedule#ct{cid}"
+            updated += 1
+
+    log(f"Enrichment complete: updated {updated} course entries.")
     return container
 
 
 def main():
+    log("Starting enrichment main().")
     args = parse_args()
+
     html_path = Path(args.html)
     schedule_path = Path(args.schedule)
 
-    if not html_path.is_file():
-        print(f"ERROR: missing HTML file: {html_path}", file=sys.stderr)
-        sys.exit(1)
-    if not schedule_path.is_file():
-        print(f"ERROR: missing schedule.json: {schedule_path}", file=sys.stderr)
+    if not html_path.exists():
+        print(f"ERROR: HTML not found: {html_path}", file=sys.stderr)
         sys.exit(1)
 
-    ids = extract_course_ids_from_html(html_path)
+    if not schedule_path.exists():
+        print(f"ERROR: schedule.json not found: {schedule_path}", file=sys.stderr)
+        sys.exit(1)
+
+    course_ids = extract_course_ids_from_html(html_path)
     container, courses = load_schedule(schedule_path)
-    enriched = enrich_schedule_with_ids(container, courses, ids)
+    enriched = enrich_schedule_with_ids(container, courses, course_ids)
 
-    schedule_path.write_text(
-        json.dumps(enriched, indent=2, ensure_ascii=False),
-        encoding="utf-8"
-    )
-    print("✓ schedule.json updated with real Enrollware course numbers.")
+    log(f"Writing enriched schedule.json to {schedule_path}")
+    schedule_path.write_text(json.dumps(enriched, indent=2, ensure_ascii=False), encoding="utf-8")
+    log("Done enriching.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

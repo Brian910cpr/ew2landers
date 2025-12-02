@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-parse_enrollware.py
+parse_enrollware.py (verbose)
 
-Reads the saved Enrollware schedule HTML and produces a simple JSON file:
+Reads the saved Enrollware schedule HTML and produces a JSON file:
 {
   "generated_at": "...",
   "courses": [...],
   "sessions": [...]
 }
 
-This version is updated for the current Enrollware layout which uses
-accordion panels (.enrpanel) and <ul class="enrclass-list"> for the
-actual dated class sessions.
+Now with detailed print() logging so you can see every step while
+running locally or inside GitHub Actions.
 """
 
 import json
@@ -25,22 +24,24 @@ from urllib.parse import urljoin, urlparse, parse_qs
 
 from bs4 import BeautifulSoup  # type: ignore
 
-
 ENROLLWARE_BASE = "https://coastalcprtraining.enrollware.com"
 
 
+def log(msg: str) -> None:
+    """Lightweight logger with flush."""
+    print(f"[parse_enrollware] {msg}", flush=True)
+
+
 def load_html(path: Path) -> BeautifulSoup:
-    """Load the saved HTML file into BeautifulSoup."""
+    """Load HTML snapshot into BeautifulSoup with size logging."""
+    log(f"Loading HTML snapshot from: {path}")
     text = path.read_text(encoding="utf-8", errors="ignore")
+    log(f"Snapshot size: {len(text)} bytes")
     return BeautifulSoup(text, "html.parser")
 
 
 def normalize_course_name(raw: str) -> str:
-    """
-    Clean up the course name a bit.
-
-    We keep it simple here – strip whitespace and collapse spaces.
-    """
+    """Strip whitespace and collapse internal spaces."""
     if not raw:
         return ""
     cleaned = BeautifulSoup(raw, "html.parser").get_text(" ", strip=True)
@@ -50,7 +51,7 @@ def normalize_course_name(raw: str) -> str:
 
 def extract_session_id_from_href(href: str) -> str:
     """
-    Extract numeric session id from an enroll link like:
+    Extract numeric session id from:
       /enroll?id=11925103
       https://coastalcprtraining.enrollware.com/enroll?id=11925103
     """
@@ -61,23 +62,17 @@ def extract_session_id_from_href(href: str) -> str:
     if "id" in qs and qs["id"]:
         return qs["id"][0]
 
-    # Fallback: regex
     m = re.search(r"id=(\d+)", href)
     return m.group(1) if m else ""
 
 
 def extract_date_text(a_tag) -> str:
     """
-    In Enrollware's <ul class="enrclass-list">, each <a> looks like:
-      <a href="...">Wednesday, February 4, 2026 at 6:30 PM
-        <span>NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</span>
-      </a>
-
-    We want everything BEFORE the <span>.
+    Extract everything BEFORE the <span> in an <a> entry inside
+    <ul class="enrclass-list">
     """
     parts: List[str] = []
     for child in a_tag.children:
-        # Stop once we hit the span that contains the location
         if getattr(child, "name", None) == "span":
             break
         if isinstance(child, str):
@@ -90,18 +85,6 @@ def extract_date_text(a_tag) -> str:
 def parse_html(path: Path) -> Tuple[List[Dict], List[Dict]]:
     """
     Parse the Enrollware schedule HTML and return (courses, sessions).
-
-    courses:  list of { "id": int, "name": str }
-    sessions: list of {
-       "id": str,
-       "course_id": int,
-       "course_name": str,
-       "start_display": str,
-       "location": str,
-       "location_short": str,
-       "register_url": str,
-       ...
-    }
     """
     soup = load_html(path)
 
@@ -109,17 +92,15 @@ def parse_html(path: Path) -> Tuple[List[Dict], List[Dict]]:
     sessions: List[Dict] = []
     course_index: Dict[str, int] = {}
 
-    # Each accordion section is an ".enrpanel" with a header and body.
-    # Inside the body we should see <ul class="enrclass-list"> with <li><a> entries.
     panels = soup.select("#enraccordion .enrpanel")
     if not panels:
-        # Fallback: try any .enrpanel in case the id changes.
+        log("No #enraccordion .enrpanel found; falling back to .enrpanel.")
         panels = soup.select(".enrpanel")
 
-    for panel in panels:
-        # Try value="" attribute first (Enrollware uses this for searching)
-        raw_course_name = panel.get("value") or ""
+    log(f"Found {len(panels)} panels.")
 
+    for panel_idx, panel in enumerate(panels, start=1):
+        raw_course_name = panel.get("value") or ""
         if not raw_course_name:
             title_el = panel.select_one(".enrpanel-title")
             if title_el:
@@ -127,35 +108,34 @@ def parse_html(path: Path) -> Tuple[List[Dict], List[Dict]]:
 
         course_name = normalize_course_name(raw_course_name)
         if not course_name:
-            # If we truly can't find a course name, skip this panel
+            log(f"Panel #{panel_idx}: skipped (no course name).")
             continue
 
-        # Assign or reuse a numeric course_id
         if course_name not in course_index:
             cid = len(course_index) + 1
             course_index[course_name] = cid
             courses.append({"id": cid, "name": course_name})
-        course_id = course_index[course_name]
+            log(f"Panel #{panel_idx}: NEW course [{cid}] {course_name!r}")
+        else:
+            cid = course_index[course_name]
+            log(f"Panel #{panel_idx}: existing course [{cid}] {course_name!r}")
 
-        # Now look for the actual dated classes under this panel
+        course_id = cid
+
         for ul in panel.select("ul.enrclass-list"):
             for li in ul.find_all("li"):
                 a = li.find("a", href=True)
                 if not a:
                     continue
-
                 href = a["href"]
-                # We only care about real enroll links, not internal anchors
                 if "enroll" not in href:
                     continue
 
                 session_id = extract_session_id_from_href(href)
                 start_display = extract_date_text(a)
-                # Location is in the <span> inside the link
                 span = a.find("span")
                 location = span.get_text(" ", strip=True) if span else ""
-                location_short = location  # you can shorten later if desired
-
+                location_short = location
                 register_url = urljoin(ENROLLWARE_BASE, href)
 
                 session = {
@@ -169,13 +149,13 @@ def parse_html(path: Path) -> Tuple[List[Dict], List[Dict]]:
                 }
                 sessions.append(session)
 
+    log(f"Finished parsing: {len(courses)} courses, {len(sessions)} sessions.")
     return courses, sessions
 
 
-def write_schedule_json(
-    output_path: Path, courses: List[Dict], sessions: List[Dict]
-) -> None:
-    """Write the combined schedule.json file."""
+def write_schedule_json(output_path: Path, courses: List[Dict], sessions: List[Dict]) -> None:
+    """Write output JSON with timestamp."""
+    log(f"Writing schedule JSON to: {output_path}")
     payload = {
         "generated_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
         "courses": courses,
@@ -185,14 +165,14 @@ def write_schedule_json(
         json.dumps(payload, indent=2, sort_keys=False),
         encoding="utf-8",
     )
+    log("Finished writing schedule.json.")
 
 
 def main(argv: List[str]) -> int:
+    log("Starting parse_enrollware main().")
     if len(argv) != 3:
-        print(
-            "Usage: parse_enrollware.py INPUT_HTML OUTPUT_JSON",
-            file=sys.stderr,
-        )
+        print("Usage: parse_enrollware.py INPUT_HTML OUTPUT_JSON", file=sys.stderr)
+        log("Incorrect arguments; exiting.")
         return 1
 
     input_html = Path(argv[1])
@@ -200,15 +180,13 @@ def main(argv: List[str]) -> int:
 
     if not input_html.exists():
         print(f"Input HTML not found: {input_html}", file=sys.stderr)
+        log("HTML file missing; exiting.")
         return 1
 
     courses, sessions = parse_html(input_html)
     write_schedule_json(output_json, courses, sessions)
 
-    print(
-        f"Wrote {len(courses)} courses and {len(sessions)} sessions "
-        f"to {output_json}"
-    )
+    log(f"Done: wrote {len(courses)} courses and {len(sessions)} sessions to {output_json}")
     return 0
 
 
