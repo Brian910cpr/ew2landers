@@ -53,16 +53,17 @@ jobs:
         run: |
           set -x
           python parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
-          echo "=== schedule.json (first 40 lines) ==="
+          echo "=== schedule.json (first 40 lines AFTER PARSE) ==="
           head -40 docs/data/schedule.json || true
 
-- name: Build schedule.json
-  run: |
-    set -x
-    python parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
-    echo "=== schedule.json (first 40 lines) ==="
-    head -40 docs/data/schedule.json || true
-
+      - name: Enrich schedule.json with real Enrollware course numbers
+        run: |
+          set -x
+          python enrich_schedule_with_course_ids.py \
+            --html docs/data/enrollware-schedule.html \
+            --schedule docs/data/schedule.json
+          echo "=== schedule.json (first 40 lines AFTER ENRICH) ==="
+          head -40 docs/data/schedule.json || true
 
       - name: Build status.json
         run: |
