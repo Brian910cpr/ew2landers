@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-04T21:30:51Z",
+  "generated_at": "2025-12-04T22:32:13Z",
   "courses": [
     {
       "id": 1,
@@ -1200,15 +1200,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929755"
     },
     {
-      "id": "11930188",
-      "course_id": 4,
-      "course_name": "AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode\u00ae BLS",
-      "start_display": "Thursday, December 4, 2025 at 5:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11930188"
-    },
-    {
       "id": "11930116",
       "course_id": 4,
       "course_name": "AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode\u00ae BLS",
@@ -2244,15 +2235,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929800"
     },
     {
-      "id": "11930218",
-      "course_id": 6,
-      "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
-      "start_display": "Thursday, December 4, 2025 at 5:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11930218"
-    },
-    {
       "id": "11929312",
       "course_id": 6,
       "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
@@ -3007,15 +2989,6 @@
       "location": "",
       "location_short": "",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?course=248287"
-    },
-    {
-      "id": "11930245",
-      "course_id": 7,
-      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
-      "start_display": "Thursday, December 4, 2025 at 5:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11930245"
     },
     {
       "id": "11962282",
