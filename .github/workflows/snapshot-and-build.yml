@@ -18,12 +18,13 @@ jobs:
 
       - name: Show repo tree
         run: |
-          echo "=== Working Directory ==="
+          echo "=== pwd ==="
           pwd
-          echo "=== Root listing ==="
+          echo "=== ls (root) ==="
           ls
-          echo "=== docs/data listing (if exists) ==="
+          echo "=== ls docs ==="
           ls docs || true
+          echo "=== ls docs/data ==="
           ls docs/data || true
 
       - name: Set up Python
@@ -35,10 +36,11 @@ jobs:
         run: |
           set -x
           python -m pip install --upgrade pip
-          python -m pip install beautifulsoup4
-          python -c "import sys, bs4; print('Python + bs4 OK:', sys.version)"
+          pip install beautifulsoup4 lxml python-dateutil
+          sudo apt-get update
+          sudo apt-get install -y jq
 
-      - name: Fetch latest Enrollware HTML snapshot
+      - name: Fetch Enrollware schedule snapshot
         run: |
           set -x
           mkdir -p docs/data
@@ -49,24 +51,28 @@ jobs:
           wc -c docs/data/enrollware-schedule.html
           head -20 docs/data/enrollware-schedule.html || true
 
+      # Build schedule.json from the HTML snapshot
       - name: Build schedule.json
         run: |
           set -x
-          # Use the same script and call signature that worked before
-          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html
-          echo "=== schedule.json (first 40 lines AFTER PARSE) ==="
+          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
+          echo "=== schedule.json size ==="
+          wc -c docs/data/schedule.json
+          echo "=== schedule.json (first 40 lines) ==="
           head -40 docs/data/schedule.json || true
+          jq -e . docs/data/schedule.json >/dev/null
 
-
+      # Enrich schedule.json with real 6-digit Enrollware course numbers
       - name: Enrich schedule.json with real Enrollware course numbers
         run: |
           set -x
           python enrich_schedule_with_course_ids.py \
             --html docs/data/enrollware-schedule.html \
             --schedule docs/data/schedule.json
-          echo "=== schedule.json (first 40 lines AFTER ENRICH) ==="
+          echo "=== schedule.json after enrich (first 40 lines) ==="
           head -40 docs/data/schedule.json || true
 
+      # Build status.json from the final schedule.json
       - name: Build status.json
         run: |
           set -x
@@ -77,26 +83,28 @@ jobs:
           data = json.loads(sched_path.read_text(encoding="utf-8"))
           courses = data.get("courses", [])
           sessions = data.get("sessions", [])
-          generated_at = data.get("generated_at") or datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+          now = datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z"
           status = {
-              "generated_at": generated_at,
+              "generated_at": now,
               "course_count": len(courses),
               "session_count": len(sessions),
           }
           out = pathlib.Path("docs/data/status.json")
           out.write_text(json.dumps(status, indent=2), encoding="utf-8")
-          print("WROTE status.json:", out)
+          print("STATUS STEP: wrote", out)
           PY
           echo "=== status.json ==="
           cat docs/data/status.json || true
 
-      - name: Build index.html
+      # Rebuild docs/index.html from the latest snapshot
+      - name: Build docs/index.html
         run: |
           set -x
-          python build-index.py
+          python build-index.py docs/data/enrollware-schedule.html docs/index.html
           echo "=== index.html head ==="
-          head -20 docs/index.html || true
+          head -40 docs/index.html || true
 
+      # Commit everything if anything changed
       - name: Commit snapshot and JSONs if changed
         run: |
           set -x
@@ -110,6 +118,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore: refresh snapshot, schedule.json, status.json, index.html"
+          git commit -m "chore: refresh snapshot, schedule.json, status.json, and index.html"
           git push
-          echo "Commit and push complete."
