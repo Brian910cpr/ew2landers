@@ -49,13 +49,14 @@ jobs:
           wc -c docs/data/enrollware-schedule.html
           head -20 docs/data/enrollware-schedule.html || true
 
-- name: Build schedule.json
-  run: |
-    set -x
-    python scripts/parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
-
+      - name: Build schedule.json
+        run: |
+          set -x
+          # Use the same script and call signature that worked before
+          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html
           echo "=== schedule.json (first 40 lines AFTER PARSE) ==="
           head -40 docs/data/schedule.json || true
+
 
       - name: Enrich schedule.json with real Enrollware course numbers
         run: |
