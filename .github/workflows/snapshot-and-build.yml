@@ -40,7 +40,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Fetch Enrollware schedule snapshot
+      - name: Fetch latest Enrollware HTML snapshot
         run: |
           set -x
           mkdir -p docs/data
@@ -51,8 +51,7 @@ jobs:
           wc -c docs/data/enrollware-schedule.html
           head -20 docs/data/enrollware-schedule.html || true
 
-      # Build schedule.json from the HTML snapshot
-      - name: Build schedule.json
+      - name: Build schedule.json (parse)
         run: |
           set -x
           python scripts/parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
@@ -62,17 +61,15 @@ jobs:
           head -40 docs/data/schedule.json || true
           jq -e . docs/data/schedule.json >/dev/null
 
-      # Enrich schedule.json with real 6-digit Enrollware course numbers
-      - name: Enrich schedule.json with real Enrollware course numbers
+      - name: Build schedule.json (enrich with course IDs)
         run: |
           set -x
-          python enrich_schedule_with_course_ids.py \
+          python scripts/enrich_schedule_with_course_ids.py \
             --html docs/data/enrollware-schedule.html \
             --schedule docs/data/schedule.json
           echo "=== schedule.json after enrich (first 40 lines) ==="
           head -40 docs/data/schedule.json || true
 
-      # Build status.json from the final schedule.json
       - name: Build status.json
         run: |
           set -x
@@ -88,35 +85,24 @@ jobs:
               "generated_at": now,
               "course_count": len(courses),
               "session_count": len(sessions),
+              "source": "docs/data/enrollware-schedule.html",
           }
           out = pathlib.Path("docs/data/status.json")
           out.write_text(json.dumps(status, indent=2), encoding="utf-8")
-          print("STATUS STEP: wrote", out)
+          print("Wrote status.json:", out)
           PY
           echo "=== status.json ==="
           cat docs/data/status.json || true
 
-      # Rebuild docs/index.html from the latest snapshot
-      - name: Build docs/index.html
+      - name: Commit snapshot and JSON (if changed)
         run: |
           set -x
-          python build-index.py docs/data/enrollware-schedule.html docs/index.html
-          echo "=== index.html head ==="
-          head -40 docs/index.html || true
-
-      # Commit everything if anything changed
-      - name: Commit snapshot and JSONs if changed
-        run: |
-          set -x
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json docs/index.html || true
-
+          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json || true
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
-
-          git commit -m "chore: refresh snapshot, schedule.json, status.json, and index.html"
+          git commit -m "chore: refresh snapshot and schedule.json"
           git push
