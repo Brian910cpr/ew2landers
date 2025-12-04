@@ -3,7 +3,7 @@ name: Snapshot Enrollware + Build schedule/status
 on:
   workflow_dispatch:
   schedule:
-    - cron: "11 * * * *"   # minute 11 every hour
+    - cron: "11 * * * *"
 
 permissions:
   contents: write
@@ -13,124 +13,139 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show repo tree
+      - name: Ensure docs/data exists
         run: |
-          echo "=== pwd ==="
-          pwd
-          echo "=== ls (root) ==="
-          ls
-          echo "=== ls docs ==="
-          ls docs || true
-          echo "=== ls docs/data ==="
-          ls docs/data || true
+          set -xe
+          mkdir -p docs/data
 
-      - name: Set up Python
+      - name: Snapshot Enrollware schedule HTML
+        run: |
+          set -xe
+          curl -fsSL \
+            -A "910CPR-LanderBot/1.0 (+https://brian910cpr.github.io/ew2landers/)" \
+            https://coastalcprtraining.enrollware.com/schedule \
+            -o docs/data/enrollware-schedule.html
+          echo "=== Snapshot size and head ==="
+          wc -c docs/data/enrollware-schedule.html
+          head -n 10 docs/data/enrollware-schedule.html || true
+
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Python dependencies
+      - name: Install deps
         run: |
-          set -x
+          set -xe
           python -m pip install --upgrade pip
           pip install beautifulsoup4 lxml python-dateutil
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Fetch latest Enrollware HTML snapshot
+      - name: Compile parser/enricher (syntax check)
         run: |
-          set -x
-          mkdir -p docs/data
-          curl -fsSL "https://coastalcprtraining.enrollware.com/schedule" \
-            -H "User-Agent: ew2landers-actions-snapshot" \
-            -o docs/data/enrollware-schedule.html
-          echo "=== Snapshot size and head ==="
-          wc -c docs/data/enrollware-schedule.html
-          head -20 docs/data/enrollware-schedule.html || true
+          set -xe
+          test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
+          python -m py_compile scripts/parse_enrollware.py
+          head -n 20 scripts/parse_enrollware.py
+          # Enricher is optional but should exist now
+          if test -f scripts/enrich_schedule_with_course_ids.py; then
+            python -m py_compile scripts/enrich_schedule_with_course_ids.py
+            head -n 20 scripts/enrich_schedule_with_course_ids.py || true
+          else
+            echo "scripts/enrich_schedule_with_course_ids.py not found (will skip enrich step)."
+          fi
 
-      - name: Build schedule.json
+      - name: Build docs/data/schedule.json
         run: |
-          set -x
+          set -xe
           python scripts/parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
           echo "=== schedule.json size ==="
           wc -c docs/data/schedule.json
           echo "=== schedule.json (first 40 lines) ==="
-          head -40 docs/data/schedule.json || true
+          head -n 40 docs/data/schedule.json || true
           jq -e . docs/data/schedule.json >/dev/null
 
-      - name: Enrich schedule.json with course ids (no-op for now)
+      - name: Enrich schedule.json with course ids (no-op if simple)
         run: |
-          set -x
-          python scripts/enrich_schedule_with_course_ids.py \
-            --html docs/data/enrollware-schedule.html \
-            --schedule docs/data/schedule.json
+          set -xe
+          if test -f scripts/enrich_schedule_with_course_ids.py; then
+            python scripts/enrich_schedule_with_course_ids.py \
+              --html docs/data/enrollware-schedule.html \
+              --schedule docs/data/schedule.json
+          else
+            echo "No enrich_schedule_with_course_ids.py found; skipping enrich step."
+          fi
           echo "=== schedule.json after enrich (first 40 lines) ==="
-          head -40 docs/data/schedule.json || true
+          head -n 40 docs/data/schedule.json || true
+          jq -e . docs/data/schedule.json >/dev/null
 
-      - name: Rebuild status.json
+      - name: Rebuild docs/data/status.json
         run: |
-          set -x
-          python - << 'PY'
-          import json, pathlib, hashlib, datetime, os
+          set -xe
+          python - << 'EOF'
+          import json, hashlib, pathlib, datetime, subprocess, sys
 
           root = pathlib.Path("docs/data")
-          snap = root / "enrollware-schedule.html"
-          sched = root / "schedule.json"
 
-          def checksum(path):
-              if not path.exists():
-                  return None
-              h = hashlib.md5()
-              with path.open("rb") as f:
-                  for chunk in iter(lambda: f.read(8192), b""):
-                      h.update(chunk)
-              return {
-                  "exists": True,
-                  "bytes": path.stat().st_size,
-                  "md5": h.hexdigest(),
-              }
+          def file_info(name: str):
+            p = root / name
+            if not p.exists():
+              return {"exists": False, "bytes": 0, "md5": None}
+            data = p.read_bytes()
+            return {
+              "exists": True,
+              "bytes": len(data),
+              "md5": hashlib.md5(data).hexdigest(),
+            }
 
-          data = {
-              "updated_at": datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z",
-              "snapshot": checksum(snap) or {"exists": False},
-              "schedule": checksum(sched) or {"exists": False},
-              "github": {
-                  "sha": os.environ.get("GITHUB_SHA", ""),
-                  "run_id": os.environ.get("GITHUB_RUN_ID", ""),
-                  "repo": os.environ.get("GITHUB_REPOSITORY", ""),
-              },
+          status = {
+            "updated_at": datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z",
+            "snapshot": file_info("enrollware-schedule.html"),
+            "schedule": file_info("schedule.json"),
           }
 
-          out = root / "status.json"
-          out.write_text(json.dumps(data, indent=2), encoding="utf-8")
-          print(out.read_text(encoding="utf-8"))
-          PY
+          try:
+            sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+            status["github"] = {"sha": sha}
+          except Exception:
+            pass
 
-      - name: Commit snapshot/schedule/status if changed
+          (root / "status.json").write_text(json.dumps(status, indent=2))
+          print(json.dumps(status, indent=2))
+          EOF
+
+          echo "=== status.json ==="
+          cat docs/data/status.json || true
+
+      - name: Commit snapshot/schedule/status if changed (safe push)
         run: |
-          set -x
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          set -xe
 
-          # Defuse races if another run pushed first
-          git pull --rebase origin main || true
-
-          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json
-
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
+          # Anything to do?
+          if git diff --quiet -- docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json; then
+            echo "No changes to docs/data/enrollware-schedule.html, schedule.json, or status.json."
             exit 0
           fi
 
-          git commit -m "chore: refresh snapshot, schedule.json, and status.json" || {
-            echo "Nothing to commit after all."
-            exit 0
-          }
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git push origin main || {
-            echo "WARNING: git push failed (likely race with another run)."
-            exit 0
-          }
+          # Try to rebase on top of latest main so we don't get rejected
+          git pull --rebase origin main || echo "git pull --rebase origin main failed; continuing anyway."
+
+          # Stage again (in case rebase changed anything)
+          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json || true
+
+          if git diff --cached --quiet; then
+            echo "No staged changes after rebase; nothing to commit."
+          else
+            git commit -m "chore: refresh snapshot and schedule.json" || echo "Commit failed (possibly empty); continuing."
+            # Safe push: don't fail the workflow if push is rejected
+            git push origin HEAD:main || echo "Push failed (likely non-fast-forward); will rely on a later run or manual sync."
+          fi
+
+          echo "Commit/push step completed."
