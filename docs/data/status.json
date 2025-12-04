@@ -1,18 +1,6 @@
 {
-  "updated_at": "2025-11-22T05:31:21.108708+00:00",
-  "snapshot": {
-    "exists": true,
-    "bytes": 443161,
-    "md5": "449922ca113f62404c2b295cf8b6cb14"
-  },
-  "schedule": {
-    "exists": true,
-    "bytes": 537034,
-    "md5": "a98b66f960cf1da941399b895c62b3cc"
-  },
-  "github": {
-    "sha": "928eacca8b5883b44ba00fe24f4e91deb64273c4",
-    "run_id": "19591004721",
-    "repo": "Brian910cpr/ew2landers"
-  }
+  "generated_at": "2025-12-04T03:24:57Z",
+  "course_count": 46,
+  "session_count": 873,
+  "source": "docs/data/enrollware-schedule.html"
 }
