@@ -10,8 +10,7 @@ Reads the saved Enrollware schedule HTML and produces a JSON file:
   "sessions": [...]
 }
 
-Now with detailed print() logging so you can see every step while
-running locally or inside GitHub Actions.
+Now with detailed print() logging so you can see every step.
 """
 
 import json
@@ -28,12 +27,10 @@ ENROLLWARE_BASE = "https://coastalcprtraining.enrollware.com"
 
 
 def log(msg: str) -> None:
-    """Lightweight logger with flush."""
     print(f"[parse_enrollware] {msg}", flush=True)
 
 
 def load_html(path: Path) -> BeautifulSoup:
-    """Load HTML snapshot into BeautifulSoup with size logging."""
     log(f"Loading HTML snapshot from: {path}")
     text = path.read_text(encoding="utf-8", errors="ignore")
     log(f"Snapshot size: {len(text)} bytes")
@@ -41,7 +38,6 @@ def load_html(path: Path) -> BeautifulSoup:
 
 
 def normalize_course_name(raw: str) -> str:
-    """Strip whitespace and collapse internal spaces."""
     if not raw:
         return ""
     cleaned = BeautifulSoup(raw, "html.parser").get_text(" ", strip=True)
@@ -61,7 +57,6 @@ def extract_session_id_from_href(href: str) -> str:
     qs = parse_qs(parsed.query)
     if "id" in qs and qs["id"]:
         return qs["id"][0]
-
     m = re.search(r"id=(\d+)", href)
     return m.group(1) if m else ""
 
@@ -83,9 +78,6 @@ def extract_date_text(a_tag) -> str:
 
 
 def parse_html(path: Path) -> Tuple[List[Dict], List[Dict]]:
-    """
-    Parse the Enrollware schedule HTML and return (courses, sessions).
-    """
     soup = load_html(path)
 
     courses: List[Dict] = []
@@ -120,8 +112,6 @@ def parse_html(path: Path) -> Tuple[List[Dict], List[Dict]]:
             cid = course_index[course_name]
             log(f"Panel #{panel_idx}: existing course [{cid}] {course_name!r}")
 
-        course_id = cid
-
         for ul in panel.select("ul.enrclass-list"):
             for li in ul.find_all("li"):
                 a = li.find("a", href=True)
@@ -135,36 +125,30 @@ def parse_html(path: Path) -> Tuple[List[Dict], List[Dict]]:
                 start_display = extract_date_text(a)
                 span = a.find("span")
                 location = span.get_text(" ", strip=True) if span else ""
-                location_short = location
                 register_url = urljoin(ENROLLWARE_BASE, href)
 
-                session = {
+                sessions.append({
                     "id": session_id,
-                    "course_id": course_id,
+                    "course_id": cid,
                     "course_name": course_name,
                     "start_display": start_display,
                     "location": location,
-                    "location_short": location_short,
+                    "location_short": location,
                     "register_url": register_url,
-                }
-                sessions.append(session)
+                })
 
     log(f"Finished parsing: {len(courses)} courses, {len(sessions)} sessions.")
     return courses, sessions
 
 
 def write_schedule_json(output_path: Path, courses: List[Dict], sessions: List[Dict]) -> None:
-    """Write output JSON with timestamp."""
     log(f"Writing schedule JSON to: {output_path}")
     payload = {
         "generated_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
         "courses": courses,
         "sessions": sessions,
     }
-    output_path.write_text(
-        json.dumps(payload, indent=2, sort_keys=False),
-        encoding="utf-8",
-    )
+    output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     log("Finished writing schedule.json.")
 
 
