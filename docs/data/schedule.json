@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-04T01:47:09Z",
+  "generated_at": "2025-12-04T03:24:57Z",
   "courses": [
     {
       "id": 1,
@@ -195,15 +195,6 @@
       "location": "",
       "location_short": "",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?course=428958"
-    },
-    {
-      "id": "11924735",
-      "course_id": 2,
-      "course_name": "AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS",
-      "start_display": "Wednesday, December 3, 2025 at 9:15 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924735"
     },
     {
       "id": "11817674",
@@ -690,15 +681,6 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929736"
-    },
-    {
-      "id": "11924775",
-      "course_id": 3,
-      "course_name": "AHA - BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal",
-      "start_display": "Wednesday, December 3, 2025 at 9:15 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924775"
     },
     {
       "id": "11817768",
@@ -1239,15 +1221,6 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929755"
-    },
-    {
-      "id": "11924517",
-      "course_id": 4,
-      "course_name": "AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode\u00ae BLS",
-      "start_display": "Wednesday, December 3, 2025 at 11:45 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924517"
     },
     {
       "id": "11817563",
@@ -1844,15 +1817,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?course=210549"
     },
     {
-      "id": "11930335",
-      "course_id": 5,
-      "course_name": "ARC - BLS - In-Person Classroom Instructor-led Classroom for Expired or New BLS",
-      "start_display": "Wednesday, December 3, 2025 at 9:15 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11930335"
-    },
-    {
       "id": "11929484",
       "course_id": 5,
       "course_name": "ARC - BLS - In-Person Classroom Instructor-led Classroom for Expired or New BLS",
@@ -2420,15 +2384,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11930219"
     },
     {
-      "id": "11924585",
-      "course_id": 6,
-      "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
-      "start_display": "Wednesday, December 17, 2025 at 11:45 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924585"
-    },
-    {
       "id": "11924553",
       "course_id": 6,
       "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
@@ -2436,6 +2391,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924553"
+    },
+    {
+      "id": "11924585",
+      "course_id": 6,
+      "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
+      "start_display": "Wednesday, December 17, 2025 at 11:45 AM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924585"
     },
     {
       "id": "11925275",
@@ -2492,15 +2456,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929631"
     },
     {
-      "id": "11924586",
-      "course_id": 6,
-      "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
-      "start_display": "Wednesday, December 31, 2025 at 11:45 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924586"
-    },
-    {
       "id": "11924554",
       "course_id": 6,
       "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
@@ -2508,6 +2463,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924554"
+    },
+    {
+      "id": "11924586",
+      "course_id": 6,
+      "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
+      "start_display": "Wednesday, December 31, 2025 at 11:45 AM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924586"
     },
     {
       "id": "11925279",
@@ -2564,15 +2528,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929632"
     },
     {
-      "id": "11924584",
-      "course_id": 6,
-      "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
-      "start_display": "Wednesday, January 7, 2026 at 11:45 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924584"
-    },
-    {
       "id": "11924552",
       "course_id": 6,
       "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
@@ -2580,6 +2535,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924552"
+    },
+    {
+      "id": "11924584",
+      "course_id": 6,
+      "course_name": "ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing",
+      "start_display": "Wednesday, January 7, 2026 at 11:45 AM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924584"
     },
     {
       "id": "11925285",
@@ -3203,15 +3167,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11930246"
     },
     {
-      "id": "11924650",
-      "course_id": 7,
-      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
-      "start_display": "Wednesday, December 17, 2025 at 11:45 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924650"
-    },
-    {
       "id": "11924617",
       "course_id": 7,
       "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
@@ -3219,6 +3174,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924617"
+    },
+    {
+      "id": "11924650",
+      "course_id": 7,
+      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
+      "start_display": "Wednesday, December 17, 2025 at 11:45 AM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924650"
     },
     {
       "id": "11925175",
@@ -3347,15 +3311,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929664"
     },
     {
-      "id": "11924653",
-      "course_id": 7,
-      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
-      "start_display": "Wednesday, January 7, 2026 at 11:45 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924653"
-    },
-    {
       "id": "11924620",
       "course_id": 7,
       "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
@@ -3363,6 +3318,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924620"
+    },
+    {
+      "id": "11924653",
+      "course_id": 7,
+      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
+      "start_display": "Wednesday, January 7, 2026 at 11:45 AM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924653"
     },
     {
       "id": "11925181",
@@ -3464,15 +3428,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11930250"
     },
     {
-      "id": "11924655",
-      "course_id": 7,
-      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
-      "start_display": "Wednesday, January 21, 2026 at 11:45 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924655"
-    },
-    {
       "id": "11924622",
       "course_id": 7,
       "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
@@ -3480,6 +3435,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924622"
+    },
+    {
+      "id": "11924655",
+      "course_id": 7,
+      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
+      "start_display": "Wednesday, January 21, 2026 at 11:45 AM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924655"
     },
     {
       "id": "11925186",
@@ -3608,15 +3572,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929667"
     },
     {
-      "id": "11924657",
-      "course_id": 7,
-      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
-      "start_display": "Wednesday, February 4, 2026 at 11:45 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924657"
-    },
-    {
       "id": "11924624",
       "course_id": 7,
       "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
@@ -3624,6 +3579,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924624"
+    },
+    {
+      "id": "11924657",
+      "course_id": 7,
+      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
+      "start_display": "Wednesday, February 4, 2026 at 11:45 AM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924657"
     },
     {
       "id": "11925188",
@@ -3752,15 +3716,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929670"
     },
     {
-      "id": "11924659",
-      "course_id": 7,
-      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
-      "start_display": "Wednesday, February 18, 2026 at 11:45 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924659"
-    },
-    {
       "id": "11924626",
       "course_id": 7,
       "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
@@ -3768,6 +3723,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924626"
+    },
+    {
+      "id": "11924659",
+      "course_id": 7,
+      "course_name": "ARC BLS Challenge - Renewal for experienced Providers \ud83d\udea8 An assessment-only session for experienced providers needing to renew their certification.",
+      "start_display": "Wednesday, February 18, 2026 at 11:45 AM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924659"
     },
     {
       "id": "11925192",
@@ -4967,42 +4931,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?course=428959"
     },
     {
-      "id": "12353590",
-      "course_id": 12,
-      "course_name": "AHA - ACLS Provider - In-person Initial Instructor-led Classroom for Expired or New ACLS",
-      "start_display": "Friday, December 5, 2025 at 9:00 AM (5 seats  left)",
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "location_short": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353590"
-    },
-    {
-      "id": "12353415",
-      "course_id": 12,
-      "course_name": "AHA - ACLS Provider - In-person Initial Instructor-led Classroom for Expired or New ACLS",
-      "start_display": "Friday, December 5, 2025 at 1:00 PM (5 seats  left)",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353415"
-    },
-    {
-      "id": "12353591",
-      "course_id": 12,
-      "course_name": "AHA - ACLS Provider - In-person Initial Instructor-led Classroom for Expired or New ACLS",
-      "start_display": "Wednesday, December 10, 2025 at 9:00 AM (5 seats  left)",
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "location_short": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353591"
-    },
-    {
-      "id": "12353416",
-      "course_id": 12,
-      "course_name": "AHA - ACLS Provider - In-person Initial Instructor-led Classroom for Expired or New ACLS",
-      "start_display": "Wednesday, December 10, 2025 at 1:00 PM (5 seats  left)",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353416"
-    },
-    {
       "id": "12353405",
       "course_id": 12,
       "course_name": "AHA - ACLS Provider - In-person Initial Instructor-led Classroom for Expired or New ACLS",
@@ -5093,33 +5021,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353421"
     },
     {
-      "id": "12353611",
-      "course_id": 13,
-      "course_name": "AHA - ACLS Provider Renewal - In-Person Instructor-led Classroom program for ACLS Renewal",
-      "start_display": "Friday, December 5, 2025 at 9:00 AM (5 seats  left)",
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "location_short": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353611"
-    },
-    {
-      "id": "12354140",
-      "course_id": 13,
-      "course_name": "AHA - ACLS Provider Renewal - In-Person Instructor-led Classroom program for ACLS Renewal",
-      "start_display": "Friday, December 5, 2025 at 1:00 PM (5 seats  left)",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12354140"
-    },
-    {
-      "id": "12353612",
-      "course_id": 13,
-      "course_name": "AHA - ACLS Provider Renewal - In-Person Instructor-led Classroom program for ACLS Renewal",
-      "start_display": "Wednesday, December 10, 2025 at 9:00 AM (5 seats  left)",
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "location_short": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353612"
-    },
-    {
       "id": "12354141",
       "course_id": 13,
       "course_name": "AHA - ACLS Provider Renewal - In-Person Instructor-led Classroom program for ACLS Renewal",
@@ -5208,15 +5109,6 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12354147"
-    },
-    {
-      "id": "11820048",
-      "course_id": 14,
-      "course_name": "AHA - ACLS Provider - Online or Skills Session Blended Learning HeartCode\u00ae ACLS",
-      "start_display": "Wednesday, December 3, 2025 at 8:30 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11820048"
     },
     {
       "id": "11820049",
@@ -5327,42 +5219,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?course=428960"
     },
     {
-      "id": "12353786",
-      "course_id": 16,
-      "course_name": "AHA - PALS Provider - In Person - Initial Instructor-led Classroom for Expired or New PALS",
-      "start_display": "Friday, December 5, 2025 at 9:00 AM",
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "location_short": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353786"
-    },
-    {
-      "id": "12354160",
-      "course_id": 16,
-      "course_name": "AHA - PALS Provider - In Person - Initial Instructor-led Classroom for Expired or New PALS",
-      "start_display": "Friday, December 5, 2025 at 1:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12354160"
-    },
-    {
-      "id": "12353787",
-      "course_id": 16,
-      "course_name": "AHA - PALS Provider - In Person - Initial Instructor-led Classroom for Expired or New PALS",
-      "start_display": "Wednesday, December 10, 2025 at 9:00 AM",
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "location_short": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353787"
-    },
-    {
-      "id": "12354161",
-      "course_id": 16,
-      "course_name": "AHA - PALS Provider - In Person - Initial Instructor-led Classroom for Expired or New PALS",
-      "start_display": "Wednesday, December 10, 2025 at 1:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12354161"
-    },
-    {
       "id": "12354162",
       "course_id": 16,
       "course_name": "AHA - PALS Provider - In Person - Initial Instructor-led Classroom for Expired or New PALS",
@@ -5451,33 +5307,6 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12354167"
-    },
-    {
-      "id": "12353807",
-      "course_id": 17,
-      "course_name": "AHA - PALS Provider - In Person - Renewal Instructor-led Classroom for PALS renewal",
-      "start_display": "Friday, December 5, 2025 at 9:00 AM",
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "location_short": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353807"
-    },
-    {
-      "id": "12354180",
-      "course_id": 17,
-      "course_name": "AHA - PALS Provider - In Person - Renewal Instructor-led Classroom for PALS renewal",
-      "start_display": "Friday, December 5, 2025 at 1:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12354180"
-    },
-    {
-      "id": "12353808",
-      "course_id": 17,
-      "course_name": "AHA - PALS Provider - In Person - Renewal Instructor-led Classroom for PALS renewal",
-      "start_display": "Wednesday, December 10, 2025 at 9:00 AM",
-      "location": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "location_short": "NC - Burgaw: 111 S Wright St @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12353808"
     },
     {
       "id": "12354181",
@@ -6036,15 +5865,6 @@
       "location": "",
       "location_short": "",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?course=329495"
-    },
-    {
-      "id": "11930519",
-      "course_id": 24,
-      "course_name": "AHA - Heartsaver\u00ae Pediatric First Aid / CPR / AED Online + In-Person Skills \u2714 Fulfills the CPR/First Aid component of NC DCDEE (10A NCAC 09 .1102); additional NC trainings required for full compliance \u2714 Fulfills the CPR/First Aid requirement in CT OEC (Sec. 19a-79-4a); center policies/modules may apply",
-      "start_display": "Wednesday, December 3, 2025 at 8:30 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11930519"
     },
     {
       "id": "11930520",
@@ -6668,15 +6488,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925039"
     },
     {
-      "id": "11925040",
-      "course_id": 28,
-      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
-      "start_display": "Wednesday, December 17, 2025 at 5:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925040"
-    },
-    {
       "id": "11924976",
       "course_id": 28,
       "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
@@ -6684,6 +6495,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924976"
+    },
+    {
+      "id": "11925040",
+      "course_id": 28,
+      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
+      "start_display": "Wednesday, December 17, 2025 at 5:00 PM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925040"
     },
     {
       "id": "11929565",
@@ -6722,15 +6542,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929566"
     },
     {
-      "id": "11925047",
-      "course_id": 28,
-      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
-      "start_display": "Wednesday, January 7, 2026 at 5:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925047"
-    },
-    {
       "id": "11924983",
       "course_id": 28,
       "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
@@ -6738,6 +6549,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924983"
+    },
+    {
+      "id": "11925047",
+      "course_id": 28,
+      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
+      "start_display": "Wednesday, January 7, 2026 at 5:00 PM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925047"
     },
     {
       "id": "11929567",
@@ -6767,15 +6587,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925050"
     },
     {
-      "id": "11925048",
-      "course_id": 28,
-      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
-      "start_display": "Wednesday, January 21, 2026 at 5:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925048"
-    },
-    {
       "id": "11924984",
       "course_id": 28,
       "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
@@ -6783,6 +6594,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924984"
+    },
+    {
+      "id": "11925048",
+      "course_id": 28,
+      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
+      "start_display": "Wednesday, January 21, 2026 at 5:00 PM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925048"
     },
     {
       "id": "11929569",
@@ -6821,15 +6641,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929570"
     },
     {
-      "id": "11925054",
-      "course_id": 28,
-      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
-      "start_display": "Wednesday, February 4, 2026 at 5:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925054"
-    },
-    {
       "id": "11924990",
       "course_id": 28,
       "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
@@ -6837,6 +6648,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924990"
+    },
+    {
+      "id": "11925054",
+      "course_id": 28,
+      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
+      "start_display": "Wednesday, February 4, 2026 at 5:00 PM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925054"
     },
     {
       "id": "11929571",
@@ -6875,15 +6695,6 @@
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11929572"
     },
     {
-      "id": "11925059",
-      "course_id": 28,
-      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
-      "start_display": "Wednesday, February 18, 2026 at 5:00 PM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925059"
-    },
-    {
       "id": "11924995",
       "course_id": 28,
       "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
@@ -6891,6 +6702,15 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11924995"
+    },
+    {
+      "id": "11925059",
+      "course_id": 28,
+      "course_name": "HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing \u2714 Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)",
+      "start_display": "Wednesday, February 18, 2026 at 5:00 PM",
+      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
+      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11925059"
     },
     {
       "id": "11929573",
@@ -7116,15 +6936,6 @@
       "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11818626"
-    },
-    {
-      "id": "11820373",
-      "course_id": 30,
-      "course_name": "ARC - Adult and Pediatric First Aid/CPR/AED",
-      "start_display": "Wednesday, December 3, 2025 at 12:30 AM",
-      "location": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "location_short": "NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=11820373"
     },
     {
       "id": "11929824",
@@ -7908,15 +7719,6 @@
       "location": "",
       "location_short": "",
       "register_url": "https://coastalcprtraining.enrollware.com/enroll?course=428964"
-    },
-    {
-      "id": "12406741",
-      "course_id": 34,
-      "course_name": "AHA - Family & Friends\u00ae CPR",
-      "start_display": "Wednesday, December 3, 2025 at 6:00 PM",
-      "location": "Acme-Delco-Riegelwood Fire-Rescue, Inc",
-      "location_short": "Acme-Delco-Riegelwood Fire-Rescue, Inc",
-      "register_url": "https://coastalcprtraining.enrollware.com/enroll?id=12406741"
     },
     {
       "id": "11925103",
