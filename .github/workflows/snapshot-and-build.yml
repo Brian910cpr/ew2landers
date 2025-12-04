@@ -1,108 +1,140 @@
 name: Snapshot and build schedule/status
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "7 * * * *"   # run at minute 7 every hour
+workflow_dispatch:
+schedule:
+- cron: "11 * * * *" # run at minute 11 every hour
 
 permissions:
-  contents: write
+contents: write
 
 jobs:
-  snapshot-and-build:
-    runs-on: ubuntu-latest
+snapshot_and_build:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+steps:
+  - name: Checkout repo
+    uses: actions/checkout@v4
 
-      - name: Show repo tree
-        run: |
-          echo "=== pwd ==="
-          pwd
-          echo "=== ls (root) ==="
-          ls
-          echo "=== ls docs ==="
-          ls docs || true
-          echo "=== ls docs/data ==="
-          ls docs/data || true
+  - name: Show repo tree
+    run: |
+      echo "=== pwd ==="
+      pwd
+      echo "=== ls (root) ==="
+      ls
+      echo "=== ls docs ==="
+      ls docs || true
+      echo "=== ls docs/data ==="
+      ls docs/data || true
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+  - name: Ensure docs/data exists
+    run: |
+      set -xe
+      mkdir -p docs/data
 
-      - name: Install Python dependencies
-        run: |
-          set -x
-          python -m pip install --upgrade pip
-          pip install beautifulsoup4 lxml python-dateutil
-          sudo apt-get update
-          sudo apt-get install -y jq
+  - name: Snapshot Enrollware schedule HTML
+    run: |
+      set -xe
+      curl -fSL \
+        -A "910CPR-LanderBot/1.0 (+https://brian910cpr.github.io/ew2landers/)" \
+        https://coastalcprtraining.enrollware.com/schedule \
+        -o docs/data/enrollware-schedule.html
+      echo "=== Snapshot size and head ==="
+      wc -c docs/data/enrollware-schedule.html
+      head -n 10 docs/data/enrollware-schedule.html || true
 
-      - name: Fetch latest Enrollware HTML snapshot
-        run: |
-          set -x
-          mkdir -p docs/data
-          curl -fsSL "https://coastalcprtraining.enrollware.com/schedule" \
-            -H "User-Agent: ew2landers-actions-snapshot" \
-            -o docs/data/enrollware-schedule.html
-          echo "=== Snapshot size and head ==="
-          wc -c docs/data/enrollware-schedule.html
-          head -20 docs/data/enrollware-schedule.html || true
+  - name: Setup Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.11"
 
-      - name: Build schedule.json (parse)
-        run: |
-          set -x
-          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
-          echo "=== schedule.json size ==="
-          wc -c docs/data/schedule.json
-          echo "=== schedule.json (first 40 lines) ==="
-          head -40 docs/data/schedule.json || true
-          jq -e . docs/data/schedule.json >/dev/null
+  - name: Install deps
+    run: |
+      set -xe
+      python -m pip install --upgrade pip
+      pip install beautifulsoup4 lxml python-dateutil
+      sudo apt-get update
+      sudo apt-get install -y jq
 
-      - name: Build schedule.json (enrich with course IDs)
-        run: |
-          set -x
-          python scripts/enrich_schedule_with_course_ids.py \
-            --html docs/data/enrollware-schedule.html \
-            --schedule docs/data/schedule.json
-          echo "=== schedule.json after enrich (first 40 lines) ==="
-          head -40 docs/data/schedule.json || true
+  - name: Compile parsers (syntax check)
+    run: |
+      set -xe
+      test -f scripts/parse_enrollware.py || { echo "Missing scripts/parse_enrollware.py"; exit 1; }
+      python -m py_compile scripts/parse_enrollware.py
+      head -n 20 scripts/parse_enrollware.py || true
+      test -f scripts/enrich_schedule_with_course_ids.py || { echo "Missing scripts/enrich_schedule_with_course_ids.py"; exit 1; }
+      python -m py_compile scripts/enrich_schedule_with_course_ids.py
+      head -n 20 scripts/enrich_schedule_with_course_ids.py || true
 
-      - name: Build status.json
-        run: |
-          set -x
-          python - << 'PY'
-          import json, pathlib, datetime
-          sched_path = pathlib.Path("docs/data/schedule.json")
-          print("STATUS STEP: reading", sched_path)
-          data = json.loads(sched_path.read_text(encoding="utf-8"))
-          courses = data.get("courses", [])
-          sessions = data.get("sessions", [])
-          now = datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z"
-          status = {
-              "generated_at": now,
-              "course_count": len(courses),
-              "session_count": len(sessions),
-              "source": "docs/data/enrollware-schedule.html",
-          }
-          out = pathlib.Path("docs/data/status.json")
-          out.write_text(json.dumps(status, indent=2), encoding="utf-8")
-          print("Wrote status.json:", out)
-          PY
-          echo "=== status.json ==="
-          cat docs/data/status.json || true
+  - name: Build docs/data/schedule.json
+    run: |
+      set -xe
+      python scripts/parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
+      echo "=== schedule.json size ==="
+      wc -c docs/data/schedule.json
+      echo "=== schedule.json (first 30 lines) ==="
+      head -n 30 docs/data/schedule.json || true
+      jq -e . docs/data/schedule.json >/dev/null
 
-      - name: Commit snapshot and JSON (if changed)
-        run: |
-          set -x
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json || true
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
-          git commit -m "chore: refresh snapshot and schedule.json"
-          git push
+  - name: Enrich schedule.json with course IDs (pass-through for now)
+    run: |
+      set -xe
+      python scripts/enrich_schedule_with_course_ids.py \
+        --html docs/data/enrollware-schedule.html \
+        --schedule docs/data/schedule.json
+      echo "=== schedule.json after enrich (first 30 lines) ==="
+      head -n 30 docs/data/schedule.json || true
+      jq -e . docs/data/schedule.json >/dev/null
+
+  - name: Build docs/data/status.json
+    run: |
+      set -xe
+      python - << 'PY'
+      import json, hashlib
+      from pathlib import Path
+      from datetime import datetime, timezone
+      import os
+
+      root = Path("docs/data")
+      snapshot = root / "enrollware-schedule.html"
+      schedule = root / "schedule.json"
+      status_path = root / "status.json"
+
+      def info(path: Path):
+        if not path.exists():
+          return {"exists": False, "bytes": 0, "md5": None}
+        data = path.read_bytes()
+        return {
+          "exists": True,
+          "bytes": len(data),
+          "md5": hashlib.md5(data).hexdigest(),
+        }
+
+      status = {
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "snapshot": info(snapshot),
+        "schedule": info(schedule),
+        "github": {
+          "sha": os.environ.get("GITHUB_SHA"),
+          "run_id": os.environ.get("GITHUB_RUN_ID"),
+          "repo": os.environ.get("GITHUB_REPOSITORY"),
+        },
+      }
+
+      status_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
+      print(status_path.read_text(encoding="utf-8"))
+      PY
+
+  - name: Commit docs/data changes if any
+    run: |
+      set -xe
+      git status
+      if git diff --quiet -- docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json; then
+        echo "No changes to snapshot/schedule/status."
+        exit 0
+      fi
+      git config user.name  "github-actions[bot]"
+      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      git add docs/data/enrollware-schedule.html docs/data/schedule.json docs/data/status.json
+      git commit -m "chore: snapshot Enrollware + rebuild schedule/status"
+      git push
