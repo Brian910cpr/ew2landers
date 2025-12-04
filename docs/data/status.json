@@ -1,6 +1,16 @@
 {
-  "generated_at": "2025-12-04T03:24:57Z",
-  "course_count": 46,
-  "session_count": 873,
-  "source": "docs/data/enrollware-schedule.html"
+  "updated_at": "2025-12-04T04:53:20Z",
+  "snapshot": {
+    "exists": true,
+    "bytes": 400268,
+    "md5": "f2109269e5d9cc468ccf9aa80d4dbda6"
+  },
+  "schedule": {
+    "exists": true,
+    "bytes": 449205,
+    "md5": "b484c01425958f8c6b105afa6603865e"
+  },
+  "github": {
+    "sha": "affdb07f3c5b523cff301f7438715994a2068ccc"
+  }
 }
