@@ -1,29 +1,412 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing –  </title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <title>ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing | 910 CPR Class Session</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing with 910 CPR in Wilmington, Burgaw, Jacksonville and across Southeastern North Carolina." />
+    <link rel="icon" type="image/png" href="/images/910cpr-favicon.png" />
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(180deg, #f8fbff 0%, #ffffff 40%);
+            color: #111827;
+        }
+        a {
+            color: #0f766e;
+        }
+        .site-header {
+            background: #0f172a;
+            color: #f9fafb;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .site-header a {
+            color: #e5e7eb;
+            text-decoration: none;
+        }
+        .site-header a:hover {
+            text-decoration: underline;
+        }
+        .logo {
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+        }
+        .page {
+            max-width: 1040px;
+            margin: 24px auto 40px auto;
+            padding: 0 16px 40px 16px;
+        }
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
+            border-radius: 20px;
+            background: #ffffff;
+            box-shadow: 0 14px 30px rgba(15, 23, 42, 0.10);
+        }
+        .hero-text h1 {
+            margin: 0 0 6px 0;
+            font-size: 26px;
+        }
+        .hero-text p {
+            margin: 4px 0;
+            color: #4b5563;
+        }
+        .hero-meta {
+            margin-top: 10px;
+            display: grid;
+            gap: 4px;
+            font-size: 14px;
+        }
+        .hero-meta strong {
+            font-weight: 600;
+        }
+        .hero-image-wrap {
+            border-radius: 18px;
+            overflow: hidden;
+            background: #e5f2ff;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: #0f766e;
+            color: #f9fafb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+        .btn-primary:hover {
+            background: #115e56;
+        }
+        .btn-secondary {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid #0f766e;
+            color: #0f766e;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .btn-secondary:hover {
+            background: #ecfdf5;
+        }
+        .btn-ghost {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            color: #111827;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .btn-ghost:hover {
+            background: #f3f4f6;
+        }
+        .past-banner {
+            margin-top: 18px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .layout {
+            margin-top: 24px;
+            display: grid;
+            grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.8fr);
+            gap: 24px;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px 18px;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .card p {
+            font-size: 14px;
+            color: #4b5563;
+        }
+        .periscope-list {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .periscope-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+        .periscope-date {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .periscope-location {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .periscope-cta {
+            flex-shrink: 0;
+        }
+        .other-classes-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .other-class-card h3 {
+            margin: 0 0 4px 0;
+            font-size: 15px;
+        }
+        .other-class-card p {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: #4b5563;
+        }
+        .footer-links {
+            margin-top: 26px;
+            font-size: 13px;
+            color: #6b7280;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .footer-links a {
+            color: #0f766e;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 800px) {
+            .hero {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+    </style>
 </head>
-<body style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; max-width: 900px; margin: 0 auto;">
-  
-  <h1 style="margin-bottom: 4px;">ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing</h1>
-  <p style="margin-top: 0; color: #555;">
-     at <br>
-    NC - Wilmington: 4018 Shipyard Blvd @ 910CPR&#x27;s Office<br>
+<body>
+    <header class="site-header">
+        <div class="logo">
+            910 CPR · Coastal CPR Training
+        </div>
+        <nav class="nav-links">
+            <a href="https://910cpr.com/">910CPR.com Home</a>
+            <a href="../schedule.html">Full CPR Schedule</a>
+            <a href="https://coastalcprtraining.enrollware.com/schedule">Enrollware Schedule</a>
+        </nav>
+    </header>
+
+    <main class="page">
+        <section class="hero">
+            <div class="hero-text">
+                <h1>ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing</h1>
+                <p>ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing with 910 CPR in Wilmington, Burgaw, Jacksonville and across Southeastern North Carolina.</p>
+
+                <div class="hero-meta">
+                    <div><strong>Date &amp; time:</strong> Date/time to be arranged</div>
+                    <div><strong>Location:</strong> NC - Wilmington: 4018 Shipyard Blvd @ 910CPR&#x27;s Office</div>
+                    
+                </div>
+
+                <a
+                    id="main-cta"
+                    href="https://coastalcprtraining.enrollware.com/schedule"
+                    class="btn-primary"
+                    data-start-iso=""
+                    data-enroll-url="https://coastalcprtraining.enrollware.com/schedule"
+                    data-schedule-url="https://coastalcprtraining.enrollware.com/schedule"
+                    data-status-initial="unknown"
+                >See class options and schedule</a>
+
+                
+        <div id="past-banner" class="past-banner" style="display: none;">
+            <strong>This class date has already passed.</strong>
+            <span>You can still see other upcoming sessions of this class below.</span>
+        </div>
     
-  </p>
+            </div>
+            <div class="hero-image-wrap">
+                <img src="/images/course-6.jpg" alt="ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing CPR class in Southeastern North Carolina" />
+            </div>
+        </section>
 
-  <div style="margin: 24px 0;">
-    <a href="https://coastalcprtraining.enrollware.com/enroll?id=11929304" style="display:inline-block;padding:10px 18px;border-radius:4px;border:1px solid #0b6efb;text-decoration:none;">
-      Register for this class
-    </a>
-  </div>
+        <section class="layout">
+            <article class="card">
+                <h2>What to expect in this session</h2>
+                <p>
+                    This is a scheduled session of our <strong>ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing</strong> program with 910 CPR.
+                    You&apos;ll receive hands-on training, real-world scenarios, and clear guidance on what you
+                    need for your job or school requirements.
+                </p>
+                <p>
+                    Full details, pre-course requirements, and confirmation instructions are provided on the
+                    registration page and in your confirmation email after you sign up.
+                </p>
+                <p>
+                    If you needed a different time or location, you can use the schedule links on this page to see
+                    other upcoming options.
+                </p>
+            </article>
 
-  <div style="margin-top: 12px;">
-    <a href="#" style="display:inline-block;padding:8px 14px;border-radius:4px;border:1px solid #999;text-decoration:none;">
-      Registration closed. See other times?
-    </a>
-  </div>
+            <aside class="card">
+                <h2 id="more-times-heading">See other times and options</h2>
+                <p>No additional dates are currently scheduled for this class. Please check back soon.</p>
+            </aside>
+        </section>
+
+        <section class="layout" style="margin-top: 18px;">
+            <article class="card">
+                <h2>Other popular classes at 910 CPR</h2>
+                <div class="other-classes-grid">
+            <article class="other-class-card">
+                <h3>Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.</h3>
+                <p>Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED. with 910 CPR in Wilmington, Burgaw, Jacksonville and across Southeastern North Carolina.</p>
+                <a href="../schedule.html" class="btn-ghost">See schedule</a>
+            </article>
+            
+
+            <article class="other-class-card">
+                <h3>AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS</h3>
+                <p>AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS with 910 CPR in Wilmington, Burgaw, Jacksonville and across Southeastern North Carolina.</p>
+                <a href="../schedule.html" class="btn-ghost">See schedule</a>
+            </article>
+            
+
+            <article class="other-class-card">
+                <h3>AHA - BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal</h3>
+                <p>AHA - BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal with 910 CPR in Wilmington, Burgaw, Jacksonville and across Southeastern North Carolina.</p>
+                <a href="../schedule.html" class="btn-ghost">See schedule</a>
+            </article>
+            
+
+            <article class="other-class-card">
+                <h3>AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode® BLS</h3>
+                <p>AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode® BLS with 910 CPR in Wilmington, Burgaw, Jacksonville and across Southeastern North Carolina.</p>
+                <a href="../schedule.html" class="btn-ghost">See schedule</a>
+            </article>
+            </div>
+            </article>
+
+            <aside class="card">
+                <h2>Need to start over?</h2>
+                <p>
+                    Not sure this is the right class, or registering someone else? You can jump back to our
+                    main course menu or full schedule and re-select the best option for your needs.
+                </p>
+                <p>
+                    For help matching the right class to your hospital, school, or workplace policy,
+                    you can always call us at <a href="tel:+19103955193">(910) 395-5193</a>.
+                </p>
+                <p>
+                    <a href="https://910cpr.com/" class="btn-secondary">Return to 910CPR.com</a>
+                </p>
+                <p>
+                    <a href="../schedule.html" class="btn-ghost">See full CPR class schedule</a>
+                </p>
+            </aside>
+        </section>
+
+        <section class="footer-links">
+            <span>Still unsure?</span>
+            <a href="https://coastalcprtraining.enrollware.com/schedule">View all dates on our Enrollware schedule</a>
+            <a href="mailto:brian@910cpr.com">Email 910 CPR</a>
+        </section>
+    </main>
+
+    <script>
+    (function () {
+        var cta = document.getElementById("main-cta");
+        if (!cta) return;
+
+        var startIso = cta.dataset.startIso || "";
+        var enrollUrl = cta.dataset.enrollUrl || "";
+        var scheduleUrl = cta.dataset.scheduleUrl || "";
+        var initialStatus = cta.dataset.statusInitial || "unknown";
+
+        var banner = document.getElementById("past-banner");
+        var heading = document.getElementById("more-times-heading");
+
+        function applyState(status) {
+            if (status === "future") {
+                cta.textContent = "Register for this class";
+                cta.href = enrollUrl || scheduleUrl || cta.href;
+                if (banner) banner.style.display = "none";
+                if (heading) heading.textContent = "More times?";
+            } else if (status === "past") {
+                cta.textContent = "See other times for this class";
+                cta.href = scheduleUrl || enrollUrl || cta.href;
+                if (banner) banner.style.display = "flex";
+                if (heading) heading.textContent = "Registration closed. See other times?";
+            } else {
+                cta.textContent = "See class options and schedule";
+                cta.href = scheduleUrl || enrollUrl || cta.href;
+                if (banner) banner.style.display = "none";
+                if (heading) heading.textContent = "See other times and options";
+            }
+        }
+
+        var status = initialStatus;
+
+        if (startIso) {
+            var start = new Date(startIso);
+            if (!isNaN(start.getTime())) {
+                var now = new Date();
+                status = (start > now) ? "future" : "past";
+            } else {
+                status = "unknown";
+            }
+        } else {
+            status = "unknown";
+        }
+
+        applyState(status);
+    })();
+    </script>
 </body>
 </html>
