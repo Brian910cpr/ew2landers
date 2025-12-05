@@ -4,125 +4,268 @@
 """
 build_schedule_page.py
 
-Reads docs/data/schedule.json and templates/schedule_page_template.html
-and writes docs/schedule.html with SEO-friendly, static course+session list.
+Reads docs/data/schedule.json (generated from parse_enrollware.py)
+and renders a static HTML schedule page at docs/schedule.html using
+templates/schedule_page_template.html.
+
+This is intentionally loud/verbose so you can see exactly what it’s doing.
 """
 
 import json
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, DefaultDict
-from collections import defaultdict
+import os
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Tuple
 
 
-ROOT = Path(__file__).resolve().parent.parent
-DATA_PATH = ROOT / "docs" / "data" / "schedule.json"
-TEMPLATE_PATH = ROOT / "templates" / "schedule_page_template.html"
-OUTPUT_PATH = ROOT / "docs" / "schedule.html"
+def log(msg: str) -> None:
+    print(f"[build_schedule_page] {msg}", flush=True)
 
 
-def load_schedule() -> Dict[str, Any]:
-    with DATA_PATH.open("r", encoding="utf-8") as f:
-        return json.load(f)
+def repo_root() -> str:
+    here = os.path.abspath(os.path.dirname(__file__))
+    return os.path.abspath(os.path.join(here, ".."))
 
 
-def parse_iso(dt: str) -> datetime:
-    # schedule.json should be ISO 8601 with offset, e.g. "2025-11-22T12:30:00-05:00"
-    # Python 3.11: fromisoformat handles offsets.
-    return datetime.fromisoformat(dt)
+def load_schedule(path: str) -> Dict[str, Any]:
+    log(f"Loading schedule.json from {path}")
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"schedule.json not found at {path}")
+
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # Basic sanity
+    courses = data.get("courses", [])
+    sessions = data.get("sessions", [])
+
+    log(f"Loaded schedule.json: courses={len(courses)}, sessions={len(sessions)}")
+    return data
 
 
 def slugify(text: str) -> str:
-    import re
+    text = text.strip().lower()
+    out_chars: List[str] = []
+    for ch in text:
+        if ch.isalnum():
+            out_chars.append(ch)
+        elif ch in (" ", "-", "_", "/", "|"):
+            out_chars.append("-")
+        # else drop weird stuff
+    slug = "".join(out_chars)
+    while "--" in slug:
+        slug = slug.replace("--", "-")
+    return slug.strip("-") or "class"
 
-    text = text.lower()
-    text = re.sub(r"[^a-z0-9]+", "-", text)
-    text = re.sub(r"-+", "-", text).strip("-")
-    return text or "class"
+
+def parse_start_dt(session: Dict[str, Any]) -> Tuple[datetime, str]:
+    """
+    Try to parse a usable datetime from the session.
+    We guess field names based on parse_enrollware.
+    """
+    raw = (
+        session.get("start_iso")
+        or session.get("start")
+        or session.get("start_time")
+        or ""
+    )
+
+    if not raw:
+        # Fallback: now, but mark clearly
+        log(f"WARNING: session {session.get('id')} missing start timestamp; using now()")
+        return datetime.now(timezone.utc), "Unknown date/time"
+
+    # Normalize a bit
+    txt = str(raw).strip()
+    disp = txt
+
+    # Try ISO parse
+    dt = None
+    try:
+        # Handle trailing Z
+        if txt.endswith("Z"):
+            txt = txt[:-1] + "+00:00"
+        dt = datetime.fromisoformat(txt)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+    except Exception as e:
+        log(f"WARNING: could not parse start '{raw}' for session {session.get('id')}: {e}")
+        dt = datetime.now(timezone.utc)
+
+    # Human display
+    try:
+        disp = dt.astimezone().strftime("%a %b %d, %Y · %I:%M %p").lstrip("0")
+    except Exception:
+        pass
+
+    return dt, disp
+
+
+def format_time_range(session: Dict[str, Any]) -> str:
+    """
+    Try to show something like "9:00 AM – 1:00 PM".
+    If we can’t find end time, just return the date/time we already show.
+    """
+    # If parse_enrollware stored explicit end, you can expand this later.
+    # For now, this is a placeholder.
+    return ""
 
 
 def build_course_blocks(schedule: Dict[str, Any]) -> str:
-    courses = {c["id"]: c for c in schedule.get("courses", [])}
-    sessions: List[Dict[str, Any]] = schedule.get("sessions", [])
+    courses = schedule.get("courses", [])
+    sessions = schedule.get("sessions", [])
 
-    sessions_by_course: DefaultDict[int, List[Dict[str, Any]]] = defaultdict(list)
+    # Build lookup: course_id -> course record
+    course_by_id: Dict[int, Dict[str, Any]] = {}
+    for c in courses:
+        cid = c.get("id")
+        if isinstance(cid, int):
+            course_by_id[cid] = c
+
+    log(f"Indexed {len(course_by_id)} courses by id")
+
+    # Group sessions by course_id
+    sessions_by_course: Dict[int, List[Dict[str, Any]]] = {}
+    now_utc = datetime.now(timezone.utc)
+
     for s in sessions:
         cid = s.get("course_id")
-        if cid is not None:
-            sessions_by_course[cid].append(s)
+        if not isinstance(cid, int):
+            continue
 
-    # sort sessions by start date
-    for cid in sessions_by_course:
-        sessions_by_course[cid].sort(
-            key=lambda s: parse_iso(s.get("start_iso") or s.get("start") or "2100-01-01T00:00:00")
-        )
+        start_dt, disp = parse_start_dt(s)
+
+        # Add derived values for rendering
+        s["_start_dt"] = start_dt
+        s["_start_display"] = disp
+        s["_time_range"] = format_time_range(s)
+
+        # Filter out obviously past sessions, but we keep a small buffer
+        if start_dt < now_utc.replace(hour=0, minute=0, second=0, microsecond=0):
+            # Past session – still welcome to keep it if you want archive-style
+            # For now, we keep everything; if you want only future, uncomment:
+            # continue
+            pass
+
+        sessions_by_course.setdefault(cid, []).append(s)
+
+    log(f"Grouped sessions by course: {len(sessions_by_course)} course_ids with sessions")
 
     blocks: List[str] = []
 
-    for course_id, course in sorted(courses.items(), key=lambda kv: kv[1]["name"]):
-        name = course["name"]
-        sessions_for_course = sessions_by_course.get(course_id, [])
-        if not sessions_for_course:
-            # Skip completely empty courses to avoid clutter
+    # Sort courses by name for stability
+    sorted_courses = sorted(
+        ((cid, course_by_id.get(cid)) for cid in sessions_by_course.keys()),
+        key=lambda pair: (pair[1].get("name", "").lower() if pair[1] else ""),
+    )
+
+    for cid, course in sorted_courses:
+        if not course:
+            log(f"WARNING: no course record for course_id={cid}, skipping")
             continue
 
-        lines: List[str] = []
-        lines.append('<section class="course-block">')
-        lines.append(f"  <h2>{name}</h2>")
-        lines.append("  <ul>")
+        name = course.get("name", f"Course {cid}")
+        log(f"Rendering course block: id={cid}, name='{name[:60]}...'")
 
-        for sess in sessions_for_course:
-            start_iso = sess.get("start_iso") or sess.get("start")
-            dt = parse_iso(start_iso) if start_iso else None
-            dt_display = sess.get("start_display")
-            if not dt_display and dt:
-                dt_display = dt.strftime("%A, %B %-d, %Y at %-I:%M %p")
+        course_sessions = sessions_by_course.get(cid, [])
+        # Sort sessions by start date/time
+        course_sessions.sort(key=lambda s: s.get("_start_dt"))
 
-            city = sess.get("city") or ""
-            state = sess.get("state") or ""
-            location = sess.get("location_name") or sess.get("location") or ""
-            price = sess.get("price_display") or sess.get("price") or ""
-            enroll_url = sess.get("enroll_url") or "#"
+        # Show only the next N sessions for each course on the main schedule
+        MAX_PER_COURSE = 12
+        visible_sessions = course_sessions[:MAX_PER_COURSE]
 
-            # Link to the session lander; we’ll use a predictable pattern
-            session_id = sess.get("session_id") or sess.get("id")
+        items_html: List[str] = []
+        for s in visible_sessions:
+            sid = s.get("id")
+            if sid is None:
+                continue
+            city = s.get("city") or ""
+            state = s.get("state") or ""
+            location = s.get("location") or ""
+            price = s.get("price")
+            enroll_url = s.get("enroll_url") or ""
+            start_display = s.get("_start_display") or ""
+            time_range = s.get("_time_range") or ""
+
+            # Build a slugged lander filename
             slug = slugify(name)
-            lander_href = f"/classes/{session_id}-{slug}.html"
+            lander_filename = f"{sid}-{slug}.html"
+            lander_href = f"/classes/{lander_filename}"
 
-            pieces = []
-            pieces.append(f"<strong>{dt_display}</strong>")
-            if city or state:
-                pieces.append(f" – {city}, {state}".strip(" ,"))
-            if price:
-                pieces.append(f" – ${price}" if isinstance(price, (int, float)) else f" – {price}")
+            price_display = ""
+            if isinstance(price, (int, float)):
+                price_display = f"${price:0.2f}"
+            elif isinstance(price, str) and price.strip():
+                price_display = price.strip()
 
-            lines.append("    <li>")
-            lines.append(f"      {' '.join(pieces)}<br/>")
-            lines.append(f'      <a href="{lander_href}">Details &amp; Register</a>')
-            lines.append(f'      &nbsp;|&nbsp; <a href="{enroll_url}">Direct Enroll</a>')
-            lines.append("    </li>")
+            location_bits = [b for b in [location, city, state] if b]
+            loc_display = ", ".join(location_bits)
 
-        lines.append("  </ul>")
-        lines.append("</section>")
-        blocks.append("\n".join(lines))
+            line_parts: List[str] = []
+            if start_display:
+                line_parts.append(start_display)
+            if time_range:
+                line_parts.append(time_range)
+            if loc_display:
+                line_parts.append(loc_display)
+            if price_display:
+                line_parts.append(price_display)
 
-    return "\n\n".join(blocks)
+            summary = " · ".join(line_parts) if line_parts else "(details coming soon)"
+
+            items_html.append(
+                f'<li>'
+                f'<a href="{lander_href}">{summary}</a>'
+                f' &nbsp; '
+                f'<a href="{enroll_url}" rel="nofollow">[Book via Enrollware]</a>'
+                f'</li>'
+            )
+
+        if not items_html:
+            items_html.append("<li>No upcoming public dates are currently listed for this class.</li>")
+
+        block_html = (
+            f'<section class="course-block" id="course-{cid}">\n'
+            f'  <h2>{name}</h2>\n'
+            f'  <ul>\n'
+            f'    ' + "\n    ".join(items_html) + "\n"
+            f'  </ul>\n'
+            f'</section>\n'
+        )
+
+        blocks.append(block_html)
+
+    log(f"Built {len(blocks)} course blocks for schedule page")
+    return "\n".join(blocks)
 
 
 def main() -> None:
-    print("[build_schedule_page] Loading schedule.json from", DATA_PATH)
-    schedule = load_schedule()
+    root = repo_root()
+    schedule_path = os.path.join(root, "docs", "data", "schedule.json")
+    template_path = os.path.join(root, "templates", "schedule_page_template.html")
+    output_path = os.path.join(root, "docs", "schedule.html")
 
-    print("[build_schedule_page] Building course blocks")
+    log(f"Repo root is {root}")
+    log(f"Template: {template_path}")
+    log(f"Output:   {output_path}")
+
+    schedule = load_schedule(schedule_path)
+
+    if not os.path.exists(template_path):
+        raise FileNotFoundError(f"Template not found at {template_path}")
+
+    with open(template_path, "r", encoding="utf-8") as f:
+        template_html = f.read()
+
     course_blocks_html = build_course_blocks(schedule)
 
-    print("[build_schedule_page] Loading template", TEMPLATE_PATH)
-    template = TEMPLATE_PATH.read_text(encoding="utf-8")
+    rendered = template_html.replace("<!--COURSE_BLOCKS-->", course_blocks_html)
 
-    html = template.replace("<!--COURSE_BLOCKS-->", course_blocks_html)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(rendered)
 
-    OUTPUT_PATH.write_text(html, encoding="utf-8")
-    print("[build_schedule_page] Wrote", OUTPUT_PATH)
+    log(f"Wrote schedule page to {output_path}")
 
 
 if __name__ == "__main__":
