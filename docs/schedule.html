@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>910CPR – Live CPR & Medical Training Schedule</title>
+  <title>910CPR – Class Schedule</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="description" content="Live CPR and medical training schedule for 910CPR in Wilmington, Burgaw, Jacksonville, and Southeastern North Carolina. View real dates, times, locations and register in one click.">
+  <meta name="description" content="910CPR live CPR & medical training schedule. Browse by course family (BLS, ACLS, PALS, Heartsaver, HSI, Red Cross, USCG), then choose your course and class date.">
 
   <style>
     :root {
@@ -23,9 +23,7 @@
       --radius-xl: 18px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -39,10 +37,7 @@
       color: var(--accent-dark);
       text-decoration: none;
     }
-
-    a:hover {
-      text-decoration: underline;
-    }
+    a:hover { text-decoration: underline; }
 
     .page {
       max-width: 1120px;
@@ -54,7 +49,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     @media (min-width: 720px) {
@@ -71,17 +66,6 @@
       gap: 4px;
     }
 
-    .brand-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-
-    .brand-sub {
-      font-size: 0.9rem;
-      color: var(--text-soft);
-    }
-
     .back-link {
       font-size: 0.9rem;
       align-self: flex-start;
@@ -94,12 +78,21 @@
       gap: 6px;
     }
 
-    .back-link span.icon {
-      font-size: 1rem;
+    .back-link span.icon { font-size: 1rem; }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-sub {
+      font-size: 0.9rem;
+      color: var(--text-soft);
     }
 
     h1 {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       margin: 10px 0 4px;
     }
 
@@ -120,59 +113,16 @@
     }
 
     .controls-box {
-      margin-top: 20px;
-      padding: 12px;
+      margin-top: 18px;
+      padding: 10px 12px;
       border-radius: var(--radius-xl);
       background: #ffffffcc;
       border: 1px solid var(--border-subtle);
-      display: grid;
-      gap: 12px;
-    }
-
-    @media (min-width: 720px) {
-      .controls-box {
-        grid-template-columns: 1.2fr 1fr;
-        align-items: center;
-      }
-    }
-
-    .filters-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 160px;
-      flex: 1 1 160px;
-    }
-
-    .filter-label {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--text-soft);
-    }
-
-    select {
-      padding: 7px 9px;
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      font-size: 0.9rem;
-      background: #ffffff;
-      color: var(--text-main);
-      min-height: 34px;
-    }
-
-    .secondary-controls {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
     }
 
     .toggle-label {
@@ -182,26 +132,10 @@
       font-size: 0.85rem;
       color: var(--text-soft);
     }
-
-    .toggle-label input {
-      accent-color: var(--accent);
-    }
-
-    .chip-button {
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      background: #f5f7fb;
-      padding: 6px 10px;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-
-    .chip-button:hover {
-      background: #e8eef7;
-    }
+    .toggle-label input { accent-color: var(--accent); }
 
     .status-bar {
-      margin-top: 18px;
+      margin-top: 12px;
       font-size: 0.85rem;
       color: var(--text-soft);
       display: flex;
@@ -209,57 +143,111 @@
       gap: 10px;
       align-items: baseline;
     }
+    .status-bar strong { color: var(--text-main); }
 
-    .status-bar strong {
-      color: var(--text-main);
+    .families-root {
+      margin-top: 16px;
     }
 
-    .schedule-grid {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 14px;
-    }
-
-    @media (min-width: 880px) {
-      .schedule-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    .class-card {
-      background: #ffffff;
+    details.family {
+      margin-bottom: 10px;
       border-radius: var(--radius-xl);
       border: 1px solid var(--border-subtle);
-      padding: 14px 14px 12px;
+      background: #ffffff;
+      box-shadow: 0 6px 16px rgba(15,32,54,0.06);
+    }
+
+    details.family > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 14px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
       gap: 8px;
-      box-shadow: 0 6px 18px rgba(15, 32, 54, 0.06);
     }
 
-    .class-header {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    details.family > summary::-webkit-details-marker { display: none; }
 
-    .class-course {
+    .family-title {
       font-size: 0.95rem;
       font-weight: 600;
     }
 
-    .class-date {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .class-location {
-      font-size: 0.85rem;
+    .family-sub {
+      font-size: 0.8rem;
       color: var(--text-soft);
     }
 
-    .past-badge {
+    .family-count {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .family-inner {
+      padding: 8px 12px 10px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    details.course {
+      margin-bottom: 6px;
+      border-radius: 12px;
+      border: 1px solid #e0e5f0;
+      background: #f9fbff;
+    }
+
+    details.course > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+    details.course > summary::-webkit-details-marker { display: none; }
+
+    .course-name {
+      font-weight: 500;
+    }
+
+    .course-count {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .course-inner {
+      padding: 8px 10px 9px;
+      border-top: 1px solid #e0e5f0;
+    }
+
+    .session-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr);
+      gap: 6px;
+      align-items: center;
+      padding: 6px 4px;
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 640px) {
+      .session-row {
+        grid-template-columns: minmax(0,1fr);
+        align-items: flex-start;
+      }
+    }
+
+    .session-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .session-date { color: var(--text-main); }
+    .session-loc  { color: var(--text-soft); font-size: 0.82rem; }
+
+    .past-chip {
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -271,71 +259,58 @@
       margin-top: 2px;
     }
 
-    .class-footer {
-      margin-top: 6px;
+    .session-actions {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 6px;
+      justify-content: flex-end;
     }
 
-    @media (min-width: 520px) {
-      .class-footer {
-        flex-direction: row;
-      }
-    }
-
-    .btn-primary,
-    .btn-secondary {
+    .btn {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      text-align: center;
-      flex: 1 1 auto;
-      padding: 8px 10px;
+      padding: 6px 10px;
       border-radius: 999px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       border: none;
       cursor: pointer;
+      text-decoration: none;
     }
 
     .btn-primary {
       background: var(--accent);
       color: #ffffff;
     }
-
-    .btn-primary:hover {
-      background: var(--accent-dark);
-      text-decoration: none;
-    }
+    .btn-primary:hover { background: var(--accent-dark); text-decoration: none; }
 
     .btn-secondary {
       background: #f5f7fb;
       color: var(--text-main);
       border: 1px solid var(--border-subtle);
     }
+    .btn-secondary:hover { background: #e8eef7; text-decoration: none; }
 
-    .btn-secondary:hover {
-      background: #e8eef7;
-      text-decoration: none;
+    .course-footer-link {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
     }
 
     .empty-state {
-      margin-top: 22px;
-      padding: 14px 14px;
+      margin-top: 18px;
+      padding: 12px 14px;
       border-radius: var(--radius-xl);
       background: #ffffffcc;
       border: 1px dashed var(--border-subtle);
       font-size: 0.9rem;
       color: var(--text-soft);
     }
-
-    .empty-state strong {
-      color: var(--text-main);
-    }
+    .empty-state strong { color: var(--text-main); }
 
     .footer-note {
-      margin-top: 26px;
+      margin-top: 24px;
       font-size: 0.8rem;
       color: var(--text-soft);
     }
@@ -352,7 +327,7 @@
         <div>
           <div class="brand-title">910CPR – Live CPR & Medical Training Schedule</div>
           <div class="brand-sub">
-            Wilmington • Burgaw • Jacksonville • Southeastern North Carolina
+            Grouped by course family → course → class date/time.
           </div>
         </div>
       </div>
@@ -360,57 +335,41 @@
 
     <main>
       <section>
-        <h1>Pick your class, then tap once to register</h1>
+        <h1>Pick a course family, then open your course and class time</h1>
         <p class="hero-copy">
-          This page reads directly from your latest Enrollware export
-          (<code>data/schedule.json</code>). Every refresh uses the newest JSON, so when the
-          export is current, this schedule is current.
+          This schedule reads directly from <code>data/schedule.json</code> built from your Enrollware export.
+          Families match how your brain already sorts things: BLS, ACLS, PALS, Heartsaver, HSI, Red Cross, USCG, and more.
         </p>
         <div class="note-banner">
-          Students land here → see real dates, times, and locations → tap one button to
-          register. If a date is already in the past, the main button will change to
-          “Registration closed – see other times”.
+          Open a FAMILY → choose a COURSE → then open a DATE/TIME. Future classes show
+          “Register for this class.” Past dates flip to “Registration closed – see other times.”
         </div>
 
         <div class="controls-box">
-          <div class="filters-row">
-            <div class="filter-group">
-              <div class="filter-label">Filter by course</div>
-              <select id="courseFilter">
-                <option value="">All courses</option>
-              </select>
-            </div>
-            <div class="filter-group">
-              <div class="filter-label">Filter by area</div>
-              <select id="locationFilter">
-                <option value="">All locations</option>
-              </select>
-            </div>
-          </div>
-          <div class="secondary-controls">
-            <label class="toggle-label">
-              <input type="checkbox" id="hidePastToggle" checked>
-              <span>Hide past classes</span>
-            </label>
-            <button type="button" id="clearFilters" class="chip-button">Clear filters</button>
-          </div>
+          <label class="toggle-label">
+            <input type="checkbox" id="hidePastToggle" checked>
+            <span>Hide past class dates</span>
+          </label>
+          <div id="generatedAt"></div>
         </div>
 
         <div class="status-bar">
           <div id="scheduleStatus">Loading schedule…</div>
-          <div id="generatedAt"></div>
+          <div></div>
         </div>
 
-        <div id="classesContainer" class="schedule-grid"></div>
+        <div id="familiesRoot" class="families-root"></div>
+
         <div id="emptyState" class="empty-state" style="display:none;">
-          <strong>No classes match your filters.</strong> Try clearing filters or check back
-          after the next <code>schedule.json</code> update from Enrollware.
+          <strong>No class dates match the current view.</strong>
+          If you know there are classes available, check that <code>schedule.json</code>
+          has current sessions and that “Hide past dates” isn’t removing them.
         </div>
 
         <p class="footer-note">
           This page is powered by your Enrollware export → <code>schedule.json</code> →
-          static HTML. If this page looks empty but you know you have classes, the problem
-          is the JSON (or export), not the page.
+          static HTML. If families show up but there are no dates, the export/JSON is the
+          place to look, not this page.
         </p>
       </section>
     </main>
@@ -419,23 +378,21 @@
   <script>
     const SCHEDULE_URL = "data/schedule.json";
 
-    const courseFilterEl = document.getElementById("courseFilter");
-    const locationFilterEl = document.getElementById("locationFilter");
     const hidePastToggleEl = document.getElementById("hidePastToggle");
-    const clearFiltersEl = document.getElementById("clearFilters");
-    const statusEl = document.getElementById("scheduleStatus");
     const generatedAtEl = document.getElementById("generatedAt");
-    const classesContainerEl = document.getElementById("classesContainer");
+    const statusEl = document.getElementById("scheduleStatus");
+    const familiesRootEl = document.getElementById("familiesRoot");
     const emptyStateEl = document.getElementById("emptyState");
 
     let allSessions = [];
-    let courseMap = new Map();
-    let courseScheduleUrlMap = new Map();
+    let courseMap = new Map();          // course_id -> course name
+    let courseScheduleUrlMap = new Map(); // course_id -> “see other times” URL
 
     function parseStartDate(raw) {
       if (!raw) return null;
-      if (raw.includes("Select a Program Below")) return null;
-      if (raw.toLowerCase().includes("start your class today")) return null;
+      const lower = raw.toLowerCase();
+      if (lower.includes("select a program below")) return null;
+      if (lower.includes("start your class today")) return null;
       try {
         const cleaned = raw.replace(/\s*\([^)]*\)\s*$/, "");
         const d = new Date(cleaned);
@@ -446,143 +403,244 @@
       }
     }
 
-    function buildFilters() {
-      const courseIdsWithSessions = new Set();
-      const locations = new Set();
+    function inferFamilyName(courseName) {
+      if (!courseName) return "Other Courses";
+      const n = courseName.toLowerCase();
 
-      for (const s of allSessions) {
-        if (s.course_id != null) {
-          courseIdsWithSessions.add(String(s.course_id));
-        }
-        if (s.location_short) {
-          locations.add(s.location_short);
-        }
-      }
+      if (n.includes("bls")) return "BLS & Healthcare Provider CPR";
+      if (n.includes("acls")) return "ACLS – Advanced Cardiac Life Support";
+      if (n.includes("pals")) return "PALS – Pediatric Advanced Life Support";
+      if (n.includes("heartsaver")) return "AHA Heartsaver CPR, AED & First Aid";
+      if (n.includes("hsi")) return "HSI CPR & First Aid";
+      if (n.includes("red cross") || n.includes("arc")) return "Red Cross CPR & BLS";
+      if (n.includes("uscg") || n.includes("coast guard") || n.includes("mariner") || n.includes("elementary first aid"))
+        return "USCG / Maritime Courses";
 
-      courseFilterEl.innerHTML = "";
-      const anyCourseOpt = document.createElement("option");
-      anyCourseOpt.value = "";
-      anyCourseOpt.textContent = "All courses";
-      courseFilterEl.appendChild(anyCourseOpt);
-
-      const sortedCourseIds = Array.from(courseIdsWithSessions).sort((a, b) => {
-        const nameA = courseMap.get(Number(a)) || "";
-        const nameB = courseMap.get(Number(b)) || "";
-        return nameA.localeCompare(nameB);
-      });
-
-      for (const id of sortedCourseIds) {
-        const opt = document.createElement("option");
-        opt.value = id;
-        opt.textContent = courseMap.get(Number(id)) || ("Course #" + id);
-        courseFilterEl.appendChild(opt);
-      }
-
-      locationFilterEl.innerHTML = "";
-      const anyLocationOpt = document.createElement("option");
-      anyLocationOpt.value = "";
-      anyLocationOpt.textContent = "All locations";
-      locationFilterEl.appendChild(anyLocationOpt);
-
-      const sortedLocations = Array.from(locations).sort((a, b) => a.localeCompare(b));
-      for (const loc of sortedLocations) {
-        const opt = document.createElement("option");
-        opt.value = loc;
-        opt.textContent = loc;
-        locationFilterEl.appendChild(opt);
-      }
+      return "Other Courses";
     }
 
-    function renderSchedule() {
-      const selectedCourseId = courseFilterEl.value || "";
-      const selectedLocation = locationFilterEl.value || "";
-      const hidePast = hidePastToggleEl.checked;
-      const now = new Date();
+    // Sort families in a human order
+    const FAMILY_ORDER = [
+      "BLS & Healthcare Provider CPR",
+      "ACLS – Advanced Cardiac Life Support",
+      "PALS – Pediatric Advanced Life Support",
+      "AHA Heartsaver CPR, AED & First Aid",
+      "HSI CPR & First Aid",
+      "Red Cross CPR & BLS",
+      "USCG / Maritime Courses",
+      "Other Courses"
+    ];
 
-      let visibleCount = 0;
-      classesContainerEl.innerHTML = "";
+    function sortFamilies(families) {
+      return families.sort((a, b) => {
+        const idxA = FAMILY_ORDER.indexOf(a);
+        const idxB = FAMILY_ORDER.indexOf(b);
+        if (idxA === -1 && idxB === -1) return a.localeCompare(b);
+        if (idxA === -1) return 1;
+        if (idxB === -1) return -1;
+        return idxA - idxB;
+      });
+    }
+
+    function buildTree(hidePast) {
+      const now = new Date();
+      const families = {}; // { familyName: { courseId: { name, sessions[] } } }
 
       for (const s of allSessions) {
-        if (selectedCourseId && String(s.course_id) !== selectedCourseId) continue;
-        if (selectedLocation && s.location_short !== selectedLocation) continue;
-
+        if (!s.course_id) continue;
         const isPast = s._startDate && s._startDate < now;
         if (hidePast && isPast) continue;
 
-        visibleCount++;
+        const courseId = s.course_id;
+        const courseName = courseMap.get(courseId) || s.course_name || "CPR / First Aid";
 
-        const card = document.createElement("article");
-        card.className = "class-card";
-
-        const header = document.createElement("div");
-        header.className = "class-header";
-
-        const titleEl = document.createElement("div");
-        titleEl.className = "class-course";
-        const courseName = courseMap.get(Number(s.course_id)) || s.course_name || "CPR / First Aid";
-        titleEl.textContent = courseName;
-
-        const dateEl = document.createElement("div");
-        dateEl.className = "class-date";
-        dateEl.textContent = s.start_display || "Flexible dates – call for options";
-
-        const locEl = document.createElement("div");
-        locEl.className = "class-location";
-        locEl.textContent = s.location_short || s.location || "Location to be arranged";
-
-        header.appendChild(titleEl);
-        header.appendChild(dateEl);
-        header.appendChild(locEl);
-
-        if (isPast) {
-          const pastBadge = document.createElement("div");
-          pastBadge.className = "past-badge";
-          pastBadge.textContent = "Past date";
-          header.appendChild(pastBadge);
+        const familyName = inferFamilyName(courseName);
+        if (!families[familyName]) {
+          families[familyName] = {};
         }
-
-        card.appendChild(header);
-
-        const footer = document.createElement("div");
-        footer.className = "class-footer";
-
-        const primaryLink = document.createElement("a");
-        primaryLink.className = "btn-primary";
-        primaryLink.href = s.register_url || "#";
-        primaryLink.target = "_blank";
-        primaryLink.rel = "noopener";
-
-        primaryLink.textContent = isPast
-          ? "Registration closed – see other times"
-          : "Register for this class";
-
-        footer.appendChild(primaryLink);
-
-        const courseUrl = courseScheduleUrlMap.get(s.course_id) || s.register_url || null;
-        if (courseUrl) {
-          const secondaryLink = document.createElement("a");
-          secondaryLink.className = "btn-secondary";
-          secondaryLink.href = courseUrl;
-          secondaryLink.target = "_blank";
-          secondaryLink.rel = "noopener";
-          secondaryLink.textContent = "See other times for this course";
-          footer.appendChild(secondaryLink);
+        if (!families[familyName][courseId]) {
+          families[familyName][courseId] = {
+            name: courseName,
+            sessions: []
+          };
         }
-
-        card.appendChild(footer);
-
-        classesContainerEl.appendChild(card);
+        families[familyName][courseId].sessions.push(s);
       }
 
-      if (visibleCount === 0) {
+      // Sort sessions in each course by date
+      Object.values(families).forEach(courseGroup => {
+        Object.values(courseGroup).forEach(course => {
+          course.sessions.sort((a, b) => {
+            if (!a._startDate && !b._startDate) return 0;
+            if (!a._startDate) return 1;
+            if (!b._startDate) return -1;
+            return a._startDate - b._startDate;
+          });
+        });
+      });
+
+      return families;
+    }
+
+    function renderSchedule() {
+      const hidePast = hidePastToggleEl.checked;
+      const tree = buildTree(hidePast);
+
+      familiesRootEl.innerHTML = "";
+      let totalVisibleSessions = 0;
+
+      const familyNames = sortFamilies(Object.keys(tree));
+      if (familyNames.length === 0) {
         emptyStateEl.style.display = "block";
+        statusEl.textContent = "No class dates found for the current view.";
+        return;
       } else {
         emptyStateEl.style.display = "none";
       }
 
-      statusEl.textContent = visibleCount === 0
-        ? "No matching classes found."
-        : visibleCount + " class" + (visibleCount === 1 ? "" : "es") + " shown.";
+      familyNames.forEach(familyName => {
+        const courses = tree[familyName];
+        const courseIds = Object.keys(courses);
+        if (courseIds.length === 0) return;
+
+        let familySessionCount = 0;
+        courseIds.forEach(cid => {
+          familySessionCount += courses[cid].sessions.length;
+        });
+        if (familySessionCount === 0) return;
+
+        totalVisibleSessions += familySessionCount;
+
+        const familyDetails = document.createElement("details");
+        familyDetails.className = "family";
+
+        const familySummary = document.createElement("summary");
+        const titleBox = document.createElement("div");
+        const title = document.createElement("div");
+        title.className = "family-title";
+        title.textContent = familyName;
+        const sub = document.createElement("div");
+        sub.className = "family-sub";
+        sub.textContent = courseIds.length + " course" + (courseIds.length === 1 ? "" : "s");
+        titleBox.appendChild(title);
+        titleBox.appendChild(sub);
+
+        const count = document.createElement("div");
+        count.className = "family-count";
+        count.textContent = familySessionCount + " date" + (familySessionCount === 1 ? "" : "s");
+
+        familySummary.appendChild(titleBox);
+        familySummary.appendChild(count);
+        familyDetails.appendChild(familySummary);
+
+        const familyInner = document.createElement("div");
+        familyInner.className = "family-inner";
+
+        courseIds
+          .sort((a, b) => courses[a].name.localeCompare(courses[b].name))
+          .forEach(cid => {
+            const course = courses[cid];
+            if (!course.sessions || course.sessions.length === 0) return;
+
+            const courseDetails = document.createElement("details");
+            courseDetails.className = "course";
+
+            const courseSummary = document.createElement("summary");
+            const cName = document.createElement("div");
+            cName.className = "course-name";
+            cName.textContent = course.name;
+            const cCount = document.createElement("div");
+            cCount.className = "course-count";
+            cCount.textContent = course.sessions.length + " date" + (course.sessions.length === 1 ? "" : "s");
+            courseSummary.appendChild(cName);
+            courseSummary.appendChild(cCount);
+
+            courseDetails.appendChild(courseSummary);
+
+            const courseInner = document.createElement("div");
+            courseInner.className = "course-inner";
+
+            course.sessions.forEach(s => {
+              const isPast = s._startDate && s._startDate < new Date();
+
+              const row = document.createElement("div");
+              row.className = "session-row";
+
+              const meta = document.createElement("div");
+              meta.className = "session-meta";
+
+              const dateEl = document.createElement("div");
+              dateEl.className = "session-date";
+              dateEl.textContent = s.start_display || "Flexible dates – call for options";
+
+              const locEl = document.createElement("div");
+              locEl.className = "session-loc";
+              locEl.textContent = s.location_short || s.location || "Location to be arranged";
+
+              meta.appendChild(dateEl);
+              meta.appendChild(locEl);
+
+              if (isPast) {
+                const pastChip = document.createElement("div");
+                pastChip.className = "past-chip";
+                pastChip.textContent = "Past date";
+                meta.appendChild(pastChip);
+              }
+
+              const actions = document.createElement("div");
+              actions.className = "session-actions";
+
+              const mainBtn = document.createElement("a");
+              mainBtn.className = "btn btn-primary";
+              mainBtn.target = "_blank";
+              mainBtn.rel = "noopener";
+
+              const courseUrl = courseScheduleUrlMap.get(s.course_id) || s.register_url || "#";
+
+              if (isPast) {
+                mainBtn.textContent = "Registration closed – see other times";
+                mainBtn.href = courseUrl;
+              } else {
+                mainBtn.textContent = "Register for this class";
+                mainBtn.href = s.register_url || courseUrl || "#";
+              }
+
+              actions.appendChild(mainBtn);
+
+              row.appendChild(meta);
+              row.appendChild(actions);
+              courseInner.appendChild(row);
+            });
+
+            const courseUrl = courseScheduleUrlMap.get(Number(cid));
+            if (courseUrl) {
+              const footerLink = document.createElement("div");
+              footerLink.className = "course-footer-link";
+              const link = document.createElement("a");
+              link.href = courseUrl;
+              link.target = "_blank";
+              link.rel = "noopener";
+              link.textContent = "See full schedule for this course on Enrollware →";
+              footerLink.appendChild(link);
+              courseInner.appendChild(footerLink);
+            }
+
+            courseDetails.appendChild(courseInner);
+            familyInner.appendChild(courseDetails);
+          });
+
+        familyDetails.appendChild(familyInner);
+        familiesRootEl.appendChild(familyDetails);
+      });
+
+      if (totalVisibleSessions === 0) {
+        emptyStateEl.style.display = "block";
+        statusEl.textContent = "No class dates found for the current view.";
+      } else {
+        emptyStateEl.style.display = "none";
+        statusEl.textContent =
+          totalVisibleSessions + " class date" + (totalVisibleSessions === 1 ? "" : "s") + " shown.";
+      }
     }
 
     async function initSchedule() {
@@ -590,9 +648,7 @@
 
       try {
         const res = await fetch(SCHEDULE_URL, { cache: "no-store" });
-        if (!res.ok) {
-          throw new Error("HTTP " + res.status);
-        }
+        if (!res.ok) throw new Error("HTTP " + res.status);
         const data = await res.json();
 
         courseMap = new Map();
@@ -616,7 +672,6 @@
 
         for (const item of rawClasses) {
           if (!item) continue;
-
           const courseId = item.course_id;
 
           if (!item.id) {
@@ -633,44 +688,31 @@
           allSessions.push(copy);
         }
 
-        if (allSessions.length === 0) {
-          statusEl.textContent = "No classes found in schedule.json.";
-          classesContainerEl.innerHTML = "";
-          emptyStateEl.style.display = "block";
-        } else {
-          statusEl.textContent = allSessions.length + " total class"
-            + (allSessions.length === 1 ? "" : "es") + " loaded.";
-          emptyStateEl.style.display = "none";
-        }
-
         if (data.generated_at) {
           const d = new Date(data.generated_at);
           if (!isNaN(d.getTime())) {
             generatedAtEl.textContent =
-              "Last updated from Enrollware: " + d.toLocaleString();
+              "Last Enrollware export: " + d.toLocaleString();
           }
         }
 
-        buildFilters();
+        if (allSessions.length === 0) {
+          statusEl.textContent = "No classes found in schedule.json.";
+          emptyStateEl.style.display = "block";
+          familiesRootEl.innerHTML = "";
+          return;
+        }
+
         renderSchedule();
       } catch (err) {
         console.error("Error loading schedule.json", err);
-        statusEl.textContent = "Error loading schedule.json – check the file path or JSON syntax.";
-        classesContainerEl.innerHTML = "";
+        statusEl.textContent = "Error loading schedule.json – check file path or JSON syntax.";
         emptyStateEl.style.display = "block";
+        familiesRootEl.innerHTML = "";
       }
     }
 
-    courseFilterEl.addEventListener("change", renderSchedule);
-    locationFilterEl.addEventListener("change", renderSchedule);
     hidePastToggleEl.addEventListener("change", renderSchedule);
-
-    clearFiltersEl.addEventListener("click", () => {
-      courseFilterEl.value = "";
-      locationFilterEl.value = "";
-      hidePastToggleEl.checked = true;
-      renderSchedule();
-    });
 
     initSchedule();
   </script>
