@@ -1,338 +1,302 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>910CPR – Class Schedule</title>
+  <meta charset="utf-8">
+  <title>910CPR – Live CPR & Medical Training Schedule</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Live CPR and medical training schedule for Wilmington, Burgaw, Jacksonville / Camp Lejeune, and Southeastern NC. See real dates, times, locations, and book your seat.">
+
+  <meta name="description" content="Live CPR and medical training schedule for 910CPR in Wilmington, Burgaw, Jacksonville, and Southeastern North Carolina. View real dates, times, locations and register in one click.">
+
   <style>
     :root {
       --bg-top: #ffffff;
-      --bg-bottom: #e9f5ff;
-      --card-bg: #ffffff;
-      --card-border: #d2e4f5;
-      --accent: #0b63ce;
-      --accent-soft: #e2efff;
-      --accent-danger: #b00020;
-      --text-main: #123047;
-      --text-muted: #60748a;
-      --radius-lg: 18px;
-      --shadow-soft: 0 8px 20px rgba(0,0,0,0.06);
+      --bg-bottom: #e9f4ff;
+      --accent: #0b74d1;
+      --accent-soft: #e0eefc;
+      --accent-dark: #074a86;
+      --border-subtle: #d0d7e2;
+      --text-main: #122033;
+      --text-muted: #5d6a7c;
+      --text-soft: #7b8796;
+      --danger: #b3261e;
+      --danger-soft: #fdecec;
+      --radius-xl: 18px;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      padding: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
       color: var(--text-main);
+      background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+      min-height: 100vh;
     }
 
-    .page-wrap {
-      max-width: 1100px;
+    a {
+      color: var(--accent-dark);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      max-width: 1120px;
       margin: 0 auto;
       padding: 16px 16px 40px;
     }
 
     header {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffffff, #0077ff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 18px;
-      color: #ffffff;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .brand-text {
-      display: flex;
       flex-direction: column;
-      line-height: 1.1;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
-    .brand-text span:first-child {
-      font-weight: 700;
-      font-size: 18px;
-    }
-
-    .brand-text span:last-child {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-    }
-
-    .nav-links a {
-      font-size: 13px;
-      text-decoration: none;
-      color: var(--accent);
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(11, 99, 206, 0.08);
-      white-space: nowrap;
-    }
-
-    .hero {
-      margin-top: 6px;
-      margin-bottom: 16px;
-      padding: 16px 18px;
-      background: linear-gradient(120deg,#e8f3ff,#ffffff);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-soft);
-      display: grid;
-      grid-template-columns: minmax(0,2.3fr) minmax(0,1.7fr);
-      gap: 16px;
-    }
-
-    @media (max-width: 768px) {
-      .hero {
-        grid-template-columns: minmax(0,1fr);
+    @media (min-width: 720px) {
+      header {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
       }
     }
 
-    .hero h1 {
-      margin: 0 0 8px;
-      font-size: 22px;
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .hero p {
-      margin: 0;
-      font-size: 13px;
-      color: var(--text-muted);
+    .brand-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
 
-    .hero-highlight {
-      margin-top: 8px;
+    .brand-sub {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+    }
+
+    .back-link {
+      font-size: 0.9rem;
+      align-self: flex-start;
       padding: 8px 10px;
       border-radius: 999px;
-      background: rgba(11,99,206,0.06);
-      font-size: 12px;
+      border: 1px solid var(--border-subtle);
+      background: #ffffffcc;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
 
-    .hero-highlight span:first-child {
-      font-size: 16px;
+    .back-link span.icon {
+      font-size: 1rem;
     }
 
-    .hero-side {
-      font-size: 12px;
+    h1 {
+      font-size: 1.4rem;
+      margin: 10px 0 4px;
+    }
+
+    .hero-copy {
+      font-size: 0.95rem;
       color: var(--text-muted);
+      max-width: 640px;
+      line-height: 1.4;
+    }
+
+    .note-banner {
+      margin-top: 6px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      font-size: 0.85rem;
+      color: var(--accent-dark);
+    }
+
+    .controls-box {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: var(--radius-xl);
+      background: #ffffffcc;
+      border: 1px solid var(--border-subtle);
+      display: grid;
+      gap: 12px;
+    }
+
+    @media (min-width: 720px) {
+      .controls-box {
+        grid-template-columns: 1.2fr 1fr;
+        align-items: center;
+      }
+    }
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
+      min-width: 160px;
+      flex: 1 1 160px;
     }
 
-    .hero-side strong {
-      color: var(--text-main);
-      font-size: 13px;
-    }
-
-    .filters {
-      margin-bottom: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .filters-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .filters-label {
-      font-size: 12px;
-      color: var(--text-muted);
+    .filter-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-soft);
     }
 
     select {
-      min-width: 150px;
-      padding: 6px 9px;
+      padding: 7px 9px;
       border-radius: 999px;
-      border: 1px solid #c4d7eb;
-      font-size: 12px;
+      border: 1px solid var(--border-subtle);
+      font-size: 0.9rem;
       background: #ffffff;
       color: var(--text-main);
+      min-height: 34px;
     }
 
-    .pill-button {
-      border: none;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 12px;
-      cursor: pointer;
-      background: #ffffff;
-      border: 1px solid #c4d7eb;
-      color: var(--text-main);
-    }
-
-    .pill-button.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #ffffff;
-    }
-
-    .pill-button:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
-
-    .schedule-status {
-      margin-bottom: 10px;
-      font-size: 12px;
-      color: var(--text-muted);
+    .secondary-controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+    }
+
+    .toggle-label input {
+      accent-color: var(--accent);
+    }
+
+    .chip-button {
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #f5f7fb;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .chip-button:hover {
+      background: #e8eef7;
+    }
+
+    .status-bar {
+      margin-top: 18px;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
       align-items: baseline;
     }
 
-    .schedule-status strong {
+    .status-bar strong {
       color: var(--text-main);
     }
 
-    .banner-error {
-      border-radius: var(--radius-lg);
-      background: #ffe4e8;
-      color: var(--accent-danger);
-      padding: 10px 12px;
-      font-size: 12px;
-      margin-bottom: 16px;
+    .schedule-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
     }
 
-    .class-list {
-      display: grid;
-      grid-template-columns: minmax(0,1fr);
-      gap: 10px;
+    @media (min-width: 880px) {
+      .schedule-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     .class-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-soft);
-      padding: 12px 14px;
-      display: grid;
-      grid-template-columns: minmax(0,2.4fr) minmax(0,1.6fr);
-      gap: 10px;
-      align-items: center;
-    }
-
-    @media (max-width: 640px) {
-      .class-card {
-        grid-template-columns: minmax(0,1fr);
-      }
-    }
-
-    .class-main {
+      background: #ffffff;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      padding: 14px 14px 12px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-    }
-
-    .class-title {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .class-meta {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .class-meta strong {
-      color: var(--text-main);
-    }
-
-    .meta-row {
-      display: flex;
-      flex-wrap: wrap;
       gap: 8px;
+      box-shadow: 0 6px 18px rgba(15, 32, 54, 0.06);
     }
 
-    .chip {
-      font-size: 11px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      display: inline-flex;
-      align-items: center;
+    .class-header {
+      display: flex;
+      flex-direction: column;
       gap: 4px;
     }
 
-    .chip.past {
-      background: #ffe4e8;
-      color: var(--accent-danger);
-    }
-
-    .class-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: flex-end;
-      justify-content: center;
-    }
-
-    @media (max-width: 640px) {
-      .class-actions {
-        align-items: flex-start;
-      }
-    }
-
-    .price {
-      font-size: 13px;
+    .class-course {
+      font-size: 0.95rem;
       font-weight: 600;
     }
 
-    .price span {
-      font-size: 11px;
+    .class-date {
+      font-size: 0.9rem;
       color: var(--text-muted);
-      font-weight: 400;
     }
 
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+    .class-location {
+      font-size: 0.85rem;
+      color: var(--text-soft);
     }
 
-    .btn {
-      border: none;
-      border-radius: 999px;
-      padding: 7px 12px;
-      font-size: 12px;
-      cursor: pointer;
-      text-decoration: none;
+    .past-badge {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--danger-soft);
+      color: var(--danger);
+      font-size: 0.75rem;
+      margin-top: 2px;
+    }
+
+    .class-footer {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
       gap: 6px;
+    }
+
+    @media (min-width: 520px) {
+      .class-footer {
+        flex-direction: row;
+      }
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      flex: 1 1 auto;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
     }
 
     .btn-primary {
@@ -340,493 +304,375 @@
       color: #ffffff;
     }
 
-    .btn-secondary {
-      background: #ffffff;
-      color: var(--accent);
-      border: 1px solid var(--accent-soft);
+    .btn-primary:hover {
+      background: var(--accent-dark);
+      text-decoration: none;
     }
 
-    .btn-disabled {
-      background: #f0f0f0;
-      color: #999999;
-      cursor: default;
+    .btn-secondary {
+      background: #f5f7fb;
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: #e8eef7;
+      text-decoration: none;
     }
 
     .empty-state {
-      margin-top: 12px;
-      font-size: 13px;
-      color: var(--text-muted);
-      padding: 12px 14px;
-      border-radius: var(--radius-lg);
-      border: 1px dashed #c4d7eb;
-      background: rgba(255,255,255,0.7);
+      margin-top: 22px;
+      padding: 14px 14px;
+      border-radius: var(--radius-xl);
+      background: #ffffffcc;
+      border: 1px dashed var(--border-subtle);
+      font-size: 0.9rem;
+      color: var(--text-soft);
     }
 
-    footer {
-      margin-top: 24px;
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: center;
+    .empty-state strong {
+      color: var(--text-main);
+    }
+
+    .footer-note {
+      margin-top: 26px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
     }
   </style>
 </head>
 <body>
-  <div class="page-wrap">
+  <div class="page">
     <header>
-      <div class="brand">
-        <div class="brand-logo">9</div>
-        <div class="brand-text">
-          <span>910CPR</span>
-          <span>CPR & Medical Training</span>
+      <div class="brand-block">
+        <a class="back-link" href="https://910cpr.com">
+          <span class="icon">←</span>
+          <span>Back to 910CPR.com</span>
+        </a>
+        <div>
+          <div class="brand-title">910CPR – Live CPR & Medical Training Schedule</div>
+          <div class="brand-sub">
+            Wilmington • Burgaw • Jacksonville • Southeastern North Carolina
+          </div>
         </div>
-      </div>
-      <div class="nav-links">
-        <a href="https://910cpr.com/">Back to 910CPR.com</a>
       </div>
     </header>
 
-    <section class="hero">
-      <div>
-        <h1>Live CPR & Medical Training Schedule</h1>
-        <p>
-          This page pulls directly from the latest Enrollware export (via <code>schedule.json</code>).
-          Every refresh reads the new JSON, so if the JSON is up to date, this schedule is up to date.
+    <main>
+      <section>
+        <h1>Pick your class, then tap once to register</h1>
+        <p class="hero-copy">
+          This page reads directly from your latest Enrollware export
+          (<code>data/schedule.json</code>). Every refresh uses the newest JSON, so when the
+          export is current, this schedule is current.
         </p>
-        <div class="hero-highlight">
-          <span>⚡</span>
-          <span>Students land here → see real dates, times, locations → tap one button to register.</span>
+        <div class="note-banner">
+          Students land here → see real dates, times, and locations → tap one button to
+          register. If a date is already in the past, the main button will change to
+          “Registration closed – see other times”.
         </div>
-      </div>
-      <div class="hero-side">
-        <strong>Did you need a different time?</strong>
-        <span>
-          Every class card includes a “See other times” button that jumps to the filtered course schedule
-          (when available in the JSON).
-        </span>
-        <span>
-          If a date is in the past, the main button switches to “Registration closed – see other times”
-          automatically based on the class date.
-        </span>
-      </div>
-    </section>
 
-    <section class="filters">
-      <div class="filters-group">
-        <span class="filters-label">Filter by course:</span>
-        <select id="filter-course">
-          <option value="">All courses</option>
-        </select>
-      </div>
-      <div class="filters-group">
-        <span class="filters-label">Filter by area:</span>
-        <select id="filter-location">
-          <option value="">All locations</option>
-        </select>
-      </div>
-      <button class="pill-button" id="clear-filters">Clear filters</button>
-      <button class="pill-button primary" id="toggle-past">Hide past classes</button>
-    </section>
+        <div class="controls-box">
+          <div class="filters-row">
+            <div class="filter-group">
+              <div class="filter-label">Filter by course</div>
+              <select id="courseFilter">
+                <option value="">All courses</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <div class="filter-label">Filter by area</div>
+              <select id="locationFilter">
+                <option value="">All locations</option>
+              </select>
+            </div>
+          </div>
+          <div class="secondary-controls">
+            <label class="toggle-label">
+              <input type="checkbox" id="hidePastToggle" checked>
+              <span>Hide past classes</span>
+            </label>
+            <button type="button" id="clearFilters" class="chip-button">Clear filters</button>
+          </div>
+        </div>
 
-    <div id="status" class="schedule-status">
-      <span><strong>Loading schedule…</strong></span>
-    </div>
+        <div class="status-bar">
+          <div id="scheduleStatus">Loading schedule…</div>
+          <div id="generatedAt"></div>
+        </div>
 
-    <div id="error" class="banner-error" style="display:none;"></div>
+        <div id="classesContainer" class="schedule-grid"></div>
+        <div id="emptyState" class="empty-state" style="display:none;">
+          <strong>No classes match your filters.</strong> Try clearing filters or check back
+          after the next <code>schedule.json</code> update from Enrollware.
+        </div>
 
-    <div id="class-list" class="class-list"></div>
-
-    <div id="empty" class="empty-state" style="display:none;">
-      No classes match your filters. Try clearing filters or check back after the next schedule.json update.
-    </div>
-
-    <footer>
-      This page is powered by your Enrollware export → schedule.json → static HTML.
-      If this page looks empty but you know you have classes, the problem is the JSON, not the page.
-    </footer>
+        <p class="footer-note">
+          This page is powered by your Enrollware export → <code>schedule.json</code> →
+          static HTML. If this page looks empty but you know you have classes, the problem
+          is the JSON (or export), not the page.
+        </p>
+      </section>
+    </main>
   </div>
 
   <script>
-    // ==============================
-    // CONFIG – ADJUST THIS FOR YOUR REPO
-    // ==============================
-
-    // Path where the built JSON lives, relative to this HTML file.
-    // Example if your repo has docs/data/schedule.json and docs/schedule.html:
-    //   "data/schedule.json"
     const SCHEDULE_URL = "data/schedule.json";
 
-    // Field fallbacks for different JSON shapes.
-    const FIELD_KEYS = {
-      id: ["id", "class_id", "enrollware_id"],
-      start: ["start_iso", "startDateTime", "start", "start_utc"],
-      course: ["course_name", "title", "course"],
-      location: ["location", "city_state", "city"],
-      city: ["city", "city_state"],
-      price: ["price", "student_price", "tuition"],
-      seats: ["seats_left", "available_seats", "remaining_seats"],
-      enrollUrl: ["enroll_url", "enrollUrl", "url", "register_url"],
-      courseScheduleUrl: ["course_schedule_url", "courseScheduleUrl"]
-    };
+    const courseFilterEl = document.getElementById("courseFilter");
+    const locationFilterEl = document.getElementById("locationFilter");
+    const hidePastToggleEl = document.getElementById("hidePastToggle");
+    const clearFiltersEl = document.getElementById("clearFilters");
+    const statusEl = document.getElementById("scheduleStatus");
+    const generatedAtEl = document.getElementById("generatedAt");
+    const classesContainerEl = document.getElementById("classesContainer");
+    const emptyStateEl = document.getElementById("emptyState");
 
-    // ==============================
-    // HELPER FUNCTIONS
-    // ==============================
+    let allSessions = [];
+    let courseMap = new Map();
+    let courseScheduleUrlMap = new Map();
 
-    function pickField(obj, keys) {
-      for (const k of keys) {
-        if (Object.prototype.hasOwnProperty.call(obj, k) && obj[k] != null && obj[k] !== "") {
-          return obj[k];
-        }
-      }
-      return "";
-    }
-
-    function normalizeClass(raw) {
-      const id = pickField(raw, FIELD_KEYS.id) || "";
-      const startRaw = pickField(raw, FIELD_KEYS.start);
-      const course = pickField(raw, FIELD_KEYS.course) || "Untitled course";
-      const location = pickField(raw, FIELD_KEYS.location) || "";
-      const city = pickField(raw, FIELD_KEYS.city) || "";
-      const priceRaw = pickField(raw, FIELD_KEYS.price);
-      const seatsRaw = pickField(raw, FIELD_KEYS.seats);
-      const enrollUrl = pickField(raw, FIELD_KEYS.enrollUrl);
-      const courseScheduleUrl = pickField(raw, FIELD_KEYS.courseScheduleUrl);
-
-      const start = startRaw ? new Date(startRaw) : null;
-      const now = new Date();
-      const isPast = !!(start && start < now);
-
-      let displayDate = "Date TBA";
-      let displayTime = "";
-      if (start && !isNaN(start.getTime())) {
-        displayDate = start.toLocaleDateString("en-US", {
-          weekday: "short",
-          month: "short",
-          day: "numeric",
-          year: "numeric"
-        });
-        displayTime = start.toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "2-digit"
-        });
-      }
-
-      let price = "";
-      if (priceRaw || priceRaw === 0) {
-        price = "$" + Number(priceRaw).toFixed(2).replace(/\.00$/, "");
-      }
-
-      let seats = "";
-      if (seatsRaw || seatsRaw === 0) {
-        const n = Number(seatsRaw);
-        if (!isNaN(n)) {
-          seats = n > 0 ? `${n} seat${n === 1 ? "" : "s"} left` : "No seats left";
-        } else {
-          seats = String(seatsRaw);
-        }
-      }
-
-      return {
-        raw,
-        id,
-        start,
-        isPast,
-        displayDate,
-        displayTime,
-        course,
-        location,
-        city,
-        price,
-        seats,
-        enrollUrl,
-        courseScheduleUrl
-      };
-    }
-
-    function cmpByStartAsc(a, b) {
-      if (!a.start && !b.start) return 0;
-      if (!a.start) return 1;
-      if (!b.start) return -1;
-      return a.start - b.start;
-    }
-
-    // ==============================
-    // RENDERING
-    // ==============================
-
-    const state = {
-      all: [],
-      showPast: true,
-      filterCourse: "",
-      filterLocation: ""
-    };
-
-    const dom = {
-      status: document.getElementById("status"),
-      error: document.getElementById("error"),
-      list: document.getElementById("class-list"),
-      empty: document.getElementById("empty"),
-      filterCourse: document.getElementById("filter-course"),
-      filterLocation: document.getElementById("filter-location"),
-      clearFilters: document.getElementById("clear-filters"),
-      togglePast: document.getElementById("toggle-past")
-    };
-
-    function setStatus(msg, extra) {
-      dom.status.innerHTML = "";
-      const span = document.createElement("span");
-      span.textContent = msg;
-      dom.status.appendChild(span);
-      if (extra) {
-        const extraSpan = document.createElement("span");
-        extraSpan.textContent = " " + extra;
-        dom.status.appendChild(extraSpan);
+    function parseStartDate(raw) {
+      if (!raw) return null;
+      if (raw.includes("Select a Program Below")) return null;
+      if (raw.toLowerCase().includes("start your class today")) return null;
+      try {
+        const cleaned = raw.replace(/\s*\([^)]*\)\s*$/, "");
+        const d = new Date(cleaned);
+        if (isNaN(d.getTime())) return null;
+        return d;
+      } catch (e) {
+        return null;
       }
     }
 
-    function showError(msg) {
-      dom.error.style.display = "block";
-      dom.error.textContent = msg;
-    }
-
-    function hideError() {
-      dom.error.style.display = "none";
-      dom.error.textContent = "";
-    }
-
-    function buildFilters(classes) {
-      const courses = new Set();
+    function buildFilters() {
+      const courseIdsWithSessions = new Set();
       const locations = new Set();
 
-      for (const c of classes) {
-        if (c.course) courses.add(c.course);
-        if (c.city) locations.add(c.city);
+      for (const s of allSessions) {
+        if (s.course_id != null) {
+          courseIdsWithSessions.add(String(s.course_id));
+        }
+        if (s.location_short) {
+          locations.add(s.location_short);
+        }
       }
 
-      const sortedCourses = Array.from(courses).sort();
-      const sortedLocations = Array.from(locations).sort();
+      courseFilterEl.innerHTML = "";
+      const anyCourseOpt = document.createElement("option");
+      anyCourseOpt.value = "";
+      anyCourseOpt.textContent = "All courses";
+      courseFilterEl.appendChild(anyCourseOpt);
 
-      dom.filterCourse.innerHTML = "<option value=\"\">All courses</option>";
-      sortedCourses.forEach(course => {
-        const opt = document.createElement("option");
-        opt.value = course;
-        opt.textContent = course;
-        dom.filterCourse.appendChild(opt);
+      const sortedCourseIds = Array.from(courseIdsWithSessions).sort((a, b) => {
+        const nameA = courseMap.get(Number(a)) || "";
+        const nameB = courseMap.get(Number(b)) || "";
+        return nameA.localeCompare(nameB);
       });
 
-      dom.filterLocation.innerHTML = "<option value=\"\">All locations</option>";
-      sortedLocations.forEach(loc => {
+      for (const id of sortedCourseIds) {
+        const opt = document.createElement("option");
+        opt.value = id;
+        opt.textContent = courseMap.get(Number(id)) || ("Course #" + id);
+        courseFilterEl.appendChild(opt);
+      }
+
+      locationFilterEl.innerHTML = "";
+      const anyLocationOpt = document.createElement("option");
+      anyLocationOpt.value = "";
+      anyLocationOpt.textContent = "All locations";
+      locationFilterEl.appendChild(anyLocationOpt);
+
+      const sortedLocations = Array.from(locations).sort((a, b) => a.localeCompare(b));
+      for (const loc of sortedLocations) {
         const opt = document.createElement("option");
         opt.value = loc;
         opt.textContent = loc;
-        dom.filterLocation.appendChild(opt);
-      });
+        locationFilterEl.appendChild(opt);
+      }
     }
 
-    function applyFilters() {
+    function renderSchedule() {
+      const selectedCourseId = courseFilterEl.value || "";
+      const selectedLocation = locationFilterEl.value || "";
+      const hidePast = hidePastToggleEl.checked;
       const now = new Date();
-      let filtered = state.all.slice();
 
-      if (!state.showPast) {
-        filtered = filtered.filter(c => !c.isPast);
-      }
-      if (state.filterCourse) {
-        filtered = filtered.filter(c => c.course === state.filterCourse);
-      }
-      if (state.filterLocation) {
-        filtered = filtered.filter(c => c.city === state.filterLocation);
-      }
+      let visibleCount = 0;
+      classesContainerEl.innerHTML = "";
 
-      filtered.sort(cmpByStartAsc);
-      renderClassList(filtered);
+      for (const s of allSessions) {
+        if (selectedCourseId && String(s.course_id) !== selectedCourseId) continue;
+        if (selectedLocation && s.location_short !== selectedLocation) continue;
 
-      const total = state.all.length;
-      const visible = filtered.length;
-      const pastCount = state.all.filter(c => c.isPast).length;
-      const futureCount = total - pastCount;
-      setStatus(
-        `Showing ${visible} of ${total} classes.`,
-        `(Upcoming: ${futureCount}, Past: ${pastCount})`
-      );
-    }
+        const isPast = s._startDate && s._startDate < now;
+        if (hidePast && isPast) continue;
 
-    function renderClassList(list) {
-      dom.list.innerHTML = "";
-      if (list.length === 0) {
-        dom.empty.style.display = "block";
-        return;
-      }
-      dom.empty.style.display = "none";
+        visibleCount++;
 
-      for (const c of list) {
         const card = document.createElement("article");
         card.className = "class-card";
 
-        const main = document.createElement("div");
-        main.className = "class-main";
+        const header = document.createElement("div");
+        header.className = "class-header";
 
-        const title = document.createElement("div");
-        title.className = "class-title";
-        title.textContent = c.course;
-        main.appendChild(title);
+        const titleEl = document.createElement("div");
+        titleEl.className = "class-course";
+        const courseName = courseMap.get(Number(s.course_id)) || s.course_name || "CPR / First Aid";
+        titleEl.textContent = courseName;
 
-        const meta1 = document.createElement("div");
-        meta1.className = "class-meta";
-        meta1.innerHTML = `<strong>${c.displayDate}</strong>${c.displayTime ? " · " + c.displayTime : ""}`;
-        main.appendChild(meta1);
+        const dateEl = document.createElement("div");
+        dateEl.className = "class-date";
+        dateEl.textContent = s.start_display || "Flexible dates – call for options";
 
-        const metaRow = document.createElement("div");
-        metaRow.className = "meta-row";
+        const locEl = document.createElement("div");
+        locEl.className = "class-location";
+        locEl.textContent = s.location_short || s.location || "Location to be arranged";
 
-        if (c.location || c.city) {
-          const loc = document.createElement("span");
-          loc.className = "class-meta";
-          const locText = [c.location, c.city].filter(Boolean).join(" · ");
-          loc.textContent = locText;
-          metaRow.appendChild(loc);
+        header.appendChild(titleEl);
+        header.appendChild(dateEl);
+        header.appendChild(locEl);
+
+        if (isPast) {
+          const pastBadge = document.createElement("div");
+          pastBadge.className = "past-badge";
+          pastBadge.textContent = "Past date";
+          header.appendChild(pastBadge);
         }
 
-        if (c.seats) {
-          const chipSeats = document.createElement("span");
-          chipSeats.className = "chip";
-          chipSeats.textContent = c.seats;
-          metaRow.appendChild(chipSeats);
+        card.appendChild(header);
+
+        const footer = document.createElement("div");
+        footer.className = "class-footer";
+
+        const primaryLink = document.createElement("a");
+        primaryLink.className = "btn-primary";
+        primaryLink.href = s.register_url || "#";
+        primaryLink.target = "_blank";
+        primaryLink.rel = "noopener";
+
+        primaryLink.textContent = isPast
+          ? "Registration closed – see other times"
+          : "Register for this class";
+
+        footer.appendChild(primaryLink);
+
+        const courseUrl = courseScheduleUrlMap.get(s.course_id) || s.register_url || null;
+        if (courseUrl) {
+          const secondaryLink = document.createElement("a");
+          secondaryLink.className = "btn-secondary";
+          secondaryLink.href = courseUrl;
+          secondaryLink.target = "_blank";
+          secondaryLink.rel = "noopener";
+          secondaryLink.textContent = "See other times for this course";
+          footer.appendChild(secondaryLink);
         }
 
-        const chipTime = document.createElement("span");
-        chipTime.className = "chip" + (c.isPast ? " past" : "");
-        chipTime.textContent = c.isPast ? "Past date" : "Open for registration";
-        metaRow.appendChild(chipTime);
+        card.appendChild(footer);
 
-        main.appendChild(metaRow);
-        card.appendChild(main);
+        classesContainerEl.appendChild(card);
+      }
 
-        const actions = document.createElement("div");
-        actions.className = "class-actions";
+      if (visibleCount === 0) {
+        emptyStateEl.style.display = "block";
+      } else {
+        emptyStateEl.style.display = "none";
+      }
 
-        const priceEl = document.createElement("div");
-        priceEl.className = "price";
-        if (c.price) {
-          priceEl.innerHTML = `${c.price} <span>per student</span>`;
-        } else {
-          priceEl.innerHTML = `<span>Price shown on registration page</span>`;
+      statusEl.textContent = visibleCount === 0
+        ? "No matching classes found."
+        : visibleCount + " class" + (visibleCount === 1 ? "" : "es") + " shown.";
+    }
+
+    async function initSchedule() {
+      statusEl.textContent = "Loading schedule…";
+
+      try {
+        const res = await fetch(SCHEDULE_URL, { cache: "no-store" });
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
         }
-        actions.appendChild(priceEl);
+        const data = await res.json();
 
-        const btnRow = document.createElement("div");
-        btnRow.className = "button-row";
-
-        const mainBtn = document.createElement("a");
-        mainBtn.className = "btn";
-        mainBtn.target = "_blank";
-
-        if (c.isPast) {
-          mainBtn.classList.add("btn-secondary");
-          mainBtn.textContent = "Registration closed – see other times";
-          if (c.courseScheduleUrl) {
-            mainBtn.href = c.courseScheduleUrl;
-          } else if (c.enrollUrl) {
-            // Fallback if you don't have a separate course schedule URL.
-            mainBtn.href = c.enrollUrl;
-          } else {
-            mainBtn.classList.add("btn-disabled");
-            mainBtn.href = "#";
+        courseMap = new Map();
+        if (Array.isArray(data.courses)) {
+          for (const c of data.courses) {
+            if (c && typeof c.id === "number") {
+              courseMap.set(c.id, c.name || ("Course #" + c.id));
+            }
           }
+        }
+
+        const rawClasses =
+          data.classes ||
+          data.sessions ||
+          data.items ||
+          data.class_list ||
+          [];
+
+        allSessions = [];
+        courseScheduleUrlMap = new Map();
+
+        for (const item of rawClasses) {
+          if (!item) continue;
+
+          const courseId = item.course_id;
+
+          if (!item.id) {
+            if (courseId != null && item.register_url) {
+              if (!courseScheduleUrlMap.has(courseId)) {
+                courseScheduleUrlMap.set(courseId, item.register_url);
+              }
+            }
+            continue;
+          }
+
+          const copy = Object.assign({}, item);
+          copy._startDate = parseStartDate(copy.start_display);
+          allSessions.push(copy);
+        }
+
+        if (allSessions.length === 0) {
+          statusEl.textContent = "No classes found in schedule.json.";
+          classesContainerEl.innerHTML = "";
+          emptyStateEl.style.display = "block";
         } else {
-          mainBtn.classList.add("btn-primary");
-          mainBtn.textContent = "Register for this class";
-          if (c.enrollUrl) {
-            mainBtn.href = c.enrollUrl;
-          } else if (c.courseScheduleUrl) {
-            mainBtn.href = c.courseScheduleUrl;
-          } else {
-            mainBtn.classList.add("btn-disabled");
-            mainBtn.href = "#";
+          statusEl.textContent = allSessions.length + " total class"
+            + (allSessions.length === 1 ? "" : "es") + " loaded.";
+          emptyStateEl.style.display = "none";
+        }
+
+        if (data.generated_at) {
+          const d = new Date(data.generated_at);
+          if (!isNaN(d.getTime())) {
+            generatedAtEl.textContent =
+              "Last updated from Enrollware: " + d.toLocaleString();
           }
         }
 
-        btnRow.appendChild(mainBtn);
-
-        if (c.courseScheduleUrl) {
-          const altBtn = document.createElement("a");
-          altBtn.className = "btn btn-secondary";
-          altBtn.textContent = "See other times for this course";
-          altBtn.href = c.courseScheduleUrl;
-          altBtn.target = "_blank";
-          btnRow.appendChild(altBtn);
-        }
-
-        actions.appendChild(btnRow);
-        card.appendChild(actions);
-
-        dom.list.appendChild(card);
+        buildFilters();
+        renderSchedule();
+      } catch (err) {
+        console.error("Error loading schedule.json", err);
+        statusEl.textContent = "Error loading schedule.json – check the file path or JSON syntax.";
+        classesContainerEl.innerHTML = "";
+        emptyStateEl.style.display = "block";
       }
     }
 
-    // ==============================
-    // EVENT WIRING
-    // ==============================
+    courseFilterEl.addEventListener("change", renderSchedule);
+    locationFilterEl.addEventListener("change", renderSchedule);
+    hidePastToggleEl.addEventListener("change", renderSchedule);
 
-    dom.filterCourse.addEventListener("change", () => {
-      state.filterCourse = dom.filterCourse.value;
-      applyFilters();
+    clearFiltersEl.addEventListener("click", () => {
+      courseFilterEl.value = "";
+      locationFilterEl.value = "";
+      hidePastToggleEl.checked = true;
+      renderSchedule();
     });
 
-    dom.filterLocation.addEventListener("change", () => {
-      state.filterLocation = dom.filterLocation.value;
-      applyFilters();
-    });
-
-    dom.clearFilters.addEventListener("click", () => {
-      state.filterCourse = "";
-      state.filterLocation = "";
-      dom.filterCourse.value = "";
-      dom.filterLocation.value = "";
-      applyFilters();
-    });
-
-    dom.togglePast.addEventListener("click", () => {
-      state.showPast = !state.showPast;
-      dom.togglePast.textContent = state.showPast ? "Hide past classes" : "Show past classes";
-      applyFilters();
-    });
-
-    // ==============================
-    // INITIAL LOAD
-    // ==============================
-
-    (function init() {
-      setStatus("Loading schedule…");
-      hideError();
-
-      fetch(SCHEDULE_URL, { cache: "no-store" })
-        .then(resp => {
-          if (!resp.ok) {
-            throw new Error("HTTP " + resp.status + " loading schedule.json");
-          }
-          return resp.json();
-        })
-        .then(json => {
-          if (!Array.isArray(json)) {
-            throw new Error("schedule.json is not an array; adjust the loader or your export script.");
-          }
-          const normalized = json.map(normalizeClass);
-          state.all = normalized;
-          buildFilters(normalized);
-          applyFilters();
-
-          if (normalized.length === 0) {
-            setStatus("Schedule loaded, but no classes were found in schedule.json.");
-          } else {
-            setStatus("Schedule loaded.", `(Total classes in JSON: ${normalized.length})`);
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          showError("Unable to load schedule.json. Check the SCHEDULE_URL in this file and confirm that your export script wrote a valid JSON array.");
-          setStatus("Error loading schedule.");
-        });
-    })();
+    initSchedule();
   </script>
 </body>
 </html>
