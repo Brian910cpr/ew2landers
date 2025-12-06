@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>910CPR – Mobile Course Catalog</title>
+
+  <!-- Critical for mobile layout -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- Optional: point canonical back to desktop schedule page -->
+  <!-- Update href to whatever URL this schedule lives at -->
+  <link rel="canonical" href="https://910cpr.com/schedule/" />
+
+  <style>
+    :root {
+      --bg: #f5f9ff;
+      --bg-strong: #ffffff;
+      --accent: #0b5ea8;
+      --accent-soft: #e0efff;
+      --text-main: #1b2633;
+      --text-muted: #5b6470;
+      --border-soft: #d6dce5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+    }
+
+    body {
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      height: 100vh;
+      max-width: 700px; /* looks nice on tablets too */
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(to bottom right, #ffffff, #f2f7ff);
+      position: relative;
+      padding-bottom: 16vh; /* leave room for fixed footer */
+    }
+
+    /* HEADER (top ~25%) */
+    .app-header {
+      flex: 0 0 25vh;
+      display: flex;
+      padding: 0.75rem 1rem 0.5rem;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-wrap {
+      flex: 0 0 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-right: 0.25rem;
+    }
+
+    .logo-wrap img {
+      max-width: 100%;
+      max-height: 12vh;
+      object-fit: contain;
+    }
+
+    .title-wrap {
+      flex: 0 0 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.25rem;
+      padding-left: 0.25rem;
+    }
+
+    .crumb-line {
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .crumb-line.secondary {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      max-height: 2.4em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .crumb-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 0.15rem 0.4rem;
+      border-radius: 999px;
+      margin-right: 0.4rem;
+    }
+
+    /* MAIN BODY (middle, scrollable) */
+    .app-main {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 0 1rem 1rem;
+    }
+
+    .screen {
+      display: none;
+      padding-bottom: 1rem;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .screen-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .list-item {
+      border-radius: 0.75rem;
+      padding: 0.6rem 0.7rem;
+      background: var(--bg-strong);
+      border: 1px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .list-item:active {
+      transform: scale(0.99);
+    }
+
+    .list-item-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .list-item-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .list-item-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin-top: 0.15rem;
+    }
+
+    .tag-pill {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      background: #f7f9ff;
+      color: var(--text-muted);
+    }
+
+    .empty-state {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    /* SESSIONS LIST EXTRAS */
+    .session-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .session-main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .session-date {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .session-detail {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .session-badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* FOOTER BUTTON BAR (bottom ~15%) */
+    .app-footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 15vh;
+      min-height: 60px;
+      max-height: 110px;
+      padding: 0.4rem 1rem calc(0.4rem + env(safe-area-inset-bottom, 0px));
+      background: radial-gradient(circle at top, #ffffff, #e6eefb);
+      border-top: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      z-index: 40;
+    }
+
+    .footer-btn {
+      flex: 1 1 auto;
+      border-radius: 999px;
+      padding: 0.65rem 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1px solid var(--border-soft);
+      background: #ffffff;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .footer-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .footer-btn[disabled] {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .footer-btn-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    /* Tiny helper for chips in header when deep in navigation */
+    .crumb-chip {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      background: #f0f4ff;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="logo-wrap">
+        <!-- Update src to whatever logo file you’re using in docs/images/ -->
+        <img src="images/910cpr_wave_logo_banner.png" alt="910CPR CPR and First Aid Training" />
+      </div>
+      <div class="title-wrap">
+        <div class="crumb-line">
+          <span class="crumb-label">Step 1</span>
+          <span id="crumb-main-text">Choose a class family</span>
+        </div>
+        <div id="crumb-secondary" class="crumb-line secondary"></div>
+        <div id="crumb-chip" class="crumb-chip" style="display:none;"></div>
+      </div>
+    </header>
+
+    <!-- MAIN BODY -->
+    <main class="app-main">
+      <!-- Screen 1: Families -->
+      <section id="screen-families" class="screen active">
+        <div class="screen-title">Class families</div>
+        <div id="families-list" class="list"></div>
+        <div id="families-empty" class="empty-state" style="display:none;">
+          No class families found. Check schedule.json or try again later.
+        </div>
+      </section>
+
+      <!-- Screen 2: Courses within a family -->
+      <section id="screen-courses" class="screen">
+        <div class="screen-title">Courses in this family</div>
+        <div id="courses-list" class="list"></div>
+        <div id="courses-empty" class="empty-state" style="display:none;">
+          No courses found for this family.
+        </div>
+      </section>
+
+      <!-- Screen 3: Sessions (dates/times) for a course -->
+      <section id="screen-sessions" class="screen">
+        <div class="screen-title">Upcoming dates and times</div>
+        <div id="sessions-list" class="list"></div>
+        <div id="sessions-empty" class="empty-state" style="display:none;">
+          No upcoming sessions found for this course.
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER BUTTONS -->
+    <nav class="app-footer">
+      <button id="btn-back" class="footer-btn">
+        <span class="footer-btn-icon">⟵</span>
+        <span>Back</span>
+      </button>
+      <button id="btn-register" class="footer-btn primary" disabled>
+        <span>Register for this class</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    // ----------------------------
+    // Basic state machine
+    // ----------------------------
+    var state = {
+      screen: "families", // "families" | "courses" | "sessions"
+      family: null,
+      course: null,
+      session: null
+    };
+
+    var elScreens = {
+      families: document.getElementById("screen-families"),
+      courses: document.getElementById("screen-courses"),
+      sessions: document.getElementById("screen-sessions")
+    };
+
+    var elCrumbMain = document.getElementById("crumb-main-text");
+    var elCrumbSecondary = document.getElementById("crumb-secondary");
+    var elCrumbChip = document.getElementById("crumb-chip");
+
+    var elFamiliesList = document.getElementById("families-list");
+    var elFamiliesEmpty = document.getElementById("families-empty");
+    var elCoursesList = document.getElementById("courses-list");
+    var elCoursesEmpty = document.getElementById("courses-empty");
+    var elSessionsList = document.getElementById("sessions-list");
+    var elSessionsEmpty = document.getElementById("sessions-empty");
+
+    var elBtnBack = document.getElementById("btn-back");
+    var elBtnRegister = document.getElementById("btn-register");
+
+    function setScreen(screenName) {
+      state.screen = screenName;
+
+      Object.keys(elScreens).forEach(function (key) {
+        if (key === screenName) {
+          elScreens[key].classList.add("active");
+        } else {
+          elScreens[key].classList.remove("active");
+        }
+      });
+
+      // Update header prompts
+      if (screenName === "families") {
+        elCrumbMain.textContent = "Choose a class family";
+        elCrumbSecondary.textContent = "";
+        elCrumbChip.style.display = "none";
+      } else if (screenName === "courses") {
+        elCrumbMain.textContent = state.family ? state.family.name : "Choose a course";
+        elCrumbSecondary.textContent = "Tap a course below to see dates and times.";
+        elCrumbChip.style.display = "none";
+      } else if (screenName === "sessions") {
+        elCrumbMain.textContent = state.course ? state.course.name : "Choose a session";
+        elCrumbSecondary.textContent = state.family ? state.family.name : "";
+        if (state.course && state.course.shortDesc) {
+          elCrumbChip.textContent = state.course.shortDesc;
+          elCrumbChip.style.display = "block";
+        } else {
+          elCrumbChip.style.display = "none";
+        }
+      }
+
+      // Footer button behavior
+      if (screenName === "families") {
+        elBtnBack.textContent = "Back to main site";
+        elBtnRegister.disabled = true;
+      } else if (screenName === "courses") {
+        elBtnBack.textContent = "Back to families";
+        elBtnRegister.disabled = true;
+      } else if (screenName === "sessions") {
+        elBtnBack.textContent = "Back to courses";
+        elBtnRegister.disabled = !state.session;
+      }
+    }
+
+    // Back button logic
+    elBtnBack.addEventListener("click", function () {
+      if (state.screen === "sessions") {
+        setScreen("courses");
+      } else if (state.screen === "courses") {
+        setScreen("families");
+      } else if (state.screen === "families") {
+        // Change this URL to whatever "main site" you want to kick them to
+        window.location.href = "https://910cpr.com/";
+      }
+    });
+
+    // Register button logic
+    elBtnRegister.addEventListener("click", function () {
+      if (!state.session || !state.session.enrollUrl) return;
+
+      // Send them straight to the Enrollware class instance
+      window.location.href = state.session.enrollUrl;
+    });
+
+    // -------------------------------------------------------------
+    // DATA WIRING NOTE:
+    // Replace the exampleData block with real schedule.json wiring.
+    // The only thing the UI needs from you is:
+    //   families[] -> courses[] -> sessions[]
+    //   plus an enrollUrl per session.
+    // -------------------------------------------------------------
+
+    // EXAMPLE STUB DATA (for layout testing only)
+    var exampleData = [
+      {
+        familyId: "aha-bls",
+        familyName: "American Heart Association BLS",
+        courses: [
+          {
+            courseId: "aha-bls-inperson",
+            name: "AHA BLS Provider – In-person",
+            shortDesc: "Best for hospitals, clinics, nursing programs.",
+            tags: ["Initial & Renewal", "Instructor-led"],
+            sessions: [
+              {
+                sessionId: "s1",
+                dateText: "Wed, Jan 15",
+                timeText: "9:00 AM – 12:00 PM",
+                locationText: "Wilmington, NC – Shipyard Blvd",
+                enrollUrl: "https://coastalcprtraining.enrollware.com/enroll?id=1234567"
+              },
+              {
+                sessionId: "s2",
+                dateText: "Sat, Jan 25",
+                timeText: "1:00 PM – 4:00 PM",
+                locationText: "Holly Ridge, NC – Sound Road",
+                enrollUrl: "https://coastalcprtraining.enrollware.com/enroll?id=1234568"
+              }
+            ]
+          },
+          {
+            courseId: "aha-bls-online",
+            name: "AHA BLS Heartcode Online/Skills",
+            shortDesc: "Online + quick in-person skills check.",
+            tags: ["Heartcode", "Fast option"],
+            sessions: [
+              {
+                sessionId: "s3",
+                dateText: "Thu, Jan 30",
+                timeText: "5:30 PM – 6:30 PM",
+                locationText: "Wilmington, NC – Shipyard Blvd",
+                enrollUrl: "https://coastalcprtraining.enrollware.com/enroll?id=1234569"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        familyId: "aha-acls",
+        familyName: "American Heart Association ACLS",
+        courses: [
+          {
+            courseId: "aha-acls-renew",
+            name: "AHA ACLS Provider – Renewal",
+            shortDesc: "For experienced providers needing renewal.",
+            tags: ["Renewal", "Provider"],
+            sessions: []
+          }
+        ]
+      }
+    ];
+
+    // You’ll eventually replace this build step with a transform
+    // from your real schedule.json -> this "families" structure.
+    var families = exampleData;
+
+    function renderFamilies() {
+      elFamiliesList.innerHTML = "";
+      if (!families || families.length === 0) {
+        elFamiliesEmpty.style.display = "block";
+        return;
+      }
+      elFamiliesEmpty.style.display = "none";
+
+      families.forEach(function (fam) {
+        var item = document.createElement("div");
+        item.className = "list-item";
+        item.addEventListener("click", function () {
+          state.family = {
+            id: fam.familyId,
+            name: fam.familyName
+          };
+          state.course = null;
+          state.session = null;
+          renderCoursesForFamily(fam);
+          setScreen("courses");
+        });
+
+        var title = document.createElement("div");
+        title.className = "list-item-title";
+        title.textContent = fam.familyName;
+
+        var sub = document.createElement("div");
+        sub.className = "list-item-sub";
+        sub.textContent = "Tap to see courses in this family.";
+
+        item.appendChild(title);
+        item.appendChild(sub);
+        elFamiliesList.appendChild(item);
+      });
+    }
+
+    function renderCoursesForFamily(fam) {
+      elCoursesList.innerHTML = "";
+      if (!fam.courses || fam.courses.length === 0) {
+        elCoursesEmpty.style.display = "block";
+        return;
+      }
+      elCoursesEmpty.style.display = "none";
+
+      fam.courses.forEach(function (course) {
+        var item = document.createElement("div");
+        item.className = "list-item";
+        item.addEventListener("click", function () {
+          state.course = {
+            id: course.courseId,
+            name: course.name,
+            shortDesc: course.shortDesc || ""
+          };
+          state.session = null;
+          renderSessionsForCourse(course);
+          setScreen("sessions");
+        });
+
+        var title = document.createElement("div");
+        title.className = "list-item-title";
+        title.textContent = course.name;
+
+        var sub = document.createElement("div");
+        sub.className = "list-item-sub";
+        sub.textContent =
+          course.shortDesc || "Tap to see available dates and locations.";
+
+        var tagRow = document.createElement("div");
+        tagRow.className = "list-item-tag-row";
+
+        (course.tags || []).forEach(function (t) {
+          var tag = document.createElement("span");
+          tag.className = "tag-pill";
+          tag.textContent = t;
+          tagRow.appendChild(tag);
+        });
+
+        item.appendChild(title);
+        item.appendChild(sub);
+        if ((course.tags || []).length > 0) {
+          item.appendChild(tagRow);
+        }
+
+        elCoursesList.appendChild(item);
+      });
+    }
+
+    function renderSessionsForCourse(course) {
+      elSessionsList.innerHTML = "";
+      if (!course.sessions || course.sessions.length === 0) {
+        elSessionsEmpty.style.display = "block";
+        return;
+      }
+      elSessionsEmpty.style.display = "none";
+
+      course.sessions.forEach(function (session) {
+        var item = document.createElement("div");
+        item.className = "list-item";
+        item.addEventListener("click", function () {
+          state.session = session;
+          elBtnRegister.disabled = false;
+        });
+
+        var row = document.createElement("div");
+        row.className = "session-row";
+
+        var main = document.createElement("div");
+        main.className = "session-main";
+
+        var d = document.createElement("div");
+        d.className = "session-date";
+        d.textContent = session.dateText || "";
+
+        var detail = document.createElement("div");
+        detail.className = "session-detail";
+        detail.textContent =
+          (session.timeText || "") +
+          (session.locationText ? " · " + session.locationText : "");
+
+        main.appendChild(d);
+        main.appendChild(detail);
+
+        var badge = document.createElement("div");
+        badge.className = "session-badge";
+        badge.textContent = "Tap to register";
+
+        row.appendChild(main);
+        row.appendChild(badge);
+        item.appendChild(row);
+
+        elSessionsList.appendChild(item);
+      });
+    }
+
+    // Initial render (with stub data)
+    renderFamilies();
+
+    // -------------------------------------------------------
+    // TODO (when you’re ready):
+    // Replace exampleData and renderFamilies() call with:
+    //
+    // fetch("schedule.json")
+    //   .then(r => r.json())
+    //   .then(raw => {
+    //     families = transformYourScheduleJsonIntoFamilies(raw);
+    //     renderFamilies();
+    //   });
+    //
+    // where transformYourScheduleJsonIntoFamilies() uses the
+    // same logic you’re already using in index.html.
+    // -------------------------------------------------------
+  </script>
+</body>
+</html>
