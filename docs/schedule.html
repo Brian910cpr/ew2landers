@@ -1,605 +1,832 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>910CPR Class Schedule – BLS, ACLS, PALS, Heartsaver & More</title>
-  <meta name="description" content="Live CPR, BLS, ACLS, PALS, Heartsaver and First Aid classes with 910CPR in Wilmington, Burgaw, Holly Ridge and Jacksonville, NC. Updated hourly from the live Enrollware schedule." />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="/assets/css/site.css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <title>910CPR – Class Schedule</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Live CPR and medical training schedule for Wilmington, Burgaw, Jacksonville / Camp Lejeune, and Southeastern NC. See real dates, times, locations, and book your seat.">
+  <style>
+    :root {
+      --bg-top: #ffffff;
+      --bg-bottom: #e9f5ff;
+      --card-bg: #ffffff;
+      --card-border: #d2e4f5;
+      --accent: #0b63ce;
+      --accent-soft: #e2efff;
+      --accent-danger: #b00020;
+      --text-main: #123047;
+      --text-muted: #60748a;
+      --radius-lg: 18px;
+      --shadow-soft: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+      color: var(--text-main);
+    }
+
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 16px 40px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #0077ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #ffffff;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .brand-text span:first-child {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .brand-text span:last-child {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      text-decoration: none;
+      color: var(--accent);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(11, 99, 206, 0.08);
+      white-space: nowrap;
+    }
+
+    .hero {
+      margin-top: 6px;
+      margin-bottom: 16px;
+      padding: 16px 18px;
+      background: linear-gradient(120deg,#e8f3ff,#ffffff);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      display: grid;
+      grid-template-columns: minmax(0,2.3fr) minmax(0,1.7fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .hero-highlight {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(11,99,206,0.06);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-highlight span:first-child {
+      font-size: 16px;
+    }
+
+    .hero-side {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .hero-side strong {
+      color: var(--text-main);
+      font-size: 13px;
+    }
+
+    .filters {
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filters-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filters-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    select {
+      min-width: 150px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid #c4d7eb;
+      font-size: 12px;
+      background: #ffffff;
+      color: var(--text-main);
+    }
+
+    .pill-button {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      background: #ffffff;
+      border: 1px solid #c4d7eb;
+      color: var(--text-main);
+    }
+
+    .pill-button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .pill-button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .schedule-status {
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: baseline;
+    }
+
+    .schedule-status strong {
+      color: var(--text-main);
+    }
+
+    .banner-error {
+      border-radius: var(--radius-lg);
+      background: #ffe4e8;
+      color: var(--accent-danger);
+      padding: 10px 12px;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    .class-list {
+      display: grid;
+      grid-template-columns: minmax(0,1fr);
+      gap: 10px;
+    }
+
+    .class-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-soft);
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: minmax(0,2.4fr) minmax(0,1.6fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .class-card {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    .class-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .class-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .class-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .class-meta strong {
+      color: var(--text-main);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chip.past {
+      background: #ffe4e8;
+      color: var(--accent-danger);
+    }
+
+    .class-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    @media (max-width: 640px) {
+      .class-actions {
+        align-items: flex-start;
+      }
+    }
+
+    .price {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .price span {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--accent);
+      border: 1px solid var(--accent-soft);
+    }
+
+    .btn-disabled {
+      background: #f0f0f0;
+      color: #999999;
+      cursor: default;
+    }
+
+    .empty-state {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 12px 14px;
+      border-radius: var(--radius-lg);
+      border: 1px dashed #c4d7eb;
+      background: rgba(255,255,255,0.7);
+    }
+
+    footer {
+      margin-top: 24px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>910CPR – Live Class Schedule</h1>
-    <p>These dates are pulled directly from the current Enrollware schedule every hour.</p>
-    <p>Need a different time? Visit <a href="https://coastalcprtraining.enrollware.com/schedule">the full calendar</a>.</p>
-  </header>
+  <div class="page-wrap">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">9</div>
+        <div class="brand-text">
+          <span>910CPR</span>
+          <span>CPR & Medical Training</span>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="https://910cpr.com/">Back to 910CPR.com</a>
+      </div>
+    </header>
 
-  <main>
-    <section class="course-block" id="course-38">
-  <h2>2025 AHA Instructor Update</h2>
-  <ul>
-    <li><a href="/classes/-2025-aha-instructor-update.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    <section class="hero">
+      <div>
+        <h1>Live CPR & Medical Training Schedule</h1>
+        <p>
+          This page pulls directly from the latest Enrollware export (via <code>schedule.json</code>).
+          Every refresh reads the new JSON, so if the JSON is up to date, this schedule is up to date.
+        </p>
+        <div class="hero-highlight">
+          <span>⚡</span>
+          <span>Students land here → see real dates, times, locations → tap one button to register.</span>
+        </div>
+      </div>
+      <div class="hero-side">
+        <strong>Did you need a different time?</strong>
+        <span>
+          Every class card includes a “See other times” button that jumps to the filtered course schedule
+          (when available in the JSON).
+        </span>
+        <span>
+          If a date is in the past, the main button switches to “Registration closed – see other times”
+          automatically based on the class date.
+        </span>
+      </div>
+    </section>
 
-<section class="course-block" id="course-41">
-  <h2>AHA - ACLS - Become an American Heart Association Instructor</h2>
-  <ul>
-    <li><a href="/classes/-aha-acls-become-an-american-heart-association-instructor.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    <section class="filters">
+      <div class="filters-group">
+        <span class="filters-label">Filter by course:</span>
+        <select id="filter-course">
+          <option value="">All courses</option>
+        </select>
+      </div>
+      <div class="filters-group">
+        <span class="filters-label">Filter by area:</span>
+        <select id="filter-location">
+          <option value="">All locations</option>
+        </select>
+      </div>
+      <button class="pill-button" id="clear-filters">Clear filters</button>
+      <button class="pill-button primary" id="toggle-past">Hide past classes</button>
+    </section>
 
-<section class="course-block" id="course-12">
-  <h2>AHA - ACLS Provider - In-person Initial Instructor-led Classroom for Expired or New ACLS</h2>
-  <ul>
-    <li><a href="/classes/12353405-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353417-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353593-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353418-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353594-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353419-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353595-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353420-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353596-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353421-aha-acls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    <div id="status" class="schedule-status">
+      <span><strong>Loading schedule…</strong></span>
+    </div>
 
-<section class="course-block" id="course-14">
-  <h2>AHA - ACLS Provider - Online or Skills Session Blended Learning HeartCode® ACLS</h2>
-  <ul>
-    <li><a href="/classes/11820049-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820050-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820051-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820080-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820081-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820082-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820095-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820096-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820097-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820098-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/-aha-acls-provider-online-or-skills-session-blended-learning-heartcode-acls.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    <div id="error" class="banner-error" style="display:none;"></div>
 
-<section class="course-block" id="course-13">
-  <h2>AHA - ACLS Provider Renewal - In-Person Instructor-led Classroom program for ACLS Renewal</h2>
-  <ul>
-    <li><a href="/classes/12354141-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354143-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353616-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354144-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353620-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354145-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353626-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354146-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353630-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354147-aha-acls-provider-renewal-in-person-instructor-led-classroom-program-for-acls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    <div id="class-list" class="class-list"></div>
 
-<section class="course-block" id="course-20">
-  <h2>AHA - ASLS Provider Online Blended Learning HeartCode® ASLS</h2>
-  <ul>
-    <li><a href="/classes/-aha-asls-provider-online-blended-learning-heartcode-asls.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    <div id="empty" class="empty-state" style="display:none;">
+      No classes match your filters. Try clearing filters or check back after the next schedule.json update.
+    </div>
 
-<section class="course-block" id="course-40">
-  <h2>AHA - BLS - Become an American Heart Association Instructor</h2>
-  <ul>
-    <li><a href="/classes/-aha-bls-become-an-american-heart-association-instructor.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    <footer>
+      This page is powered by your Enrollware export → schedule.json → static HTML.
+      If this page looks empty but you know you have classes, the problem is the JSON, not the page.
+    </footer>
+  </div>
 
-<section class="course-block" id="course-2">
-  <h2>AHA - BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS</h2>
-  <ul>
-    <li><a href="/classes/11817674-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924736-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930083-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929725-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924738-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924737-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924739-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11817676-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924740-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930085-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929727-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924741-aha-bls-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+  <script>
+    // ==============================
+    // CONFIG – ADJUST THIS FOR YOUR REPO
+    // ==============================
 
-<section class="course-block" id="course-3">
-  <h2>AHA - BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal</h2>
-  <ul>
-    <li><a href="/classes/11817768-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924776-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12352152-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929522-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12352269-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12352209-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929761-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12352153-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12352270-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12352210-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924778-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924777-aha-bls-provider-in-person-renewal-instructor-led-classroom-program-for-bls-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    // Path where the built JSON lives, relative to this HTML file.
+    // Example if your repo has docs/data/schedule.json and docs/schedule.html:
+    //   "data/schedule.json"
+    const SCHEDULE_URL = "data/schedule.json";
 
-<section class="course-block" id="course-4">
-  <h2>AHA - BLS Provider - Online Class with in-Person Skill Session - Initial or Renewal Blended Learning HeartCode® BLS</h2>
-  <ul>
-    <li><a href="/classes/11817563-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930188-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930116-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929595-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924518-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925339-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930187-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924519-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925342-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11817565-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930186-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930118-aha-bls-provider-online-class-with-in-person-skill-session-initial-or-renewal-blended-learning-heartcode-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    // Field fallbacks for different JSON shapes.
+    const FIELD_KEYS = {
+      id: ["id", "class_id", "enrollware_id"],
+      start: ["start_iso", "startDateTime", "start", "start_utc"],
+      course: ["course_name", "title", "course"],
+      location: ["location", "city_state", "city"],
+      city: ["city", "city_state"],
+      price: ["price", "student_price", "tuition"],
+      seats: ["seats_left", "available_seats", "remaining_seats"],
+      enrollUrl: ["enroll_url", "enrollUrl", "url", "register_url"],
+      courseScheduleUrl: ["course_schedule_url", "courseScheduleUrl"]
+    };
 
-<section class="course-block" id="course-43">
-  <h2>AHA - BLS, ACLS & PALS - Become an American Heart Association Instructor</h2>
-  <ul>
-    <li><a href="/classes/-aha-bls-acls-pals-become-an-american-heart-association-instructor.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    // ==============================
+    // HELPER FUNCTIONS
+    // ==============================
 
-<section class="course-block" id="course-34">
-  <h2>AHA - Family & Friends® CPR</h2>
-  <ul>
-    <li><a href="/classes/11925103-aha-family-friends-cpr.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925102-aha-family-friends-cpr.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/-aha-family-friends-cpr.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    function pickField(obj, keys) {
+      for (const k of keys) {
+        if (Object.prototype.hasOwnProperty.call(obj, k) && obj[k] != null && obj[k] !== "") {
+          return obj[k];
+        }
+      }
+      return "";
+    }
 
-<section class="course-block" id="course-39">
-  <h2>AHA - Heartsaver® - Become an American Heart Association Instructor</h2>
-  <ul>
-    <li><a href="/classes/-aha-heartsaver-become-an-american-heart-association-instructor.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    function normalizeClass(raw) {
+      const id = pickField(raw, FIELD_KEYS.id) || "";
+      const startRaw = pickField(raw, FIELD_KEYS.start);
+      const course = pickField(raw, FIELD_KEYS.course) || "Untitled course";
+      const location = pickField(raw, FIELD_KEYS.location) || "";
+      const city = pickField(raw, FIELD_KEYS.city) || "";
+      const priceRaw = pickField(raw, FIELD_KEYS.price);
+      const seatsRaw = pickField(raw, FIELD_KEYS.seats);
+      const enrollUrl = pickField(raw, FIELD_KEYS.enrollUrl);
+      const courseScheduleUrl = pickField(raw, FIELD_KEYS.courseScheduleUrl);
 
-<section class="course-block" id="course-35">
-  <h2>AHA - Heartsaver® CPR AED - In-person</h2>
-  <ul>
-    <li><a href="/classes/11820199-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820197-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820198-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820200-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820202-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820212-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820217-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820213-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820218-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820215-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820214-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820220-aha-heartsaver-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      const start = startRaw ? new Date(startRaw) : null;
+      const now = new Date();
+      const isPast = !!(start && start < now);
 
-<section class="course-block" id="course-26">
-  <h2>AHA - Heartsaver® First Aid CPR AED - In-person ❤️</h2>
-  <ul>
-    <li><a href="/classes/11820273-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820278-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820279-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820275-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820276-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820280-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820264-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820269-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820265-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820270-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820271-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820267-aha-heartsaver-first-aid-cpr-aed-in-person.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      let displayDate = "Date TBA";
+      let displayTime = "";
+      if (start && !isNaN(start.getTime())) {
+        displayDate = start.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        });
+        displayTime = start.toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit"
+        });
+      }
 
-<section class="course-block" id="course-24">
-  <h2>AHA - Heartsaver® Pediatric First Aid / CPR / AED Online + In-Person Skills ✔ Fulfills the CPR/First Aid component of NC DCDEE (10A NCAC 09 .1102); additional NC trainings required for full compliance ✔ Fulfills the CPR/First Aid requirement in CT OEC (Sec. 19a-79-4a); center policies/modules may apply</h2>
-  <ul>
-    <li><a href="/classes/11930520-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930521-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930522-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930515-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930516-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930518-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930517-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930511-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930512-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930513-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930514-aha-heartsaver-pediatric-first-aid-cpr-aed-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      let price = "";
+      if (priceRaw || priceRaw === 0) {
+        price = "$" + Number(priceRaw).toFixed(2).replace(/\.00$/, "");
+      }
 
-<section class="course-block" id="course-25">
-  <h2>AHA - Heartsaver® Primeros Auxilios con RCP y DEA - En línea con evaluación práctica presencial ✔ Cumple con los requisitos de OSHA para trabajadores de construcción, fábricas, almacenes, hoteles, oficinas y más ✔ Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)</h2>
-  <ul>
-    <li><a href="/classes/-aha-heartsaver-primeros-auxilios-con-rcp-y-dea-en-línea-con-evaluación-práctica-presencial-cumple-con-los-requisitos-de-osha-para-trabajadores-de-construcción-fábricas-almacenes-hoteles-oficinas-y-más-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      let seats = "";
+      if (seatsRaw || seatsRaw === 0) {
+        const n = Number(seatsRaw);
+        if (!isNaN(n)) {
+          seats = n > 0 ? `${n} seat${n === 1 ? "" : "s"} left` : "No seats left";
+        } else {
+          seats = String(seatsRaw);
+        }
+      }
 
-<section class="course-block" id="course-42">
-  <h2>AHA - PALS - Become an American Heart Association Instructor</h2>
-  <ul>
-    <li><a href="/classes/-aha-pals-become-an-american-heart-association-instructor.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      return {
+        raw,
+        id,
+        start,
+        isPast,
+        displayDate,
+        displayTime,
+        course,
+        location,
+        city,
+        price,
+        seats,
+        enrollUrl,
+        courseScheduleUrl
+      };
+    }
 
-<section class="course-block" id="course-16">
-  <h2>AHA - PALS Provider - In Person - Initial Instructor-led Classroom for Expired or New PALS</h2>
-  <ul>
-    <li><a href="/classes/12354162-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354163-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353788-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354164-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353790-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354165-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353791-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354166-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353792-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354167-aha-pals-provider-in-person-initial-instructor-led-classroom-for-expired-or-new-pals.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    function cmpByStartAsc(a, b) {
+      if (!a.start && !b.start) return 0;
+      if (!a.start) return 1;
+      if (!b.start) return -1;
+      return a.start - b.start;
+    }
 
-<section class="course-block" id="course-17">
-  <h2>AHA - PALS Provider - In Person - Renewal Instructor-led Classroom for PALS renewal</h2>
-  <ul>
-    <li><a href="/classes/12354181-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354182-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12539177-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353809-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354183-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353810-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354184-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353811-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354185-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353812-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12354186-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12353813-aha-pals-provider-in-person-renewal-instructor-led-classroom-for-pals-renewal.html">Unknown date/time · NC - Burgaw: 111 S Wright St @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    // ==============================
+    // RENDERING
+    // ==============================
 
-<section class="course-block" id="course-18">
-  <h2>AHA - PALS Provider - Online or Skills Session - Initial or Renewal Blended Learning HeartCode® PALS</h2>
-  <ul>
-    <li><a href="/classes/12354142-aha-pals-provider-online-or-skills-session-initial-or-renewal-blended-learning-heartcode-pals.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/-aha-pals-provider-online-or-skills-session-initial-or-renewal-blended-learning-heartcode-pals.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    const state = {
+      all: [],
+      showPast: true,
+      filterCourse: "",
+      filterLocation: ""
+    };
 
-<section class="course-block" id="course-23">
-  <h2>American Heart Association</h2>
-  <ul>
-    <li><a href="/classes/11930399-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930404-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930405-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930401-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930402-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930407-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930390-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930395-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930391-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930396-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930397-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930393-american-heart-association.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    const dom = {
+      status: document.getElementById("status"),
+      error: document.getElementById("error"),
+      list: document.getElementById("class-list"),
+      empty: document.getElementById("empty"),
+      filterCourse: document.getElementById("filter-course"),
+      filterLocation: document.getElementById("filter-location"),
+      clearFilters: document.getElementById("clear-filters"),
+      togglePast: document.getElementById("toggle-past")
+    };
 
-<section class="course-block" id="course-30">
-  <h2>ARC - Adult and Pediatric First Aid/CPR/AED</h2>
-  <ul>
-    <li><a href="/classes/11929824-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820689-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820374-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820686-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820375-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820687-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929826-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820691-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820692-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820376-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820688-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929827-arc-adult-and-pediatric-first-aid-cpr-aed.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    function setStatus(msg, extra) {
+      dom.status.innerHTML = "";
+      const span = document.createElement("span");
+      span.textContent = msg;
+      dom.status.appendChild(span);
+      if (extra) {
+        const extraSpan = document.createElement("span");
+        extraSpan.textContent = " " + extra;
+        dom.status.appendChild(extraSpan);
+      }
+    }
 
-<section class="course-block" id="course-29">
-  <h2>ARC - Adult CPR/AED Online</h2>
-  <ul>
-    <li><a href="/classes/11818585-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930481-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930482-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11818587-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930483-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11818593-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930476-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11818594-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930477-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930478-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11818596-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930479-arc-adult-cpr-aed-online.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    function showError(msg) {
+      dom.error.style.display = "block";
+      dom.error.textContent = msg;
+    }
 
-<section class="course-block" id="course-6">
-  <h2>ARC - BLS - Blended Learning Online - Initial or Renewal ARC Online Learning BLS with In-person Skills testing</h2>
-  <ul>
-    <li><a href="/classes/11817605-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930218-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929312-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929990-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929629-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924555-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924587-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925272-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930219-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924553-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924585-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925275-arc-bls-blended-learning-online-initial-or-renewal-arc-online-learning-bls-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    function hideError() {
+      dom.error.style.display = "none";
+      dom.error.textContent = "";
+    }
 
-<section class="course-block" id="course-5">
-  <h2>ARC - BLS - In-Person Classroom Instructor-led Classroom for Expired or New BLS</h2>
-  <ul>
-    <li><a href="/classes/11929484-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930334-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11819626-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929789-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930332-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930333-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930331-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929486-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930330-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11819628-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929791-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930329-arc-bls-in-person-classroom-instructor-led-classroom-for-expired-or-new-bls.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    function buildFilters(classes) {
+      const courses = new Set();
+      const locations = new Set();
 
-<section class="course-block" id="course-7">
-  <h2>ARC BLS Challenge - Renewal for experienced Providers 🚨 An assessment-only session for experienced providers needing to renew their certification.</h2>
-  <ul>
-    <li><a href="/classes/11962279-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930245-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11962282-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930021-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929661-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924616-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924649-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925172-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930246-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924617-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924650-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925175-arc-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-needing-to-renew-their-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      for (const c of classes) {
+        if (c.course) courses.add(c.course);
+        if (c.city) locations.add(c.city);
+      }
 
-<section class="course-block" id="course-10">
-  <h2>BLS Provider (On-site; Group; Fully In-person) Need a reliable CPR class for your team? 910 CPR brings expert AHA, HSI, or ARC BLS training directly to your office. Flexible scheduling, simple pricing, and a proven track record of reliability. We show up—on time, every time. Contact us today!</h2>
-  <ul>
-    <li><a href="/classes/-bls-provider-on-site-group-fully-in-person-need-a-reliable-cpr-class-for-your-team-910-cpr-brings-expert-aha-hsi-or-arc-bls-training-directly-to-your-office-flexible-scheduling-simple-pricing-and-a-proven-track-record-of-reliability-we-show-upon-time-every-time-contact-us-today.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      const sortedCourses = Array.from(courses).sort();
+      const sortedLocations = Array.from(locations).sort();
 
-<section class="course-block" id="course-21">
-  <h2>CPR / AED & First Aid First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an automated external defibrillator (AED) in a safe, timely, and effective manner.</h2>
-  <ul>
-    <li><a href="/classes/-cpr-aed-first-aid-first-aid-cpr-aed-trains-anyone-with-little-or-no-medical-training-to-provide-first-aid-cpr-and-use-an-automated-external-defibrillator-aed-in-a-safe-timely-and-effective-manner.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      dom.filterCourse.innerHTML = "<option value=\"\">All courses</option>";
+      sortedCourses.forEach(course => {
+        const opt = document.createElement("option");
+        opt.value = course;
+        opt.textContent = course;
+        dom.filterCourse.appendChild(opt);
+      });
 
-<section class="course-block" id="course-36">
-  <h2>CPR / AED / First Aid (On-site; Group Class) Need a reliable CPR class for your team? 910 CPR brings expert AHA, HSI, or ARC BLS training directly to your office. Flexible scheduling, simple pricing, and a proven track record of reliability. We show up—on time, every time. Contact us today!</h2>
-  <ul>
-    <li><a href="/classes/-cpr-aed-first-aid-on-site-group-class-need-a-reliable-cpr-class-for-your-team-910-cpr-brings-expert-aha-hsi-or-arc-bls-training-directly-to-your-office-flexible-scheduling-simple-pricing-and-a-proven-track-record-of-reliability-we-show-upon-time-every-time-contact-us-today.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      dom.filterLocation.innerHTML = "<option value=\"\">All locations</option>";
+      sortedLocations.forEach(loc => {
+        const opt = document.createElement("option");
+        opt.value = loc;
+        opt.textContent = loc;
+        dom.filterLocation.appendChild(opt);
+      });
+    }
 
-<section class="course-block" id="course-33">
-  <h2>CPR / AED Only First Aid CPR AED trains anyone with little or no medical training to provide first aid, CPR, and use an AED in a safe, timely, and effective manner.</h2>
-  <ul>
-    <li><a href="/classes/-cpr-aed-only-first-aid-cpr-aed-trains-anyone-with-little-or-no-medical-training-to-provide-first-aid-cpr-and-use-an-aed-in-a-safe-timely-and-effective-manner.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    function applyFilters() {
+      const now = new Date();
+      let filtered = state.all.slice();
 
-<section class="course-block" id="course-32">
-  <h2>Elementary First Aid ONLINE to meet "U.S. Coast Guard Maritime Elementary First Aid and CPR" Requirement Same day certification... both AHA card and AMERHA-216 Recieve the SAME card as the in-person class but, significantly more convenient.</h2>
-  <ul>
-    <li><a href="/classes/11818646-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930443-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930444-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11818648-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11818649-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930446-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11818680-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930438-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11818681-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930439-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930440-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11818683-elementary-first-aid-online-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement-same-day-certification-both-aha-card-and-amerha-216-recieve-the-same-card-as-the-in-person-class-but-significantly-more-convenient.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      if (!state.showPast) {
+        filtered = filtered.filter(c => !c.isPast);
+      }
+      if (state.filterCourse) {
+        filtered = filtered.filter(c => c.course === state.filterCourse);
+      }
+      if (state.filterLocation) {
+        filtered = filtered.filter(c => c.city === state.filterLocation);
+      }
 
-<section class="course-block" id="course-31">
-  <h2>Elementary First Aid to meet "U.S. Coast Guard Maritime Elementary First Aid and CPR" Requirement</h2>
-  <ul>
-    <li><a href="/classes/11929859-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820428-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820427-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929860-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820434-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929862-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820435-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929863-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820436-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820437-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929865-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820438-elementary-first-aid-to-meet-us-coast-guard-maritime-elementary-first-aid-and-cpr-requirement.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      filtered.sort(cmpByStartAsc);
+      renderClassList(filtered);
 
-<section class="course-block" id="course-11">
-  <h2>Healthcare Provider: ACLS Course ACLS is an advanced course that builds on the foundation of lifesaving BLS skills, emphasizing the importance of continuous, high-quality CPR, and high-performance team dynamics.</h2>
-  <ul>
-    <li><a href="/classes/-healthcare-provider-acls-course-acls-is-an-advanced-course-that-builds-on-the-foundation-of-lifesaving-bls-skills-emphasizing-the-importance-of-continuous-high-quality-cpr-and-high-performance-team-dynamics.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      const total = state.all.length;
+      const visible = filtered.length;
+      const pastCount = state.all.filter(c => c.isPast).length;
+      const futureCount = total - pastCount;
+      setStatus(
+        `Showing ${visible} of ${total} classes.`,
+        `(Upcoming: ${futureCount}, Past: ${pastCount})`
+      );
+    }
 
-<section class="course-block" id="course-19">
-  <h2>Healthcare Provider: ASLS Course ASLS is appropriate for healthcare professionals in both prehospital and in-hospital settings involved in the management of acute stroke patients.</h2>
-  <ul>
-    <li><a href="/classes/-healthcare-provider-asls-course-asls-is-appropriate-for-healthcare-professionals-in-both-prehospital-and-in-hospital-settings-involved-in-the-management-of-acute-stroke-patients.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+    function renderClassList(list) {
+      dom.list.innerHTML = "";
+      if (list.length === 0) {
+        dom.empty.style.display = "block";
+        return;
+      }
+      dom.empty.style.display = "none";
 
-<section class="course-block" id="course-1">
-  <h2>Healthcare Provider: BLS Course Basic Life Support (BLS) for healthcare professionals trains participants to promptly recognize several life-threatening emergencies, give high-quality CPR, deliver appropriate ventilations, and provide early use of an AED.</h2>
-  <ul>
-    <li><a href="/classes/-healthcare-provider-bls-course-basic-life-support-bls-for-healthcare-professionals-trains-participants-to-promptly-recognize-several-life-threatening-emergencies-give-high-quality-cpr-deliver-appropriate-ventilations-and-provide-early-use-of-an-aed.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+      for (const c of list) {
+        const card = document.createElement("article");
+        card.className = "class-card";
 
-<section class="course-block" id="course-15">
-  <h2>Healthcare Provider: PALS Course Pediatric Advanced Life Support (PALS) uses a series of videos and simulated pediatric emergencies to reinforce the important concepts of a systematic approach to pediatric assessment, basic life support, PALS treatment algorithms, effective resuscitation, and team dynamics.</h2>
-  <ul>
-    <li><a href="/classes/-healthcare-provider-pals-course-pediatric-advanced-life-support-pals-uses-a-series-of-videos-and-simulated-pediatric-emergencies-to-reinforce-the-important-concepts-of-a-systematic-approach-to-pediatric-assessment-basic-life-support-pals-treatment-algorithms-effective-resuscitation-and-team-dynamics.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        const main = document.createElement("div");
+        main.className = "class-main";
 
-<section class="course-block" id="course-27">
-  <h2>HSI Adult First Aid | Adult/Child/Infant CPR AED Traditional Classroom ✔ Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)</h2>
-  <ul>
-    <li><a href="/classes/11929892-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929923-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820492-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820493-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929894-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929925-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820494-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929895-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929926-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11820499-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929896-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929927-hsi-adult-first-aid-adult-child-infant-cpr-aed-traditional-classroom-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        const title = document.createElement("div");
+        title.className = "class-title";
+        title.textContent = c.course;
+        main.appendChild(title);
 
-<section class="course-block" id="course-28">
-  <h2>HSI Adult First Aid | Adult/Child/Infant CPR AED | Blended Learning Online Coursework with In-Person Skills Testing ✔ Meets OSHA Requirements for Workplace Responders (29 CFR 1910.151)</h2>
-  <ul>
-    <li><a href="/classes/11929563-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924975-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925039-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924976-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925040-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929565-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924981-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925045-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929566-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924983-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11925047-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929567-hsi-adult-first-aid-adult-child-infant-cpr-aed-blended-learning-online-coursework-with-in-person-skills-testing-meets-osha-requirements-for-workplace-responders-29-cfr-1910151.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        const meta1 = document.createElement("div");
+        meta1.className = "class-meta";
+        meta1.innerHTML = `<strong>${c.displayDate}</strong>${c.displayTime ? " · " + c.displayTime : ""}`;
+        main.appendChild(meta1);
 
-<section class="course-block" id="course-8">
-  <h2>HSI BLS and Adult First Aid | Blended Learning Online Coursework with In-Person Skills Testing</h2>
-  <ul>
-    <li><a href="/classes/11929436-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929432-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930049-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924686-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930278-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924687-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930279-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929437-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11929433-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930051-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11924688-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930280-hsi-bls-and-adult-first-aid-blended-learning-online-coursework-with-in-person-skills-testing.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        const metaRow = document.createElement("div");
+        metaRow.className = "meta-row";
 
-<section class="course-block" id="course-9">
-  <h2>HSI BLS Challenge – Renewal for Experienced Providers 🚨 An assessment-only session for experienced providers ready to test out and renew certification.</h2>
-  <ul>
-    <li><a href="/classes/12474146-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474149-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474116-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474215-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474113-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474211-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474114-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474212-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474148-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474150-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474117-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/12474214-hsi-bls-challenge-renewal-for-experienced-providers-an-assessment-only-session-for-experienced-providers-ready-to-test-out-and-renew-certification.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        if (c.location || c.city) {
+          const loc = document.createElement("span");
+          loc.className = "class-meta";
+          const locText = [c.location, c.city].filter(Boolean).join(" · ");
+          loc.textContent = locText;
+          metaRow.appendChild(loc);
+        }
 
-<section class="course-block" id="course-22">
-  <h2>HSI Pediatric First Aid | CPR AED — Blended Online + In-Person Skills ✔ Fulfills the CPR/First Aid component of NC DCDEE (10A NCAC 09 .1102); additional NC trainings required for full compliance ✔ Fulfills the CPR/First Aid requirement in CT OEC (Sec. 19a-79-4a); center policies/modules may apply</h2>
-  <ul>
-    <li><a href="/classes/11930639-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930636-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930638-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930641-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930637-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930646-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930642-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930647-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930643-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930644-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930649-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-    <li><a href="/classes/11930645-hsi-pediatric-first-aid-cpr-aed-blended-online-in-person-skills-fulfills-the-cpr-first-aid-component-of-nc-dcdee-10a-ncac-09-1102-additional-nc-trainings-required-for-full-compliance-fulfills-the-cpr-first-aid-requirement-in-ct-oec-sec-19a-79-4a-center-policies-modules-may-apply.html">Unknown date/time · NC - Wilmington: 4018 Shipyard Blvd @ 910CPR's Office</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        if (c.seats) {
+          const chipSeats = document.createElement("span");
+          chipSeats.className = "chip";
+          chipSeats.textContent = c.seats;
+          metaRow.appendChild(chipSeats);
+        }
 
-<section class="course-block" id="course-37">
-  <h2>Instructor Programs Become an instructor and teach CPR, First Aid, or BLS through AHA, HSI, or Red Cross.</h2>
-  <ul>
-    <li><a href="/classes/-instructor-programs-become-an-instructor-and-teach-cpr-first-aid-or-bls-through-aha-hsi-or-red-cross.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        const chipTime = document.createElement("span");
+        chipTime.className = "chip" + (c.isPast ? " past" : "");
+        chipTime.textContent = c.isPast ? "Past date" : "Open for registration";
+        metaRow.appendChild(chipTime);
 
-<section class="course-block" id="course-45">
-  <h2>OSHA 10 | 30 10 or 30 | General Industry or Construction | English or Spanish</h2>
-  <ul>
-    <li><a href="/classes/-osha-10-30-10-or-30-general-industry-or-construction-english-or-spanish.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        main.appendChild(metaRow);
+        card.appendChild(main);
 
-<section class="course-block" id="course-44">
-  <h2>Other Programs</h2>
-  <ul>
-    <li><a href="/classes/-other-programs.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        const actions = document.createElement("div");
+        actions.className = "class-actions";
 
-<section class="course-block" id="course-46">
-  <h2>STOP THE BLEED®</h2>
-  <ul>
-    <li><a href="/classes/-stop-the-bleed.html">Unknown date/time</a> &nbsp; <a href="" rel="nofollow">[Book via Enrollware]</a></li>
-  </ul>
-</section>
+        const priceEl = document.createElement("div");
+        priceEl.className = "price";
+        if (c.price) {
+          priceEl.innerHTML = `${c.price} <span>per student</span>`;
+        } else {
+          priceEl.innerHTML = `<span>Price shown on registration page</span>`;
+        }
+        actions.appendChild(priceEl);
 
-  </main>
+        const btnRow = document.createElement("div");
+        btnRow.className = "button-row";
 
-  <footer>
-    <p>Questions? Call <a href="tel:+19103955193">(910) 395-5193</a> or email <a href="mailto:info@910cpr.com">info@910cpr.com</a>.</p>
-  </footer>
+        const mainBtn = document.createElement("a");
+        mainBtn.className = "btn";
+        mainBtn.target = "_blank";
+
+        if (c.isPast) {
+          mainBtn.classList.add("btn-secondary");
+          mainBtn.textContent = "Registration closed – see other times";
+          if (c.courseScheduleUrl) {
+            mainBtn.href = c.courseScheduleUrl;
+          } else if (c.enrollUrl) {
+            // Fallback if you don't have a separate course schedule URL.
+            mainBtn.href = c.enrollUrl;
+          } else {
+            mainBtn.classList.add("btn-disabled");
+            mainBtn.href = "#";
+          }
+        } else {
+          mainBtn.classList.add("btn-primary");
+          mainBtn.textContent = "Register for this class";
+          if (c.enrollUrl) {
+            mainBtn.href = c.enrollUrl;
+          } else if (c.courseScheduleUrl) {
+            mainBtn.href = c.courseScheduleUrl;
+          } else {
+            mainBtn.classList.add("btn-disabled");
+            mainBtn.href = "#";
+          }
+        }
+
+        btnRow.appendChild(mainBtn);
+
+        if (c.courseScheduleUrl) {
+          const altBtn = document.createElement("a");
+          altBtn.className = "btn btn-secondary";
+          altBtn.textContent = "See other times for this course";
+          altBtn.href = c.courseScheduleUrl;
+          altBtn.target = "_blank";
+          btnRow.appendChild(altBtn);
+        }
+
+        actions.appendChild(btnRow);
+        card.appendChild(actions);
+
+        dom.list.appendChild(card);
+      }
+    }
+
+    // ==============================
+    // EVENT WIRING
+    // ==============================
+
+    dom.filterCourse.addEventListener("change", () => {
+      state.filterCourse = dom.filterCourse.value;
+      applyFilters();
+    });
+
+    dom.filterLocation.addEventListener("change", () => {
+      state.filterLocation = dom.filterLocation.value;
+      applyFilters();
+    });
+
+    dom.clearFilters.addEventListener("click", () => {
+      state.filterCourse = "";
+      state.filterLocation = "";
+      dom.filterCourse.value = "";
+      dom.filterLocation.value = "";
+      applyFilters();
+    });
+
+    dom.togglePast.addEventListener("click", () => {
+      state.showPast = !state.showPast;
+      dom.togglePast.textContent = state.showPast ? "Hide past classes" : "Show past classes";
+      applyFilters();
+    });
+
+    // ==============================
+    // INITIAL LOAD
+    // ==============================
+
+    (function init() {
+      setStatus("Loading schedule…");
+      hideError();
+
+      fetch(SCHEDULE_URL, { cache: "no-store" })
+        .then(resp => {
+          if (!resp.ok) {
+            throw new Error("HTTP " + resp.status + " loading schedule.json");
+          }
+          return resp.json();
+        })
+        .then(json => {
+          if (!Array.isArray(json)) {
+            throw new Error("schedule.json is not an array; adjust the loader or your export script.");
+          }
+          const normalized = json.map(normalizeClass);
+          state.all = normalized;
+          buildFilters(normalized);
+          applyFilters();
+
+          if (normalized.length === 0) {
+            setStatus("Schedule loaded, but no classes were found in schedule.json.");
+          } else {
+            setStatus("Schedule loaded.", `(Total classes in JSON: ${normalized.length})`);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          showError("Unable to load schedule.json. Check the SCHEDULE_URL in this file and confirm that your export script wrote a valid JSON array.");
+          setStatus("Error loading schedule.");
+        });
+    })();
+  </script>
 </body>
 </html>
