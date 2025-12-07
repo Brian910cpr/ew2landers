@@ -148,21 +148,18 @@
     /* Left arrow strip */
     .nav-arrow-strip {
       width: 46px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 22px 0 0 22px;
-      background: linear-gradient(180deg, #020617, #0f172a);
-      color: #e5e7eb;
       flex-shrink: 0;
+      border-radius: 22px 0 0 22px;
+      overflow: hidden;
     }
 
     .nav-arrow-button {
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
+      width: 100%;
+      height: 100%;
+      border-radius: 22px 0 0 22px;
       border: 1px solid rgba(148, 163, 184, 0.9);
-      background: rgba(15, 23, 42, 0.9);
+      background: linear-gradient(180deg, #020617, #0f172a);
+      color: #e5e7eb;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -297,7 +294,7 @@
     }
 
     .family-card.active {
-      border-color: var(--accent-strong);
+      border-color: var(--selected-border);
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
       background: #e0edff;
       transform: translateY(-1px);
@@ -590,8 +587,9 @@
         width: 100%;
         height: 40px;
         border-radius: 18px 18px 0 0;
-        justify-content: flex-start;
-        padding-left: 10px;
+      }
+      .nav-arrow-button {
+        border-radius: 18px 18px 0 0;
       }
       .schedule-main {
         flex-direction: column;
@@ -736,41 +734,25 @@
 
       <!-- Right theme stripe with seasonal divider image -->
       <aside class="theme-stripe">
-        <img id="themeDivider" src="assets/images/theme-default-divider.png" alt="Seasonal divider">
+        <img id="themeDivider" src="assets/images/theme/default-divider.png" alt="Seasonal divider">
       </aside>
 
       <!-- Bottom-right seasonal decoration -->
       <img id="themeCorner" class="theme-corner-img"
-           src="assets/images/theme-default-corner.png"
+           src="assets/images/theme/default-corner.png"
            alt="Seasonal decoration">
     </div>
   </div>
 
   <script>
     // ---- THEME IMAGE CONFIG ----
-    // Add one entry per theme. ACTIVE_THEME can be set in theme-scheduler.js.
+    // Default only; additional themes can be added later.
     const THEME_IMAGES = {
       "default": {
         logo: "assets/images/910CPR_wave.jpg",
-        divider: "assets/images/theme-default-divider.png",
-        corner: "assets/images/theme-default-corner.png"
-      },
-      "christmas": {
-        logo: "assets/images/logo-christmas.jpg",
-        divider: "assets/images/divider-christmas.png",
-        corner: "assets/images/deco-christmas.png"
-      },
-      "halloween": {
-        logo: "assets/images/logo-halloween.jpg",
-        divider: "assets/images/divider-halloween.png",
-        corner: "assets/images/deco-halloween.png"
-      },
-      "pancreatic": {
-        logo: "assets/images/logo-pancreatic.jpg",
-        divider: "assets/images/divider-pancreatic.png",
-        corner: "assets/images/deco-pancreatic.png"
+        divider: "assets/images/theme/default-divider.png",
+        corner: "assets/images/theme/default-corner.png"
       }
-      // Add more themes here as needed…
     };
 
     function applyThemeImages(themeName) {
@@ -795,43 +777,43 @@
         key: "BLS",
         label: "BLS – Healthcare Provider CPR",
         blurb: "Standard BLS for hospital staff, EMS, and healthcare programs.",
-        image: "assets/images/family_bls.jpg"
+        image: "assets/images/family/family-bls.jpg"
       },
       "ACLS": {
         key: "ACLS",
         label: "ACLS – Advanced Cardiac Life Support",
         blurb: "Advanced resuscitation for ER, ICU, and critical care providers.",
-        image: "assets/images/family_acls.jpg"
+        image: "assets/images/family/family-acls.jpg"
       },
       "PALS": {
         key: "PALS",
         label: "PALS – Pediatric Life Support",
         blurb: "Pediatric emergencies, respiratory failure, and cardiac arrest.",
-        image: "assets/images/family_pals.jpg"
+        image: "assets/images/family/family-pals.jpg"
       },
       "CPR_AED": {
         key: "CPR_AED",
         label: "CPR/AED – Adult & Pediatric",
         blurb: "Non-medical jobs needing CPR and AED skills without full First Aid.",
-        image: "assets/images/family_cpr_aed.jpg"
+        image: "assets/images/family/family-cpr-aed.jpg"
       },
       "FA_CPR_AED": {
         key: "FA_CPR_AED",
         label: "First Aid / CPR / AED",
         blurb: "Full workplace package – First Aid, CPR, and AED together.",
-        image: "assets/images/family_fa_cpr_aed.jpg"
+        image: "assets/images/family/family-fa-cpr-aed.jpg"
       },
       "INSTRUCTOR": {
         key: "INSTRUCTOR",
         label: "Instructor Classes",
         blurb: "Train-the-Trainer programs for future CPR & First Aid instructors.",
-        image: "assets/images/family_instructor.jpg"
+        image: "assets/images/910CPR_wave.jpg"
       },
       "OTHER": {
         key: "OTHER",
         label: "Other Programs & Online",
         blurb: "Specialty programs, online options, and classes that don’t fit neatly above.",
-        image: "assets/images/family_other_programs.jpg"
+        image: "assets/images/910CPR_wave.jpg"
       }
     };
 
