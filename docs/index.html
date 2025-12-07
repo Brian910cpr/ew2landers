@@ -129,6 +129,7 @@
     /* Main layout */
     .page-shell {
       padding: 14px;
+      position: relative;
     }
 
     .schedule-shell {
@@ -141,6 +142,7 @@
       display: flex;
       min-height: calc(100vh - 90px);
       backdrop-filter: blur(14px);
+      position: relative;
     }
 
     /* Left arrow strip */
@@ -444,7 +446,6 @@
       padding: 8px 11px 7px;
       border-bottom: 1px solid var(--border-subtle);
       background: var(--selected-bg);
-      border-radius: 0 0 0 0;
     }
 
     .sessions-title {
@@ -548,15 +549,17 @@
           rgba(129, 140, 248, 0.04) 10px
         );
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
-      padding-bottom: 10px;
-      color: #111827;
-      font-size: 9px;
-      text-align: center;
-      white-space: nowrap;
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
+      padding: 4px;
+      flex-shrink: 0;
+    }
+
+    .theme-stripe img {
+      max-height: 100%;
+      width: auto;
+      display: block;
+      border-radius: 999px;
     }
 
     /* Small status text */
@@ -564,6 +567,17 @@
       font-size: 11px;
       color: var(--text-muted);
       padding: 6px 8px 0;
+    }
+
+    /* Bottom-right theme decoration */
+    .theme-corner-img {
+      position: absolute;
+      right: 8px;
+      bottom: 6px;
+      width: 90px;
+      max-width: 22vw;
+      opacity: 0.3;
+      pointer-events: none;
     }
 
     /* Basic responsiveness: stack on narrow screens */
@@ -595,8 +609,12 @@
         width: 100%;
         height: 32px;
         border-radius: 0 0 18px 18px;
-        writing-mode: horizontal-tb;
-        padding-bottom: 0;
+      }
+      .theme-stripe img {
+        max-height: 24px;
+      }
+      .theme-corner-img {
+        display: none;
       }
     }
   </style>
@@ -606,7 +624,8 @@
   <header class="top-bar">
     <div class="top-bar-left">
       <div class="top-bar-logo">
-        <img src="assets/images/910CPR_wave.jpg" alt="910CPR logo">
+        <!-- THEME LOGO: default is 910CPR_wave -->
+        <img id="themeLogo" src="assets/images/910CPR_wave.jpg" alt="910CPR logo">
       </div>
       <div class="top-bar-title">
         <div class="top-bar-title-main">CPR, BLS, ACLS &amp; First Aid – Wilmington / Burgaw / Jacksonville</div>
@@ -715,14 +734,61 @@
         </div>
       </section>
 
-      <!-- Right theme stripe -->
+      <!-- Right theme stripe with seasonal divider image -->
       <aside class="theme-stripe">
-        Seasonal / theme artwork
+        <img id="themeDivider" src="assets/images/theme-default-divider.png" alt="Seasonal divider">
       </aside>
+
+      <!-- Bottom-right seasonal decoration -->
+      <img id="themeCorner" class="theme-corner-img"
+           src="assets/images/theme-default-corner.png"
+           alt="Seasonal decoration">
     </div>
   </div>
 
   <script>
+    // ---- THEME IMAGE CONFIG ----
+    // Add one entry per theme. ACTIVE_THEME can be set in theme-scheduler.js.
+    const THEME_IMAGES = {
+      "default": {
+        logo: "assets/images/910CPR_wave.jpg",
+        divider: "assets/images/theme-default-divider.png",
+        corner: "assets/images/theme-default-corner.png"
+      },
+      "christmas": {
+        logo: "assets/images/logo-christmas.jpg",
+        divider: "assets/images/divider-christmas.png",
+        corner: "assets/images/deco-christmas.png"
+      },
+      "halloween": {
+        logo: "assets/images/logo-halloween.jpg",
+        divider: "assets/images/divider-halloween.png",
+        corner: "assets/images/deco-halloween.png"
+      },
+      "pancreatic": {
+        logo: "assets/images/logo-pancreatic.jpg",
+        divider: "assets/images/divider-pancreatic.png",
+        corner: "assets/images/deco-pancreatic.png"
+      }
+      // Add more themes here as needed…
+    };
+
+    function applyThemeImages(themeName) {
+      const cfg = THEME_IMAGES[themeName] || THEME_IMAGES["default"];
+
+      const logoEl = document.getElementById("themeLogo");
+      const dividerEl = document.getElementById("themeDivider");
+      const cornerEl = document.getElementById("themeCorner");
+
+      if (logoEl && cfg.logo) logoEl.src = cfg.logo;
+      if (dividerEl && cfg.divider) dividerEl.src = cfg.divider;
+      if (cornerEl && cfg.corner) cornerEl.src = cfg.corner;
+    }
+
+    // Use ACTIVE_THEME from theme-scheduler.js if available, otherwise default.
+    const ACTIVE_THEME = (window.ACTIVE_THEME || "default");
+    applyThemeImages(ACTIVE_THEME);
+
     // ---- Family definitions & images ----
     const FAMILY_DEFS = {
       "BLS": {
@@ -793,10 +859,10 @@
       const sessions = schedule.sessions || [];
       const byCourseId = {};
 
-      // Group sessions by course_id, ignore non-class rows (register_url with ?course=)
+      // Group sessions by course_id, ignore non-class rows
       sessions.forEach(sess => {
         const url = sess.register_url || "";
-        if (!url || !url.includes("id=")) return; // skip header & marketing rows
+        if (!url || !url.includes("id=")) return;
 
         const cid = String(sess.course_id || sess.course_name || "unknown");
         if (!byCourseId[cid]) {
@@ -818,7 +884,6 @@
         familiesMap[famKey].push(course);
       });
 
-      // Sort courses within families alphabetically
       Object.keys(familiesMap).forEach(fk => {
         familiesMap[fk].sort((a, b) => a.name.localeCompare(b.name));
       });
@@ -1052,7 +1117,7 @@
           selectedCourseId = course.courseId;
           setViewMode("course-detail");
           renderCompactCoursesForFamily(fKey);
-          renderCoursesForFamily(fKey); // to keep selected styling consistent on right
+          renderCoursesForFamily(fKey);
           renderSessionsForCourse(course.courseId);
         });
 
@@ -1146,8 +1211,6 @@
     }
 
     // Back button:
-    // - If in course-detail: go back to families mode
-    // - If already in families: could send back to 910cpr.com or do nothing
     if (navBackBtn) {
       navBackBtn.addEventListener("click", () => {
         if (viewMode === "course-detail") {
@@ -1157,7 +1220,6 @@
           renderCoursesForFamily(selectedFamilyKey);
           renderSessionsForCourse(null);
         } else {
-          // Desktop "home" – adjust if you want a different URL
           window.location.href = "https://910cpr.com";
         }
       });
@@ -1175,7 +1237,6 @@
         familiesData = [];
       }
 
-      // Default selection: first non-empty family if possible
       if (familiesData.length) {
         selectedFamilyKey = familiesData[0].familyKey;
       }
