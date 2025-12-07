@@ -1,0 +1,243 @@
+/* =========================================
+   Base theme tokens (fallbacks)
+   ========================================= */
+
+:root {
+  /* Layout + surfaces */
+  --bg-color: #f5f7fb;
+  --card-bg: #ffffff;
+  --app-bg-gradient: radial-gradient(circle at top, #e0ebff 0, #f5f7fb 60%);
+
+  /* Text */
+  --text-main: #111827;
+  --text-muted: #6b7280;
+
+  /* Accent + borders */
+  --accent-color: #0d47a1;
+  --accent-soft: rgba(13, 71, 161, 0.08);
+  --border-subtle: #e5e7eb;
+
+  /* Shadows */
+  --shadow-soft: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+/* =========================================
+   DEFAULT THEME (year-round)
+   ========================================= */
+
+body.theme-default {
+  --bg-color: #f5f7fb;
+  --card-bg: #ffffff;
+  --app-bg-gradient: radial-gradient(circle at top, #e0ebff 0, #f5f7fb 60%);
+
+  --text-main: #111827;
+  --text-muted: #6b7280;
+
+  --accent-color: #0d47a1;
+  --accent-soft: rgba(13, 71, 161, 0.08);
+  --border-subtle: #e5e7eb;
+
+  --shadow-soft: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+/* Main logo: default */
+body.theme-default .logo-main {
+  content: url("assets/images/910CPR_wave.jpg");
+}
+
+/* Default separator: simple subtle line */
+body.theme-default .theme-separator {
+  height: 2px;
+  width: 100%;
+  max-width: 600px;
+  margin: 1.25rem auto;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(15, 23, 42, 0.12),
+    transparent
+  );
+}
+
+/* Default bottom corner decoration: very subtle watermark */
+body.theme-default .theme-corner {
+  position: fixed;
+  right: 6px;
+  bottom: 6px;
+  width: 64px;
+  height: 64px;
+  opacity: 0.06;
+  pointer-events: none;
+  background-image: url("assets/images/910CPR_wave.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  z-index: 5;
+}
+
+/* =========================================
+   PANCREATIC CANCER AWARENESS THEME
+   (example)
+   ========================================= */
+
+body.theme-pancreatic {
+  --bg-color: #f7f5fb;
+  --card-bg: #ffffff;
+  --app-bg-gradient: radial-gradient(circle at top, #efe7ff 0, #f7f5fb 60%);
+
+  --text-main: #12061a;
+  --text-muted: #6b647a;
+
+  --accent-color: #6a1b9a;                /* ribbon purple */
+  --accent-soft: rgba(106, 27, 154, 0.12);
+  --border-subtle: #e0d7f0;
+
+  --shadow-soft: 0 8px 22px rgba(76, 29, 149, 0.23);
+}
+
+/* Swap main logo to a purple-ribbon version if/when you create it */
+body.theme-pancreatic .logo-main {
+  content: url("assets/images/910CPR_wave_pancreatic.png");
+}
+
+/* Separator: purple ribbon bar */
+body.theme-pancreatic .theme-separator {
+  height: 3px;
+  width: 100%;
+  max-width: 620px;
+  margin: 1.25rem auto;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(106, 27, 154, 0.1),
+    #6a1b9a,
+    rgba(106, 27, 154, 0.1)
+  );
+}
+
+/* Corner: small ribbon / icon */
+body.theme-pancreatic .theme-corner {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  width: 72px;
+  height: 72px;
+  opacity: 0.26;
+  pointer-events: none;
+  background-image: url("assets/images/theme_pancreatic_ribbon.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  z-index: 5;
+}
+
+/* =========================================
+   CHRISTMAS THEME (example)
+   ========================================= */
+
+body.theme-christmas {
+  --bg-color: #fff7f7;
+  --card-bg: #ffffff;
+  --app-bg-gradient: radial-gradient(circle at top, #fee2e2 0, #fef2f2 60%);
+
+  --text-main: #111827;
+  --text-muted: #6b7280;
+
+  --accent-color: #b91c1c;              /* deep red */
+  --accent-soft: rgba(185, 28, 28, 0.12);
+  --border-subtle: #fecaca;
+
+  --shadow-soft: 0 8px 22px rgba(127, 29, 29, 0.23);
+}
+
+/* Logo: Christmas variant */
+body.theme-christmas .logo-main {
+  content: url("assets/images/910CPR_wave_christmas.png");
+}
+
+/* Separator: holly / lights bar (image or gradient) */
+body.theme-christmas .theme-separator {
+  height: 34px;
+  width: 100%;
+  max-width: 640px;
+  margin: 1.25rem auto;
+  border-radius: 999px;
+  background-image: url("assets/images/theme_xmas_lights.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Corner: cheerful tree or Santa-ish icon */
+body.theme-christmas .theme-corner {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  width: 80px;
+  height: 80px;
+  opacity: 0.25;
+  pointer-events: none;
+  background-image: url("assets/images/theme_xmas_tree.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  z-index: 5;
+}
+
+/* =========================================
+   HALLOWEEN THEME (example)
+   ========================================= */
+
+body.theme-halloween {
+  --bg-color: #050816;
+  --card-bg: #111827;
+  --app-bg-gradient: radial-gradient(circle at top, #111827 0, #020617 60%);
+
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+
+  --accent-color: #f97316;              /* orange */
+  --accent-soft: rgba(249, 115, 22, 0.16);
+  --border-subtle: #374151;
+
+  --shadow-soft: 0 10px 26px rgba(0, 0, 0, 0.7);
+}
+
+/* Logo: maybe a spooky-tinted wave */
+body.theme-halloween .logo-main {
+  content: url("assets/images/910CPR_wave_halloween.png");
+}
+
+/* Separator: candy-corn / bats vibe */
+body.theme-halloween .theme-separator {
+  height: 3px;
+  width: 100%;
+  max-width: 620px;
+  margin: 1.25rem auto;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #111827,
+    #f97316,
+    #facc15,
+    #f97316,
+    #111827
+  );
+}
+
+/* Corner: pumpkin or friendly ghost */
+body.theme-halloween .theme-corner {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  width: 80px;
+  height: 80px;
+  opacity: 0.35;
+  pointer-events: none;
+  background-image: url("assets/images/theme_halloween_pumpkin.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  z-index: 5;
+}
