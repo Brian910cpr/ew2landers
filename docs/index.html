@@ -615,6 +615,64 @@
         display: none;
       }
     }
+/* ==== Desktop readability & polish overrides ==== */
+
+/* Make overall desktop text a bit larger */
+body {
+  font-size: 16px;
+}
+
+@media (min-width: 900px) {
+  body {
+    font-size: 17px;
+  }
+}
+
+/* Back button: not black, but clearly a control */
+.back-link {
+  background: #ffffffee;          /* soft white chip, not black */
+  color: #074a86;                 /* deep blue text */
+  border-color: #b3c3dd;          /* lighter border */
+  font-weight: 500;
+}
+
+.back-link:hover {
+  background: #e5f0ff;
+  text-decoration: none;
+}
+
+/* Seasonal divider: stretch and pick up page background */
+.season-divider,
+img[alt="Seasonal divider"] {
+  display: block;
+  width: 100%;                    /* fill its container */
+  max-width: 100%;
+  background: linear-gradient(
+    to right,
+    #ffffff,
+    #e9f4ff,
+    #ffffff
+  );                               /* echo the page bg */
+  border-radius: 999px;            /* keep it soft if it has alpha */
+}
+
+/* Bottom-corner decoration: about 3x current visual size */
+.season-corner,
+img[alt="Seasonal decoration"] {
+  transform: scale(3);
+  transform-origin: bottom right;  /* grow “out” to the corner */
+}
+
+/* Slight bump on main headings on desktop */
+@media (min-width: 900px) {
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.25rem; }
+  .hero-copy,
+  p {
+    font-size: 0.98rem;
+  }
+}
+
   </style>
 </head>
 <body>
