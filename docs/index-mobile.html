@@ -208,7 +208,7 @@
     /* Sliding view strip */
     .view-strip {
       display: flex;
-      width: 200%; /* 2 panels: families + courses */
+      width: 200%; /* families + courses panels */
       transition: transform 0.28s ease-in-out;
     }
 
@@ -559,7 +559,7 @@
             <!-- families screen renders here -->
             <div class="status">
               <strong>Loading live class data…</strong>
-              Pulling families, courses, and dates (sample data for now).
+              Pulling families, courses, and dates.
             </div>
           </div>
           <div id="coursesView" class="view-panel">
@@ -642,8 +642,7 @@
       }
     };
 
-    // TEMP: hard-coded sample data so UI definitely works.
-    // Later this can be fed from schedule.json.
+    // Fallback sample data if schedule.json fails to load
     const exampleFamilies = [
       {
         familyKey: "BLS",
@@ -661,44 +660,8 @@
                 locationLabel: "Wilmington, NC – Shipyard Blvd",
                 priceLabel: "$85",
                 enrollUrl: "https://coastalcprtraining.enrollware.com/enroll?id=1234567"
-              },
-              {
-                id: "s2",
-                dateLabel: "Sat, Jan 25",
-                timeLabel: "1:00 PM – 4:00 PM",
-                locationLabel: "Holly Ridge, NC – Sound Road",
-                priceLabel: "$85",
-                enrollUrl: "https://coastalcprtraining.enrollware.com/enroll?id=1234568"
               }
             ]
-          },
-          {
-            courseId: "BLS-Heartcode",
-            name: "AHA BLS Heartcode Online/Skills",
-            shortDesc: "Online lesson + fast in-person skills check.",
-            meta: "Heartcode · Hybrid",
-            sessions: [
-              {
-                id: "s3",
-                dateLabel: "Thu, Jan 30",
-                timeLabel: "5:30 PM – 6:30 PM",
-                locationLabel: "Wilmington, NC – Shipyard Blvd",
-                priceLabel: "$45 skills session",
-                enrollUrl: "https://coastalcprtraining.enrollware.com/enroll?id=1234569"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        familyKey: "ACLS",
-        courses: [
-          {
-            courseId: "ACLS-Renew",
-            name: "AHA ACLS Provider – Renewal",
-            shortDesc: "For experienced providers needing ACLS renewal.",
-            meta: "Renewal · Advanced",
-            sessions: []
           }
         ]
       }
@@ -717,7 +680,7 @@
     const coursesViewEl = document.getElementById("coursesView");
 
     let currentView = "families";
-    let familiesData = exampleFamilies;
+    let familiesData = null;
 
     function setBodyHueForFamily(familyKey) {
       const config = FAMILY_CONFIG[familyKey] || FAMILY_CONFIG["Other"];
@@ -768,7 +731,7 @@
       const grid = document.createElement("div");
       grid.className = "family-grid";
 
-      familiesData.forEach(fam => {
+      (familiesData || []).forEach(fam => {
         const config = FAMILY_CONFIG[fam.familyKey] || FAMILY_CONFIG["Other"];
         const card = document.createElement("button");
         card.type = "button";
@@ -820,7 +783,7 @@
     function renderCoursesView(familyKey) {
       currentView = "courses";
 
-      const famData = familiesData.find(f => f.familyKey === familyKey);
+      const famData = (familiesData || []).find(f => f.familyKey === familyKey);
       const config = FAMILY_CONFIG[familyKey] || FAMILY_CONFIG["Other"];
 
       if (headerTitleEl) headerTitleEl.textContent = config.label;
@@ -981,9 +944,96 @@
       });
     }
 
-    // Kick it off
-    setBodyHueForFamily("BLS");
-    renderFamiliesView();
+    // ==== schedule.json → familiesData transformer ====
+
+    function getFamilyKeyFromCourseName(name) {
+      const n = (name || "").toLowerCase();
+      if (n.includes("bls")) return "BLS";
+      if (n.includes("acls")) return "ACLS";
+      if (n.includes("pals") || n.includes("pediatric advanced life support")) return "PALS";
+      if (n.includes("heartsaver")) return "Heartsaver";
+      if (n.includes("first aid") || n.includes("first-aid")) return "FirstAid";
+      if (n.includes("online") || n.includes("heartcode")) return "Online";
+      return "Other";
+    }
+
+    function buildFamiliesFromSchedule(schedule) {
+      const sessions = schedule.sessions || [];
+      const familiesMap = {};
+
+      sessions.forEach(sess => {
+        const url = sess.register_url || "";
+        // skip header rows / non-enroll rows
+        if (!url || !url.includes("id=")) return;
+
+        const courseName = (sess.course_name || "").trim() || ("Course " + (sess.course_id || ""));
+        const familyKey = getFamilyKeyFromCourseName(courseName);
+
+        if (!familiesMap[familyKey]) {
+          familiesMap[familyKey] = {};
+        }
+        const fam = familiesMap[familyKey];
+
+        const courseKey = String(sess.course_id || courseName);
+        if (!fam[courseKey]) {
+          fam[courseKey] = {
+            courseId: courseKey,
+            name: courseName,
+            shortDesc: "",
+            meta: "",
+            sessions: []
+          };
+        }
+        const course = fam[courseKey];
+
+        const start = sess.start_display || "";
+        const parts = start.split(" at ");
+        const dateLabel = parts[0] || start;
+        const timeLabel = parts[1] || "";
+
+        course.sessions.push({
+          id: sess.id,
+          dateLabel,
+          timeLabel,
+          locationLabel: sess.location_short || sess.location || "",
+          priceLabel: "", // we don't have price in schedule.json yet
+          enrollUrl: url
+        });
+      });
+
+      const order = ["BLS", "ACLS", "PALS", "FirstAid", "Heartsaver", "Online", "Other"];
+      const familiesArray = [];
+
+      order.forEach(fk => {
+        if (familiesMap[fk]) {
+          const courses = Object.values(familiesMap[fk]);
+          familiesArray.push({ familyKey: fk, courses });
+        }
+      });
+
+      return familiesArray;
+    }
+
+    async function init() {
+      try {
+        const resp = await fetch("data/schedule.json", { cache: "no-store" });
+        if (!resp.ok) throw new Error("HTTP " + resp.status);
+        const schedule = await resp.json();
+        familiesData = buildFamiliesFromSchedule(schedule);
+        if (!familiesData.length) {
+          console.warn("schedule.json produced no families, using fallback sample");
+          familiesData = exampleFamilies;
+        }
+      } catch (err) {
+        console.error("Failed to load schedule.json, using fallback sample", err);
+        familiesData = exampleFamilies;
+      }
+
+      setBodyHueForFamily("BLS");
+      renderFamiliesView();
+    }
+
+    init();
   </script>
 </body>
 </html>
