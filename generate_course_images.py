@@ -1,49 +1,104 @@
 import json
 import os
+import re
 import zipfile
 from pathlib import Path
 
-# Adjust if your layout is slightly different
 ROOT = Path(__file__).resolve().parent
 SCHEDULE_PATH = ROOT / "docs" / "data" / "schedule.json"
 OUT_DIR = ROOT / "docs" / "assets" / "images" / "course"
 ZIP_PATH = ROOT / "course-number-images.zip"
 
-def load_course_ids():
-    """Load schedule.json and return a sorted list of unique course_ids."""
+
+def extract_enrollware_course_number(item: dict) -> str | None:
+    """
+    Try to pull the REAL Enrollware course number from any URL-ish field.
+
+    We look for patterns like:
+      ?course=265876
+      #ct359474
+    and fall back to any 'ct123456' style tag we can find.
+    """
+    # Try the obvious URL fields first
+    url_candidates = [
+        item.get("schedule_url"),
+        item.get("course_url"),
+        item.get("register_url"),
+        item.get("url"),
+    ]
+
+    for url in url_candidates:
+        if not url or not isinstance(url, str):
+            continue
+
+        # 1) ?course=265876
+        m = re.search(r"[?&#]course=(\d+)", url)
+        if m:
+            return m.group(1)
+
+        # 2) #ct359474
+        m = re.search(r"#ct(\d+)", url)
+        if m:
+            return m.group(1)
+
+    # If we still haven't found it, scan all string fields for a ct123456 pattern
+    for value in item.values():
+        if not isinstance(value, str):
+            continue
+        m = re.search(r"\bct(\d+)\b", value, re.IGNORECASE)
+        if m:
+            return m.group(1)
+
+    return None
+
+
+def load_enrollware_course_numbers():
+    """
+    Load schedule.json and return a sorted list of unique Enrollware course numbers (as strings).
+    """
     if not SCHEDULE_PATH.exists():
         raise FileNotFoundError(f"schedule.json not found at {SCHEDULE_PATH}")
 
     with SCHEDULE_PATH.open("r", encoding="utf-8") as f:
         data = json.load(f)
 
-    ids = set()
+    course_numbers = set()
 
-    # 1) Look for a "courses" array with ids
+    # Look across all likely collections: courses and class/session arrays
+    collections = []
+
     courses = data.get("courses") or []
-    for c in courses:
-        cid = c.get("id")
-        if isinstance(cid, int):
-            ids.add(cid)
+    if isinstance(courses, list):
+        collections.append(courses)
 
-    # 2) Look for "classes" or "sessions" array with course_id
     for key in ("classes", "sessions", "items", "class_list"):
         arr = data.get(key) or []
-        for item in arr:
-            cid = item.get("course_id")
-            if isinstance(cid, int):
-                ids.add(cid)
+        if isinstance(arr, list):
+            collections.append(arr)
 
-    if not ids:
-        raise RuntimeError("No course IDs found in schedule.json. "
-                           "Check the JSON structure or adjust the script.")
+    if not collections:
+        raise RuntimeError("No course or class arrays found in schedule.json. Check structure.")
 
-    return sorted(ids)
+    for coll in collections:
+        for item in coll:
+            if not isinstance(item, dict):
+                continue
+            num = extract_enrollware_course_number(item)
+            if num:
+                course_numbers.add(num)
 
-def make_svg_for_course(course_id: int) -> str:
-    """Return SVG markup for a simple numbered tile."""
-    cid_str = str(course_id)
-    # Simple 1200x630 Open-Graph-ish rectangle with big centered text
+    if not course_numbers:
+        raise RuntimeError(
+            "No Enrollware course numbers found. "
+            "Could not match ?course=123456 or #ct123456 patterns in schedule.json."
+        )
+
+    return sorted(course_numbers, key=int)
+
+
+def make_svg_for_course_number(course_number: str) -> str:
+    """Return SVG markup for a simple numbered tile keyed by the Enrollware course number."""
+    label = course_number
     svg = f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -57,28 +112,32 @@ def make_svg_for_course(course_id: int) -> str:
   <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
         font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
         font-size="140" fill="#074a86" font-weight="700">
-    {cid_str}
+    {label}
   </text>
   <text x="50%" y="72%" dominant-baseline="middle" text-anchor="middle"
         font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
         font-size="32" fill="#5d6a7c">
-    Enrollware course #{cid_str}
+    Enrollware course #{label}
   </text>
 </svg>
 '''
     return svg
 
+
 def main():
-    course_ids = load_course_ids()
-    print(f"Found {len(course_ids)} course IDs in schedule.json")
+    print(f"Using schedule.json at: {SCHEDULE_PATH}")
+    course_numbers = load_enrollware_course_numbers()
+    print(f"Found {len(course_numbers)} Enrollware course numbers in schedule.json:")
+    print("  " + ", ".join(course_numbers))
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     created_files = []
 
-    for cid in course_ids:
-        svg_content = make_svg_for_course(cid)
-        out_path = OUT_DIR / f"{cid}.svg"
+    # Optional: do NOT auto-delete old files, just overwrite matches.
+    for num in course_numbers:
+        svg_content = make_svg_for_course_number(num)
+        out_path = OUT_DIR / f"{num}.svg"
         with out_path.open("w", encoding="utf-8") as f:
             f.write(svg_content)
         created_files.append(out_path)
@@ -90,10 +149,11 @@ def main():
 
     with zipfile.ZipFile(ZIP_PATH, "w", compression=zipfile.ZIP_DEFLATED) as z:
         for path in created_files:
-            # Store with a nice relative path inside the zip
             arcname = path.relative_to(ROOT)
             z.write(path, arcname)
+
     print(f"\nCreated zip: {ZIP_PATH.name} with {len(created_files)} files.")
+
 
 if __name__ == "__main__":
     main()
