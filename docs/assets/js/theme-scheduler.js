@@ -1,139 +1,61 @@
 // docs/assets/js/theme-scheduler.js
+// Safe theme scheduler: decides ACTIVE_THEME + colors,
+// but does NOT touch any <img> src or hide elements.
 
 (function () {
-  // ---- 1) Define all themes in one place ----
-  // You only edit THIS object to add/change themes.
+  function pickThemeName(today) {
+    // Simple MM-DD string for easy checks
+    var m = String(today.getMonth() + 1).padStart(2, "0");
+    var d = String(today.getDate()).padStart(2, "0");
+    var mmdd = m + "-" + d;
 
-  const THEMES = {
-    default: {
-      name: "default",
-      images: {
-        logo: "assets/images/910CPR_wave.jpg",
-        divider: "assets/images/theme/default-divider.png",
-        corner: "assets/images/theme/default-corner.png"
-      },
-      colors: {
-        accentMain: "#0d47a1",
-        accentSoft: "rgba(13, 71, 161, 0.08)",
-        accentStrong: "#2563eb",
-        bgPage: "#f4f6fb"
-      }
-    },
-
-    // Example: October 20–31
-    halloween: {
-      name: "halloween",
-      images: {
-        logo: "assets/images/theme/logo-halloween.png",
-        divider: "assets/images/theme/divider-halloween.png",
-        corner: "assets/images/theme/corner-halloween.png"
-      },
-      colors: {
-        accentMain: "#f97316",
-        accentSoft: "rgba(249, 115, 22, 0.10)",
-        accentStrong: "#ea580c",
-        bgPage: "#111827"
-      }
-    },
-
-    // Example: December (Christmas)
-    christmas: {
-      name: "christmas",
-      images: {
-        logo: "assets/images/theme/logo-christmas.png",
-        divider: "assets/images/theme/divider-christmas.png",
-        corner: "assets/images/theme/corner-christmas.png"
-      },
-      colors: {
-        accentMain: "#16a34a",
-        accentSoft: "rgba(22, 163, 74, 0.10)",
-        accentStrong: "#15803d",
-        bgPage: "#ecfdf3"
-      }
-    },
-
-    // Example: Pancreatic Cancer Awareness – November
-    pancreatic: {
-      name: "pancreatic",
-      images: {
-        logo: "assets/images/theme/logo-pancreatic.png",
-        divider: "assets/images/theme/divider-pancreatic.png",
-        corner: "assets/images/theme/corner-pancreatic.png"
-      },
-      colors: {
-        accentMain: "#7c3aed",
-        accentSoft: "rgba(124, 58, 237, 0.10)",
-        accentStrong: "#5b21b6",
-        bgPage: "#f5f3ff"
-      }
+    // Example: Christmas window
+    if (mmdd >= "11-25" && mmdd <= "12-31") {
+      return "christmas";
     }
-  };
 
-  // ---- 2) Decide which theme should be active today ----
+    // Add more ranges here if you want:
+    // if (mmdd >= "07-01" && mmdd <= "07-07") return "july4";
 
-  function pickThemeForToday() {
-    const now = new Date();
-    const month = now.getMonth() + 1; // 1–12
-    const day = now.getDate();
-
-    // November: pancreatic awareness example
-    if (month === 11) return "pancreatic";
-
-    // Dec 1–31: Christmas
-    if (month === 12) return "christmas";
-
-    // Oct 20–31: Halloween
-    if (month === 10 && day >= 20 && day <= 31) return "halloween";
-
-    // Fallback
     return "default";
   }
 
-  const activeThemeName = pickThemeForToday();
-  const activeTheme = THEMES[activeThemeName] || THEMES.default;
+  function applyThemeToDocument(themeName) {
+    // Expose for index.html (desktop) to read
+    window.ACTIVE_THEME = themeName;
 
-  // Expose for other scripts (index-desktop, index-mobile, etc.)
-  window.ACTIVE_THEME = activeTheme.name;
+    // Optional: set some CSS vars – your CSS can use these
+    var root = document.documentElement;
 
-  // ---- 3) Apply images once DOM is ready ----
+    switch (themeName) {
+      case "christmas":
+        root.style.setProperty("--season-accent", "#b91c1c");
+        root.style.setProperty("--season-bg", "#fef2f2");
+        break;
 
-  function applyImages() {
-    const logoEl = document.getElementById("themeLogo");
-    const dividerEl = document.getElementById("themeDivider");
-    const cornerEl = document.getElementById("themeCorner");
+      // Add other cases here if you add more themes above
 
-    if (logoEl && activeTheme.images.logo) {
-      logoEl.src = activeTheme.images.logo;
-    }
-    if (dividerEl && activeTheme.images.divider) {
-      dividerEl.src = activeTheme.images.divider;
-    }
-    if (cornerEl && activeTheme.images.corner) {
-      cornerEl.src = activeTheme.images.corner;
+      default:
+        root.style.setProperty("--season-accent", "");
+        root.style.setProperty("--season-bg", "");
+        break;
     }
   }
 
-  // ---- 4) Apply color variables to match theme ----
-
-  function applyColors() {
-    const root = document.documentElement;
-    if (!root || !activeTheme.colors) return;
-
-    const c = activeTheme.colors;
-    if (c.accentMain) root.style.setProperty("--accent-main", c.accentMain);
-    if (c.accentSoft) root.style.setProperty("--accent-soft", c.accentSoft);
-    if (c.accentStrong) root.style.setProperty("--accent-strong", c.accentStrong);
-    if (c.bgPage) root.style.setProperty("--bg-page", c.bgPage);
-  }
-
-  function initTheme() {
-    applyColors();
-    applyImages();
+  function initThemeScheduler() {
+    var today = new Date();
+    var themeName = pickThemeName(today);
+    applyThemeToDocument(themeName);
+    // IMPORTANT:
+    // We do NOT touch images here.
+    // Desktop index.html already has a THEME_IMAGES map and
+    // will call applyThemeImages(window.ACTIVE_THEME || "default")
+    // to handle logos/dividers/corners on its own.
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initTheme);
+    document.addEventListener("DOMContentLoaded", initThemeScheduler);
   } else {
-    initTheme();
+    initThemeScheduler();
   }
 })();
