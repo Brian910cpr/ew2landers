@@ -5,7 +5,7 @@
   <title>910CPR | Mobile Class Selector</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="description" content="Find your CPR, BLS, ACLS, PALS, First Aid, and Instructor classes in Wilmington, Burgaw, and Jacksonville, NC. Mobile-friendly 910CPR schedule browser.">
+  <meta name="description" content="Choose CPR, BLS, ACLS, PALS, First Aid, and Instructor classes in Wilmington, Burgaw, Jacksonville, and onsite with 910CPR’s mobile schedule browser.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,7 +32,7 @@
       --app-bg-gradient: radial-gradient(circle at top, #e0ebff 0, #f5f7fb 60%);
     }
 
-    /* Family accent hues (matches desktop) */
+    /* Family accent hues (match desktop) */
     body.family-BLS {
       --accent-color: #0d47a1;
       --accent-soft: rgba(13, 71, 161, 0.08);
@@ -65,12 +65,10 @@
     * {
       box-sizing: border-box;
     }
-
     html, body {
       margin: 0;
       padding: 0;
     }
-
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg-color);
@@ -110,25 +108,10 @@
       gap: 10px;
       min-width: 0;
     }
-
     .header-right {
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-
-    /* Theme “corner” decoration (doesn't rely on JS IDs) */
-    .theme-corner {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      background: radial-gradient(
-        circle at 30% 20%,
-        #ffffff,
-        var(--season-accent, rgba(248, 113, 113, 0.9))
-      );
-      box-shadow: 0 0 10px rgba(15, 23, 42, 0.45);
-      opacity: 0.95;
     }
 
     .header-logo {
@@ -138,7 +121,6 @@
       background: rgba(15, 23, 42, 0.45);
       border: 1px solid rgba(255, 255, 255, 0.35);
     }
-
     .header-logo img {
       display: block;
       max-height: 40px;
@@ -153,7 +135,6 @@
       gap: 2px;
       min-width: 0;
     }
-
     .header-title {
       font-size: clamp(15px, 4vw, 17px);
       font-weight: 600;
@@ -162,7 +143,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .header-subtitle {
       font-size: clamp(11px, 3vw, 13px);
       opacity: 0.9;
@@ -183,6 +163,20 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      white-space: nowrap;
+    }
+
+    .theme-corner {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(
+        circle at 30% 20%,
+        #ffffff,
+        var(--season-accent, rgba(248, 113, 113, 0.9))
+      );
+      box-shadow: 0 0 10px rgba(15, 23, 42, 0.45);
+      opacity: 0.95;
     }
 
     /* Swipe helper bar */
@@ -195,7 +189,6 @@
       z-index: 19;
       pointer-events: none;
     }
-
     .swipe-chip {
       display: inline-flex;
       align-items: center;
@@ -208,17 +201,14 @@
       color: #374151;
       pointer-events: auto;
     }
-
     .swipe-chip-label {
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
-
     .swipe-chip-text {
       opacity: 0.85;
     }
-
     .swipe-dot {
       width: 4px;
       height: 4px;
@@ -233,7 +223,6 @@
       display: flex;
       justify-content: center;
     }
-
     .phone-frame {
       position: relative;
       width: 100%;
@@ -255,7 +244,6 @@
       flex-direction: column;
     }
 
-    /* Back bar inside card */
     .nav-back {
       width: 100%;
       border: none;
@@ -271,29 +259,24 @@
       gap: 8px;
       cursor: pointer;
     }
-
     .nav-back.hidden {
       display: none;
     }
-
     .nav-back-icon {
       font-size: 14px;
     }
 
-    /* Slide container */
     .slides-window {
       position: relative;
       flex: 1;
       overflow: hidden;
     }
-
     .slides-strip {
       display: flex;
       width: 300%;
       height: 100%;
       transition: transform 260ms ease-out;
     }
-
     .slide {
       width: 100%;
       flex-shrink: 0;
@@ -311,7 +294,6 @@
       gap: 8px;
       margin-bottom: 4px;
     }
-
     .slide-step-label {
       font-size: 11px;
       font-weight: 700;
@@ -319,25 +301,21 @@
       text-transform: uppercase;
       color: #6b7280;
     }
-
     .slide-step-extra {
       font-size: 11px;
       color: #9ca3af;
       white-space: nowrap;
     }
-
     .slide-title {
       font-size: clamp(15px, 5vw, 18px);
       font-weight: 600;
       color: #111827;
     }
-
     .slide-sub {
       font-size: 12px;
       color: #6b7280;
     }
 
-    /* Scroll area */
     .scroll-body {
       margin-top: 6px;
       padding-bottom: 10px;
@@ -349,7 +327,6 @@
       display: flex;
       flex-direction: column;
     }
-
     .scroll-inner {
       flex: 1;
       padding: 8px 10px 10px;
@@ -357,15 +334,12 @@
       -webkit-overflow-scrolling: touch;
       scrollbar-width: thin;
     }
-
     .scroll-inner::-webkit-scrollbar {
       width: 6px;
     }
-
     .scroll-inner::-webkit-scrollbar-track {
       background: transparent;
     }
-
     .scroll-inner::-webkit-scrollbar-thumb {
       background: rgba(148,163,184,0.6);
       border-radius: 999px;
@@ -383,14 +357,13 @@
       margin-bottom: 8px;
       gap: 10px;
       cursor: pointer;
+      width: 100%;
     }
-
     .family-chip.active {
       border-color: rgba(37, 99, 235, 0.9);
       box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.6);
       background: linear-gradient(145deg, #ffffff, #eef2ff);
     }
-
     .family-icon {
       width: 40px;
       height: 40px;
@@ -402,27 +375,25 @@
       border: 1px solid rgba(148,163,184,0.7);
       box-shadow: 0 0 0 1px rgba(255,255,255,0.9);
     }
-
     .family-text {
       flex: 1;
       min-width: 0;
     }
-
     .family-name {
       font-size: 14px;
       font-weight: 600;
       color: #111827;
+      white-space: normal;
     }
-
     .family-detail {
       font-size: 11px;
       color: #6b7280;
       margin-top: 2px;
     }
-
     .family-arrow {
       flex: 0 0 auto;
       color: #9ca3af;
+      font-size: 16px;
     }
 
     /* Course cards */
@@ -437,53 +408,29 @@
       flex-direction: column;
       gap: 4px;
       cursor: pointer;
+      width: 100%;
     }
-
     .course-card.active {
       border-color: rgba(37, 99, 235, 0.95);
       box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.55);
       background: linear-gradient(135deg, #ffffff, #eef2ff);
     }
-
-    .course-badge-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 2px;
-    }
-
-    .course-badge {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(156,163,175,0.8);
-      color: #4b5563;
-      background: rgba(249,250,251,0.9);
-    }
-
-    .course-badge.highlight {
-      border-color: rgba(37, 99, 235, 0.85);
-      color: #1d4ed8;
-      background: rgba(219,234,254,0.9);
-    }
-
     .course-title {
       font-size: 14px;
       font-weight: 600;
       color: #111827;
+      line-height: 1.25;
+      white-space: normal;
+      overflow-wrap: break-word;
     }
-
     .course-detail {
       font-size: 11px;
       color: #4b5563;
+      white-space: normal;
     }
-
-    .course-desc {
+    .course-meta-line {
       font-size: 11px;
       color: #6b7280;
-      margin-top: 2px;
     }
 
     /* Session cards */
@@ -497,42 +444,41 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
+      width: 100%;
     }
-
     .session-card.past {
       opacity: 0.8;
       background: #f9fafb;
     }
-
     .session-row {
       display: flex;
       justify-content: space-between;
       gap: 8px;
       align-items: baseline;
     }
-
     .session-main {
       display: flex;
       flex-direction: column;
       gap: 2px;
+      min-width: 0;
     }
-
     .session-date {
       font-size: 13px;
       font-weight: 600;
       color: #111827;
+      white-space: normal;
+      overflow-wrap: break-word;
     }
-
     .session-time {
       font-size: 11px;
       color: #4b5563;
     }
-
     .session-location {
       font-size: 11px;
       color: #6b7280;
+      white-space: normal;
+      overflow-wrap: break-word;
     }
-
     .session-badge {
       font-size: 11px;
       padding: 3px 7px;
@@ -542,7 +488,6 @@
       background: rgba(219,234,254,0.9);
       white-space: nowrap;
     }
-
     .session-footer-row {
       display: flex;
       justify-content: space-between;
@@ -550,12 +495,10 @@
       margin-top: 4px;
       gap: 8px;
     }
-
     .session-note {
       font-size: 10px;
       color: #6b7280;
     }
-
     .session-btn {
       flex: 0 0 auto;
       font-size: 11px;
@@ -571,16 +514,13 @@
       cursor: pointer;
       box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
     }
-
     .session-btn.past {
       background: #9ca3af;
       box-shadow: none;
     }
-
     .session-btn-icon {
       font-size: 13px;
     }
-
     .session-tagline {
       font-size: 11px;
       color: #9ca3af;
@@ -593,12 +533,10 @@
       text-align: center;
       padding: 20px 10px;
     }
-
     .section-empty strong {
       color: #4b5563;
     }
 
-    /* Pager dots */
     .pager-dots {
       position: absolute;
       bottom: 8px;
@@ -610,7 +548,6 @@
       pointer-events: none;
       z-index: 10;
     }
-
     .pager-dot {
       width: 7px;
       height: 7px;
@@ -618,13 +555,11 @@
       background: rgba(148,163,184,0.7);
       box-shadow: 0 0 0 1px rgba(255,255,255,0.6);
     }
-
     .pager-dot.active {
       width: 16px;
       background: var(--accent-color);
     }
 
-    /* Footer nav */
     .app-footer {
       position: fixed;
       bottom: 0;
@@ -639,14 +574,12 @@
       box-shadow: 0 -6px 20px rgba(15,23,42,0.5);
       z-index: 30;
     }
-
     .footer-inner {
       max-width: 720px;
       margin: 0 auto;
       display: flex;
       gap: 8px;
     }
-
     .footer-btn {
       flex: 1;
       border-radius: var(--radius-pill);
@@ -662,17 +595,14 @@
       gap: 6px;
       text-decoration: none;
     }
-
     .footer-btn.primary {
       background: linear-gradient(135deg, #22c55e, #16a34a);
       border-color: rgba(134,239,172,0.8);
       color: #052e16;
     }
-
     .footer-btn-icon {
       font-size: 13px;
     }
-
     .footer-btn span {
       white-space: nowrap;
     }
@@ -689,7 +619,6 @@
     @media (max-width: 480px) {
       .header-title { font-size: 14px; }
       .header-subtitle { font-size: 11px; }
-
       .app-header { height: 80px; }
       :root { --header-height: 80px; }
     }
@@ -703,18 +632,12 @@
           <img src="assets/images/910CPR_wave.jpg" alt="910CPR logo">
         </div>
         <div class="header-text">
-          <div class="header-title" id="headerTitle">
-            Choose a class family
-          </div>
-          <div class="header-subtitle" id="headerSubtitle">
-            Step 1 of 3 · Pick a certification family
-          </div>
+          <div class="header-title" id="headerTitle">Choose a class family</div>
+          <div class="header-subtitle" id="headerSubtitle">Step 1 of 3 · Pick a certification family</div>
         </div>
       </div>
       <div class="header-right">
-        <div class="header-chip" id="headerChip">
-          Swipe or tap to continue
-        </div>
+        <div class="header-chip" id="headerChip">Swipe or tap to continue</div>
         <div class="theme-corner"></div>
       </div>
     </header>
@@ -723,9 +646,7 @@
       <div class="swipe-chip">
         <span class="swipe-chip-label">Swipe</span>
         <span class="swipe-dot"></span>
-        <span class="swipe-chip-text">
-          Left/right to move: Family → Course → Date.
-        </span>
+        <span class="swipe-chip-text">Left/right to move: Family → Course → Date.</span>
       </div>
     </div>
 
@@ -751,9 +672,7 @@
                 </div>
 
                 <div class="scroll-body">
-                  <div class="scroll-inner" id="familyList">
-                    <!-- Populated by JS -->
-                  </div>
+                  <div class="scroll-inner" id="familyList"></div>
                 </div>
               </article>
 
@@ -763,17 +682,13 @@
                   <div class="slide-step-label">Step 2 · Course</div>
                   <div class="slide-step-extra" id="courseFamilyLabel">Select a family first</div>
                 </div>
-                <div class="slide-title" id="courseSlideTitle">
-                  Choose a course
-                </div>
+                <div class="slide-title" id="courseSlideTitle">Choose a course</div>
                 <div class="slide-sub" id="courseSlideSub">
                   Courses are specific options like “BLS Renewal” or “ACLS Heartcode + Skills.”
                 </div>
 
                 <div class="scroll-body">
-                  <div class="scroll-inner" id="courseList">
-                    <!-- Populated by JS -->
-                  </div>
+                  <div class="scroll-inner" id="courseList"></div>
                 </div>
               </article>
 
@@ -783,17 +698,13 @@
                   <div class="slide-step-label">Step 3 · Date &amp; Time</div>
                   <div class="slide-step-extra" id="sessionCourseLabel">Choose a course first</div>
                 </div>
-                <div class="slide-title" id="sessionSlideTitle">
-                  Pick a date &amp; time
-                </div>
+                <div class="slide-title" id="sessionSlideTitle">Pick a date &amp; time</div>
                 <div class="slide-sub" id="sessionSlideSub">
                   Tap a session to go straight to 910CPR’s Enrollware registration for that exact date, time, and location.
                 </div>
 
                 <div class="scroll-body">
-                  <div class="scroll-inner" id="sessionList">
-                    <!-- Populated by JS -->
-                  </div>
+                  <div class="scroll-inner" id="sessionList"></div>
                 </div>
               </article>
             </div>
@@ -826,7 +737,7 @@
 
   <script>
     (function () {
-      // ---- Shared family definitions (copied from desktop index.html) ----
+      // --- Same family definitions as desktop ---
       const FAMILY_DEFS = {
         "BLS": {
           key: "BLS",
@@ -842,14 +753,14 @@
         },
         "PALS": {
           key: "PALS",
-          label: "PALS – Pediatric Advanced Life Support",
-          blurb: "Pediatric codes, respiratory distress, and shock care for children.",
+          label: "PALS – Pediatric Life Support",
+          blurb: "Pediatric emergencies, respiratory failure, and cardiac arrest.",
           image: "assets/images/family/family-pals.jpg"
         },
         "CPR_AED": {
           key: "CPR_AED",
-          label: "Heartsaver CPR/AED",
-          blurb: "Workplace and community CPR/AED classes without full First Aid.",
+          label: "CPR/AED – Adult & Pediatric",
+          blurb: "Non-medical jobs needing CPR and AED skills without full First Aid.",
           image: "assets/images/family/family-cpr-aed.jpg"
         },
         "FA_CPR_AED": {
@@ -866,16 +777,14 @@
         },
         "OTHER": {
           key: "OTHER",
-          label: "Other / Specialty Courses",
+          label: "Other Programs & Online",
           blurb: "Specialty programs, online options, and classes that don’t fit neatly above.",
           image: "assets/images/910CPR_wave.jpg"
         }
       };
 
-      // Determine family from course name (same as desktop)
       function getFamilyKeyFromCourseName(name) {
         const n = (name || "").toLowerCase();
-
         if (n.includes("instructor")) return "INSTRUCTOR";
         if (n.includes("bls")) return "BLS";
         if (n.includes("acls")) return "ACLS";
@@ -884,19 +793,16 @@
         const hasCPR = n.includes("cpr");
         const hasAED = n.includes("aed");
         const hasFirstAid = n.includes("first aid") || n.includes("first-aid");
-
         if (hasFirstAid && hasCPR && hasAED) return "FA_CPR_AED";
         if (hasCPR && hasAED) return "CPR_AED";
-
         return "OTHER";
       }
 
-      // Group schedule.sessions into families + courses (copied from desktop index.html)
+      // Same schedule.json -> families grouping as desktop
       function buildFamiliesFromSchedule(schedule) {
         const sessions = schedule.sessions || [];
         const byCourseId = {};
 
-        // Group sessions by course_id, ignore non-class rows
         sessions.forEach(sess => {
           const url = sess.register_url || "";
           if (!url || !url.includes("id=")) return;
@@ -915,33 +821,26 @@
         const familiesMap = {};
         Object.values(byCourseId).forEach(course => {
           const famKey = getFamilyKeyFromCourseName(course.name);
-          if (!familiesMap[famKey]) {
-            familiesMap[famKey] = [];
-          }
+          if (!familiesMap[famKey]) familiesMap[famKey] = [];
           familiesMap[famKey].push(course);
         });
 
-        // Sort courses inside each family alphabetically
         Object.keys(familiesMap).forEach(fk => {
           familiesMap[fk].sort((a, b) => a.name.localeCompare(b.name));
         });
 
-        // Preferred family order
         const order = ["BLS", "ACLS", "PALS", "CPR_AED", "FA_CPR_AED", "INSTRUCTOR", "OTHER"];
         const familiesArray = [];
         order.forEach(fk => {
           if (familiesMap[fk] && familiesMap[fk].length) {
-            familiesArray.push({
-              familyKey: fk,
-              courses: familiesMap[fk]
-            });
+            familiesArray.push({ familyKey: fk, courses: familiesMap[fk] });
           }
         });
 
         return familiesArray;
       }
 
-      // ---- DOM references ----
+      // DOM refs
       const slidesStrip = document.getElementById("slidesStrip");
       const pagerDots = Array.from(document.querySelectorAll(".pager-dot"));
       const headerTitle = document.getElementById("headerTitle");
@@ -960,13 +859,33 @@
       const sessionSlideTitle = document.getElementById("sessionSlideTitle");
       const sessionSlideSub = document.getElementById("sessionSlideSub");
 
-      let currentStep = 0; // 0=family, 1=course, 2=session
-      let familiesData = []; // [{ key, name, detail, imageUrl, courses: [...] }]
+      let currentStep = 0;
+      let familiesData = []; // [{ key, name, detail, imageUrl, courses }]
       let activeFamilyKey = null;
       let activeCourseId = null;
 
+      function setBodyHueForFamily(familyKey) {
+        const keys = ["BLS","ACLS","PALS","CPR_AED","FA_CPR_AED","INSTRUCTOR","OTHER"];
+        const body = document.body;
+        keys.forEach(k => body.classList.remove("family-" + k));
+        if (keys.includes(familyKey)) {
+          body.classList.add("family-" + familyKey);
+        } else {
+          body.classList.add("family-BLS");
+        }
+      }
+
+      function splitCourseName(fullName) {
+        if (!fullName) return { title: "", detail: "" };
+        const parts = fullName.split(" — ");
+        if (parts.length === 1) return { title: fullName.trim(), detail: "" };
+        return {
+          title: parts[0].trim(),
+          detail: parts.slice(1).join(" — ").trim()
+        };
+      }
+
       function setStep(stepIndex) {
-        // Guard-rails like desktop behavior
         if (stepIndex === 1 && !activeFamilyKey) stepIndex = 0;
         if (stepIndex === 2 && !activeCourseId) stepIndex = 1;
 
@@ -1004,48 +923,39 @@
           return;
         }
         navBack.classList.remove("hidden");
-        if (currentStep === 1) {
-          navBackLabel.textContent = "Back to family list";
-        } else {
-          navBackLabel.textContent = "Back to course list";
-        }
+        navBackLabel.textContent = currentStep === 1
+          ? "Back to family list"
+          : "Back to course list";
       }
 
-      function nextStep() {
-        setStep(currentStep + 1);
-      }
-      function prevStep() {
-        setStep(currentStep - 1);
-      }
+      function nextStep() { setStep(currentStep + 1); }
+      function prevStep() { setStep(currentStep - 1); }
 
       navBack.addEventListener("click", prevStep);
 
-      // Swipe handling
+      // Swipe gestures
       let touchStartX = 0;
       let touchEndX = 0;
       const SWIPE_THRESHOLD = 40;
 
-      slidesStrip.addEventListener("touchstart", function (e) {
+      slidesStrip.addEventListener("touchstart", e => {
         if (e.touches && e.touches.length > 0) {
           touchStartX = e.touches[0].clientX;
           touchEndX = touchStartX;
         }
       }, { passive: true });
 
-      slidesStrip.addEventListener("touchmove", function (e) {
+      slidesStrip.addEventListener("touchmove", e => {
         if (e.touches && e.touches.length > 0) {
           touchEndX = e.touches[0].clientX;
         }
       }, { passive: true });
 
-      slidesStrip.addEventListener("touchend", function () {
+      slidesStrip.addEventListener("touchend", () => {
         const diff = touchEndX - touchStartX;
         if (Math.abs(diff) > SWIPE_THRESHOLD) {
-          if (diff < 0 && currentStep < 2) {
-            nextStep();
-          } else if (diff > 0 && currentStep > 0) {
-            prevStep();
-          }
+          if (diff < 0 && currentStep < 2) nextStep();
+          else if (diff > 0 && currentStep > 0) prevStep();
         }
       });
 
@@ -1053,54 +963,9 @@
         dot.addEventListener("click", () => setStep(i));
       });
 
-      function splitCourseName(fullName) {
-        if (!fullName) return { title: "", detail: "" };
-        const parts = fullName.split(" — ");
-        if (parts.length === 1) {
-          return { title: fullName.trim(), detail: "" };
-        }
-        return {
-          title: parts[0].trim(),
-          detail: parts.slice(1).join(" — ").trim()
-        };
-      }
-
-      function formatLocation(rawLocation) {
-        if (!rawLocation) return "";
-        return rawLocation;
-      }
-
-      function formatSessionDate(dateStr) {
-        const d = new Date(dateStr);
-        if (!isFinite(d.getTime())) return dateStr || "";
-        const weekday = d.toLocaleDateString(undefined, { weekday: "short" });
-        const month = d.toLocaleDateString(undefined, { month: "short" });
-        const day = d.getDate();
-        return weekday + " " + month + " " + day;
-      }
-
-      function formatSessionTime(dateStr) {
-        const d = new Date(dateStr);
-        if (!isFinite(d.getTime())) return "";
-        return d.toLocaleTimeString(undefined, {
-          hour: "numeric",
-          minute: "2-digit"
-        });
-      }
-
-      function setBodyHueForFamily(familyKey) {
-        const keys = ["BLS","ACLS","PALS","CPR_AED","FA_CPR_AED","INSTRUCTOR","OTHER"];
-        const body = document.body;
-        keys.forEach(k => body.classList.remove("family-" + k));
-        if (keys.indexOf(familyKey) !== -1) {
-          body.classList.add("family-" + familyKey);
-        } else {
-          body.classList.add("family-BLS");
-        }
-      }
-
       function renderFamiliesView() {
         familyListEl.innerHTML = "";
+
         if (!familiesData.length) {
           const empty = document.createElement("div");
           empty.className = "section-empty";
@@ -1115,11 +980,7 @@
 
           const icon = document.createElement("div");
           icon.className = "family-icon";
-          if (fam.imageUrl) {
-            icon.style.backgroundImage = "url('" + fam.imageUrl + "')";
-          } else {
-            icon.style.backgroundImage = "url('assets/images/910CPR_wave.jpg')";
-          }
+          icon.style.backgroundImage = "url('" + (fam.imageUrl || "assets/images/910CPR_wave.jpg") + "')";
 
           const textWrap = document.createElement("div");
           textWrap.className = "family-text";
@@ -1189,20 +1050,6 @@
           const card = document.createElement("div");
           card.className = "course-card" + (course.courseId === activeCourseId ? " active" : "");
 
-          const topRow = document.createElement("div");
-          topRow.className = "course-badge-row";
-
-          const badge = document.createElement("div");
-          badge.className = "course-badge highlight";
-          badge.textContent = fam.name;
-
-          const bodyBadge = document.createElement("div");
-          bodyBadge.className = "course-badge";
-          bodyBadge.textContent = "Course ID " + course.courseId;
-
-          topRow.appendChild(badge);
-          topRow.appendChild(bodyBadge);
-
           const titleEl = document.createElement("div");
           titleEl.className = "course-title";
           titleEl.textContent = split.title || course.name;
@@ -1211,14 +1058,16 @@
           detailEl.className = "course-detail";
           detailEl.textContent = split.detail || "";
 
-          const descEl = document.createElement("div");
-          descEl.className = "course-desc";
-          descEl.textContent = ""; // schedule.json doesn’t carry long descriptions; keep space tidy.
+          const metaEl = document.createElement("div");
+          metaEl.className = "course-meta-line";
+          const count = (course.sessions || []).length;
+          metaEl.textContent = count > 0
+            ? (count + " upcoming date" + (count !== 1 ? "s" : "") + " · Wilmington, Burgaw, Jacksonville, onsite when available.")
+            : "Dates vary · Contact 910CPR if you need this course soon.";
 
-          card.appendChild(topRow);
           card.appendChild(titleEl);
           if (detailEl.textContent) card.appendChild(detailEl);
-          if (descEl.textContent) card.appendChild(descEl);
+          card.appendChild(metaEl);
 
           card.addEventListener("click", () => {
             activeCourseId = course.courseId;
@@ -1271,67 +1120,67 @@
           return;
         }
 
-        const now = new Date();
-
         sessions.forEach(sess => {
           const card = document.createElement("div");
           card.className = "session-card";
 
-          const dateRaw = sess.start || sess.startDate || sess.date;
-          const dateObj = new Date(dateRaw);
-          const isPast = isFinite(dateObj.getTime()) && dateObj < now;
-          if (isPast) {
-            card.classList.add("past");
+          const startDisplay = sess.start_display || "";
+          let dateLabel = startDisplay;
+          let timeLabel = "";
+          if (startDisplay.includes(" at ")) {
+            const parts = startDisplay.split(" at ");
+            dateLabel = parts[0] || startDisplay;
+            timeLabel = parts[1] || "";
           }
 
-          const row = document.createElement("div");
-          row.className = "session-row";
+          const locLabel = sess.location_short || sess.location || "";
+
+          const mainRow = document.createElement("div");
+          mainRow.className = "session-row";
 
           const main = document.createElement("div");
           main.className = "session-main";
 
           const dateEl = document.createElement("div");
           dateEl.className = "session-date";
-          dateEl.textContent = formatSessionDate(dateRaw);
+          dateEl.textContent = dateLabel || "Date TBD";
 
           const timeEl = document.createElement("div");
           timeEl.className = "session-time";
-          timeEl.textContent = formatSessionTime(dateRaw);
-
-          const locEl = document.createElement("div");
-          locEl.className = "session-location";
-          locEl.textContent = formatLocation(sess.location);
+          timeEl.textContent = timeLabel;
 
           main.appendChild(dateEl);
           if (timeEl.textContent) main.appendChild(timeEl);
-          if (locEl.textContent) main.appendChild(locEl);
 
           const badge = document.createElement("div");
           badge.className = "session-badge";
-          badge.textContent = isPast ? "Past session" : "Tap to register";
+          badge.textContent = "Tap to register";
 
-          row.appendChild(main);
-          row.appendChild(badge);
+          mainRow.appendChild(main);
+          mainRow.appendChild(badge);
+
+          const locEl = document.createElement("div");
+          locEl.className = "session-location";
+          locEl.textContent = locLabel;
 
           const footerRow = document.createElement("div");
           footerRow.className = "session-footer-row";
 
           const note = document.createElement("div");
           note.className = "session-note";
-          note.textContent = isPast
-            ? "Registration closed. Pick another date."
-            : "Opens a new Enrollware tab for this class.";
+          note.textContent = "Opens a new Enrollware tab for this class.";
 
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "session-btn" + (isPast ? " past" : "");
-          btn.innerHTML = '<span class="session-btn-icon">↗</span>' + (isPast ? "Closed" : "Register");
-
-          const enrollUrl = sess.register_url || sess.enrollUrl;
-          if (!isPast && enrollUrl) {
+          btn.className = "session-btn";
+          btn.innerHTML = '<span class="session-btn-icon">↗</span><span>Register</span>';
+          const enrollUrl = sess.register_url || "";
+          if (enrollUrl) {
             btn.addEventListener("click", () => {
               window.open(enrollUrl, "_blank", "noopener");
             });
+          } else {
+            btn.disabled = true;
           }
 
           footerRow.appendChild(note);
@@ -1341,7 +1190,8 @@
           tagLine.className = "session-tagline";
           tagLine.textContent = familyFound.name + " · " + (split.title || courseFound.name);
 
-          card.appendChild(row);
+          card.appendChild(mainRow);
+          card.appendChild(locEl);
           card.appendChild(footerRow);
           card.appendChild(tagLine);
 
@@ -1351,12 +1201,11 @@
 
       async function initSchedule() {
         try {
-          // EXACTLY like desktop: index*.html lives in docs/, JSON is docs/data/schedule.json → relative "data/schedule.json"
           const resp = await fetch("data/schedule.json", { cache: "no-store" });
           if (!resp.ok) throw new Error("HTTP " + resp.status);
           const schedule = await resp.json();
 
-          const familiesFromSchedule = buildFamiliesFromSchedule(schedule); // [{ familyKey, courses }]
+          const familiesFromSchedule = buildFamiliesFromSchedule(schedule);
           familiesData = familiesFromSchedule.map(f => {
             const def = FAMILY_DEFS[f.familyKey] || FAMILY_DEFS.OTHER;
             return {
