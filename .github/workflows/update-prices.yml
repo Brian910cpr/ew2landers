@@ -1,0 +1,53 @@
+name: Update Enrollware prices
+
+on:
+  schedule:
+    # Run once per day at 03:30 UTC (adjust as you like)
+    - cron: "30 3 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Run price updater
+        run: |
+          python tools/update_session_prices.py
+
+      - name: Commit and push if changed
+        env:
+          GIT_AUTHOR_NAME: "910CPR Bot"
+          GIT_AUTHOR_EMAIL: "bot@910cpr.com"
+          GIT_COMMITTER_NAME: "910CPR Bot"
+          GIT_COMMITTER_EMAIL: "bot@910cpr.com"
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          git status
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git config user.name "$GIT_AUTHOR_NAME"
+          git config user.email "$GIT_AUTHOR_EMAIL"
+
+          git add docs/data/schedule.json docs/data/prices-cache.json
+          git commit -m "Daily Enrollware price refresh"
+
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} HEAD:main

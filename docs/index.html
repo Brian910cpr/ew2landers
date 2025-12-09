@@ -8,149 +8,782 @@
   <!-- Optional base CSS / theme hooks if they exist -->
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/themes.css">
-<script src="assets/js/theme-scheduler.js" defer></script>
+  <script src="assets/js/theme-scheduler.js" defer></script>
 
   <style>
     :root {
       --bg-page: #f4f6fb;
       --bg-panel: #ffffff;
-      --bg-panel-alt: #f9fafb;
-      --border-subtle: #e5e7eb;
-      --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.12);
-      --radius-lg: 18px;
-      --radius-md: 12px;
-      --text-main: #111827;
+      --bg-panel-alt: #e5edf9;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --border-strong: rgba(15, 23, 42, 0.18);
+      --text-main: #0f172a;
       --text-muted: #6b7280;
-      --accent-main: #0d47a1;
-      --accent-soft: rgba(13, 71, 161, 0.08);
-      --accent-strong: #2563eb;
-      --selected-bg: #e0edff;
-      --selected-border: #2563eb;
-      --transition-fast: 0.25s ease;
+      --accent-main: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.06);
+      --accent-soft-strong: rgba(37, 99, 235, 0.12);
+      --accent-border: rgba(37, 99, 235, 0.4);
+      --shadow-soft: 0 14px 40px rgba(15, 23, 42, 0.13);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #dde9ff 0, #f4f6fb 52%, #edf2ff 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "SF Pro Display", "Segoe UI", Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top left, #e0edff, #f5f7fb 38%, #e5f1ff 100%);
       color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    .page-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: clamp(12px, 2vw, 24px);
     }
 
-    /* Top GoDaddy-style header */
-    .top-bar {
-      height: 54px;
+    header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 18px;
-      background: linear-gradient(135deg, #0d47a1, #020617);
-      color: #e5e7eb;
-      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.55);
-      z-index: 20;
+      gap: 16px;
+      margin-bottom: clamp(12px, 2vw, 20px);
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      width: clamp(72px, 12vw, 110px);
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.35);
+      background: #0f172a;
+      object-fit: cover;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand-title {
+      font-size: clamp(1.1rem, 1.2vw + 0.7rem, 1.4rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: clamp(0.8rem, 0.9vw, 0.9rem);
+      color: var(--text-muted);
+      max-width: 480px;
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .header-right strong {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .header-divider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: clamp(8px, 1.5vw, 12px);
+    }
+
+    .header-divider {
+      flex: 1;
+      border-radius: 999px;
+      overflow: hidden;
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.5), rgba(15, 23, 42, 0.0));
+      min-height: 1px;
       position: relative;
     }
 
-    .top-bar-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .top-bar-logo {
-      padding: 3px;
-      border-radius: 10px;
-      background: rgba(15, 23, 42, 0.55);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-    }
-
-    .top-bar-logo img {
+    .header-divider img {
       display: block;
-      max-height: 40px;
-      width: auto;
-      border-radius: 7px;
+      width: 100%;
+      height: auto;
+      opacity: 0.75;
     }
 
-    .top-bar-title {
+    .header-corner {
+      width: clamp(32px, 4vw, 40px);
+      height: auto;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
+      background: #020617;
+    }
+
+    .header-corner img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .page-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(240px, 0.9fr) minmax(320px, 1.1fr) minmax(320px, 1.2fr);
+      gap: clamp(12px, 1.6vw, 18px);
+      align-items: stretch;
+    }
+
+    .panel {
+      background: rgba(248, 250, 252, 0.95);
+      border-radius: 24px;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.16);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      padding: clamp(12px, 1.4vw, 16px);
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
     }
 
-    .top-bar-title-main {
-      font-size: 15px;
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 50%);
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .panel-header {
+      margin-bottom: 10px;
+    }
+
+    .panel-title {
+      font-size: clamp(0.92rem, 1vw, 1.02rem);
+      font-weight: 650;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .panel-subtitle {
+      margin-top: 2px;
+      font-size: clamp(0.75rem, 0.8vw, 0.82rem);
+      color: var(--text-muted);
+    }
+
+    .panel-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .panel-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .panel-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .panel-body::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.5);
+      border-radius: 999px;
+    }
+
+    .panel-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.7);
+    }
+
+    .subtle-pill {
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.06);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .subtle-pill strong {
+      color: #111827;
       font-weight: 600;
     }
 
-    .top-bar-title-sub {
-      font-size: 11px;
-      color: #d1d5db;
-    }
-
-    .top-bar-right {
+    .family-card {
+      border-radius: 18px;
+      padding: 8px 9px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 11px;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: rgba(248, 250, 252, 0.95);
+      transition: background 0.12s ease, border-color 0.12s ease, transform 0.05s ease,
+        box-shadow 0.12s ease;
     }
 
-    .top-chip {
-      padding: 4px 9px;
+    .family-card:hover {
+      background: rgba(239, 246, 255, 0.9);
+      border-color: rgba(37, 99, 235, 0.4);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .family-card.selected {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(59, 130, 246, 0.06));
+      border-color: rgba(37, 99, 235, 0.65);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.22);
+    }
+
+    .family-thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .family-thumb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .family-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .family-title {
+      font-size: 0.9rem;
+      font-weight: 630;
+      margin-bottom: 2px;
+    }
+
+    .family-blurb {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .course-card {
+      border-radius: 16px;
+      padding: 9px 10px;
+      margin-bottom: 7px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(248, 250, 252, 0.96);
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease, transform 0.05s ease,
+        box-shadow 0.12s ease;
+    }
+
+    .course-card:hover {
+      background: rgba(239, 246, 255, 0.96);
+      border-color: rgba(37, 99, 235, 0.4);
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .course-card.selected {
+      border-color: rgba(37, 99, 235, 0.75);
+      box-shadow: 0 18px 38px rgba(15, 23, 42, 0.22);
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.11), rgba(248, 250, 252, 0.98));
+    }
+
+    .course-title-main {
+      font-weight: 640;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
+
+    .course-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .course-chip {
+      font-size: 10px;
+      padding: 2px 7px;
       border-radius: 999px;
-      border: 1px solid rgba(209, 213, 219, 0.7);
-      background: rgba(15, 23, 42, 0.6);
-      color: #e5e7eb;
+      background: var(--accent-soft);
+      color: var(--accent-main);
+      font-weight: 500;
       white-space: nowrap;
     }
 
-    .top-link {
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      background: rgba(15, 23, 42, 0.25);
-      color: #e5e7eb;
+    .course-subtext {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .course-description {
+      margin-top: 6px;
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .course-foot-row {
+      font-size: 10px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .course-foot-row .chevron {
+      font-size: 12px;
+      opacity: 0.65;
+    }
+
+    .course-mini-pill {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.03);
+      border: 1px dashed rgba(148, 163, 184, 0.8);
+      font-size: 10px;
+      color: var(--text-muted);
     }
 
-    .top-link span.icon {
-      font-size: 14px;
+    .course-mini-pill strong {
+      font-weight: 600;
+      color: #111827;
     }
 
-    /* Main layout */
-    .page-shell {
-      padding: 14px;
-      position: relative;
+    .course-mini {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.03);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
     }
 
-    .schedule-shell {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.85);
-      border-radius: 22px;
-      padding: 10px 10px 10px 0;
-      box-shadow: var(--shadow-soft);
+    .course-mini.selected {
+      background: rgba(37, 99, 235, 0.09);
+      color: #111827;
+      border-color: rgba(37, 99, 235, 0.75);
+    }
+
+    .course-mini strong {
+      font-weight: 650;
+    }
+
+    .course-mini span:nth-child(2) {
+      opacity: 0.7;
+    }
+
+    .course-mini span:nth-child(3) {
+      font-size: 9px;
+      opacity: 0.7;
+    }
+
+    .course-mini-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35);
+    }
+
+    .course-mini-count {
+      font-size: 9px;
+      padding: 3px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.03);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      margin-top: 3px;
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .course-mini-count strong {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .status-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 12px 6px;
+    }
+
+    .session-card {
+      border-radius: 16px;
+      padding: 8px 9px;
+      margin-bottom: 7px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(248, 250, 252, 0.97);
       display: flex;
-      min-height: calc(100vh - 90px);
-      backdrop-filter: blur(14px);
-      position: relative;
+      flex-direction: column;
+      gap: 3px;
+      transition: background 0.12s ease, border-color 0.12s ease, transform 0.05s ease,
+        box-shadow 0.12s ease;
     }
 
-    /* Left arrow strip */
-    .nav-arrow-strip {
-      width: 46px;
-      flex-shrink: 0;
-      border-radius: 22px 0 0 22px;
-      overflow: hidden;
+    .session-card:hover {
+      background: rgba(239, 246, 255, 0.98);
+      border-color: rgba(37, 99, 235, 0.5);
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.22);
+      transform: translateY(-1px);
+    }
+
+    .session-main-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.84rem;
+      font-weight: 560;
+    }
+
+    .session-date {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .session-date span:first-child {
+      text-transform: uppercase;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .session-date span:last-child {
+      font-size: 0.83rem;
+    }
+
+    .session-location {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .session-location-pill {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.04);
+      border: 1px dashed rgba(148, 163, 184, 0.8);
+    }
+
+    .session-foot-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+      font-size: 10px;
+    }
+
+    .session-price {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .session-btn {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 0;
+      background: var(--accent-main);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(37, 99, 235, 0.55);
+    }
+
+    .session-btn span:last-child {
+      font-size: 1rem;
+      translate: 0 0;
+      transition: transform 0.12s ease;
+    }
+
+    .session-btn:hover span:last-child {
+      transform: translateX(2px);
+    }
+
+    .no-sessions {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 12px 8px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      background: rgba(248, 250, 252, 0.95);
+    }
+
+    .stacked-panels {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 0;
+    }
+
+    .stack-header {
+      margin-bottom: 6px;
+    }
+
+    .stack-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .stack-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .stack-body::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 999px;
+    }
+
+    .stack-footer {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 4px 10px;
+      color: #e5e7eb;
+      cursor: pointer;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.85);
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .nav-back span:last-child {
+      opacity: 0.8;
+    }
+
+    .nav-back:hover {
+      background: #020617;
+    }
+
+    .nav-back-arrow {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.95);
+      font-size: 0.9rem;
+    }
+
+    .nav-back-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.65rem;
+    }
+
+    .nav-right-pill {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.02);
+    }
+
+    .panel-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .panel-header-titles {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .panel-header-title-large {
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .panel-header-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .body-note-sm {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .family-pill-badge {
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(248, 250, 252, 0.95);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .family-pill-badge strong {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .nav-back-wide {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: linear-gradient(180deg, #020617, #020617);
+      padding: 4px 10px;
+      color: #e5e7eb;
+      cursor: pointer;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.85);
+      font-size: 0.78rem;
+      font-weight: 500;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .nav-back-wide-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-arrow-pill {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.88rem;
+    }
+
+    .nav-back-wide-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-back-wide-label-main {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.67rem;
+    }
+
+    .nav-back-wide-label-sub {
+      font-size: 0.7rem;
+      opacity: 0.85;
+    }
+
+    .nav-back-wide-right {
+      font-size: 0.7rem;
+      color: rgba(209, 213, 219, 0.9);
+    }
+
+    .nav-back-wide:hover {
+      background: #020617;
+    }
+
+    .family-name-chip {
+      font-size: 0.75rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(248, 250, 252, 0.98);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .family-name-chip strong {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .mini-status {
+      font-size: 0.7rem;
+      color: var(--text-muted);
     }
 
     .nav-arrow-button {
@@ -172,638 +805,179 @@
       background: #020617;
     }
 
-    /* Center columns */
-    .schedule-main {
-      flex: 1;
-      display: flex;
-      gap: 10px;
-      padding: 6px 10px 6px 10px;
-    }
-
-    .column {
-      border-radius: 16px;
-      background: var(--bg-panel);
-      box-shadow: 0 5px 20px rgba(15, 23, 42, 0.12);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .column-left {
-      width: 32%;
-      min-width: 240px;
-      max-width: 320px;
-    }
-
-    .column-right {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .column-header {
-      padding: 10px 12px 8px;
-      border-bottom: 1px solid var(--border-subtle);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .column-title {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .column-subtitle {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .column-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px 10px 10px;
-      background: linear-gradient(180deg, #f9fafb, #eef2ff);
-    }
-
-    /* Panel stacks for slide animation */
-    .panel-stack {
-      position: relative;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .stack-panel {
-      position: absolute;
-      inset: 0;
-      padding: 0;
-      transition: transform var(--transition-fast);
-    }
-
-    /* left stack modes */
-    .panel-stack-left.mode-families .panel-families {
-      transform: translateX(0);
-    }
-    .panel-stack-left.mode-families .panel-courses-left {
-      transform: translateX(100%);
-    }
-    .panel-stack-left.mode-course-detail .panel-families {
-      transform: translateX(-100%);
-    }
-    .panel-stack-left.mode-course-detail .panel-courses-left {
-      transform: translateX(0);
-    }
-
-    /* right stack modes */
-    .panel-stack-right.mode-families .panel-courses-right {
-      transform: translateX(0);
-    }
-    .panel-stack-right.mode-families .panel-sessions {
-      transform: translateX(100%);
-    }
-    .panel-stack-right.mode-course-detail .panel-courses-right {
-      transform: translateX(-100%);
-    }
-    .panel-stack-right.mode-course-detail .panel-sessions {
-      transform: translateX(0);
-    }
-
-    /* Family cards */
-    .family-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding-right: 2px;
-    }
-
-    .family-card {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 8px;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      background: rgba(255, 255, 255, 0.92);
-      cursor: pointer;
-      transition: background var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), transform 0.12s ease-out;
-    }
-
-    .family-card:hover {
-      background: #e5efff;
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
-    }
-
-    .family-card.active {
-      border-color: var(--selected-border);
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
-      background: #e0edff;
-      transform: translateY(-1px);
-    }
-
-    .family-image {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: #cbd5f5;
-    }
-
-    .family-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .nav-arrow-button span {
       display: block;
+      transform: translateX(-1px);
     }
 
-    .family-text-main {
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 2px;
+    @media (max-width: 1100px) {
+      .page-grid {
+        grid-template-columns: minmax(240px, 0.95fr) minmax(260px, 1.05fr);
+        grid-template-rows: minmax(260px, 1.1fr) minmax(260px, 1.1fr);
+      }
+
+      .panel:nth-child(3) {
+        grid-column: 1 / span 2;
+      }
     }
 
-    .family-text-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    /* Courses list (right, in families mode) */
-    .course-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-right: 2px;
-    }
-
-    .course-card {
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      background: rgba(255, 255, 255, 0.96);
-      padding: 8px 10px 9px;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.11);
-      transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform 0.12s ease-out;
-    }
-
-    .course-card:hover {
-      background: #eef2ff;
-      border-color: var(--accent-main);
-      transform: translateY(-1px);
-    }
-
-    .course-card.selected {
-      background: var(--selected-bg);
-      border-color: var(--selected-border);
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
-    }
-
-    .course-title-main {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 3px;
-    }
-
-    .course-meta-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 4px;
-    }
-
-    .course-chip {
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent-main);
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .course-subtext {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .course-foot-row {
-      font-size: 10px;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 4px;
-    }
-
-    /* Course list when it slides to the left column */
-    .course-list-compact {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding-right: 2px;
-    }
-
-    .course-pill {
-      font-size: 12px;
-      padding: 6px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(255, 255, 255, 0.96);
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .course-pill span.label {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .course-pill span.count {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .course-pill.selected {
-      background: var(--selected-bg);
-      border-color: var(--selected-border);
-      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4);
-    }
-
-    /* Sessions panel */
-    .sessions-shell {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sessions-header {
-      padding: 8px 11px 7px;
-      border-bottom: 1px solid var(--border-subtle);
-      background: var(--selected-bg);
-    }
-
-    .sessions-title {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .sessions-subtext {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .sessions-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px 10px 10px;
-      background: linear-gradient(180deg, var(--selected-bg), #eef2ff);
-    }
-
-    .session-card {
-      border-radius: 12px;
-      border: 1px solid rgba(148, 163, 184, 0.65);
-      background: rgba(255, 255, 255, 0.96);
-      padding: 7px 9px 7px;
-      margin-bottom: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
-    }
-
-    .session-main-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-    }
-
-    .session-date {
-      font-weight: 600;
-    }
-
-    .session-location {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .session-foot-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-top: 2px;
-      font-size: 10px;
-    }
-
-    .session-price {
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    .session-btn {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 0;
-      background: var(--accent-strong);
-      color: #ffffff;
-      font-size: 11px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.6);
-    }
-
-    .session-btn:active {
-      transform: translateY(1px);
-      box-shadow: 0 1px 5px rgba(37, 99, 235, 0.8);
-    }
-
-    .no-sessions {
-      font-size: 12px;
-      color: var(--text-muted);
-      padding: 8px 4px;
-    }
-
-    /* Right theme stripe */
-    .theme-stripe {
-      width: 32px;
-      border-radius: 0 22px 22px 0;
-      background:
-        linear-gradient(180deg, rgba(15, 23, 42, 0.04), rgba(15, 23, 42, 0.18)),
-        repeating-linear-gradient(
-          135deg,
-          rgba(59, 130, 246, 0.16),
-          rgba(59, 130, 246, 0.16) 4px,
-          rgba(129, 140, 248, 0.04) 4px,
-          rgba(129, 140, 248, 0.04) 10px
-        );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;
-      flex-shrink: 0;
-    }
-
-    .theme-stripe img {
-      max-height: 100%;
-      width: auto;
-      display: block;
-      border-radius: 999px;
-    }
-
-    /* Small status text */
-    .status-text {
-      font-size: 11px;
-      color: var(--text-muted);
-      padding: 6px 8px 0;
-    }
-
-    /* Bottom-right theme decoration */
-    .theme-corner-img {
-      position: absolute;
-      right: 8px;
-      bottom: 6px;
-      width: 90px;
-      max-width: 22vw;
-      opacity: 0.3;
-      pointer-events: none;
-    }
-
-    /* Basic responsiveness: stack on narrow screens */
     @media (max-width: 900px) {
-      .schedule-shell {
+      .page-shell {
+        padding: 10px;
+      }
+
+      .page-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+
+      .panel:nth-child(2),
+      .panel:nth-child(3) {
+        min-height: 260px;
+      }
+
+      header {
         flex-direction: column;
-        padding: 8px;
+        align-items: flex-start;
       }
-      .nav-arrow-strip {
-        width: 100%;
-        height: 40px;
-        border-radius: 18px 18px 0 0;
-      }
-      .nav-arrow-button {
-        border-radius: 18px 18px 0 0;
-      }
-      .schedule-main {
-        flex-direction: column;
-        padding: 6px 2px 6px 2px;
-      }
-      .column-left {
-        width: 100%;
-        max-width: none;
-        min-width: 0;
-      }
-      .column-right {
-        width: 100%;
-      }
-      .theme-stripe {
-        width: 100%;
-        height: 32px;
-        border-radius: 0 0 18px 18px;
-      }
-      .theme-stripe img {
-        max-height: 24px;
-      }
-      .theme-corner-img {
-        display: none;
+
+      .header-right {
+        align-items: flex-start;
       }
     }
-/* ==== Desktop readability & polish overrides ==== */
 
-/* Make overall desktop text a bit larger */
-body {
-  font-size: 16px;
-}
-
-@media (min-width: 900px) {
-  body {
-    font-size: 17px;
-  }
-}
-
-/* Back button: not black, but clearly a control */
-.back-link {
-  background: #ffffffee;          /* soft white chip, not black */
-  color: #074a86;                 /* deep blue text */
-  border-color: #b3c3dd;          /* lighter border */
-  font-weight: 500;
-}
-
-.back-link:hover {
-  background: #e5f0ff;
-  text-decoration: none;
-}
-
-/* Seasonal divider: stretch and pick up page background */
-.season-divider,
-img[alt="Seasonal divider"] {
-  display: block;
-  width: 100%;                    /* fill its container */
-  max-width: 100%;
-  background: linear-gradient(
-    to right,
-    #ffffff,
-    #e9f4ff,
-    #ffffff
-  );                               /* echo the page bg */
-  border-radius: 999px;            /* keep it soft if it has alpha */
-}
-
-/* Bottom-corner decoration: about 3x current visual size */
-.season-corner,
-img[alt="Seasonal decoration"] {
-  transform: scale(3);
-  transform-origin: bottom right;  /* grow “out” to the corner */
-}
-
-/* Slight bump on main headings on desktop */
-@media (min-width: 900px) {
-  h1 { font-size: 1.8rem; }
-  h2 { font-size: 1.25rem; }
-  .hero-copy,
-  p {
-    font-size: 0.98rem;
-  }
-}
-
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        scroll-behavior: auto !important;
+        animation-duration: 0s !important;
+        transition-duration: 0s !important;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Top header -->
-  <header class="top-bar">
-    <div class="top-bar-left">
-      <div class="top-bar-logo">
-        <!-- THEME LOGO: default is 910CPR_wave -->
-        <img id="themeLogo" src="assets/images/910CPR_wave.jpg" alt="910CPR logo">
-      </div>
-      <div class="top-bar-title">
-        <div class="top-bar-title-main">CPR, BLS, ACLS &amp; First Aid – Wilmington / Burgaw / Jacksonville</div>
-        <div class="top-bar-title-sub">Live &amp; blended classes with fast certificates – powered by 910CPR</div>
-      </div>
-    </div>
-    <div class="top-bar-right">
-      <div class="top-chip"><a href="mailto:support@example.com">Email 910CPR for Help</a></div>
-      <a class="top-link" href="index-mobile.html">
-        <span class="icon">📱</span>
-        <span>Mobile view</span>
-      </a>
-      <a class="top-link" href="tel:+19103955193">
-        <span class="icon">📞</span>
-        <span>Call or text (910) 395-5193
-<embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice> <script src="https://cdn.247aireceptionist.com/script.js"></script>
-
-</span> 
-
-      </a>
-    </div>
-  </header>
-
   <div class="page-shell">
-    <div class="schedule-shell">
-      <!-- Left arrow strip -->
-      <aside class="nav-arrow-strip">
-        <button class="nav-arrow-button" id="navBackBtn" title="Back">
-          ‹
-        </button>
-      </aside>
-
-      <!-- Center main area -->
-      <section class="schedule-main">
-        <!-- Left column: families → courses list -->
-        <div class="column column-left">
-          <div class="column-header">
-            <div>
-              <div class="column-title" id="leftHeaderTitle">Step 1: Choose a class family</div>
-              <div class="column-subtitle" id="leftHeaderSubtitle">
-                We’ll show only the classes that match this path.
-              </div>
-            </div>
-          </div>
-          <div class="column-body">
-            <div class="panel-stack panel-stack-left mode-families" id="leftPanelStack">
-
-              <!-- Families panel -->
-              <div class="stack-panel panel-families">
-                <div class="family-list" id="familyList">
-                  <!-- injected families -->
-                </div>
-              </div>
-
-              <!-- Compact courses panel (when in course-detail mode) -->
-              <div class="stack-panel panel-courses-left">
-                <div class="status-text" id="courseListMiniStatus">
-                  Step 2: Pick the exact course in this family.
-                </div>
-                <div class="course-list-compact" id="courseListCompact">
-                  <!-- injected compact course names -->
-                </div>
-              </div>
-
-            </div>
+    <header>
+      <div class="brand-block">
+        <img id="themeLogo" class="brand-logo" src="assets/images/910CPR_wave.jpg" alt="910CPR logo">
+        <div class="brand-text">
+          <div class="brand-title">910CPR · Live CPR & First Aid Training</div>
+          <div class="brand-subtitle">
+            Scroll the schedule, choose your class family, and jump straight to Enrollware to register.
           </div>
         </div>
+      </div>
+      <div class="header-right">
+        <div><strong>Questions?</strong> Call or text (910) 395-5193.</div>
+        <div>Wilmington · Burgaw · Jacksonville · Onsite at your workplace.</div>
+      </div>
+    </header>
 
-        <!-- Right column: courses → sessions -->
-        <div class="column column-right">
-          <div class="column-header">
-            <div>
-              <div class="column-title" id="rightHeaderTitle">
-                Step 2: Pick the exact class
-              </div>
-              <div class="column-subtitle" id="rightHeaderSubtitle">
-                Click a course to see real dates, times, and locations.
+    <div class="header-divider-row">
+      <div class="header-divider">
+        <img id="themeDivider" src="assets/images/theme/default-divider.png" alt="Seasonal divider">
+      </div>
+      <div class="header-corner">
+        <img id="themeCorner" src="assets/images/theme/default-corner.png" alt="Seasonal accent">
+      </div>
+    </div>
+
+    <main class="page-grid">
+      <!-- Left: Families -->
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="panel-header">
+            <div class="panel-title">
+              Step 1: Choose a class family
+            </div>
+            <div class="panel-subtitle">
+              Healthcare, ACLS/PALS, CPR/AED, First Aid, Instructor, and more.
+            </div>
+          </div>
+          <div class="panel-body" id="familyList">
+            <!-- Family cards injected here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Center: Courses + compact nav -->
+      <section class="panel">
+        <div class="panel-inner stacked-panels" id="leftPanelStack">
+          <div class="stack-header">
+            <div class="panel-header-row">
+              <div class="panel-header-titles">
+                <div class="panel-header-title-large" id="leftHeaderTitle">Step 2: Pick your exact class</div>
+                <div class="panel-header-sub" id="leftHeaderSubtitle">
+                  We’ll match the schedule and locations once you choose the course.
+                </div>
               </div>
             </div>
           </div>
-          <div class="column-body">
-            <div class="panel-stack panel-stack-right mode-families" id="rightPanelStack">
-
-              <!-- Courses list (full) -->
-              <div class="stack-panel panel-courses-right">
-                <div class="course-list" id="courseListFull">
-                  <!-- injected course cards -->
-                </div>
-              </div>
-
-              <!-- Sessions view -->
-              <div class="stack-panel panel-sessions">
-                <div class="sessions-shell">
-                  <div class="sessions-header">
-                    <div class="sessions-title" id="sessionsTitle">
-                      Select a course to see all upcoming dates.
-                    </div>
-                    <div class="sessions-subtext" id="sessionsSubtext">
-                      We’ll show Wilmington, Burgaw, Jacksonville, and onsite options where available.
-                    </div>
-                  </div>
-                  <div class="sessions-body" id="sessionsBody">
-                    <!-- injected sessions -->
-                  </div>
-                </div>
-              </div>
-
+          <div class="stack-body">
+            <div class="body-note-sm">
+              <span id="courseListMiniStatus" class="mini-status">Choose a family on the left to see available courses.</span>
+            </div>
+            <div id="courseListFull">
+              <!-- Full-size course cards -->
+            </div>
+          </div>
+          <div class="stack-footer">
+            <div class="family-name-chip">
+              <span>Viewing:</span>
+              <strong id="currentFamilyLabel">No family selected yet</strong>
+            </div>
+            <div class="nav-right-pill">
+              Tap any course to see real dates and locations on the right.
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Right theme stripe with seasonal divider image -->
-      <aside class="theme-stripe">
-        <img id="themeDivider" src="assets/images/theme/default-divider.png" alt="Seasonal divider">
-      </aside>
-
-      <!-- Bottom-right seasonal decoration -->
-      <img id="themeCorner" class="theme-corner-img"
-           src="assets/images/theme/default-corner.png"
-           alt="Seasonal decoration">
-    </div>
+      <!-- Right: Sessions -->
+      <section class="panel">
+        <div class="panel-inner stacked-panels" id="rightPanelStack">
+          <div class="stack-header">
+            <div class="panel-header-row">
+              <div class="panel-header-titles">
+                <div class="panel-header-title-large" id="rightHeaderTitle">Live dates & locations</div>
+                <div class="panel-header-sub" id="rightHeaderSubtitle">
+                  Once you choose a course, your matching sessions will appear here.
+                </div>
+              </div>
+              <button class="nav-back-wide" type="button" id="navBackBtn">
+                <div class="nav-back-wide-main">
+                  <div class="nav-arrow-pill">←</div>
+                  <div class="nav-back-wide-labels">
+                    <div class="nav-back-wide-label-main">Back</div>
+                    <div class="nav-back-wide-label-sub">Adjust class family or course</div>
+                  </div>
+                </div>
+                <div class="nav-back-wide-right">
+                  Change selection
+                </div>
+              </button>
+            </div>
+          </div>
+          <div class="stack-body">
+            <div class="body-note-sm">
+              <span>Click a date below to jump straight into Enrollware’s registration for that session.</span>
+            </div>
+            <div id="sessionsBody">
+              <!-- Sessions will render here -->
+            </div>
+          </div>
+          <div class="stack-footer">
+            <div class="family-name-chip">
+              <span>Course:</span>
+              <strong id="sessionsTitle">No course selected yet</strong>
+            </div>
+            <div class="nav-right-pill" id="sessionsSubtext">
+              You’ll see real dates, locations, and pricing once a course is selected.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
   <script>
@@ -884,11 +1058,14 @@ img[alt="Seasonal decoration"] {
       const n = (name || "").toLowerCase();
 
       if (n.includes("instructor")) return "INSTRUCTOR";
-      if (n.includes("bls")) return "BLS";
-      if (n.includes("acls")) return "ACLS";
-      if (n.includes("pals") || n.includes("pediatric advanced life support")) return "PALS";
 
-      const hasCPR = n.includes("cpr");
+      if (n.includes("acls")) return "ACLS";
+      if (n.includes("pals")) return "PALS";
+
+      const hasBls = n.includes("bls");
+      if (hasBls) return "BLS";
+
+      const hasCPR = n.includes("cpr") || n.includes("c.p.r");
       const hasAED = n.includes("aed");
       const hasFirstAid = n.includes("first aid") || n.includes("first-aid");
 
@@ -919,22 +1096,30 @@ img[alt="Seasonal decoration"] {
         byCourseId[cid].sessions.push(sess);
       });
 
+      // Convert to family array
       const familiesMap = {};
       Object.values(byCourseId).forEach(course => {
-        const famKey = getFamilyKeyFromCourseName(course.name);
-        if (!familiesMap[famKey]) {
-          familiesMap[famKey] = [];
+        const familyKey = getFamilyKeyFromCourseName(course.name);
+        if (!familiesMap[familyKey]) {
+          familiesMap[familyKey] = [];
         }
-        familiesMap[famKey].push(course);
+        familiesMap[familyKey].push(course);
       });
 
+      // Sort courses within each family by name
       Object.keys(familiesMap).forEach(fk => {
-        familiesMap[fk].sort((a, b) => a.name.localeCompare(b.name));
+        familiesMap[fk].sort((a, b) => {
+          const an = (a.name || "").toLowerCase();
+          const bn = (b.name || "").toLowerCase();
+          return an.localeCompare(bn);
+        });
       });
 
-      const order = ["BLS", "ACLS", "PALS", "CPR_AED", "FA_CPR_AED", "INSTRUCTOR", "OTHER"];
+      // Turn into array, sorted by a preferred family order
+      const familyOrder = ["BLS", "ACLS", "PALS", "CPR_AED", "FA_CPR_AED", "INSTRUCTOR", "OTHER"];
       const familiesArray = [];
-      order.forEach(fk => {
+
+      familyOrder.forEach(fk => {
         if (familiesMap[fk] && familiesMap[fk].length) {
           familiesArray.push({
             familyKey: fk,
@@ -961,8 +1146,10 @@ img[alt="Seasonal decoration"] {
     const rightHeaderTitleEl = document.getElementById("rightHeaderTitle");
     const rightHeaderSubtitleEl = document.getElementById("rightHeaderSubtitle");
     const navBackBtn = document.getElementById("navBackBtn");
+    const currentFamilyLabelEl = document.getElementById("currentFamilyLabel");
 
     let familiesData = [];
+    let courseDescriptionsById = {};
     let selectedFamilyKey = null;
     let selectedCourseId = null;
     let viewMode = "families"; // or "course-detail"
@@ -977,20 +1164,20 @@ img[alt="Seasonal decoration"] {
         rightPanelStackEl.classList.remove("mode-course-detail");
         rightPanelStackEl.classList.add("mode-families");
 
-        leftHeaderTitleEl.textContent = "Step 1: Choose a class family";
-        leftHeaderSubtitleEl.textContent = "We’ll show only the classes that match this path.";
-        rightHeaderTitleEl.textContent = "Step 2: Pick the exact class";
-        rightHeaderSubtitleEl.textContent = "Click a course to see real dates, times, and locations.";
+        leftHeaderTitleEl.textContent = "Step 2: Pick your exact class";
+        leftHeaderSubtitleEl.textContent = "We’ll match the schedule and locations once you choose the course.";
+        rightHeaderTitleEl.textContent = "Live dates & locations";
+        rightHeaderSubtitleEl.textContent = "Once you choose a course, your matching sessions will appear here.";
       } else {
         leftPanelStackEl.classList.remove("mode-families");
         leftPanelStackEl.classList.add("mode-course-detail");
         rightPanelStackEl.classList.remove("mode-families");
         rightPanelStackEl.classList.add("mode-course-detail");
 
-        leftHeaderTitleEl.textContent = "Step 2: Pick your exact course";
-        leftHeaderSubtitleEl.textContent = "Left: courses in this family · Right: matching dates and locations.";
-        rightHeaderTitleEl.textContent = "Step 3: Pick a date & location";
-        rightHeaderSubtitleEl.textContent = "Tap Register to jump straight into Enrollware for that class.";
+        leftHeaderTitleEl.textContent = "Step 2: Pick your exact class";
+        leftHeaderSubtitleEl.textContent = "Now showing only courses in your selected family.";
+        rightHeaderTitleEl.textContent = "Step 3: Choose a date & location";
+        rightHeaderSubtitleEl.textContent = "Click a session to go straight to Enrollware’s registration screen.";
       }
     }
 
@@ -998,62 +1185,73 @@ img[alt="Seasonal decoration"] {
       return familiesData.find(f => f.familyKey === fKey) || null;
     }
 
-    // Render families list
+    // Render families (left column)
     function renderFamilies() {
       if (!familyListEl) return;
       familyListEl.innerHTML = "";
 
       if (!familiesData.length) {
         familyListEl.innerHTML =
-          '<div class="status-text">No classes were found in schedule.json. Once your snapshot builder is green again, this will populate automatically.</div>';
+          '<div class="status-text">No live schedule data found. If this looks wrong, please text (910) 395-5193.</div>';
         return;
       }
 
       familiesData.forEach(fam => {
-        const def = FAMILY_DEFS[fam.familyKey] || FAMILY_DEFS["OTHER"];
-
+        const fKey = fam.familyKey;
+        const def = FAMILY_DEFS[fKey] || {};
         const card = document.createElement("div");
         card.className = "family-card";
-        if (fam.familyKey === selectedFamilyKey) {
-          card.classList.add("active");
+        if (fKey === selectedFamilyKey) {
+          card.classList.add("selected");
         }
 
-        const imgWrap = document.createElement("div");
-        imgWrap.className = "family-image";
+        const thumb = document.createElement("div");
+        thumb.className = "family-thumb";
         const img = document.createElement("img");
-        img.src = def.image;
-        img.alt = def.label;
-        imgWrap.appendChild(img);
+        img.src = def.image || "assets/images/910CPR_wave.jpg";
+        img.alt = def.label || fKey;
+        thumb.appendChild(img);
 
-        const textWrap = document.createElement("div");
         const main = document.createElement("div");
-        main.className = "family-text-main";
-        main.textContent = def.label;
-        const sub = document.createElement("div");
-        sub.className = "family-text-sub";
-        sub.textContent = def.blurb;
+        main.className = "family-main";
 
-        textWrap.appendChild(main);
-        textWrap.appendChild(sub);
+        const title = document.createElement("div");
+        title.className = "family-title";
+        title.textContent = def.label || fKey;
 
-        card.appendChild(imgWrap);
-        card.appendChild(textWrap);
+        const blurb = document.createElement("div");
+        blurb.className = "family-blurb";
+        blurb.textContent = def.blurb || ("Courses that match " + fKey + ".");
+
+        main.appendChild(title);
+        main.appendChild(blurb);
+
+        card.appendChild(thumb);
+        card.appendChild(main);
 
         card.addEventListener("click", () => {
-          selectedFamilyKey = fam.familyKey;
+          selectedFamilyKey = fKey;
           selectedCourseId = null;
           setViewMode("families");
           renderFamilies();
-          renderCoursesForFamily(fam.familyKey);
-          renderCompactCoursesForFamily(fam.familyKey);
+          renderCoursesForFamily(fKey);
+          renderCompactCoursesForFamily(fKey);
           renderSessionsForCourse(null);
         });
 
         familyListEl.appendChild(card);
       });
+
+      const fam = getFamilyData(selectedFamilyKey);
+      if (currentFamilyLabelEl) {
+        const def = fam ? (FAMILY_DEFS[fam.familyKey] || {}) : null;
+        currentFamilyLabelEl.textContent = def && def.label
+          ? def.label
+          : (fam ? fam.familyKey : "No family selected yet");
+      }
     }
 
-    // Render full course cards (right column, families mode)
+    // Render full course cards (center column)
     function renderCoursesForFamily(fKey) {
       if (!courseListFullEl) return;
       courseListFullEl.innerHTML = "";
@@ -1093,13 +1291,23 @@ img[alt="Seasonal decoration"] {
         metaRow.appendChild(chip);
         metaRow.appendChild(sub);
 
+        // Optional long description from course-descriptions.json
+        const descData = courseDescriptionsById[String(course.courseId)];
+        if (descData && descData.detail) {
+          const descDiv = document.createElement("div");
+          descDiv.className = "course-description";
+          descDiv.textContent = descData.detail;
+          card.appendChild(descDiv);
+        }
+
         const footRow = document.createElement("div");
         footRow.className = "course-foot-row";
         const notes = document.createElement("div");
         notes.textContent = "Click to see all dates & locations.";
         const arrow = document.createElement("div");
+        arrow.className = "chevron";
         arrow.textContent = "›";
-        arrow.style.fontWeight = "600";
+
         footRow.appendChild(notes);
         footRow.appendChild(arrow);
 
@@ -1123,49 +1331,56 @@ img[alt="Seasonal decoration"] {
 
     // Render compact courses (left column in course-detail mode)
     function renderCompactCoursesForFamily(fKey) {
-      if (!courseListCompactEl) return;
-      courseListCompactEl.innerHTML = "";
+      if (!courseListCompactEl || !courseListMiniStatusEl) return;
 
       const fam = getFamilyData(fKey);
       if (!fam) {
-        courseListCompactEl.innerHTML =
-          '<div class="status-text">No courses for this family.</div>';
+        courseListCompactEl.innerHTML = "";
+        courseListMiniStatusEl.textContent = "No courses found. Try a different family on the left.";
         return;
       }
 
-      if (courseListMiniStatusEl) {
-        courseListMiniStatusEl.textContent =
-          "Courses in " + (FAMILY_DEFS[fKey]?.label || "this family") + ".";
-      }
+      const count = fam.courses.length;
+      courseListMiniStatusEl.textContent =
+        count > 0
+          ? ("Showing " + count + " course" + (count !== 1 ? "s" : "") + " in this family.")
+          : "No courses found in this family.";
 
+      courseListCompactEl.innerHTML = "";
       fam.courses.forEach(course => {
-        const pill = document.createElement("div");
-        pill.className = "course-pill";
+        const mini = document.createElement("button");
+        mini.type = "button";
+        mini.className = "course-mini";
         if (course.courseId === selectedCourseId) {
-          pill.classList.add("selected");
+          mini.classList.add("selected");
         }
 
-        const labelSpan = document.createElement("span");
-        labelSpan.className = "label";
-        labelSpan.textContent = course.name;
+        const dot = document.createElement("div");
+        dot.className = "course-mini-dot";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = course.name;
 
         const countSpan = document.createElement("span");
-        countSpan.className = "count";
-        const count = (course.sessions || []).length;
-        countSpan.textContent = count > 0 ? (count + "×") : "–";
+        const sessionCount = (course.sessions || []).length;
+        countSpan.textContent = sessionCount > 0
+          ? (sessionCount + "× dates")
+          : "Dates vary";
 
-        pill.appendChild(labelSpan);
-        pill.appendChild(countSpan);
+        mini.appendChild(dot);
+        mini.appendChild(nameSpan);
+        mini.appendChild(countSpan);
 
-        pill.addEventListener("click", () => {
+        mini.addEventListener("click", () => {
           selectedCourseId = course.courseId;
           setViewMode("course-detail");
+          renderFamilies();
           renderCompactCoursesForFamily(fKey);
           renderCoursesForFamily(fKey);
           renderSessionsForCourse(course.courseId);
         });
 
-        courseListCompactEl.appendChild(pill);
+        courseListCompactEl.appendChild(mini);
       });
     }
 
@@ -1173,18 +1388,18 @@ img[alt="Seasonal decoration"] {
     function renderSessionsForCourse(courseId) {
       if (!sessionsBodyEl) return;
 
+      sessionsBodyEl.innerHTML = "";
+
       if (!courseId) {
-        sessionsTitleEl.textContent = "Select a course to see all upcoming dates.";
+        sessionsTitleEl.textContent = "No course selected yet";
         sessionsSubtextEl.textContent =
-          "We’ll show Wilmington, Burgaw, Jacksonville, and onsite options where available.";
-        sessionsBodyEl.innerHTML =
-          '<div class="no-sessions">Once you choose a course on the right, all future class times will show here with direct Register buttons.</div>';
+          "Pick a class family and course first. Then we’ll show all matching live dates and locations.";
         return;
       }
 
-      const family = getFamilyData(selectedFamilyKey);
-      if (!family) return;
-      const course = family.courses.find(c => c.courseId === courseId);
+      const fam = getFamilyData(selectedFamilyKey);
+      if (!fam) return;
+      const course = fam.courses.find(c => c.courseId === courseId);
       if (!course) return;
 
       sessionsTitleEl.textContent = course.name;
@@ -1209,6 +1424,7 @@ img[alt="Seasonal decoration"] {
 
         const dateDiv = document.createElement("div");
         dateDiv.className = "session-date";
+
         const start = sess.start_display || "";
         const parts = start.split(" at ");
         const dateLabel = parts[0] || start;
@@ -1230,7 +1446,12 @@ img[alt="Seasonal decoration"] {
 
         const priceDiv = document.createElement("div");
         priceDiv.className = "session-price";
-        priceDiv.textContent = ""; // price not available in schedule.json yet
+        const rawPrice = (sess.price || "").toString().trim();
+        if (rawPrice) {
+          priceDiv.textContent = rawPrice;
+        } else {
+          priceDiv.textContent = "";
+        }
 
         const btn = document.createElement("button");
         btn.type = "button";
@@ -1260,25 +1481,52 @@ img[alt="Seasonal decoration"] {
         if (viewMode === "course-detail") {
           setViewMode("families");
           selectedCourseId = null;
-          renderCompactCoursesForFamily(selectedFamilyKey);
           renderCoursesForFamily(selectedFamilyKey);
+          renderCompactCoursesForFamily(selectedFamilyKey);
           renderSessionsForCourse(null);
         } else {
-          window.location.href = "https://910cpr.com";
+          selectedFamilyKey = null;
+          selectedCourseId = null;
+          setViewMode("families");
+          renderFamilies();
+          if (courseListFullEl) courseListFullEl.innerHTML = "";
+          if (courseListCompactEl) courseListCompactEl.innerHTML = "";
+          if (courseListMiniStatusEl) {
+            courseListMiniStatusEl.textContent = "Choose a family on the left to see available courses.";
+          }
+          renderSessionsForCourse(null);
         }
       });
     }
 
-    // Initialize from schedule.json
     async function initSchedule() {
       try {
-        const resp = await fetch("data/schedule.json", { cache: "no-store" });
-        if (!resp.ok) throw new Error("HTTP " + resp.status);
-        const schedule = await resp.json();
+        const [schedResp, descResp] = await Promise.all([
+          fetch("data/schedule.json", { cache: "no-store" }),
+          fetch("data/course-descriptions.json", { cache: "no-store" })
+        ]);
+
+        if (!schedResp.ok) throw new Error("schedule.json HTTP " + schedResp.status);
+        const schedule = await schedResp.json();
         familiesData = buildFamiliesFromSchedule(schedule);
+
+        if (descResp.ok) {
+          const descJson = await descResp.json();
+          const map = {};
+          (descJson.courses || []).forEach(c => {
+            if (c && typeof c.course_id !== "undefined") {
+              const cid = String(c.course_id);
+              map[cid] = c;
+            }
+          });
+          courseDescriptionsById = map;
+        } else {
+          courseDescriptionsById = {};
+        }
       } catch (err) {
-        console.error("Failed to load schedule.json; page will be mostly empty:", err);
+        console.error("Failed to load schedule.json and/or course-descriptions.json; page will be mostly empty:", err);
         familiesData = [];
+        courseDescriptionsById = {};
       }
 
       if (familiesData.length) {
