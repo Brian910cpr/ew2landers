@@ -1,0 +1,225 @@
+{
+  "meta": {
+    "generated_from": "courses.json (titles only, HTML stripped)",
+    "note": "Safe, compact export using stripped cleanTitle. Extend as needed.",
+    "course_count": 27
+  },
+  "courses": [
+    {
+      "course_id": 209805,
+      "family": "PALS",
+      "certBody": "AHA",
+      "deliveryMode": "in_person",
+      "title": "AHA",
+      "detail": "PALS Provider - In Person - Initial Instructor-led Classroom for Expired or New PALS"
+    },
+    {
+      "course_id": 209806,
+      "family": "BLS",
+      "certBody": "AHA",
+      "deliveryMode": "in_person",
+      "title": "AHA",
+      "detail": "BLS Provider - In-person Initial Instructor-led Classroom for Expired or New BLS"
+    },
+    {
+      "course_id": 209807,
+      "family": "PALS",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "PALS Provider - Online or Skills Session - Initial or Renewal Heartcode PALS with Skills Check"
+    },
+    {
+      "course_id": 209808,
+      "family": "BLS",
+      "certBody": "AHA",
+      "deliveryMode": "online_skills",
+      "title": "AHA",
+      "detail": "BLS Provider Online/Skills Heartcode Online + Skills Check"
+    },
+    {
+      "course_id": 209809,
+      "family": "BLS",
+      "certBody": "AHA",
+      "deliveryMode": "in_person",
+      "title": "AHA",
+      "detail": "BLS Provider - In-person Renewal Instructor-led Classroom program for BLS Renewal"
+    },
+    {
+      "course_id": 216699,
+      "family": "ACLS",
+      "certBody": "AHA",
+      "deliveryMode": "in_person",
+      "title": "AHA",
+      "detail": "ACLS Provider - In-person Initial Instructor-led Classroom for Expired or New ACLS"
+    },
+    {
+      "course_id": 216700,
+      "family": "ACLS",
+      "certBody": "AHA",
+      "deliveryMode": "in_person",
+      "title": "AHA",
+      "detail": "ACLS Provider Update - In-Person Instructor-led Classroom for ACLS Renewal"
+    },
+    {
+      "course_id": 216701,
+      "family": "ACLS",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "ACLS Provider Online/Skills Heartcode Online + Skills Check"
+    },
+    {
+      "course_id": 221520,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "Heartsaver® First Aid Online Online Course for Heartsaver First Aid Heartcode"
+    },
+    {
+      "course_id": 221521,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "Heartsaver® CPR AED Online Online Course for Heartsaver CPR AED Heartcode"
+    },
+    {
+      "course_id": 221522,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "Heartsaver® First Aid CPR AED Online Online Course for Heartsaver First Aid CPR AED Heartcode"
+    },
+    {
+      "course_id": 221523,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "Heartsaver® Pediatric First Aid CPR AED Online Online Course for Heartsaver Pediatric First Aid CPR AED Heartcode"
+    },
+    {
+      "course_id": 221524,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "Heartsaver® First Aid Skills Check (Heartcode or ILT) Hands-on Skills Check for Heartsaver First Aid"
+    },
+    {
+      "course_id": 221525,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "Heartsaver® CPR AED Skills Check (Heartcode or ILT) Hands-on Skills Check for Heartsaver CPR AED"
+    },
+    {
+      "course_id": 221526,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "Heartsaver® First Aid CPR AED Skills Check (Heartcode or ILT) Hands-on Skills Check for Heartsaver First Aid CPR AED"
+    },
+    {
+      "course_id": 221527,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "heartcode",
+      "title": "AHA",
+      "detail": "Heartsaver® Pediatric First Aid CPR AED Skills Check (Heartcode or ILT) Hands-on Skills Check for Heartsaver Pediatric First Aid CPR AED"
+    },
+    {
+      "course_id": 252500,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "online_skills",
+      "title": "Heartsaver First Aid/CPR/AED Online (Blended)",
+      "detail": ""
+    },
+    {
+      "course_id": 252501,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "online",
+      "title": "Heartsaver First Aid Online Only",
+      "detail": ""
+    },
+    {
+      "course_id": 252502,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "online",
+      "title": "Heartsaver CPR/AED Online Only",
+      "detail": ""
+    },
+    {
+      "course_id": 252503,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "online",
+      "title": "Heartsaver Pediatric First Aid/CPR/AED Online Only",
+      "detail": ""
+    },
+    {
+      "course_id": 252504,
+      "family": "First Aid/CPR/AED",
+      "certBody": "AHA",
+      "deliveryMode": "online",
+      "title": "Heartsaver First Aid/CPR/AED Online Only",
+      "detail": ""
+    },
+    {
+      "course_id": 252505,
+      "family": "First Aid/CPR/AED",
+      "certBody": "HSI",
+      "deliveryMode": "in_person",
+      "title": "HSI Adult First Aid | CPR AED",
+      "detail": ""
+    },
+    {
+      "course_id": 252506,
+      "family": "First Aid/CPR/AED",
+      "certBody": "HSI",
+      "deliveryMode": "blended",
+      "title": "HSI Adult First Aid | CPR AED — Blended Online + In-Person Skills",
+      "detail": "Online + In-Person Skills"
+    },
+    {
+      "course_id": 252507,
+      "family": "First Aid/CPR/AED",
+      "certBody": "HSI",
+      "deliveryMode": "blended",
+      "title": "HSI Pediatric First Aid | CPR AED — Blended Online + In-Person Skills",
+      "detail": "Online + In-Person Skills"
+    },
+    {
+      "course_id": 252508,
+      "family": "First Aid/CPR/AED",
+      "certBody": "HSI",
+      "deliveryMode": "in_person",
+      "title": "HSI Pediatric First Aid | CPR AED",
+      "detail": ""
+    },
+    {
+      "course_id": 458723,
+      "family": "Other",
+      "certBody": "OTHER",
+      "deliveryMode": "in_person",
+      "title": "Infant CPR & Choking Relief Class",
+      "detail": ""
+    },
+    {
+      "course_id": 463743,
+      "family": "BLS",
+      "certBody": "HSI",
+      "deliveryMode": "in_person",
+      "title": "HSI BLS Challenge – Renewal for Experienced Providers Ready to Test Out",
+      "detail": ""
+    }
+  ]
+}
