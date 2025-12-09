@@ -6,22 +6,20 @@ Reads docs/data/schedule.json, follows each Enrollware "register_url",
 scrapes the session price from the enroll page, and writes it back to
 schedule.json as "price".
 
-- Uses a small local cache (docs/data/prices-cache.json) so the same
-  enroll URL isn't fetched over and over.
+- Uses a local cache (docs/data/prices-cache.json) so the same enroll URL
+  isn't fetched repeatedly.
 - Extraction is intentionally generic: it looks for the first "$##.##"
   pattern in the page text. If you find a more precise CSS selector in
   Enrollware's HTML, you can tighten extract_price() later.
 
-Run from repo root:
+Run from the repo root, for example:
 
-    cd D:\Users\ten77\Documents\GitHub\ew2landers
     python tools/update_session_prices.py
 """
 
 import json
-import os
-import re
 import time
+import re
 from pathlib import Path
 
 import requests
@@ -40,9 +38,9 @@ REQUEST_TIMEOUT = 15  # seconds
 THROTTLE_SECONDS = 0.4  # pause between requests
 
 
-def load_json(path, default):
+def load_json(path: Path, default):
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with path.open("r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         return default
@@ -51,48 +49,37 @@ def load_json(path, default):
         return default
 
 
-def save_json(path, data):
+def save_json(path: Path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
-    with open(tmp, "w", encoding="utf-8") as f:
+    with tmp.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     tmp.replace(path)
 
 
 def extract_price(html: str) -> str | None:
     """
-    Very generic price extractor:
-    - Walks all text nodes and grabs the first "$##.##" style pattern.
-    - Returns the string like "$85.00" or "$95".
-
-    If you inspect Enrollware and find a stable element (e.g. a span with
-    id="PriceLabel"), you can replace this with a more precise selector.
+    Generic price extractor:
+    - Walks text nodes and grabs the first "$##.##" style pattern.
     """
     soup = BeautifulSoup(html, "html.parser")
 
-    # If you discover a specific selector later, uncomment/adjust this:
-    # price_el = soup.select_one(".ew-session-price")  # example
+    # If you discover a specific selector later, you can do:
+    # price_el = soup.select_one("CSS_SELECTOR_HERE")
     # if price_el:
     #     m = re.search(r"\$\s*\d+(?:\.\d{2})?", price_el.get_text(" ", strip=True))
     #     if m:
     #         return m.group(0)
 
     pattern = re.compile(r"\$\s*\d+(?:\.\d{2})?")
-    candidates: list[str] = []
-
     for text in soup.stripped_strings:
         if "$" not in text:
             continue
         m = pattern.search(text)
         if m:
-            candidates.append(m.group(0))
-            # We only really need the first reasonable hit
-            break
+            return m.group(0)
 
-    if not candidates:
-        return None
-
-    return candidates[0]
+    return None
 
 
 def fetch_price_for_url(url: str, cache: dict) -> str | None:
@@ -146,19 +133,20 @@ def main():
 
         existing = sess.get("price")
         if existing:
-            # Already has a price; keep it and prime cache
+            # Already has a price; keep it and seed the cache
             price_cache.setdefault(url, existing)
             continue
 
-        print(f"\n[{idx}/{total}] Session course_id={sess.get('course_id')} "
-              f"course_name={sess.get('course_name')!r}")
+        print(
+            f"\n[{idx}/{total}] course_id={sess.get('course_id')} "
+            f"course_name={sess.get('course_name')!r}"
+        )
 
         price = fetch_price_for_url(url, price_cache)
         if price:
             sess["price"] = price
             updated_count += 1
 
-    # Save updated schedule and cache
     save_json(SCHEDULE_PATH, schedule)
     save_json(CACHE_PATH, price_cache)
 
