@@ -32,7 +32,6 @@
       --app-bg-gradient: radial-gradient(circle at top, #e0ebff 0, #f5f7fb 60%);
     }
 
-    /* Family accent hues (match desktop) */
     body.family-BLS {
       --accent-color: #0d47a1;
       --accent-soft: rgba(13, 71, 161, 0.08);
@@ -81,7 +80,6 @@
       background: var(--season-bg, var(--app-bg-gradient));
     }
 
-    /* Fixed header */
     .app-header {
       position: fixed;
       top: 0;
@@ -179,7 +177,6 @@
       opacity: 0.95;
     }
 
-    /* Swipe helper bar */
     .swipe-bar {
       position: fixed;
       top: var(--header-height);
@@ -216,7 +213,6 @@
       background: rgba(15, 23, 42, 0.5);
     }
 
-    /* Main content */
     .app-main {
       padding-top: calc(var(--header-height) + 44px);
       padding-bottom: calc(var(--footer-height) + 20px);
@@ -318,7 +314,6 @@
 
     .scroll-body {
       margin-top: 6px;
-      padding-bottom: 10px;
       border-radius: 16px;
       background: rgba(249,250,251,0.95);
       border: 1px solid rgba(229,231,235,0.9);
@@ -326,13 +321,16 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      max-width: 100%;
     }
     .scroll-inner {
       flex: 1;
-      padding: 8px 10px 10px;
+      padding: 8px 10px 12px;
       overflow-y: auto;
+      overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: thin;
+      max-width: 100%;
     }
     .scroll-inner::-webkit-scrollbar {
       width: 6px;
@@ -345,19 +343,21 @@
       border-radius: 999px;
     }
 
-    /* Family chips */
+    /* FAMILY CARDS */
     .family-chip {
       display: flex;
       align-items: center;
+      width: 100%;
+      max-width: 100%;
       padding: 10px 11px;
       border-radius: 12px;
       background: #ffffff;
       border: 1px solid rgba(209, 213, 219, 0.9);
       box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
-      margin-bottom: 8px;
+      margin: 0 0 8px 0;
       gap: 10px;
       cursor: pointer;
-      width: 100%;
+      box-sizing: border-box;
     }
     .family-chip.active {
       border-color: rgba(37, 99, 235, 0.9);
@@ -384,11 +384,14 @@
       font-weight: 600;
       color: #111827;
       white-space: normal;
+      overflow-wrap: anywhere;
     }
     .family-detail {
       font-size: 11px;
       color: #6b7280;
       margin-top: 2px;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
     .family-arrow {
       flex: 0 0 auto;
@@ -396,11 +399,11 @@
       font-size: 16px;
     }
 
-    /* Course cards */
+    /* COURSE CARDS */
     .course-card {
       border-radius: 14px;
       padding: 10px 10px 9px;
-      margin-bottom: 8px;
+      margin: 0 0 8px 0;
       background: #ffffff;
       border: 1px solid rgba(209,213,219,0.9);
       box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
@@ -409,6 +412,8 @@
       gap: 4px;
       cursor: pointer;
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     .course-card.active {
       border-color: rgba(37, 99, 235, 0.95);
@@ -421,23 +426,53 @@
       color: #111827;
       line-height: 1.25;
       white-space: normal;
-      overflow-wrap: break-word;
+      overflow-wrap: anywhere;
     }
     .course-detail {
       font-size: 11px;
       color: #4b5563;
       white-space: normal;
+      overflow-wrap: anywhere;
+      margin-top: 1px;
     }
-    .course-meta-line {
-      font-size: 11px;
+    .course-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 6px;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .course-chip {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.9);
+      background: #f3f4f6;
+      color: #4b5563;
+      white-space: nowrap;
+    }
+    .course-chip.cert {
+      border-color: rgba(37,99,235,0.7);
+      background: rgba(219,234,254,0.9);
+      color: #1d4ed8;
+    }
+    .course-chip.mode {
+      border-color: rgba(16,185,129,0.7);
+      background: rgba(209,250,229,0.9);
+      color: #047857;
+    }
+    .course-meta-text {
+      font-size: 10px;
       color: #6b7280;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
 
-    /* Session cards */
+    /* SESSION CARDS */
     .session-card {
       border-radius: 14px;
       padding: 10px 10px 9px;
-      margin-bottom: 8px;
+      margin: 0 0 8px 0;
       background: #ffffff;
       border: 1px solid rgba(209,213,219,0.9);
       box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
@@ -445,6 +480,8 @@
       flex-direction: column;
       gap: 4px;
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     .session-card.past {
       opacity: 0.8;
@@ -467,7 +504,7 @@
       font-weight: 600;
       color: #111827;
       white-space: normal;
-      overflow-wrap: break-word;
+      overflow-wrap: anywhere;
     }
     .session-time {
       font-size: 11px;
@@ -477,7 +514,7 @@
       font-size: 11px;
       color: #6b7280;
       white-space: normal;
-      overflow-wrap: break-word;
+      overflow-wrap: anywhere;
     }
     .session-badge {
       font-size: 11px;
@@ -513,6 +550,7 @@
       gap: 5px;
       cursor: pointer;
       box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+      white-space: nowrap;
     }
     .session-btn.past {
       background: #9ca3af;
@@ -525,6 +563,8 @@
       font-size: 11px;
       color: #9ca3af;
       margin-top: 2px;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
 
     .section-empty {
@@ -579,6 +619,8 @@
       margin: 0 auto;
       display: flex;
       gap: 8px;
+      width: 100%;
+      padding: 0 12px;
     }
     .footer-btn {
       flex: 1;
@@ -594,6 +636,8 @@
       justify-content: center;
       gap: 6px;
       text-decoration: none;
+      box-sizing: border-box;
+      white-space: nowrap;
     }
     .footer-btn.primary {
       background: linear-gradient(135deg, #22c55e, #16a34a);
@@ -602,9 +646,6 @@
     }
     .footer-btn-icon {
       font-size: 13px;
-    }
-    .footer-btn span {
-      white-space: nowrap;
     }
 
     .footer-source {
@@ -629,7 +670,7 @@
     <header class="app-header">
       <div class="header-left">
         <div class="header-logo">
-          <img src="assets/images/910CPR_wave.jpg" alt="910CPR logo">
+          <img src="assets/images/910CPR_wave.jpg" alt="910CPR logo" id="themeLogo">
         </div>
         <div class="header-text">
           <div class="header-title" id="headerTitle">Choose a class family</div>
@@ -638,7 +679,7 @@
       </div>
       <div class="header-right">
         <div class="header-chip" id="headerChip">Swipe or tap to continue</div>
-        <div class="theme-corner"></div>
+        <img src="assets/images/theme/default-corner.png" alt="" class="theme-corner" id="themeCorner">
       </div>
     </header>
 
@@ -732,12 +773,11 @@
       </div>
     </footer>
 
-    <div class="footer-source">Source: data/schedule.json</div>
+    <div class="footer-source">Source: data/schedule.json + data/course-descriptions.json</div>
   </div>
 
   <script>
     (function () {
-      // --- Same family definitions as desktop ---
       const FAMILY_DEFS = {
         "BLS": {
           key: "BLS",
@@ -778,7 +818,7 @@
         "OTHER": {
           key: "OTHER",
           label: "Other Programs & Online",
-          blurb: "Specialty programs, online options, and classes that don’t fit neatly above.",
+          blurb: "Specialty programs and options that do not fit neatly above.",
           image: "assets/images/910CPR_wave.jpg"
         }
       };
@@ -789,7 +829,6 @@
         if (n.includes("bls")) return "BLS";
         if (n.includes("acls")) return "ACLS";
         if (n.includes("pals") || n.includes("pediatric advanced life support")) return "PALS";
-
         const hasCPR = n.includes("cpr");
         const hasAED = n.includes("aed");
         const hasFirstAid = n.includes("first aid") || n.includes("first-aid");
@@ -798,7 +837,6 @@
         return "OTHER";
       }
 
-      // Same schedule.json -> families grouping as desktop
       function buildFamiliesFromSchedule(schedule) {
         const sessions = schedule.sessions || [];
         const byCourseId = {};
@@ -840,7 +878,6 @@
         return familiesArray;
       }
 
-      // DOM refs
       const slidesStrip = document.getElementById("slidesStrip");
       const pagerDots = Array.from(document.querySelectorAll(".pager-dot"));
       const headerTitle = document.getElementById("headerTitle");
@@ -860,9 +897,10 @@
       const sessionSlideSub = document.getElementById("sessionSlideSub");
 
       let currentStep = 0;
-      let familiesData = []; // [{ key, name, detail, imageUrl, courses }]
+      let familiesData = [];
       let activeFamilyKey = null;
       let activeCourseId = null;
+      let courseDescriptionsById = {};
 
       function setBodyHueForFamily(familyKey) {
         const keys = ["BLS","ACLS","PALS","CPR_AED","FA_CPR_AED","INSTRUCTOR","OTHER"];
@@ -873,16 +911,6 @@
         } else {
           body.classList.add("family-BLS");
         }
-      }
-
-      function splitCourseName(fullName) {
-        if (!fullName) return { title: "", detail: "" };
-        const parts = fullName.split(" — ");
-        if (parts.length === 1) return { title: fullName.trim(), detail: "" };
-        return {
-          title: parts[0].trim(),
-          detail: parts.slice(1).join(" — ").trim()
-        };
       }
 
       function setStep(stepIndex) {
@@ -933,7 +961,6 @@
 
       navBack.addEventListener("click", prevStep);
 
-      // Swipe gestures
       let touchStartX = 0;
       let touchEndX = 0;
       const SWIPE_THRESHOLD = 40;
@@ -962,6 +989,25 @@
       pagerDots.forEach((dot, i) => {
         dot.addEventListener("click", () => setStep(i));
       });
+
+      function splitCourseName(fullName) {
+        if (!fullName) return { title: "", detail: "" };
+        const parts = fullName.split(" — ");
+        if (parts.length === 1) return { title: fullName.trim(), detail: "" };
+        return {
+          title: parts[0].trim(),
+          detail: parts.slice(1).join(" — ").trim()
+        };
+      }
+
+      function friendlyMode(modeRaw) {
+        const m = (modeRaw || "").toLowerCase();
+        if (m === "in_person") return "In-Person Classroom";
+        if (m === "online_skills" || m === "heartcode") return "Online + Skills Check";
+        if (m === "online") return "Online Only";
+        if (m === "blended") return "Blended Online + Skills";
+        return "";
+      }
 
       function renderFamiliesView() {
         familyListEl.innerHTML = "";
@@ -994,7 +1040,7 @@
           detailEl.textContent = fam.detail || "";
 
           textWrap.appendChild(nameEl);
-          textWrap.appendChild(detailEl);
+          if (detailEl.textContent) textWrap.appendChild(detailEl);
 
           const arrow = document.createElement("div");
           arrow.className = "family-arrow";
@@ -1046,28 +1092,70 @@
         }
 
         fam.courses.forEach(course => {
-          const split = splitCourseName(course.name);
+          const desc = courseDescriptionsById[String(course.courseId)] || null;
+
+          let primaryTitle = "";
+          let subtitle = "";
+          let certLabel = "";
+          let modeLabel = "";
+          if (desc) {
+            certLabel = desc.certBody || "";
+            modeLabel = friendlyMode(desc.deliveryMode);
+            if (desc.title && desc.title !== "AHA" && desc.title !== "HSI") {
+              primaryTitle = desc.title;
+              subtitle = desc.detail || "";
+            } else {
+              primaryTitle = desc.detail || course.name;
+              subtitle = "";
+            }
+          } else {
+            const split = splitCourseName(course.name);
+            primaryTitle = split.title || course.name;
+            subtitle = split.detail || "";
+          }
+
           const card = document.createElement("div");
           card.className = "course-card" + (course.courseId === activeCourseId ? " active" : "");
 
           const titleEl = document.createElement("div");
           titleEl.className = "course-title";
-          titleEl.textContent = split.title || course.name;
-
-          const detailEl = document.createElement("div");
-          detailEl.className = "course-detail";
-          detailEl.textContent = split.detail || "";
-
-          const metaEl = document.createElement("div");
-          metaEl.className = "course-meta-line";
-          const count = (course.sessions || []).length;
-          metaEl.textContent = count > 0
-            ? (count + " upcoming date" + (count !== 1 ? "s" : "") + " · Wilmington, Burgaw, Jacksonville, onsite when available.")
-            : "Dates vary · Contact 910CPR if you need this course soon.";
+          titleEl.textContent = primaryTitle;
 
           card.appendChild(titleEl);
-          if (detailEl.textContent) card.appendChild(detailEl);
-          card.appendChild(metaEl);
+
+          if (subtitle) {
+            const detailEl = document.createElement("div");
+            detailEl.className = "course-detail";
+            detailEl.textContent = subtitle;
+            card.appendChild(detailEl);
+          }
+
+          const metaRow = document.createElement("div");
+          metaRow.className = "course-meta-row";
+
+          if (certLabel) {
+            const certChip = document.createElement("span");
+            certChip.className = "course-chip cert";
+            certChip.textContent = certLabel;
+            metaRow.appendChild(certChip);
+          }
+
+          if (modeLabel) {
+            const modeChip = document.createElement("span");
+            modeChip.className = "course-chip mode";
+            modeChip.textContent = modeLabel;
+            metaRow.appendChild(modeChip);
+          }
+
+          const count = (course.sessions || []).length;
+          const metaText = document.createElement("span");
+          metaText.className = "course-meta-text";
+          metaText.textContent = count > 0
+            ? (count + " upcoming date" + (count !== 1 ? "s" : "") + " · Wilmington, Burgaw, Jacksonville, onsite when available.")
+            : "Dates vary · Contact 910CPR if you need this course soon.";
+          metaRow.appendChild(metaText);
+
+          card.appendChild(metaRow);
 
           card.addEventListener("click", () => {
             activeCourseId = course.courseId;
@@ -1106,9 +1194,19 @@
           return;
         }
 
-        const split = splitCourseName(courseFound.name);
-        sessionCourseLabel.textContent = split.title || courseFound.name;
-        sessionSlideTitle.textContent = "Dates for " + (split.title || courseFound.name);
+        const desc = courseDescriptionsById[String(courseFound.courseId)] || null;
+        let headerName = "";
+        if (desc && desc.title && desc.title !== "AHA" && desc.title !== "HSI") {
+          headerName = desc.title;
+        } else if (desc && desc.detail) {
+          headerName = desc.detail;
+        } else {
+          const split = splitCourseName(courseFound.name);
+          headerName = split.title || courseFound.name;
+        }
+
+        sessionCourseLabel.textContent = headerName;
+        sessionSlideTitle.textContent = "Dates for " + headerName;
         sessionSlideSub.textContent = "Tap a session to go straight to 910CPR’s Enrollware registration page.";
 
         const sessions = courseFound.sessions || [];
@@ -1188,7 +1286,7 @@
 
           const tagLine = document.createElement("div");
           tagLine.className = "session-tagline";
-          tagLine.textContent = familyFound.name + " · " + (split.title || courseFound.name);
+          tagLine.textContent = familyFound.name + " · " + headerName;
 
           card.appendChild(mainRow);
           card.appendChild(locEl);
@@ -1201,9 +1299,28 @@
 
       async function initSchedule() {
         try {
-          const resp = await fetch("data/schedule.json", { cache: "no-store" });
-          if (!resp.ok) throw new Error("HTTP " + resp.status);
-          const schedule = await resp.json();
+          const [scheduleResp, descResp] = await Promise.all([
+            fetch("data/schedule.json", { cache: "no-store" }),
+            fetch("data/course-descriptions.json", { cache: "no-store" })
+          ]);
+
+          let schedule = { sessions: [] };
+          if (scheduleResp.ok) {
+            schedule = await scheduleResp.json();
+          } else {
+            console.warn("schedule.json not loaded", scheduleResp.status);
+          }
+
+          if (descResp.ok) {
+            const descJson = await descResp.json();
+            (descJson.courses || []).forEach(c => {
+              if (c.course_id != null) {
+                courseDescriptionsById[String(c.course_id)] = c;
+              }
+            });
+          } else {
+            console.warn("course-descriptions.json not loaded", descResp.status);
+          }
 
           const familiesFromSchedule = buildFamiliesFromSchedule(schedule);
           familiesData = familiesFromSchedule.map(f => {
@@ -1217,7 +1334,7 @@
             };
           });
         } catch (err) {
-          console.error("Failed to load data/schedule.json", err);
+          console.error("Failed to load data", err);
           familiesData = [];
         }
 
