@@ -428,7 +428,7 @@
       white-space: normal;
       overflow-wrap: anywhere;
     }
-    .course-detail {
+    .course-description {
       font-size: 11px;
       color: #4b5563;
       white-space: normal;
@@ -992,11 +992,11 @@
 
       function splitCourseName(fullName) {
         if (!fullName) return { title: "", detail: "" };
-        const parts = fullName.split(" — ");
+        const parts = fullName.split(" - ");
         if (parts.length === 1) return { title: fullName.trim(), detail: "" };
         return {
           title: parts[0].trim(),
-          detail: parts.slice(1).join(" — ").trim()
+          detail: parts.slice(1).join(" - ").trim()
         };
       }
 
@@ -1007,6 +1007,19 @@
         if (m === "online") return "Online Only";
         if (m === "blended") return "Blended Online + Skills";
         return "";
+      }
+
+      function buildGenericDescription(desc, fam) {
+        const mode = desc ? friendlyMode(desc.deliveryMode) : "";
+        const body = desc ? (desc.certBody || "") : "";
+        const pieces = [];
+        if (body) pieces.push(body + " certification");
+        if (fam && fam.name) pieces.push(fam.name);
+        if (mode) pieces.push(mode.toLowerCase());
+        let base = pieces.join(" · ");
+        if (!base) base = "Standard class for this family";
+        if (!base.endsWith(".")) base += ".";
+        return base;
       }
 
       function renderFamiliesView() {
@@ -1095,23 +1108,30 @@
           const desc = courseDescriptionsById[String(course.courseId)] || null;
 
           let primaryTitle = "";
-          let subtitle = "";
+          let descriptionText = "";
           let certLabel = "";
           let modeLabel = "";
+
           if (desc) {
             certLabel = desc.certBody || "";
             modeLabel = friendlyMode(desc.deliveryMode);
-            if (desc.title && desc.title !== "AHA" && desc.title !== "HSI") {
-              primaryTitle = desc.title;
-              subtitle = desc.detail || "";
+
+            const rawTitle = desc.title || "";
+            const rawDetail = desc.detail || "";
+
+            if (!rawTitle || rawTitle === "AHA" || rawTitle === "HSI") {
+              const src = rawDetail || course.name || "";
+              const split = splitCourseName(src);
+              primaryTitle = split.title || src;
+              descriptionText = split.detail || buildGenericDescription(desc, fam);
             } else {
-              primaryTitle = desc.detail || course.name;
-              subtitle = "";
+              primaryTitle = rawTitle;
+              descriptionText = rawDetail || buildGenericDescription(desc, fam);
             }
           } else {
             const split = splitCourseName(course.name);
             primaryTitle = split.title || course.name;
-            subtitle = split.detail || "";
+            descriptionText = split.detail || buildGenericDescription(null, fam);
           }
 
           const card = document.createElement("div");
@@ -1123,11 +1143,11 @@
 
           card.appendChild(titleEl);
 
-          if (subtitle) {
-            const detailEl = document.createElement("div");
-            detailEl.className = "course-detail";
-            detailEl.textContent = subtitle;
-            card.appendChild(detailEl);
+          if (descriptionText) {
+            const dEl = document.createElement("div");
+            dEl.className = "course-description";
+            dEl.textContent = descriptionText;
+            card.appendChild(dEl);
           }
 
           const metaRow = document.createElement("div");
