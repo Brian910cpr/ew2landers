@@ -2,8 +2,9 @@
 """
 build_course_descriptions.py
 
-Reads courses.json and generates docs/data/course-descriptions.json
-with description-only data (no dates, no session_ids).
+Reads docs/data/courses.json and generates
+docs/data/course-descriptions.json with description-only
+data (no dates, no session_ids).
 
 Usage (from repo root):
     python tools/build_course_descriptions.py
@@ -15,7 +16,7 @@ from pathlib import Path
 
 # Configuration
 REPO_ROOT = Path(__file__).resolve().parents[1]  # ew2landers root
-COURSES_JSON = REPO_ROOT / "courses.json"
+COURSES_JSON = REPO_ROOT / "docs" / "data" / "courses.json"
 OUTPUT_JSON = REPO_ROOT / "docs" / "data" / "course-descriptions.json"
 MAX_SHORT_LEN = 260  # characters for shortDescription preview
 
@@ -59,11 +60,11 @@ def build_record(raw: dict) -> dict:
     # Prefer cleanTitle, fall back to uglyTitle
     full_title = clean_title or ugly_title
 
-    # Split into title and detail on the first " — " like in your naming
+    # Try to split title and detail on " - " (plain hyphen)
     title = full_title
     detail = ""
-    if " — " in full_title:
-        parts = full_title.split(" — ", 1)
+    if " - " in full_title:
+        parts = full_title.split(" - ", 1)
         title = parts[0].strip()
         detail = parts[1].strip()
 
