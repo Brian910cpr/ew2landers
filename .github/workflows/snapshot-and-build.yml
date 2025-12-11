@@ -1,4 +1,4 @@
-name: Snapshot Enrollware + Build schedule/status
+name: Snapshot Enrollware + Build schedule.json
 
 on:
   workflow_dispatch:
@@ -11,126 +11,55 @@ permissions:
 jobs:
   snapshot_and_build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Check out repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Ensure docs/data exists
-        run: |
-          set -xe
-          mkdir -p docs/data
-
-      - name: Snapshot Enrollware schedule HTML
-        run: |
-          set -xe
-          curl -fsSL \
-            -A "910CPR-LanderBot/1.0 (+https://brian910cpr.github.io/ew2landers/)" \
-            https://coastalcprtraining.enrollware.com/schedule \
-            -o docs/data/enrollware-schedule.html
-          echo "=== Snapshot size and head ==="
-          wc -c docs/data/enrollware-schedule.html
-          head -n 10 docs/data/enrollware-schedule.html || true
-
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
-          set -xe
           python -m pip install --upgrade pip
-          pip install beautifulsoup4 lxml python-dateutil
-          sudo apt-get update
-          sudo apt-get install -y jq
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Build schedule.json from snapshot
+      - name: Run generator (build schedule.json and landers)
         run: |
-          set -xe
-          python scripts/parse_enrollware.py docs/data/enrollware-schedule.html docs/data/schedule.json
-          echo "=== schedule.json size ==="
-          wc -c docs/data/schedule.json
-          echo "=== schedule.json (first 40 lines) ==="
-          head -40 docs/data/schedule.json || true
-          jq -e . docs/data/schedule.json >/dev/null
+          echo "Running generator..."
+          # IMPORTANT:
+          # Replace the line below with the EXACT Python command your repo uses.
+          # Example:
+          # python scripts/build_schedule_json.py
+          # python scripts/build_class_landers.py
+          python snapshot_and_build.py
 
-      - name: Enrich schedule.json (no-op for now)
+      - name: Show git status
         run: |
-          set -xe
-          python scripts/enrich_schedule_with_course_ids.py \
-            --html docs/data/enrollware-schedule.html \
-            --schedule docs/data/schedule.json
-          echo "=== schedule.json after enrich (first 20 lines) ==="
-          head -20 docs/data/schedule.json || true
+          echo "Git status after running generator:"
+          git status
 
-      - name: Build static schedule page
+      - name: Commit changes (if any)
         run: |
-          set -xe
-          python scripts/build_schedule_page.py
-          echo "=== docs/schedule.html head ==="
-          head -40 docs/schedule.html || true
-
-      - name: Build per-session lander pages
-        run: |
-          set -xe
-          python scripts/build_class_landers.py
-          echo "=== sample landers ==="
-          ls docs/classes | head -20 || true
-
-      - name: Update status.json
-        run: |
-          set -xe
-          BYTES_SNAPSHOT=$(wc -c < docs/data/enrollware-schedule.html)
-          MD5_SNAPSHOT=$(md5sum docs/data/enrollware-schedule.html | awk '{print $1}')
-          BYTES_SCHEDULE=$(wc -c < docs/data/schedule.json)
-          MD5_SCHEDULE=$(md5sum docs/data/schedule.json | awk '{print $1}')
-          UPDATED_AT=$(python - << 'EOF'
-          from datetime import datetime, timezone
-          print(datetime.now(timezone.utc).isoformat())
-          EOF
-          )
-          cat > docs/data/status.json <<EOF
-          {
-            "updated_at": "${UPDATED_AT}",
-            "snapshot": {
-              "exists": true,
-              "bytes": ${BYTES_SNAPSHOT},
-              "md5": "${MD5_SNAPSHOT}"
-            },
-            "schedule": {
-              "exists": true,
-              "bytes": ${BYTES_SCHEDULE},
-              "md5": "${MD5_SCHEDULE}"
-            }
-          }
-          EOF
-          echo "=== status.json ==="
-          cat docs/data/status.json
-
-      - name: Commit and push changes (safe with rebase)
-        run: |
-          set -xe
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add docs/data/enrollware-schedule.html \
-                  docs/data/schedule.json \
-                  docs/data/status.json \
-                  docs/schedule.html \
-                  docs/classes
-
-          if git diff --cached --quiet; then
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected, committing..."
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+            git add -A
+            git commit -m "Automated build: update schedule.json and landers"
+          else
             echo "No changes to commit."
-            exit 0
           fi
 
-          # Make sure we are up to date with remote before pushing
-          git fetch origin main
-          git rebase origin/main || {
-            echo "Rebase failed; aborting."
-            git rebase --abort || true
-            exit 1
-          }
-
-          git commit -m "chore: refresh snapshot, schedule.json, schedule page, and class landers"
-          git push origin HEAD:main
+      - name: Push changes
+        run: |
+          if [ -n "$(git log origin/$(git branch --show-current)..HEAD)" ]; then
+            echo "Pushing changes..."
+            git push
+          else
+            echo "No new commits to push."
+          fi
