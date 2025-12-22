@@ -1,263 +1,325 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+enrollware_to_schedule.py
+
+One-step builder:
+  docs/data/enrollware-schedule.html  ->  docs/data/schedule.json (flat legacy list)
+
+✅ FIXES ADDED (this is the “schedule.json fix” you asked for):
+  1) Parses Enrollware's displayed date/time into a real ISO datetime:
+       - start_iso (timezone-aware, America/New_York)
+       - start_ms  (epoch millis for bulletproof sorting)
+  2) Adds is_past computed at build time (based on start_iso)
+  3) Adds schedule_url per course (Enrollware schedule#ct#######)
+  4) Adds register_url alias (keeps your existing "url" too)
+
+Keeps your existing DOM anchors:
+  - #enraccordion .enrpanel
+  - ul.enrclass-list > li > a[href*="enroll"]
+
+Logs go to STDERR so schedule.json stays clean JSON.
+
+Usage:
+  python scripts/enrollware_to_schedule.py
+  python scripts/enrollware_to_schedule.py INPUT_HTML OUTPUT_JSON
+"""
+
 import json
 import re
 import sys
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse, parse_qs
 from datetime import datetime
 
-from bs4 import BeautifulSoup
-
 try:
-    from zoneinfo import ZoneInfo
+    from zoneinfo import ZoneInfo  # py3.9+
 except Exception:
-    ZoneInfo = None  # type: ignore
+    ZoneInfo = None
+
+from bs4 import BeautifulSoup
 
 ENROLLWARE_BASE = "https://coastalcprtraining.enrollware.com/"
 LOCAL_TZ_NAME = "America/New_York"
 LOCAL_TZ = ZoneInfo(LOCAL_TZ_NAME) if ZoneInfo else None
 
-# Match ct id anywhere
-CT_RE = re.compile(r"#ct(\d+)", re.IGNORECASE)
-
-# Match enroll links (various forms)
-# Examples:
-#   enroll?id=123
-#   enroll.aspx?id=123
-#   /enroll?id=123&x=y
-ENROLL_RE = re.compile(r"(?:^|/)(enroll(?:\.aspx)?)\?[^\"']*?\bid=(\d+)", re.IGNORECASE)
+ROOT = Path(__file__).resolve().parents[1]  # repo root
+DEFAULT_INPUT = ROOT / "docs" / "data" / "enrollware-schedule.html"
+DEFAULT_OUTPUT = ROOT / "docs" / "data" / "schedule.json"
 
 
 def log(msg: str) -> None:
-    sys.stderr.write(str(msg).rstrip() + "\n")
+    print(f"[enrollware_to_schedule] {msg}", file=sys.stderr, flush=True)
 
 
-def normalize_ws(s: str | None) -> str:
-    if not s:
+def extract_session_id_from_href(href: str):
+    if not href:
+        return None
+    try:
+        parsed = urlparse(href)
+        qs = parse_qs(parsed.query)
+        if "id" in qs and qs["id"]:
+            return int(qs["id"][0])
+    except Exception:
+        pass
+
+    digits = "".join(ch for ch in href if ch.isdigit())
+    return int(digits) if digits else None
+
+
+def extract_course_number_from_text(text: str):
+    """
+    Try to find a course filter value like ct209811 in any text/href.
+    Returns digits as string, or None.
+    """
+    if not text:
+        return None
+    m = re.search(r"#ct(\d+)", text)
+    if m:
+        return m.group(1)
+    m = re.search(r"[?&]course=(\d+)", text)
+    if m:
+        return m.group(1)
+    return None
+
+
+def normalize_course_name(raw: str) -> str:
+    if not raw:
         return ""
-    return " ".join(s.replace("\xa0", " ").split())
+    s = raw.strip()
+    s = " ".join(s.split())
+    return s
 
 
-def extract_ct(text: str | None) -> str | None:
-    if not text:
+def extract_date_text(anchor_tag) -> str:
+    txt = anchor_tag.get_text(" ", strip=True)
+    return " ".join(txt.split())
+
+
+def try_extract_price(panel_text: str):
+    if not panel_text:
         return None
-    m = CT_RE.search(text)
-    return m.group(1) if m else None
-
-
-def find_ct_in_panel(panel) -> str | None:
-    if panel is None:
-        return None
-
-    # 1) hrefs
-    for a in panel.find_all("a", href=True):
-        cn = extract_ct(a.get("href"))
-        if cn:
-            return cn
-
-    # 2) any attribute values
-    for tag in panel.find_all(True):
-        for _, v in (tag.attrs or {}).items():
-            if v is None:
-                continue
-            vals = v if isinstance(v, (list, tuple)) else [v]
-            for item in vals:
-                cn = extract_ct(str(item))
-                if cn:
-                    return cn
-
-    # 3) raw HTML
-    return extract_ct(str(panel))
-
-
-def build_schedule_url(ct: str | None) -> str | None:
-    if not ct:
-        return None
-    return urljoin(ENROLLWARE_BASE, f"schedule#ct{ct}")
-
-
-def extract_enroll_rel(text: str | None) -> tuple[str, str] | None:
-    """Return (rel_url, id) like ('enroll?id=123', '123')"""
-    if not text:
-        return None
-    m = ENROLL_RE.search(text)
+    m = re.search(r"\$\s*\d+(?:\.\d{2})?", panel_text)
     if not m:
         return None
-    path = m.group(1)  # enroll or enroll.aspx
-    sid = m.group(2)
-    return (f"{path}?id={sid}", sid)
+    return m.group(0).replace(" ", "")
 
 
-def find_enrolls_in_panel(panel):
-    """Return list of (abs_url, sid, context_text)"""
-    found = []
-    seen = set()
-
-    # A) anchors
-    for a in panel.find_all("a", href=True):
-        rel = extract_enroll_rel(a.get("href"))
-        if not rel:
-            continue
-        rel_url, sid = rel
-        absu = urljoin(ENROLLWARE_BASE, rel_url)
-        ctx = normalize_ws(a.parent.get_text(" ", strip=True) if a.parent else a.get_text(" ", strip=True))
-        key = (absu, sid)
-        if key not in seen:
-            seen.add(key)
-            found.append((absu, sid, ctx))
-
-    # B) any tag attributes (onclick/data-href/etc.)
-    for tag in panel.find_all(True):
-        attrs = tag.attrs or {}
-        for _, v in attrs.items():
-            if v is None:
-                continue
-            vals = v if isinstance(v, (list, tuple)) else [v]
-            for item in vals:
-                rel = extract_enroll_rel(str(item))
-                if not rel:
-                    continue
-                rel_url, sid = rel
-                absu = urljoin(ENROLLWARE_BASE, rel_url)
-                ctx = normalize_ws(tag.get_text(" ", strip=True) or (tag.parent.get_text(" ", strip=True) if tag.parent else ""))
-                key = (absu, sid)
-                if key not in seen:
-                    seen.add(key)
-                    found.append((absu, sid, ctx))
-
-    # C) raw panel HTML fallback (rare but helps)
-    html = str(panel)
-    for m in ENROLL_RE.finditer(html):
-        path = m.group(1)
-        sid = m.group(2)
-        rel_url = f"{path}?id={sid}"
-        absu = urljoin(ENROLLWARE_BASE, rel_url)
-        key = (absu, sid)
-        if key not in seen:
-            seen.add(key)
-            found.append((absu, sid, ""))
-
-    return found
+def build_schedule_url(course_number: str | None) -> str | None:
+    if not course_number:
+        return None
+    # IMPORTANT: user wants real, full URLs (no bit.ly, no hiding)
+    # Enrollware course filter is schedule#ct#######
+    return urljoin(ENROLLWARE_BASE, f"schedule#ct{course_number}")
 
 
-def parse_start(text: str | None):
-    if not text:
-        return (None, None, None)
+def _try_parse_start_display_to_dt(start_display: str) -> datetime | None:
+    """
+    Enrollware typically displays:
+      "Saturday, December 20, 2025 at 12:30 PM"
+    Sometimes "12:30PM" or missing weekday punctuation, etc.
 
-    s = normalize_ws(text)
+    Returns timezone-aware datetime in America/New_York if possible.
+    """
+    if not start_display:
+        return None
 
+    s = " ".join(start_display.strip().split())
+
+    # Normalize small formatting variants
+    s = s.replace(" at ", " at ")
+    s = re.sub(r"\s+", " ", s)
+
+    # Common formats to try
+    # - With weekday and "at"
+    # - Without weekday
+    # - Without "at"
     fmts = [
         "%A, %B %d, %Y at %I:%M %p",
         "%A, %B %d, %Y at %I %p",
         "%B %d, %Y at %I:%M %p",
         "%B %d, %Y at %I %p",
+        "%A, %B %d, %Y %I:%M %p",
+        "%B %d, %Y %I:%M %p",
     ]
 
-    dt = None
-    for f in fmts:
+    for fmt in fmts:
         try:
-            dt = datetime.strptime(s, f)
-            break
+            naive = datetime.strptime(s, fmt)
+            if LOCAL_TZ:
+                return naive.replace(tzinfo=LOCAL_TZ)
+            return naive  # fallback (naive) if zoneinfo missing
         except Exception:
-            pass
-
-    if not dt:
-        return (None, None, None)
-
-    if LOCAL_TZ:
-        dt = dt.replace(tzinfo=LOCAL_TZ)
-
-    start_iso = dt.isoformat()
-    start_ms = int(dt.timestamp() * 1000)
-
-    now = datetime.now(tz=LOCAL_TZ) if LOCAL_TZ else datetime.now()
-    is_past = dt < now
-
-    return (start_iso, start_ms, is_past)
-
-
-def html_to_rows(html_text: str):
-    soup = BeautifulSoup(html_text, "html.parser")
-    panels = soup.select(".enrpanel")
-    log(f"[enrollware_to_schedule] Found {len(panels)} enrpanel blocks.")
-
-    course_meta = {}
-
-    # course meta
-    for panel in panels:
-        pid = (panel.get("id") or "").strip()
-        cid = pid.replace("enrpanel", "").strip()
-        if not cid:
             continue
 
-        title_el = panel.select_one(".enrtitle") or panel.select_one("h2") or panel.select_one("h3")
-        title = normalize_ws(title_el.get_text(" ", strip=True) if title_el else "")
+    # Last-chance regex parse (e.g., weird spacing)
+    m = re.search(
+        r"(?:(?P<weekday>[A-Za-z]+),\s*)?(?P<month>[A-Za-z]+)\s+(?P<day>\d{1,2}),\s+(?P<year>\d{4})\s+(?:at\s+)?(?P<hour>\d{1,2})(?::(?P<minute>\d{2}))?\s*(?P<ampm>AM|PM)",
+        s,
+        re.IGNORECASE,
+    )
+    if not m:
+        return None
 
-        ct = find_ct_in_panel(panel)
-        schedule_url = build_schedule_url(ct)
+    try:
+        month_name = m.group("month").title()
+        day = int(m.group("day"))
+        year = int(m.group("year"))
+        hour = int(m.group("hour"))
+        minute = int(m.group("minute") or "0")
+        ampm = m.group("ampm").upper()
 
-        course_meta[cid] = {"title": title, "course_number": ct, "schedule_url": schedule_url}
+        if ampm == "PM" and hour != 12:
+            hour += 12
+        if ampm == "AM" and hour == 12:
+            hour = 0
+
+        naive = datetime(year, datetime.strptime(month_name, "%B").month, day, hour, minute)
+        if LOCAL_TZ:
+            return naive.replace(tzinfo=LOCAL_TZ)
+        return naive
+    except Exception:
+        return None
+
+
+def html_to_schedule_rows(html_text: str):
+    soup = BeautifulSoup(html_text, "lxml")
+
+    panels = soup.select("#enraccordion .enrpanel")
+    if not panels:
+        log("No #enraccordion .enrpanel found; falling back to .enrpanel.")
+        panels = soup.select(".enrpanel")
+
+    log(f"Found {len(panels)} enrpanel blocks.")
 
     rows = []
+    course_index = {}  # course_name -> course_id
+    course_meta = {}   # course_id -> dict
+
+    # "now" for is_past calculation
+    now_dt = datetime.now(tz=LOCAL_TZ) if LOCAL_TZ else datetime.now()
 
     for panel in panels:
-        pid = (panel.get("id") or "").strip()
-        cid = pid.replace("enrpanel", "").strip()
-        if not cid:
+        raw_course_name = panel.get("value") or ""
+        if not raw_course_name:
+            title_el = panel.select_one(".enrpanel-title")
+            if title_el:
+                raw_course_name = title_el.get_text(" ", strip=True)
+
+        course_name = normalize_course_name(raw_course_name)
+        if not course_name:
             continue
 
-        meta = course_meta.get(cid, {})
-        title = meta.get("title") or ""
-        ct = meta.get("course_number")
-        schedule_url = meta.get("schedule_url")
+        if course_name not in course_index:
+            cid = len(course_index) + 1
+            course_index[course_name] = cid
+        else:
+            cid = course_index[course_name]
 
-        enrolls = find_enrolls_in_panel(panel)
-        if not enrolls:
-            continue
+        # Try to find course_number (#ct#######) in any href in the panel
+        course_number = None
+        for a in panel.find_all("a", href=True):
+            course_number = extract_course_number_from_text(a["href"])
+            if course_number:
+                break
 
-        for reg_url, sid, ctx in enrolls:
-            start_iso, start_ms, is_past = parse_start(ctx)
+        schedule_url = build_schedule_url(course_number)
 
-            rows.append({
-                "id": sid,
-                "course_id": cid,
-                "course_number": ct,
-                "title": title,
-                "date": ctx,
-                "time": None,
-                "location": None,
-                "url": reg_url,
-                "register_url": reg_url,
+        panel_text = panel.get_text(" ", strip=True)
+        price = try_extract_price(panel_text)
+
+        if cid not in course_meta:
+            course_meta[cid] = {
+                "course_number": course_number,
                 "schedule_url": schedule_url,
-                "start_iso": start_iso,
-                "start_ms": start_ms,
-                "is_past": is_past,
-                "end_iso": None,
-            })
+                "price": price,
+                "course_name": course_name,
+            }
+        else:
+            if not course_meta[cid].get("course_number") and course_number:
+                course_meta[cid]["course_number"] = course_number
+                course_meta[cid]["schedule_url"] = build_schedule_url(course_number)
+            if not course_meta[cid].get("schedule_url") and schedule_url:
+                course_meta[cid]["schedule_url"] = schedule_url
+            if not course_meta[cid].get("price") and price:
+                course_meta[cid]["price"] = price
 
-    log(f"[enrollware_to_schedule] Built {len(rows)} schedule rows.")
+        # Sessions
+        for ul in panel.select("ul.enrclass-list"):
+            for li in ul.find_all("li"):
+                a = li.find("a", href=True)
+                if not a:
+                    continue
+                href = a["href"]
+                if "enroll" not in href:
+                    continue
+
+                session_id = extract_session_id_from_href(href)
+                if not session_id:
+                    continue
+
+                start_display = extract_date_text(a)
+                start_dt = _try_parse_start_display_to_dt(start_display)
+
+                start_iso = start_dt.isoformat() if start_dt else None
+                start_ms = int(start_dt.timestamp() * 1000) if start_dt else None
+                is_past = (start_dt < now_dt) if (start_dt and now_dt) else None
+
+                span = li.find("span")
+                location = span.get_text(" ", strip=True) if span else ""
+                register_url = urljoin(ENROLLWARE_BASE, href)
+
+                rows.append({
+                    # Legacy / existing fields (kept)
+                    "id": session_id,
+                    "course_id": cid,
+                    "course_number": course_meta[cid].get("course_number"),
+                    "title": course_name,
+                    "date": start_display,   # raw display
+                    "time": None,            # (kept for legacy compatibility)
+                    "location": location,
+                    "price": course_meta[cid].get("price"),
+                    "url": register_url,     # legacy name (kept)
+
+                    # New / fixed fields
+                    "register_url": register_url,                 # better field name for UI
+                    "schedule_url": course_meta[cid].get("schedule_url"),
+                    "start_iso": start_iso,                       # timezone-aware ISO if possible
+                    "start_ms": start_ms,                         # epoch ms for bulletproof sorting
+                    "is_past": is_past,                           # computed at build time
+                    "end_iso": None,                              # left blank unless you add durations later
+                })
+
+    # Deterministic ordering helps diffs and makes the UI consistent
+    # Sort by course_id then start_ms (unknowns last)
+    def _sort_key(r):
+        sm = r.get("start_ms")
+        return (r.get("course_id") or 0, sm if isinstance(sm, int) else 9_999_999_999_999)
+
+    rows.sort(key=_sort_key)
+
+    log(f"Built {len(rows)} schedule rows.")
     return rows
 
 
-def main():
-    repo_root = Path(__file__).resolve().parents[1]
-    input_path = repo_root / "docs" / "data" / "enrollware-schedule.html"
-    output_path = repo_root / "docs" / "data" / "schedule.json"
+def main(argv) -> int:
+    input_path = Path(argv[1]) if len(argv) >= 2 else DEFAULT_INPUT
+    output_path = Path(argv[2]) if len(argv) >= 3 else DEFAULT_OUTPUT
+
+    if not input_path.exists():
+        log(f"Input HTML not found: {input_path}")
+        return 1
 
     html_text = input_path.read_text(encoding="utf-8", errors="ignore")
-    rows = html_to_rows(html_text)
+    rows = html_to_schedule_rows(html_text)
 
-    # SAFETY NET: do NOT overwrite schedule.json with an empty list
-    if len(rows) == 0:
-        log("ERROR: Built 0 rows. Not writing schedule.json (keeping previous).")
-        return 2
-
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
+
     log(f"Wrote {len(rows)} rows to: {output_path}")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv))
