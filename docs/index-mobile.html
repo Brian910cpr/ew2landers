@@ -442,12 +442,13 @@
     }
 
     // ---------- Curtain labels ----------
-    function setCollapsed(containerEl, toggleBtnEl, collapsed) {
-      containerEl.style.display = collapsed ? "none" : "flex";
-      toggleBtnEl.textContent = collapsed ? "SHOW 5" : "HIDE";
-      toggleBtnEl.setAttribute("aria-expanded", collapsed ? "false" : "true");
-      toggleBtnEl.dataset.collapsed = collapsed ? "true" : "false";
-    }
+function setCollapsed(containerEl, toggleBtnEl, collapsed) {
+  containerEl.style.display = collapsed ? "none" : "flex";
+  toggleBtnEl.textContent = collapsed ? "Show next 5 times" : "Hide times";
+  toggleBtnEl.setAttribute("aria-expanded", collapsed ? "false" : "true");
+  toggleBtnEl.dataset.collapsed = collapsed ? "true" : "false";
+}
+
 
     // Accordion: only one open at a time
     function closeAllCurtainsExcept(courseKeyToKeep){
@@ -635,22 +636,19 @@
         let collapsed = true;
         setCollapsed(sessions, toggleBtn, collapsed);
 
-        toggleBtn.addEventListener("click", () => {
-          const isCurrentlyCollapsed = (toggleBtn.dataset.collapsed === "true");
-          if (isCurrentlyCollapsed){
-            closeAllCurtainsExcept(String(g.courseKey));
-          }
-          collapsed = !collapsed;
-          setCollapsed(sessions, toggleBtn, collapsed);
-        });
+toggleBtn.addEventListener("click", () => {
+  const isCollapsed = (toggleBtn.dataset.collapsed === "true");
 
-        card.appendChild(top);
-        card.appendChild(controls);
-        card.appendChild(sessions);
+  if (isCollapsed) {
+    // opening THIS curtain: close everything else first
+    closeAllCurtainsExcept(String(g.courseKey));
+    setCollapsed(sessionsWrap, toggleBtn, false);
+  } else {
+    // closing THIS curtain
+    setCollapsed(sessionsWrap, toggleBtn, true);
+  }
+});
 
-        elCards.appendChild(card);
-      }
-    }
 
     async function loadJson(url){
       const r = await fetch(url, { cache:"no-store" });
