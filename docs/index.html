@@ -201,7 +201,7 @@
       margin: 12px 0 16px;
     }
     .courseTop{
-      padding: 14px 16px;
+      padding: 12px 16px;
       background: linear-gradient(90deg,#0b4f92,#0b6aa6);
       color:#fff;
       display:flex;
@@ -212,19 +212,19 @@
     .courseTop h3{
       margin:0;
       font-size:15px;
-      line-height:1.25;
+      line-height:1.2;
       font-weight:900;
       letter-spacing:.2px;
     }
     .courseTop .desc{
-      margin:7px 0 0;
+      margin:6px 0 0;
       font-size:12px;
       opacity:.92;
-      line-height:1.35;
+      line-height:1.25;
       max-width: 720px;
     }
     .courseTop img{
-      height: 22px;
+      height: 20px;
       width: auto;
       vertical-align: middle;
       margin-right: 6px;
@@ -235,25 +235,26 @@
     .badge{
       font-size:11px;
       font-weight:900;
-      padding:7px 10px;
+      padding:6px 10px;
       border-radius:999px;
       background: rgba(255,255,255,.14);
       border: 1px solid rgba(255,255,255,.22);
       white-space:nowrap;
     }
 
+    /* tighter curtain */
     .sessions{
-      padding: 12px 14px 14px;
+      padding: 10px 12px 12px;
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap:8px;
     }
     .sessionRow{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      padding: 12px 12px;
+      gap:10px;
+      padding: 10px 10px;
       border-radius: 14px;
       border:1px solid var(--line);
       background:#fff;
@@ -265,20 +266,19 @@
     .sessionRow .when{
       font-weight:900;
       font-size:13px;
-      line-height:1.25;
-      margin-bottom:4px;
+      line-height:1.15;
+      margin-bottom:2px;
     }
     .sessionRow .where{
       font-size:12px;
       color:var(--muted);
-      line-height:1.25;
+      line-height:1.2;
       word-break: break-word;
     }
-
     .sessionRow .right{
       flex: 0 0 auto;
       display:flex;
-      gap:10px;
+      gap:8px;
       align-items:center;
       justify-content:flex-end;
       flex-wrap:wrap;
@@ -289,7 +289,7 @@
       align-items:center;
       justify-content:center;
       gap:8px;
-      padding: 11px 14px;
+      padding: 9px 12px;
       border-radius: 12px;
       border:1px solid var(--line);
       background:#fff;
@@ -308,12 +308,25 @@
     .btnPrimary:hover{background:#0b5e57}
     .btnGhost:hover{background:#f6f9fe}
 
+    /* controls row */
     .moreRow{
-      padding: 0 14px 16px;
+      padding: 10px 12px 10px;
       display:flex;
-      justify-content:flex-end;
+      justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
+      align-items:center;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    /* compact toggle */
+    .btnToggle{
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size:11px;
+      letter-spacing:.4px;
+      text-transform:uppercase;
     }
 
     .notice{
@@ -351,7 +364,7 @@
       .sessionRow{flex-direction:column; align-items:stretch}
       .sessionRow .right{justify-content:flex-start}
       .btn{width:100%}
-      .moreRow{justify-content:stretch}
+      .moreRow{justify-content:space-between}
     }
   </style>
 </head>
@@ -534,7 +547,7 @@
     // ---------- Curtain labels ----------
     function setCollapsed(containerEl, toggleBtnEl, collapsed) {
       containerEl.style.display = collapsed ? "none" : "flex";
-      toggleBtnEl.textContent = collapsed ? "SHOW NEXT 5 TIMES" : "HIDE TIMES";
+      toggleBtnEl.textContent = collapsed ? "SHOW 5" : "HIDE";
       toggleBtnEl.setAttribute("aria-expanded", collapsed ? "false" : "true");
       toggleBtnEl.dataset.collapsed = collapsed ? "true" : "false";
     }
@@ -551,7 +564,7 @@
       toggles.forEach(btn => {
         const k = btn.dataset.courseKey;
         if (k !== courseKeyToKeep){
-          btn.textContent = "SHOW NEXT 5 TIMES";
+          btn.textContent = "SHOW 5";
           btn.setAttribute("aria-expanded","false");
           btn.dataset.collapsed = "true";
         }
@@ -698,6 +711,35 @@
           <div class="badge">Shown: ${g.sessions.length} upcoming</div>
         `;
 
+        // Controls row (toggle + optional "even more dates")
+        const controls = document.createElement("div");
+        controls.className = "moreRow";
+
+        const toggleBtn = document.createElement("button");
+        toggleBtn.type = "button";
+        toggleBtn.className = "btn btnGhost btnToggle";
+        toggleBtn.style.cursor = "pointer";
+        toggleBtn.dataset.role = "toggle";
+        toggleBtn.dataset.courseKey = String(g.courseKey);
+
+        const moreDatesBtn = document.createElement("a");
+        moreDatesBtn.className = "btn btnGhost";
+        moreDatesBtn.textContent = "See even more dates for this course";
+        moreDatesBtn.href = g.scheduleUrl || "#";
+        moreDatesBtn.target = "_blank";
+        moreDatesBtn.rel = "noopener";
+
+        // If schedule_url is null/empty, do NOT show this button (your rule)
+        const hasScheduleUrl = !!(g.scheduleUrl && String(g.scheduleUrl).trim());
+        if (!hasScheduleUrl) {
+          // keep spacing tidy: right side just empty
+          moreDatesBtn.style.display = "none";
+        }
+
+        controls.appendChild(toggleBtn);
+        controls.appendChild(moreDatesBtn);
+
+        // Sessions list (collapsed by default)
         const sessionsWrap = document.createElement("div");
         sessionsWrap.className = "sessions";
         sessionsWrap.dataset.courseKey = String(g.courseKey);
@@ -709,7 +751,6 @@
           const where = pickLocation(row);
 
           const regUrl = pickRegisterUrl(row);
-          const schedUrl = pickScheduleUrl(row) || g.scheduleUrl;
 
           const line = document.createElement("div");
           line.className = "sessionRow";
@@ -727,35 +768,16 @@
           const regBtn = document.createElement("a");
           regBtn.className = "btn btnPrimary";
           regBtn.textContent = "Register now";
-          regBtn.href = regUrl || schedUrl || "#";
+          regBtn.href = regUrl || "#";
           regBtn.target = "_blank";
           regBtn.rel = "noopener";
 
-          const moreBtn = document.createElement("a");
-          moreBtn.className = "btn btnGhost";
-          moreBtn.textContent = "Show comprehensive schedule";
-          moreBtn.href = schedUrl || "#";
-          moreBtn.target = "_blank";
-          moreBtn.rel = "noopener";
-
           right.appendChild(regBtn);
-          right.appendChild(moreBtn);
 
           line.appendChild(left);
           line.appendChild(right);
           sessionsWrap.appendChild(line);
         }
-
-        const controls = document.createElement("div");
-        controls.className = "moreRow";
-        controls.style.justifyContent = "space-between";
-
-        const toggleBtn = document.createElement("button");
-        toggleBtn.type = "button";
-        toggleBtn.className = "btn btnGhost";
-        toggleBtn.style.cursor = "pointer";
-        toggleBtn.dataset.role = "toggle";
-        toggleBtn.dataset.courseKey = String(g.courseKey);
 
         let collapsed = true;
         setCollapsed(sessionsWrap, toggleBtn, collapsed);
@@ -763,24 +785,11 @@
         toggleBtn.addEventListener("click", () => {
           const isCurrentlyCollapsed = (toggleBtn.dataset.collapsed === "true");
           if (isCurrentlyCollapsed){
-            // opening this one -> close all other curtains first
             closeAllCurtainsExcept(String(g.courseKey));
           }
           collapsed = !collapsed;
           setCollapsed(sessionsWrap, toggleBtn, collapsed);
         });
-
-        controls.appendChild(toggleBtn);
-
-        if (g.scheduleUrl){
-          const full = document.createElement("a");
-          full.className = "btn btnGhost";
-          full.textContent = "See full schedule for this course";
-          full.href = g.scheduleUrl;
-          full.target = "_blank";
-          full.rel = "noopener";
-          controls.appendChild(full);
-        }
 
         card.appendChild(top);
         card.appendChild(controls);
@@ -830,7 +839,6 @@
         elStatus.innerHTML = `
           <div style="font-weight:900;margin-bottom:6px;">Schedule failed to load.</div>
           <div style="margin-bottom:8px;">${escapeHtml(err?.message || String(err))}</div>
-          <div>Try the mobile page, or register directly through Enrollware.</div>
           <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
             <a class="btn btnGhost" href="./index-mobile.html">Open index-mobile.html</a>
             <a class="btn btnGhost" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar">Open Enrollware schedule (full URL)</a>
