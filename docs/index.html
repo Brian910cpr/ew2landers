@@ -1,506 +1,846 @@
+<!-- =========================
+FILE: docs/index.html
+PURPOSE: Desktop index (Step 1 + Step 2) reading schedule.json + course-descriptions.json
+RULES FIXED:
+  - Only UPCOMING sessions are shown (no “past-only fallback”)
+  - Sessions sorted by real start time
+  - Course cards sorted by next upcoming session
+========================= -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>910CPR Schedule</title>
-
-  <meta name="description" content="CPR, BLS, ACLS, PALS & First Aid classes in Wilmington, Burgaw, and Jacksonville — powered by 910CPR." />
+  <title>910CPR — Schedule</title>
+  <meta name="description" content="CPR, BLS, ACLS, PALS & First Aid — Wilmington / Burgaw / Jacksonville — powered by 910CPR" />
 
   <style>
     :root{
       --bg1:#ffffff;
-      --bg2:#f3f7ff;
-      --ink:#0f172a;
-      --muted:#475569;
+      --bg2:#eaf4ff;
+      --ink:#0b1b2b;
+      --muted:#5b6a79;
       --card:#ffffff;
-      --line:#e2e8f0;
-      --brand:#0b5b6b;
-      --brand2:#0f766e;
-      --warn:#b45309;
-      --danger:#b91c1c;
-      --shadow: 0 10px 25px rgba(2, 8, 23, .08);
-      --radius: 18px;
-      --radius2: 14px;
+      --line:#e3e8ef;
+      --pill:#eef4fb;
+      --blue:#0b5cab;
+      --blue2:#0a4b8c;
+      --green:#0f7a4f;
+      --orange:#b85a00;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --radius:14px;
+      --radius2:18px;
     }
-    html,body{height:100%;}
+
+    *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       color:var(--ink);
       background: linear-gradient(180deg,var(--bg1),var(--bg2));
     }
-    a{color:inherit;}
-    .wrap{max-width:1200px;margin:0 auto;padding:18px 18px 42px;}
+
+    a{color:inherit}
     .topbar{
-      background: linear-gradient(90deg,#0b1a2b,#0b2940);
+      position:sticky; top:0; z-index:10;
+      background: linear-gradient(90deg,#0a1a2b,#102b4a);
       color:#fff;
       padding:14px 18px;
-    }
-    .topbar .row{
-      max-width:1200px;margin:0 auto;
-      display:flex;gap:12px;align-items:center;justify-content:space-between;
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      box-shadow: 0 6px 18px rgba(0,0,0,.2);
     }
     .brand{
-      display:flex;align-items:center;gap:12px;min-width:0;
+      display:flex; align-items:center; gap:12px;
+      min-width: 260px;
     }
-    .logo{
-      width:44px;height:44px;border-radius:12px;background:#fff;
-      display:flex;align-items:center;justify-content:center;overflow:hidden;
-      box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    .logoDot{
+      width:18px;height:18px;border-radius:6px;
+      background:#fff;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.35);
     }
-    .logo img{width:100%;height:100%;object-fit:cover;}
-    .brand h1{font-size:16px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .brand p{margin:0;font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
-    .pill{
-      border:1px solid rgba(255,255,255,.25);
-      padding:8px 12px;border-radius:999px;font-size:13px;
-      display:inline-flex;gap:8px;align-items:center;
-      background: rgba(255,255,255,.06);
+    .brand h1{
+      margin:0;
+      font-size:14px;
+      line-height:1.15;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .brand .sub{
+      font-size:12px;
+      opacity:.85;
+      margin-top:2px;
+    }
+    .topActions{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      color:#fff;
       text-decoration:none;
+      font-weight:650;
+      font-size:12px;
+      white-space:nowrap;
     }
-    .pill:hover{background: rgba(255,255,255,.10);}
+    .chip:hover{background: rgba(255,255,255,.18)}
+    .chip .dot{width:8px;height:8px;border-radius:99px;background:#7dd3fc}
+
+    .wrap{
+      max-width: 1200px;
+      margin: 18px auto 50px;
+      padding: 0 14px;
+    }
     .grid{
       display:grid;
-      grid-template-columns: 360px 1fr;
-      gap:16px;
-      margin-top:16px;
-    }
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow: var(--shadow);
-    }
-    .card .hd{padding:16px 16px 8px;}
-    .card .hd h2{margin:0;font-size:14px;color:var(--muted);font-weight:700;}
-    .card .bd{padding:0 16px 16px;}
-    .hint{font-size:13px;color:var(--muted);line-height:1.4;margin:6px 0 0;}
-    .list{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
-    .item{
-      border:1px solid var(--line);
-      border-radius:var(--radius2);
-      padding:12px;
-      background:#fff;
-      cursor:pointer;
-    }
-    .item:hover{border-color:#cbd5e1;}
-    .item.active{border-color: rgba(11,91,107,.45); box-shadow: 0 0 0 3px rgba(11,91,107,.10);}
-    .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-    .tag{
-      font-size:12px;color:var(--muted);
-      padding:4px 8px;border-radius:999px;border:1px solid var(--line);
-      background:#f8fafc;
-    }
-    .search{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 12px;
-      font-size:14px;
-      outline:none;
-    }
-    .search:focus{border-color: rgba(11,91,107,.55); box-shadow: 0 0 0 3px rgba(11,91,107,.10);}
-    .mainPad{padding:16px;}
-    .hero{
-      display:flex;gap:16px;align-items:stretch;justify-content:space-between;
-      padding:16px;
-      border-radius:var(--radius);
-      border:1px solid var(--line);
-      background: linear-gradient(180deg,#ffffff,#f6fbff);
-      margin-bottom:14px;
-    }
-    .hero h3{margin:0 0 6px;font-size:22px;line-height:1.15;}
-    .hero p{margin:0;color:var(--muted);line-height:1.4;}
-    .heroRight{
-      width:240px;min-width:200px;
-      border-radius:16px;background:#e6f2ff;border:1px solid #dbeafe;
-      display:flex;align-items:center;justify-content:center;overflow:hidden;
-    }
-    .heroRight img{max-width:100%;max-height:100%;object-fit:cover;}
-    .courseTitle{font-size:18px;font-weight:800;margin:0 0 4px;}
-    .courseMeta{color:var(--muted);font-size:13px;margin:0 0 12px;line-height:1.35;}
-    .ctaRow{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 14px;}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:10px 12px;border-radius:12px;border:1px solid var(--line);
-      background:#fff;text-decoration:none;font-weight:700;font-size:14px;
-    }
-    .btnPrimary{
-      background: linear-gradient(90deg,var(--brand),var(--brand2));
-      color:#fff;border-color: transparent;
-    }
-    .btnPrimary:hover{filter:brightness(1.03);}
-    .btnWarn{border-color: rgba(180,83,9,.35); background:#fff7ed; color: var(--warn);}
-    .btnGhost{background:#f8fafc;}
-    .sessions{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
-    .sess{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      display:flex;gap:12px;justify-content:space-between;align-items:flex-start;
-      background:#fff;
-    }
-    .sess .left{min-width:0;}
-    .sess .date{font-weight:800;margin:0 0 4px;font-size:14px;}
-    .sess .loc{margin:0;color:var(--muted);font-size:13px;line-height:1.35;}
-    .sess .price{margin:8px 0 0;font-weight:800;font-size:13px;}
-    .sess .right{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
-    .note{font-size:12px;color:var(--muted);margin-top:10px;}
-    .empty{
-      border:1px dashed #cbd5e1;
-      background:#f8fafc;
-      padding:14px;border-radius:16px;color:var(--muted);
-    }
-    .foot{
-      margin-top:18px;
-      display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;
-      color:var(--muted);font-size:13px;
+      grid-template-columns: 340px 1fr;
+      gap:18px;
+      align-items:start;
     }
 
+    .panel{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panelHeader{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg,#ffffff,#f7fbff);
+    }
+    .panelHeader .title{
+      font-weight:800;
+      margin:0;
+      font-size:14px;
+    }
+    .panelHeader .hint{
+      margin:6px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    .searchRow{
+      padding: 12px 16px;
+      border-bottom:1px solid var(--line);
+    }
+    .searchRow input{
+      width:100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      outline:none;
+      font-size:13px;
+    }
+    .searchRow input:focus{border-color:#b6c7dd; box-shadow: 0 0 0 3px rgba(11,92,171,.12)}
+
+    .familyList{
+      padding: 10px 10px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .familyBtn{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      text-align:left;
+      font-weight:800;
+      font-size:13px;
+    }
+    .familyBtn small{
+      display:block;
+      font-weight:650;
+      color:var(--muted);
+      margin-top:3px;
+    }
+    .familyBtn .count{
+      font-weight:900;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background: var(--pill);
+      border:1px solid #dde6f3;
+      white-space:nowrap;
+      color:#11314f;
+    }
+    .familyBtn.active{
+      border-color:#9fc0e7;
+      box-shadow: 0 0 0 3px rgba(11,92,171,.12);
+    }
+
+    .rightTop{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .skeletonBox{
+      width:140px;height:52px;border-radius:16px;
+      background: linear-gradient(90deg,#f0f5fb,#ffffff,#f0f5fb);
+      background-size: 240% 100%;
+      animation: shimmer 1.2s infinite;
+      border:1px solid var(--line);
+    }
+    @keyframes shimmer{
+      0%{background-position: 0% 50%}
+      100%{background-position: 100% 50%}
+    }
+
+    .content{
+      padding: 12px 14px 16px;
+    }
+
+    .courseCard{
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      overflow:hidden;
+      background:#fff;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      margin: 12px 0 16px;
+    }
+    .courseTop{
+      padding: 14px 16px;
+      background: linear-gradient(90deg,#0b4f92,#0b6aa6);
+      color:#fff;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .courseTop h3{
+      margin:0;
+      font-size:15px;
+      line-height:1.25;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .courseTop .desc{
+      margin:7px 0 0;
+      font-size:12px;
+      opacity:.92;
+      line-height:1.35;
+      max-width: 720px;
+    }
+
+    .badge{
+      font-size:11px;
+      font-weight:900;
+      padding:7px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.22);
+      white-space:nowrap;
+    }
+
+    .sessions{
+      padding: 12px 14px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .sessionRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .sessionRow .left{
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .sessionRow .when{
+      font-weight:900;
+      font-size:13px;
+      line-height:1.25;
+      margin-bottom:4px;
+    }
+    .sessionRow .where{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.25;
+      word-break: break-word;
+    }
+
+    .sessionRow .right{
+      flex: 0 0 auto;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background:#fff;
+      text-decoration:none;
+      font-weight:900;
+      font-size:12px;
+      white-space:nowrap;
+      max-width: 100%;
+    }
+    .btnPrimary{
+      background: #0d6b63;
+      border-color:#0d6b63;
+      color:#fff;
+    }
+    .btnPrimary:hover{background:#0b5e57}
+    .btnGhost:hover{background:#f6f9fe}
+
+    .moreRow{
+      padding: 0 14px 16px;
+      display:flex;
+      justify-content:flex-end;
+    }
+
+    .notice{
+      padding: 10px 14px;
+      border:1px dashed #c9d8ea;
+      background:#f7fbff;
+      color:#18314a;
+      border-radius: 14px;
+      font-size:12px;
+      line-height:1.4;
+      margin: 12px 0;
+    }
+
+    .error{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border:1px solid #ffd2c1;
+      background:#fff5f1;
+      color:#5b1f0b;
+      line-height:1.35;
+      font-size:13px;
+      margin: 14px 0;
+    }
+
+    .footer{
+      padding: 22px 0 0;
+      color: var(--muted);
+      font-size:12px;
+      text-align:center;
+    }
+
+    /* Make sure buttons never run off page */
     @media (max-width: 980px){
-      .grid{grid-template-columns:1fr;}
-      .heroRight{display:none;}
-      .actions{display:none;}
+      .grid{grid-template-columns: 1fr}
+      .brand{min-width:0}
+      .sessionRow{flex-direction:column; align-items:stretch}
+      .sessionRow .right{justify-content:flex-start; flex-wrap:wrap}
+      .btn{width:100%}
+      .moreRow{justify-content:stretch}
     }
   </style>
 </head>
 
 <body>
-  <div class="topbar">
-    <div class="row">
-      <div class="brand">
-        <div class="logo" title="910CPR">
-          <img src="./assets/images/brand/910cpr_round.png" alt="910CPR logo" onerror="this.style.display='none'">
-        </div>
-        <div style="min-width:0">
-          <h1>CPR, BLS, ACLS &amp; First Aid — Wilmington / Burgaw / Jacksonville</h1>
-          <p>Live &amp; blended classes with fast certificates — powered by 910CPR</p>
-        </div>
-      </div>
-      <div class="actions">
-        <a class="pill" href="./index-mobile.html" title="Mobile view">📱 Mobile view</a>
-        <a class="pill" href="tel:+19103955193">📞 Call or text (910) 395-5193</a>
-        <a class="pill" href="mailto:info@910cpr.com">✉️ Email 910CPR for help</a>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logoDot" aria-hidden="true"></div>
+      <div>
+        <h1>CPR, BLS, ACLS &amp; First Aid — Wilmington / Burgaw / Jacksonville</h1>
+        <div class="sub">Live &amp; blended classes with fast certificates — powered by 910CPR</div>
       </div>
     </div>
-  </div>
 
-  <div class="wrap">
+    <div class="topActions">
+      <a class="chip" href="./index-mobile.html" title="Open mobile-friendly view">
+        <span class="dot"></span> Mobile view
+      </a>
+      <a class="chip" href="tel:+19103955193" title="Call 910CPR">
+        📞 Call or text (910) 395-5193
+      </a>
+      <a class="chip" href="mailto:info@910cpr.com" title="Email 910CPR">
+        ✉️ Email 910CPR for help
+      </a>
+    </div>
+  </header>
+
+  <main class="wrap">
     <div class="grid">
-      <div class="card">
-        <div class="hd">
-          <h2>Step 1: Choose a class family</h2>
+      <!-- LEFT: Step 1 -->
+      <section class="panel" aria-label="Step 1">
+        <div class="panelHeader">
+          <p class="title" style="margin:0;">Step 1: Choose a class family</p>
           <p class="hint">We’ll show only the classes that match this path.</p>
         </div>
-        <div class="bd">
-          <input id="q" class="search" placeholder="Search (BLS, ACLS, Heartsaver, OSHA...)" />
-          <div id="families" class="list" style="margin-top:12px;"></div>
-          <div id="familyEmpty" class="empty" style="display:none;margin-top:12px;">
-            No classes were found in schedule.json. If your snapshot builder is green again, this will populate automatically.
+
+        <div class="searchRow">
+          <input id="familySearch" type="search" placeholder="Search (BLS, ACLS, Heartsaver, OSHA…)" autocomplete="off" />
+        </div>
+
+        <div id="familyList" class="familyList">
+          <!-- populated by JS -->
+        </div>
+      </section>
+
+      <!-- RIGHT: Step 2 -->
+      <section class="panel" aria-label="Step 2">
+        <div class="panelHeader">
+          <div class="rightTop">
+            <div>
+              <p class="title" style="margin:0;">Step 2: Pick the exact class</p>
+              <p class="hint">Upcoming sessions are shown first. Use the buttons for direct registration.</p>
+            </div>
+            <div id="loadingBox" class="skeletonBox" aria-hidden="true"></div>
           </div>
         </div>
-      </div>
 
-      <div class="card">
-        <div class="mainPad">
-          <div class="hero">
-            <div style="min-width:0">
-              <h3 id="rightTitle">Step 2: Pick the exact class</h3>
-              <p id="rightSub">Click a course to see real dates, times, and locations.</p>
-            </div>
-            <div class="heroRight">
-              <img src="./assets/images/brand/hero-cpr.jpg" alt="CPR training" onerror="this.style.display='none'">
-            </div>
-          </div>
+        <div class="content">
+          <div id="status" class="notice">Loading schedule…</div>
+          <div id="courseCards"></div>
 
-          <div id="courses" class="list"></div>
-          <div id="courseEmpty" class="empty" style="display:none;">
-            Pick a family on the left to see available courses.
-          </div>
-
-          <div class="foot">
-            <div>
-              Still unsure? <a href="https://coastalcprtraining.enrollware.com/schedule" target="_blank" rel="noopener">View all dates on Enrollware schedule</a>
-            </div>
-            <div>
-              Need help matching the right class? Call/text <a href="tel:+19103955193">(910) 395-5193</a>
-            </div>
+          <div class="footer">
+            If something looks off, you can always register directly from Enrollware. (No hidden URLs.)
           </div>
         </div>
-      </div>
+      </section>
     </div>
-  </div>
+  </main>
 
-<script>
-(function(){
-  const SCHEDULE_URL = "./data/schedule.json";
+  <script>
+    /* =========================
+       CONFIG
+    ========================= */
+    const SCHEDULE_JSON_URL = "./data/schedule.json";
+    const COURSE_DESC_JSON_URL = "./data/course-descriptions.json";
 
-  function norm(s){ return (s||"").toString().trim(); }
+    // Families we want to show (order matters)
+    const FAMILY_ORDER = [
+      "ACLS",
+      "BLS",
+      "PALS",
+      "Heartsaver / CPR-AED",
+      "First Aid",
+      "OSHA",
+      "Stop the Bleed",
+      "Instructor",
+      "Other"
+    ];
 
-  function inferFamily(title){
-    const t = norm(title).toLowerCase();
-    if (t.includes("acls")) return "ACLS";
-    if (t.includes("pals")) return "PALS";
-    if (t.includes("bls")) return "BLS";
-    if (t.includes("heartsaver") || t.includes("cpr aed") || t.includes("cpr/aed")) return "Heartsaver / CPR-AED";
-    if (t.includes("first aid") || t.includes("firstaid")) return "First Aid";
-    if (t.includes("stop the bleed") || t.includes("bleed")) return "Stop the Bleed";
-    if (t.includes("osha")) return "OSHA";
-    if (t.includes("instructor")) return "Instructor";
-    if (t.includes("asls")) return "ASLS";
-    if (t.includes("elementary first aid") || t.includes("coast guard") || t.includes("maritime")) return "Maritime / USCG";
-    return "Other";
-  }
-
-  function isFuture(row){
-    // Prefer start_iso if present
-    const s = norm(row.start_iso);
-    if (s){
-      const d = new Date(s);
-      if (!isNaN(d.getTime())) return d.getTime() >= Date.now() - 60*1000;
+    /* =========================
+       1) Date parsing helpers
+    ========================= */
+    function _pickStartField(s) {
+      return (
+        s.start_iso ||
+        s.startISO ||
+        s.start ||
+        s.start_datetime ||
+        s.startDateTime ||
+        s.datetime ||
+        s.dateTime ||
+        s.when ||
+        s.class_start ||
+        null
+      );
     }
-    // Fallback: if date text contains a year and it's >= current year, treat as maybe future
-    const dt = norm(row.date);
-    const m = dt.match(/(20\d{2})/);
-    if (m){
-      const y = parseInt(m[1],10);
-      if (!isNaN(y) && y >= (new Date()).getFullYear()) return true;
+    function toMillisFromRow(s) {
+      const v = _pickStartField(s);
+      if (!v) return null;
+      if (typeof v === "number" && Number.isFinite(v)) return v;
+      if (typeof v === "string") {
+        const t = Date.parse(v);
+        return Number.isFinite(t) ? t : null;
+      }
+      return null;
     }
-    return false;
-  }
-
-  function fmtPrice(p){
-    if (p === null || p === undefined || p === "") return "";
-    const n = Number(p);
-    if (!isNaN(n)) return "$" + n.toFixed(2).replace(".00","");
-    // already formatted
-    return String(p);
-  }
-
-  function groupBy(arr, keyFn){
-    const m = new Map();
-    for (const x of arr){
-      const k = keyFn(x);
-      if (!m.has(k)) m.set(k, []);
-      m.get(k).push(x);
+    function isUpcomingRow(s, nowMs) {
+      const ms = toMillisFromRow(s);
+      if (ms === null) return false;
+      return ms >= nowMs;
     }
-    return m;
-  }
-
-  function pickEnrollUrl(row){
-    const u = norm(row.url);
-    if (u) return u;
-    // If url missing but id exists
-    if (row.id) return "https://coastalcprtraining.enrollware.com/enroll?id=" + row.id;
-    return "https://coastalcprtraining.enrollware.com/schedule";
-  }
-
-  function courseScheduleUrl(row){
-    // best if course_number exists
-    const cn = norm(row.course_number);
-    if (cn) return "https://coastalcprtraining.enrollware.com/schedule#ct" + cn;
-    return "https://coastalcprtraining.enrollware.com/schedule";
-  }
-
-  const elFamilies = document.getElementById("families");
-  const elFamilyEmpty = document.getElementById("familyEmpty");
-  const elCourses = document.getElementById("courses");
-  const elCourseEmpty = document.getElementById("courseEmpty");
-  const elQ = document.getElementById("q");
-  const elRightTitle = document.getElementById("rightTitle");
-  const elRightSub = document.getElementById("rightSub");
-
-  let rows = [];
-  let selectedFamily = null;
-  let query = "";
-
-  function renderFamilies(){
-    elFamilies.innerHTML = "";
-    const filtered = rows.filter(r => {
-      const t = (norm(r.title) + " " + norm(r.date) + " " + norm(r.location)).toLowerCase();
-      return !query || t.includes(query);
-    });
-
-    if (!filtered.length){
-      elFamilyEmpty.style.display = "block";
-      return;
+    function sortRowsByStartAsc(a, b) {
+      const am = toMillisFromRow(a);
+      const bm = toMillisFromRow(b);
+      return (am ?? 9e15) - (bm ?? 9e15);
     }
-    elFamilyEmpty.style.display = "none";
-
-    const famMap = groupBy(filtered, r => r.family);
-    const fams = Array.from(famMap.keys()).sort((a,b)=> a.localeCompare(b));
-
-    for (const fam of fams){
-      const count = famMap.get(fam).filter(isFuture).length;
-      const div = document.createElement("div");
-      div.className = "item" + (fam === selectedFamily ? " active" : "");
-      div.innerHTML = "<div style='font-weight:900'>" + fam + "</div>" +
-                      "<div style='color:var(--muted);font-size:13px;margin-top:2px'>" +
-                      (count ? (count + " upcoming sessions") : "No upcoming sessions (past only)") +
-                      "</div>";
-      div.onclick = () => { selectedFamily = fam; renderFamilies(); renderCourses(); };
-      elFamilies.appendChild(div);
+    function formatWhen(ms) {
+      try{
+        const d = new Date(ms);
+        // Example: Saturday, December 20, 2025 at 12:30 PM
+        return d.toLocaleString(undefined, {
+          weekday:"long",
+          year:"numeric",
+          month:"long",
+          day:"numeric",
+          hour:"numeric",
+          minute:"2-digit"
+        });
+      }catch(e){
+        return "Date/time";
+      }
     }
 
-    // default selection
-    if (!selectedFamily && fams.length){
-      selectedFamily = fams[0];
-      renderFamilies();
-      renderCourses();
+    /* =========================
+       2) URL helpers
+    ========================= */
+    function pickRegisterUrl(row){
+      return row.register_url || row.registerUrl || row.enroll_url || row.enrollUrl || row.enroll_link || row.enrollLink || row.register || row.enroll || "";
     }
-  }
-
-  function renderCourses(){
-    elCourses.innerHTML = "";
-    if (!selectedFamily){
-      elCourseEmpty.style.display = "block";
-      return;
-    }
-    elCourseEmpty.style.display = "none";
-
-    const famRows = rows.filter(r => r.family === selectedFamily);
-    const qRows = famRows.filter(r => {
-      const t = (norm(r.title) + " " + norm(r.date) + " " + norm(r.location)).toLowerCase();
-      return !query || t.includes(query);
-    });
-
-    if (!qRows.length){
-      elCourses.innerHTML = "<div class='empty'>No matches for this family. Try a different search.</div>";
-      return;
+    function pickScheduleUrl(row){
+      return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || row.ct_url || row.ctUrl || "";
     }
 
-    elRightTitle.textContent = "Step 2: Pick the exact class";
-    elRightSub.textContent = "Upcoming sessions are shown first. Use the buttons for direct registration.";
+    /* =========================
+       3) Group key helpers
+    ========================= */
+    function pickCourseKey(row){
+      return (
+        row.course_id ||
+        row.courseId ||
+        row.ct_id ||
+        row.ctId ||
+        row.courseTypeId ||
+        row.course_type_id ||
+        row.course_type ||
+        row.course_slug ||
+        row.courseSlug ||
+        pickScheduleUrl(row) ||
+        row.course_name ||
+        row.courseName ||
+        row.title ||
+        row.name ||
+        null
+      );
+    }
+    function pickCourseTitle(row){
+      return row.course_name || row.courseName || row.course_title || row.courseTitle || row.title || row.name || "Course";
+    }
+    function pickLocation(row){
+      return row.location || row.location_name || row.locationName || row.city_state || row.cityState || row.city || row.site || row.address || "Location TBD";
+    }
 
-    // Group by course title (best common denominator for your current legacy rows)
-    const courseMap = groupBy(qRows, r => norm(r.title));
-    const courseTitles = Array.from(courseMap.keys())
-      .sort((a,b)=> a.localeCompare(b));
+    /* =========================
+       4) Family classifier
+    ========================= */
+    function classifyFamily(courseTitle){
+      const t = String(courseTitle || "").toUpperCase();
 
-    for (const title of courseTitles){
-      const items = courseMap.get(title).slice();
+      if (t.includes("ACLS")) return "ACLS";
+      if (t.includes("PALS")) return "PALS";
+      if (t.includes("BLS")) return "BLS";
+      if (t.includes("HEARTSAVER") || t.includes("CPR/AED") || t.includes("CPR AED") || t.includes("CPR-AED")) return "Heartsaver / CPR-AED";
+      if (t.includes("FIRST AID") || t.includes("FA/") || t.includes("FA ")) return "First Aid";
+      if (t.includes("OSHA") || t.includes("USCG") || t.includes("COAST GUARD") || t.includes("DAN")) return "OSHA";
+      if (t.includes("STOP THE BLEED")) return "Stop the Bleed";
+      if (t.includes("INSTRUCTOR")) return "Instructor";
 
-      // sort: future first, then by start_iso or date text
-      items.sort((a,b)=>{
-        const af = isFuture(a), bf = isFuture(b);
-        if (af !== bf) return af ? -1 : 1;
-        const ad = new Date(norm(a.start_iso) || 0).getTime();
-        const bd = new Date(norm(b.start_iso) || 0).getTime();
-        if (!isNaN(ad) && !isNaN(bd) && ad !== bd) return ad - bd;
-        return norm(a.date).localeCompare(norm(b.date));
-      });
+      return "Other";
+    }
 
-      const upcoming = items.filter(isFuture);
-      const show = (upcoming.length ? upcoming : items).slice(0, 10);
+    /* =========================
+       5) Build UPCOMING index
+    ========================= */
+    function buildUpcomingIndex(scheduleRows, nowMs){
+      const groups = new Map();
 
-      const container = document.createElement("div");
-      container.className = "item";
-      container.style.cursor = "default";
+      for(const row of (scheduleRows || [])){
+        const courseKey = pickCourseKey(row);
+        if(!courseKey) continue;
 
-      // Try to show a representative price (first non-empty)
-      let p = "";
-      for (const it of items){
-        const fp = fmtPrice(it.price);
-        if (fp){ p = fp; break; }
+        if(!isUpcomingRow(row, nowMs)) continue; // HARD RULE
+
+        if(!groups.has(courseKey)){
+          groups.set(courseKey, {
+            courseKey,
+            courseTitle: pickCourseTitle(row),
+            family: classifyFamily(pickCourseTitle(row)),
+            scheduleUrl: pickScheduleUrl(row),
+            sessions: []
+          });
+        }
+        const g = groups.get(courseKey);
+        // Keep a schedule URL if we find a better one later
+        if (!g.scheduleUrl) g.scheduleUrl = pickScheduleUrl(row);
+        g.sessions.push(row);
       }
 
-      const metaBits = [];
-      if (p) metaBits.push("Typical price: " + p);
-      metaBits.push("Shown: " + show.length + (upcoming.length ? " upcoming" : " (past-only fallback)"));
+      // sort sessions; compute next start
+      for(const g of groups.values()){
+        g.sessions.sort(sortRowsByStartAsc);
+        g.nextStartMs = toMillisFromRow(g.sessions[0]) ?? 9e15;
+      }
 
-      container.innerHTML = "" +
-        "<div class='courseTitle'>" + title + "</div>" +
-        "<div class='courseMeta'>" + metaBits.join(" • ") + "</div>" +
-        "<div class='sessions'></div>";
+      const list = Array.from(groups.values());
+      list.sort((A,B)=>A.nextStartMs - B.nextStartMs);
+      return list;
+    }
 
-      const sessWrap = container.querySelector(".sessions");
+    function countFamilies(courseGroups){
+      const counts = new Map();
+      for(const fam of FAMILY_ORDER) counts.set(fam, 0);
 
-      for (const it of show){
-        const sess = document.createElement("div");
-        sess.className = "sess";
+      for(const g of courseGroups){
+        counts.set(g.family, (counts.get(g.family) || 0) + g.sessions.length);
+      }
+      return counts;
+    }
 
-        const enrollUrl = pickEnrollUrl(it);
-        const schedUrl = courseScheduleUrl(it);
-        const future = isFuture(it);
-        const priceTxt = fmtPrice(it.price);
+    /* =========================
+       6) DOM rendering
+    ========================= */
+    const elFamilyList = document.getElementById("familyList");
+    const elCourseCards = document.getElementById("courseCards");
+    const elStatus = document.getElementById("status");
+    const elLoadingBox = document.getElementById("loadingBox");
+    const elFamilySearch = document.getElementById("familySearch");
 
-        sess.innerHTML = "" +
-          "<div class='left'>" +
-            "<div class='date'>" + (norm(it.date) || "Date/time TBD") + "</div>" +
-            "<div class='loc'>" + (norm(it.location) || "Location TBD") + "</div>" +
-            (priceTxt ? ("<div class='price'>Price: " + priceTxt + "</div>") : "") +
-          "</div>" +
-          "<div class='right'></div>";
+    let COURSE_DESC = {};         // course-descriptions.json
+    let ALL_GROUPS = [];          // grouped upcoming index
+    let ACTIVE_FAMILY = "BLS";    // default like your screenshot
 
-        const right = sess.querySelector(".right");
+    function familyButton(family, count, isActive){
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "familyBtn" + (isActive ? " active" : "");
+      btn.dataset.family = family;
 
-        if (future){
-          const b1 = document.createElement("a");
-          b1.className = "btn btnPrimary";
-          b1.href = enrollUrl;
-          b1.target = "_blank";
-          b1.rel = "noopener";
-          b1.textContent = "Register now";
-          right.appendChild(b1);
-        } else {
-          const b2 = document.createElement("a");
-          b2.className = "btn btnWarn";
-          b2.href = schedUrl;
-          b2.target = "_blank";
-          b2.rel = "noopener";
-          b2.textContent = "This date passed — see current schedule";
-          right.appendChild(b2);
+      const left = document.createElement("div");
+      left.innerHTML = `<div>${family}</div><small>${count} upcoming sessions</small>`;
+
+      const right = document.createElement("div");
+      right.className = "count";
+      right.textContent = String(count);
+
+      btn.appendChild(left);
+      btn.appendChild(right);
+
+      btn.addEventListener("click", () => {
+        ACTIVE_FAMILY = family;
+        renderFamilies();
+        renderCourses();
+        // Keep the right panel top visible
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      return btn;
+    }
+
+    function renderFamilies(){
+      const q = String(elFamilySearch.value || "").trim().toUpperCase();
+
+      const counts = countFamilies(ALL_GROUPS);
+
+      elFamilyList.innerHTML = "";
+      for(const fam of FAMILY_ORDER){
+        const count = counts.get(fam) || 0;
+        const matches = !q || fam.toUpperCase().includes(q);
+        if(!matches) continue;
+
+        // Show even if 0, but disabled/less prominent? Up to you.
+        // You asked Step 2 not to show past-only; Step 1 can still show “0 upcoming”.
+        const btn = familyButton(fam, count, fam === ACTIVE_FAMILY);
+        if(count === 0){
+          btn.style.opacity = "0.55";
+        }
+        elFamilyList.appendChild(btn);
+      }
+    }
+
+    function pickCourseDescription(courseKey, courseTitle){
+      // course-descriptions.json might be keyed by course ID or slug or title.
+      // We try in a few sane ways.
+      const byKey = COURSE_DESC[courseKey];
+      if (byKey) return byKey;
+
+      const byTitle = COURSE_DESC[courseTitle];
+      if (byTitle) return byTitle;
+
+      return "";
+    }
+
+    function renderCourses(){
+      const groups = ALL_GROUPS.filter(g => g.family === ACTIVE_FAMILY);
+
+      elCourseCards.innerHTML = "";
+
+      if(groups.length === 0){
+        elStatus.className = "notice";
+        elStatus.textContent = "No upcoming sessions found in this family right now.";
+        return;
+      }
+
+      elStatus.className = "notice";
+      elStatus.textContent = `Showing upcoming sessions for: ${ACTIVE_FAMILY}`;
+
+      for(const g of groups){
+        const card = document.createElement("div");
+        card.className = "courseCard";
+
+        const desc = pickCourseDescription(g.courseKey, g.courseTitle);
+
+        const top = document.createElement("div");
+        top.className = "courseTop";
+        top.innerHTML = `
+          <div>
+            <h3>${escapeHtml(g.courseTitle)}</h3>
+            ${desc ? `<div class="desc">${desc}</div>` : ``}
+          </div>
+          <div class="badge">Shown: ${g.sessions.length} upcoming</div>
+        `;
+
+        const sessions = document.createElement("div");
+        sessions.className = "sessions";
+
+        // show first 5 upcoming sessions
+        const show = g.sessions.slice(0, 5);
+
+        for(const row of show){
+          const ms = toMillisFromRow(row);
+          const when = ms ? formatWhen(ms) : "Date/time";
+          const where = pickLocation(row);
+
+          const regUrl = pickRegisterUrl(row);
+          const schedUrl = pickScheduleUrl(row) || g.scheduleUrl;
+
+          const line = document.createElement("div");
+          line.className = "sessionRow";
+
+          const left = document.createElement("div");
+          left.className = "left";
+          left.innerHTML = `
+            <div class="when">${escapeHtml(when)}</div>
+            <div class="where">${escapeHtml(where)}</div>
+          `;
+
+          const right = document.createElement("div");
+          right.className = "right";
+
+          const regBtn = document.createElement("a");
+          regBtn.className = "btn btnPrimary";
+          regBtn.textContent = "Register now";
+          regBtn.href = regUrl || schedUrl || "#";
+          regBtn.target = "_blank";
+          regBtn.rel = "noopener";
+
+          const moreBtn = document.createElement("a");
+          moreBtn.className = "btn btnGhost";
+          moreBtn.textContent = "More dates/times";
+          moreBtn.href = schedUrl || "#";
+          moreBtn.target = "_blank";
+          moreBtn.rel = "noopener";
+
+          right.appendChild(regBtn);
+          right.appendChild(moreBtn);
+
+          line.appendChild(left);
+          line.appendChild(right);
+          sessions.appendChild(line);
         }
 
-        const b3 = document.createElement("a");
-        b3.className = "btn btnGhost";
-        b3.href = schedUrl;
-        b3.target = "_blank";
-        b3.rel = "noopener";
-        b3.textContent = "More dates/times";
-        right.appendChild(b3);
+        card.appendChild(top);
+        card.appendChild(sessions);
 
-        sessWrap.appendChild(sess);
+        // Footer “more dates” (use scheduleUrl)
+        const moreRow = document.createElement("div");
+        moreRow.className = "moreRow";
+        if (g.scheduleUrl){
+          const a = document.createElement("a");
+          a.className = "btn btnGhost";
+          a.textContent = "See full schedule for this course";
+          a.href = g.scheduleUrl;
+          a.target = "_blank";
+          a.rel = "noopener";
+          moreRow.appendChild(a);
+        }
+        card.appendChild(moreRow);
+
+        elCourseCards.appendChild(card);
       }
-
-      elCourses.appendChild(container);
     }
-  }
 
-  async function boot(){
-    try{
-      const res = await fetch(SCHEDULE_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      rows = await res.json();
-      if (!Array.isArray(rows)) rows = [];
-
-      // Normalize families (don’t rely on the builder to do it yet)
-      rows = rows.map(r => {
-        const rr = Object.assign({}, r);
-        rr.title = rr.title || rr.course_name || rr.courseTitle || "";
-        rr.family = rr.family || inferFamily(rr.title);
-        return rr;
-      });
-
-      renderFamilies();
-      renderCourses();
-    }catch(err){
-      elFamilyEmpty.style.display = "block";
-      elFamilyEmpty.textContent = "Could not load schedule.json (" + err.message + "). Check the path ./data/schedule.json and verify it is published.";
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
     }
-  }
 
-  elQ.addEventListener("input", ()=>{
-    query = norm(elQ.value).toLowerCase();
-    renderFamilies();
-    renderCourses();
-  });
+    /* =========================
+       7) Load JSON and boot
+    ========================= */
+    async function loadJson(url){
+      const r = await fetch(url, { cache: "no-store" });
+      if(!r.ok) throw new Error(`Fetch failed: ${url} (${r.status})`);
+      return await r.json();
+    }
 
-  boot();
-})();
-</script>
+    async function boot(){
+      try{
+        elStatus.className = "notice";
+        elStatus.textContent = "Loading schedule…";
 
+        const [scheduleRows, descJson] = await Promise.all([
+          loadJson(SCHEDULE_JSON_URL),
+          loadJson(COURSE_DESC_JSON_URL).catch(()=> ({})) // descriptions optional
+        ]);
+
+        COURSE_DESC = descJson || {};
+
+        const nowMs = Date.now();
+        ALL_GROUPS = buildUpcomingIndex(scheduleRows, nowMs);
+
+        // Pick a default family with inventory if BLS is empty
+        const famCounts = countFamilies(ALL_GROUPS);
+        if ((famCounts.get(ACTIVE_FAMILY) || 0) === 0){
+          for (const fam of FAMILY_ORDER){
+            if ((famCounts.get(fam) || 0) > 0){
+              ACTIVE_FAMILY = fam;
+              break;
+            }
+          }
+        }
+
+        renderFamilies();
+        renderCourses();
+
+        elLoadingBox.style.display = "none";
+      }catch(err){
+        elLoadingBox.style.display = "none";
+        elStatus.className = "error";
+        elStatus.innerHTML = `
+          <div style="font-weight:900;margin-bottom:6px;">Schedule failed to load.</div>
+          <div style="margin-bottom:8px;">${escapeHtml(err?.message || String(err))}</div>
+          <div>Try the mobile page, or register directly through Enrollware.</div>
+          <div style="margin-top:10px;">
+            <a class="btn btnGhost" href="./index-mobile.html">Open index-mobile.html</a>
+            <a class="btn btnGhost" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar">Open Enrollware schedule (full URL)</a>
+          </div>
+        `;
+      }
+    }
+
+    elFamilySearch.addEventListener("input", renderFamilies);
+
+    boot();
+  </script>
 </body>
 </html>
