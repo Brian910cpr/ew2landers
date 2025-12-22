@@ -7,23 +7,16 @@ enrollware_to_schedule.py
 One-step builder:
   docs/data/enrollware-schedule.html  ->  docs/data/schedule.json (flat legacy list)
 
-✅ FIXES ADDED (this is the “schedule.json fix” you asked for):
-  1) Parses Enrollware's displayed date/time into a real ISO datetime:
-       - start_iso (timezone-aware, America/New_York)
-       - start_ms  (epoch millis for bulletproof sorting)
-  2) Adds is_past computed at build time (based on start_iso)
-  3) Adds schedule_url per course (Enrollware schedule#ct#######)
-  4) Adds register_url alias (keeps your existing "url" too)
-
-Keeps your existing DOM anchors:
-  - #enraccordion .enrpanel
-  - ul.enrclass-list > li > a[href*="enroll"]
-
-Logs go to STDERR so schedule.json stays clean JSON.
+Key outputs per session row:
+  - register_url (and url alias)
+  - schedule_url (derived from course_number whenever possible)
+  - start_iso, start_ms, is_past (timezone-aware, America/New_York)
 
 Usage:
   python scripts/enrollware_to_schedule.py
   python scripts/enrollware_to_schedule.py INPUT_HTML OUTPUT_JSON
+
+Logs go to STDERR so schedule.json stays clean JSON.
 """
 
 import json
@@ -33,16 +26,21 @@ from pathlib import Path
 from urllib.parse import urljoin, urlparse, parse_qs
 from datetime import datetime
 
-try:
-    from zoneinfo import ZoneInfo  # py3.9+
-except Exception:
-    ZoneInfo = None
-
 from bs4 import BeautifulSoup
 
 ENROLLWARE_BASE = "https://coastalcprtraining.enrollware.com/"
 LOCAL_TZ_NAME = "America/New_York"
-LOCAL_TZ = ZoneInfo(LOCAL_TZ_NAME) if ZoneInfo else None
+
+# ZoneInfo on Windows may need tzdata installed (you already did that).
+try:
+    from zoneinfo import ZoneInfo  # py3.9+
+    try:
+        LOCAL_TZ = ZoneInfo(LOCAL_TZ_NAME)
+    except Exception:
+        LOCAL_TZ = None
+except Exception:
+    ZoneInfo = None
+    LOCAL_TZ = None
 
 ROOT = Path(__file__).resolve().parents[1]  # repo root
 DEFAULT_INPUT = ROOT / "docs" / "data" / "enrollware-schedule.html"
@@ -70,7 +68,7 @@ def extract_session_id_from_href(href: str):
 
 def extract_course_number_from_text(text: str):
     """
-    Try to find a course filter value like ct209811 in any text/href.
+    Try to find a course filter value like #ct210549 in any text/href.
     Returns digits as string, or None.
     """
     if not text:
@@ -107,34 +105,32 @@ def try_extract_price(panel_text: str):
 
 
 def build_schedule_url(course_number: str | None) -> str | None:
+    """
+    Deterministic: if we have course_number, we can always build the ct schedule URL.
+    This is the 'easy fix' to prevent schedule_url null when course_number exists.
+    """
     if not course_number:
         return None
-    # IMPORTANT: user wants real, full URLs (no bit.ly, no hiding)
-    # Enrollware course filter is schedule#ct#######
     return urljoin(ENROLLWARE_BASE, f"schedule#ct{course_number}")
 
 
 def _try_parse_start_display_to_dt(start_display: str) -> datetime | None:
     """
-    Enrollware typically displays:
-      "Saturday, December 20, 2025 at 12:30 PM"
-    Sometimes "12:30PM" or missing weekday punctuation, etc.
-
-    Returns timezone-aware datetime in America/New_York if possible.
+    Enrollware often displays:
+      "Wednesday, January 28, 2026 at 12:00 PM NC - Wilmington: ..."
+    We'll parse the date/time portion and ignore trailing location text if present.
     """
     if not start_display:
         return None
 
     s = " ".join(start_display.strip().split())
 
-    # Normalize small formatting variants
-    s = s.replace(" at ", " at ")
-    s = re.sub(r"\s+", " ", s)
+    # If location got appended into the same string, cut after AM/PM
+    # Example: "... at 12:00 PM NC - Wilmington: ..."
+    m = re.search(r"\b(AM|PM)\b", s)
+    if m:
+        s = s[: m.end()].strip()
 
-    # Common formats to try
-    # - With weekday and "at"
-    # - Without weekday
-    # - Without "at"
     fmts = [
         "%A, %B %d, %Y at %I:%M %p",
         "%A, %B %d, %Y at %I %p",
@@ -147,15 +143,15 @@ def _try_parse_start_display_to_dt(start_display: str) -> datetime | None:
     for fmt in fmts:
         try:
             naive = datetime.strptime(s, fmt)
-            if LOCAL_TZ:
-                return naive.replace(tzinfo=LOCAL_TZ)
-            return naive  # fallback (naive) if zoneinfo missing
+            return naive.replace(tzinfo=LOCAL_TZ) if LOCAL_TZ else naive
         except Exception:
             continue
 
-    # Last-chance regex parse (e.g., weird spacing)
+    # Regex fallback
     m = re.search(
-        r"(?:(?P<weekday>[A-Za-z]+),\s*)?(?P<month>[A-Za-z]+)\s+(?P<day>\d{1,2}),\s+(?P<year>\d{4})\s+(?:at\s+)?(?P<hour>\d{1,2})(?::(?P<minute>\d{2}))?\s*(?P<ampm>AM|PM)",
+        r"(?:(?P<weekday>[A-Za-z]+),\s*)?"
+        r"(?P<month>[A-Za-z]+)\s+(?P<day>\d{1,2}),\s+(?P<year>\d{4})\s+"
+        r"(?:at\s+)?(?P<hour>\d{1,2})(?::(?P<minute>\d{2}))?\s*(?P<ampm>AM|PM)",
         s,
         re.IGNORECASE,
     )
@@ -175,10 +171,9 @@ def _try_parse_start_display_to_dt(start_display: str) -> datetime | None:
         if ampm == "AM" and hour == 12:
             hour = 0
 
-        naive = datetime(year, datetime.strptime(month_name, "%B").month, day, hour, minute)
-        if LOCAL_TZ:
-            return naive.replace(tzinfo=LOCAL_TZ)
-        return naive
+        month_num = datetime.strptime(month_name, "%B").month
+        naive = datetime(year, month_num, day, hour, minute)
+        return naive.replace(tzinfo=LOCAL_TZ) if LOCAL_TZ else naive
     except Exception:
         return None
 
@@ -197,7 +192,6 @@ def html_to_schedule_rows(html_text: str):
     course_index = {}  # course_name -> course_id
     course_meta = {}   # course_id -> dict
 
-    # "now" for is_past calculation
     now_dt = datetime.now(tz=LOCAL_TZ) if LOCAL_TZ else datetime.now()
 
     for panel in panels:
@@ -217,35 +211,35 @@ def html_to_schedule_rows(html_text: str):
         else:
             cid = course_index[course_name]
 
-        # Try to find course_number (#ct#######) in any href in the panel
-        course_number = None
+        # Try to discover the course_number from ANY href in this panel
+        found_course_number = None
         for a in panel.find_all("a", href=True):
-            course_number = extract_course_number_from_text(a["href"])
-            if course_number:
+            found_course_number = extract_course_number_from_text(a["href"])
+            if found_course_number:
                 break
-
-        schedule_url = build_schedule_url(course_number)
 
         panel_text = panel.get_text(" ", strip=True)
         price = try_extract_price(panel_text)
 
+        # Create or update course_meta
         if cid not in course_meta:
             course_meta[cid] = {
-                "course_number": course_number,
-                "schedule_url": schedule_url,
+                "course_number": found_course_number,
                 "price": price,
                 "course_name": course_name,
             }
         else:
-            if not course_meta[cid].get("course_number") and course_number:
-                course_meta[cid]["course_number"] = course_number
-                course_meta[cid]["schedule_url"] = build_schedule_url(course_number)
-            if not course_meta[cid].get("schedule_url") and schedule_url:
-                course_meta[cid]["schedule_url"] = schedule_url
+            # If we didn't have course_number earlier but found one now, update it.
+            if not course_meta[cid].get("course_number") and found_course_number:
+                course_meta[cid]["course_number"] = found_course_number
             if not course_meta[cid].get("price") and price:
                 course_meta[cid]["price"] = price
 
-        # Sessions
+        # IMPORTANT FIX:
+        # Always compute schedule_url from the CURRENT course_number (no stale/null).
+        current_course_number = course_meta[cid].get("course_number")
+        current_schedule_url = build_schedule_url(current_course_number)
+
         for ul in panel.select("ul.enrclass-list"):
             for li in ul.find_all("li"):
                 a = li.find("a", href=True)
@@ -264,35 +258,38 @@ def html_to_schedule_rows(html_text: str):
 
                 start_iso = start_dt.isoformat() if start_dt else None
                 start_ms = int(start_dt.timestamp() * 1000) if start_dt else None
-                is_past = (start_dt < now_dt) if (start_dt and now_dt) else None
+                is_past = (start_dt < now_dt) if start_dt else None
 
                 span = li.find("span")
                 location = span.get_text(" ", strip=True) if span else ""
+
                 register_url = urljoin(ENROLLWARE_BASE, href)
 
                 rows.append({
-                    # Legacy / existing fields (kept)
                     "id": session_id,
                     "course_id": cid,
-                    "course_number": course_meta[cid].get("course_number"),
+                    "course_number": current_course_number,
                     "title": course_name,
                     "date": start_display,   # raw display
-                    "time": None,            # (kept for legacy compatibility)
+                    "time": None,
                     "location": location,
                     "price": course_meta[cid].get("price"),
-                    "url": register_url,     # legacy name (kept)
 
-                    # New / fixed fields
-                    "register_url": register_url,                 # better field name for UI
-                    "schedule_url": course_meta[cid].get("schedule_url"),
-                    "start_iso": start_iso,                       # timezone-aware ISO if possible
-                    "start_ms": start_ms,                         # epoch ms for bulletproof sorting
-                    "is_past": is_past,                           # computed at build time
-                    "end_iso": None,                              # left blank unless you add durations later
+                    # url aliases
+                    "url": register_url,
+                    "register_url": register_url,
+
+                    # FIXED: derived from course_number whenever possible
+                    "schedule_url": current_schedule_url,
+
+                    # time intelligence
+                    "start_iso": start_iso,
+                    "start_ms": start_ms,
+                    "is_past": is_past,
+                    "end_iso": None,
                 })
 
-    # Deterministic ordering helps diffs and makes the UI consistent
-    # Sort by course_id then start_ms (unknowns last)
+    # Stable ordering: by course_id then start_ms (unknowns last)
     def _sort_key(r):
         sm = r.get("start_ms")
         return (r.get("course_id") or 0, sm if isinstance(sm, int) else 9_999_999_999_999)
