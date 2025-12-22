@@ -285,7 +285,7 @@
     <section class="panel">
       <div class="panelHeader">
         <p class="title">Filter</p>
-        <p class="hint">Only upcoming sessions are shown. Courses are collapsed by default—expand the ones you want.</p>
+        <p class="hint">Only upcoming sessions are shown. Courses are collapsed by default—expand the one you want.</p>
       </div>
       <div class="filters">
         <select id="familySelect"></select>
@@ -309,6 +309,7 @@
       "BLS","ACLS","PALS","Heartsaver / CPR-AED","First Aid","OSHA","Stop the Bleed","Instructor","Other"
     ];
 
+    // ---------- Date helpers ----------
     function _pickStartField(s) {
       return (
         s.start_ms || s.startMs || s.start_iso || s.startISO || s.start || s.start_datetime ||
@@ -347,13 +348,13 @@
       }
     }
 
+    // ---------- Row field pickers ----------
     function pickRegisterUrl(row){
       return row.register_url || row.registerUrl || row.url || row.enroll_url || row.enrollUrl || row.enroll_link || row.enrollLink || row.register || row.enroll || "";
     }
     function pickScheduleUrl(row){
       return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || row.ct_url || row.ctUrl || "";
     }
-
     function pickCourseKey(row){
       return (
         row.course_number || row.courseNumber || row.course_id || row.courseId || row.ct_id || row.ctId ||
@@ -381,6 +382,7 @@
       return "Other";
     }
 
+    // ---------- Safe HTML (so <img> in titles renders) ----------
     function sanitizeEnrollwareHtml(html) {
       const allowedTags = new Set(["IMG", "I", "B", "STRONG", "EM", "BR", "SPAN", "DIV", "SMALL"]);
       const allowedAttrs = new Set(["src", "alt", "title", "style", "class", "loading"]);
@@ -413,12 +415,34 @@
       return tpl.innerHTML;
     }
 
+    // ---------- Curtain labels ----------
     function setCollapsed(containerEl, toggleBtnEl, collapsed) {
       containerEl.style.display = collapsed ? "none" : "flex";
-      toggleBtnEl.textContent = collapsed ? "Show dates/times" : "Hide dates/times";
+      toggleBtnEl.textContent = collapsed ? "SHOW NEXT 5 TIMES" : "HIDE TIMES";
       toggleBtnEl.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      toggleBtnEl.dataset.collapsed = collapsed ? "true" : "false";
     }
 
+    // Accordion: only one open at a time
+    function closeAllCurtainsExcept(courseKeyToKeep){
+      const wraps = document.querySelectorAll(".courseCard .sessions[data-course-key]");
+      wraps.forEach(wrap => {
+        const k = wrap.dataset.courseKey;
+        if (k !== courseKeyToKeep) wrap.style.display = "none";
+      });
+
+      const toggles = document.querySelectorAll(".courseCard button[data-role='toggle'][data-course-key]");
+      toggles.forEach(btn => {
+        const k = btn.dataset.courseKey;
+        if (k !== courseKeyToKeep){
+          btn.textContent = "SHOW NEXT 5 TIMES";
+          btn.setAttribute("aria-expanded","false");
+          btn.dataset.collapsed = "true";
+        }
+      });
+    }
+
+    // ---------- Grouping ----------
     function buildUpcomingIndex(scheduleRows, nowMs){
       const groups = new Map();
       for(const row of (scheduleRows || [])){
@@ -538,8 +562,9 @@
 
         const sessions = document.createElement("div");
         sessions.className = "sessions";
+        sessions.dataset.courseKey = String(g.courseKey);
 
-        for(const row of g.sessions.slice(0, 4)){
+        for(const row of g.sessions.slice(0, 5)){
           const ms = toMillisFromRow(row);
           const when = ms ? formatWhen(ms) : "Date/time";
           const where = pickLocation(row);
@@ -554,7 +579,7 @@
             <div class="where">${escapeHtml(where)}</div>
             <div class="btnRow">
               <a class="btn btnPrimary" href="${escapeHtml(regUrl || schedUrl || "#")}" target="_blank" rel="noopener">Register now</a>
-              <a class="btn btnGhost" href="${escapeHtml(schedUrl || "#")}" target="_blank" rel="noopener">More dates/times</a>
+              <a class="btn btnGhost" href="${escapeHtml(schedUrl || "#")}" target="_blank" rel="noopener">Show comprehensive schedule</a>
             </div>
           `;
           sessions.appendChild(sr);
@@ -567,11 +592,17 @@
         toggleBtn.type = "button";
         toggleBtn.className = "btn btnGhost";
         toggleBtn.style.cursor = "pointer";
+        toggleBtn.dataset.role = "toggle";
+        toggleBtn.dataset.courseKey = String(g.courseKey);
 
         let collapsed = true;
         setCollapsed(sessions, toggleBtn, collapsed);
 
         toggleBtn.addEventListener("click", () => {
+          const isCurrentlyCollapsed = (toggleBtn.dataset.collapsed === "true");
+          if (isCurrentlyCollapsed){
+            closeAllCurtainsExcept(String(g.courseKey));
+          }
           collapsed = !collapsed;
           setCollapsed(sessions, toggleBtn, collapsed);
         });
