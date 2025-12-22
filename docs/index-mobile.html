@@ -1,378 +1,617 @@
+<!-- =========================
+FILE: docs/index-mobile.html
+PURPOSE: Mobile index (single-column) reading schedule.json + course-descriptions.json
+RULES FIXED:
+  - Only UPCOMING sessions are shown (no “past-only fallback”)
+  - Sessions sorted by real start time
+  - Course cards sorted by next upcoming session
+========================= -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>910CPR Schedule (Mobile)</title>
+  <title>910CPR — Schedule (Mobile)</title>
+  <meta name="description" content="Mobile schedule — powered by 910CPR" />
 
   <style>
     :root{
       --bg1:#ffffff;
-      --bg2:#f3f7ff;
-      --ink:#0f172a;
-      --muted:#475569;
+      --bg2:#eaf4ff;
+      --ink:#0b1b2b;
+      --muted:#5b6a79;
       --card:#ffffff;
-      --line:#e2e8f0;
-      --brand:#0b5b6b;
-      --brand2:#0f766e;
-      --warn:#b45309;
-      --shadow: 0 10px 25px rgba(2, 8, 23, .08);
-      --radius: 16px;
+      --line:#e3e8ef;
+      --pill:#eef4fb;
+      --blue:#0b5cab;
+      --green:#0f7a4f;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --radius:16px;
+      --radius2:18px;
     }
+    *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--ink);
       background: linear-gradient(180deg,var(--bg1),var(--bg2));
     }
-    .top{
-      background: linear-gradient(90deg,#0b1a2b,#0b2940);
+    a{color:inherit}
+
+    .topbar{
+      position:sticky; top:0; z-index:10;
+      background: linear-gradient(90deg,#0a1a2b,#102b4a);
       color:#fff;
       padding:12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.2);
     }
-    .top h1{margin:0;font-size:15px;}
-    .top p{margin:4px 0 0;font-size:12px;opacity:.85;}
-    .wrap{padding:14px;max-width:720px;margin:0 auto;}
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:12px;
-      margin-bottom:12px;
+    .row1{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
     }
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:10px 12px;border-radius:12px;border:1px solid var(--line);
-      background:#fff;text-decoration:none;font-weight:800;font-size:14px;
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      min-width:0;
     }
-    .btnPrimary{
-      background: linear-gradient(90deg,var(--brand),var(--brand2));
-      color:#fff;border-color: transparent;
+    .logoDot{
+      width:16px;height:16px;border-radius:6px;background:#fff;
+      flex:0 0 auto;
     }
-    .btnWarn{border-color: rgba(180,83,9,.35); background:#fff7ed; color: var(--warn);}
-    .search{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 12px;
-      font-size:14px;
-      outline:none;
-      margin-top:10px;
+    .brandText{
+      min-width:0;
     }
-    .pillRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
-    .pill{
+    .brandText .t{
+      font-weight:900;
       font-size:13px;
-      border:1px solid var(--line);
-      background:#f8fafc;
-      padding:7px 10px;
-      border-radius:999px;
-      cursor:pointer;
-      user-select:none;
-      font-weight:800;
-      color:var(--muted);
+      line-height:1.15;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 68vw;
     }
-    .pill.active{border-color: rgba(11,91,107,.45); box-shadow: 0 0 0 3px rgba(11,91,107,.10); color:var(--ink); background:#fff;}
-    .course{
+    .brandText .s{
+      font-size:11px;
+      opacity:.85;
+      margin-top:2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 78vw;
+    }
+    .chipRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .chip{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:9px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      text-decoration:none;
+      font-weight:850;
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .wrap{
+      max-width: 760px;
+      margin: 12px auto 50px;
+      padding: 0 12px;
+    }
+
+    .panel{
+      background: var(--card);
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      margin-top:10px;
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-bottom: 12px;
+    }
+    .panelHeader{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg,#ffffff,#f7fbff);
+    }
+    .panelHeader .title{
+      margin:0;
+      font-weight:950;
+      font-size:14px;
+    }
+    .panelHeader .hint{
+      margin:6px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    .filters{
+      padding: 12px 14px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .filters input, .filters select{
+      width:100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      outline:none;
+      font-size:13px;
       background:#fff;
     }
-    .title{font-size:16px;font-weight:900;margin:0 0 6px;}
-    .meta{color:var(--muted);font-size:13px;margin:0 0 10px;line-height:1.35;}
-    .sess{
-      border-top:1px dashed #e2e8f0;
-      padding-top:10px;
-      margin-top:10px;
+
+    .notice{
+      padding: 10px 14px;
+      border:1px dashed #c9d8ea;
+      background:#f7fbff;
+      color:#18314a;
+      border-radius: 14px;
+      font-size:12px;
+      line-height:1.4;
+      margin: 12px 0;
     }
-    .d{font-weight:900;margin:0 0 4px;}
-    .l{margin:0;color:var(--muted);font-size:13px;line-height:1.35;}
-    .p{margin:8px 0 0;font-weight:900;font-size:13px;}
-    .cta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
-    .empty{
-      border:1px dashed #cbd5e1;
-      background:#f8fafc;
-      padding:14px;border-radius:14px;color:var(--muted);
+    .error{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border:1px solid #ffd2c1;
+      background:#fff5f1;
+      color:#5b1f0b;
+      line-height:1.35;
+      font-size:13px;
+      margin: 14px 0;
+    }
+
+    .courseCard{
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      overflow:hidden;
+      background:#fff;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      margin: 12px 0 16px;
+    }
+    .courseTop{
+      padding: 12px 14px;
+      background: linear-gradient(90deg,#0b4f92,#0b6aa6);
+      color:#fff;
+    }
+    .courseTop h3{
+      margin:0;
+      font-size:14px;
+      line-height:1.25;
+      font-weight:950;
+      letter-spacing:.2px;
+    }
+    .courseTop .desc{
+      margin:7px 0 0;
+      font-size:12px;
+      opacity:.92;
+      line-height:1.35;
+    }
+    .courseTop .badge{
+      margin-top:10px;
+      display:inline-flex;
+      font-size:11px;
+      font-weight:950;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.22);
+    }
+
+    .sessions{
+      padding: 12px 12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .sessionRow{
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .when{
+      font-weight:950;
+      font-size:13px;
+      line-height:1.25;
+    }
+    .where{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.25;
+      word-break: break-word;
+    }
+    .btnRow{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background:#fff;
+      text-decoration:none;
+      font-weight:950;
+      font-size:12px;
+      white-space:nowrap;
+      width:100%;
+    }
+    .btnPrimary{
+      background: #0d6b63;
+      border-color:#0d6b63;
+      color:#fff;
+    }
+    .btnPrimary:hover{background:#0b5e57}
+    .btnGhost:hover{background:#f6f9fe}
+
+    .footer{
+      padding: 18px 0 0;
+      color: var(--muted);
+      font-size:12px;
+      text-align:center;
     }
   </style>
 </head>
+
 <body>
-  <div class="top">
-    <h1>910CPR Schedule (Mobile)</h1>
-    <p>Pick a family → pick a class → register</p>
-  </div>
-
-  <div class="wrap">
-    <div class="card">
-      <div class="row">
-        <a class="btn" href="./index.html">⬅ Desktop view</a>
-        <a class="btn" href="tel:+19103955193">📞 Call/text</a>
+  <header class="topbar">
+    <div class="row1">
+      <div class="brand">
+        <div class="logoDot" aria-hidden="true"></div>
+        <div class="brandText">
+          <div class="t">910CPR — Schedule</div>
+          <div class="s">Live &amp; blended classes with fast certificates</div>
+        </div>
       </div>
-      <input id="q" class="search" placeholder="Search (BLS, ACLS, Heartsaver...)" />
-      <div id="families" class="pillRow"></div>
-      <div id="familyEmpty" class="empty" style="display:none;margin-top:10px;">
-        No classes were found in schedule.json.
-      </div>
+      <a class="chip" href="./index.html" title="Desktop view">Desktop</a>
     </div>
 
-    <div class="card">
-      <div id="courses"></div>
-      <div id="courseEmpty" class="empty" style="display:none;">
-        Choose a family to see classes.
-      </div>
+    <div class="chipRow">
+      <a class="chip" href="tel:+19103955193">📞 Call or text (910) 395-5193</a>
+      <a class="chip" href="mailto:info@910cpr.com">✉️ Email help</a>
     </div>
+  </header>
 
-    <div class="card">
-      <div style="color:var(--muted);font-size:13px;line-height:1.4;">
-        Full schedule:
-        <a href="https://coastalcprtraining.enrollware.com/schedule" target="_blank" rel="noopener">
-          Enrollware schedule
-        </a>
+  <main class="wrap">
+    <section class="panel">
+      <div class="panelHeader">
+        <p class="title">Filter</p>
+        <p class="hint">Only upcoming sessions are shown. Pick a family, then register.</p>
       </div>
+      <div class="filters">
+        <select id="familySelect"></select>
+        <input id="searchBox" type="search" placeholder="Search within titles (BLS, ACLS, Heartsaver…)" autocomplete="off" />
+      </div>
+    </section>
+
+    <div id="status" class="notice">Loading schedule…</div>
+    <div id="courseCards"></div>
+
+    <div class="footer">
+      No hidden URLs. If needed, you can always register directly through Enrollware.
     </div>
-  </div>
+  </main>
 
-<script>
-(function(){
-  const SCHEDULE_URL = "./data/schedule.json";
-  const elFamilies = document.getElementById("families");
-  const elFamilyEmpty = document.getElementById("familyEmpty");
-  const elCourses = document.getElementById("courses");
-  const elCourseEmpty = document.getElementById("courseEmpty");
-  const elQ = document.getElementById("q");
+  <script>
+    const SCHEDULE_JSON_URL = "./data/schedule.json";
+    const COURSE_DESC_JSON_URL = "./data/course-descriptions.json";
 
-  function norm(s){ return (s||"").toString().trim(); }
+    const FAMILY_ORDER = [
+      "BLS",
+      "ACLS",
+      "PALS",
+      "Heartsaver / CPR-AED",
+      "First Aid",
+      "OSHA",
+      "Stop the Bleed",
+      "Instructor",
+      "Other"
+    ];
 
-  function inferFamily(title){
-    const t = norm(title).toLowerCase();
-    if (t.includes("acls")) return "ACLS";
-    if (t.includes("pals")) return "PALS";
-    if (t.includes("bls")) return "BLS";
-    if (t.includes("heartsaver") || t.includes("cpr aed") || t.includes("cpr/aed")) return "Heartsaver / CPR-AED";
-    if (t.includes("first aid") || t.includes("firstaid")) return "First Aid";
-    if (t.includes("stop the bleed") || t.includes("bleed")) return "Stop the Bleed";
-    if (t.includes("osha")) return "OSHA";
-    if (t.includes("instructor")) return "Instructor";
-    if (t.includes("asls")) return "ASLS";
-    if (t.includes("elementary first aid") || t.includes("coast guard") || t.includes("maritime")) return "Maritime / USCG";
-    return "Other";
-  }
-
-  function isFuture(row){
-    const s = norm(row.start_iso);
-    if (s){
-      const d = new Date(s);
-      if (!isNaN(d.getTime())) return d.getTime() >= Date.now() - 60*1000;
+    function _pickStartField(s) {
+      return (
+        s.start_iso ||
+        s.startISO ||
+        s.start ||
+        s.start_datetime ||
+        s.startDateTime ||
+        s.datetime ||
+        s.dateTime ||
+        s.when ||
+        s.class_start ||
+        null
+      );
     }
-    const dt = norm(row.date);
-    const m = dt.match(/(20\d{2})/);
-    if (m){
-      const y = parseInt(m[1],10);
-      if (!isNaN(y) && y >= (new Date()).getFullYear()) return true;
+    function toMillisFromRow(s) {
+      const v = _pickStartField(s);
+      if (!v) return null;
+      if (typeof v === "number" && Number.isFinite(v)) return v;
+      if (typeof v === "string") {
+        const t = Date.parse(v);
+        return Number.isFinite(t) ? t : null;
+      }
+      return null;
     }
-    return false;
-  }
-
-  function fmtPrice(p){
-    if (p === null || p === undefined || p === "") return "";
-    const n = Number(p);
-    if (!isNaN(n)) return "$" + n.toFixed(2).replace(".00","");
-    return String(p);
-  }
-
-  function groupBy(arr, keyFn){
-    const m = new Map();
-    for (const x of arr){
-      const k = keyFn(x);
-      if (!m.has(k)) m.set(k, []);
-      m.get(k).push(x);
+    function isUpcomingRow(s, nowMs) {
+      const ms = toMillisFromRow(s);
+      if (ms === null) return false;
+      return ms >= nowMs;
     }
-    return m;
-  }
-
-  function pickEnrollUrl(row){
-    const u = norm(row.url);
-    if (u) return u;
-    if (row.id) return "https://coastalcprtraining.enrollware.com/enroll?id=" + row.id;
-    return "https://coastalcprtraining.enrollware.com/schedule";
-  }
-
-  function courseScheduleUrl(row){
-    const cn = norm(row.course_number);
-    if (cn) return "https://coastalcprtraining.enrollware.com/schedule#ct" + cn;
-    return "https://coastalcprtraining.enrollware.com/schedule";
-  }
-
-  let rows = [];
-  let selectedFamily = null;
-  let query = "";
-
-  function renderFamilies(){
-    elFamilies.innerHTML = "";
-    const filtered = rows.filter(r => {
-      const t = (norm(r.title) + " " + norm(r.date) + " " + norm(r.location)).toLowerCase();
-      return !query || t.includes(query);
-    });
-
-    if (!filtered.length){
-      elFamilyEmpty.style.display = "block";
-      return;
+    function sortRowsByStartAsc(a, b) {
+      const am = toMillisFromRow(a);
+      const bm = toMillisFromRow(b);
+      return (am ?? 9e15) - (bm ?? 9e15);
     }
-    elFamilyEmpty.style.display = "none";
-
-    const famMap = groupBy(filtered, r => r.family);
-    const fams = Array.from(famMap.keys()).sort((a,b)=>a.localeCompare(b));
-
-    for (const fam of fams){
-      const pill = document.createElement("div");
-      pill.className = "pill" + (fam === selectedFamily ? " active" : "");
-      pill.textContent = fam;
-      pill.onclick = () => { selectedFamily = fam; renderFamilies(); renderCourses(); };
-      elFamilies.appendChild(pill);
+    function formatWhen(ms) {
+      try{
+        const d = new Date(ms);
+        return d.toLocaleString(undefined, {
+          weekday:"long",
+          year:"numeric",
+          month:"long",
+          day:"numeric",
+          hour:"numeric",
+          minute:"2-digit"
+        });
+      }catch(e){
+        return "Date/time";
+      }
     }
 
-    if (!selectedFamily && fams.length){
-      selectedFamily = fams[0];
-      renderFamilies();
-      renderCourses();
+    function pickRegisterUrl(row){
+      return row.register_url || row.registerUrl || row.enroll_url || row.enrollUrl || row.enroll_link || row.enrollLink || row.register || row.enroll || "";
     }
-  }
-
-  function renderCourses(){
-    elCourses.innerHTML = "";
-    if (!selectedFamily){
-      elCourseEmpty.style.display = "block";
-      return;
+    function pickScheduleUrl(row){
+      return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || row.ct_url || row.ctUrl || "";
     }
-    elCourseEmpty.style.display = "none";
-
-    const famRows = rows.filter(r => r.family === selectedFamily);
-    const qRows = famRows.filter(r => {
-      const t = (norm(r.title) + " " + norm(r.date) + " " + norm(r.location)).toLowerCase();
-      return !query || t.includes(query);
-    });
-
-    if (!qRows.length){
-      elCourses.innerHTML = "<div class='empty'>No matches. Try a different search.</div>";
-      return;
+    function pickCourseKey(row){
+      return (
+        row.course_id ||
+        row.courseId ||
+        row.ct_id ||
+        row.ctId ||
+        row.courseTypeId ||
+        row.course_type_id ||
+        row.course_type ||
+        row.course_slug ||
+        row.courseSlug ||
+        pickScheduleUrl(row) ||
+        row.course_name ||
+        row.courseName ||
+        row.title ||
+        row.name ||
+        null
+      );
+    }
+    function pickCourseTitle(row){
+      return row.course_name || row.courseName || row.course_title || row.courseTitle || row.title || row.name || "Course";
+    }
+    function pickLocation(row){
+      return row.location || row.location_name || row.locationName || row.city_state || row.cityState || row.city || row.site || row.address || "Location TBD";
     }
 
-    const courseMap = groupBy(qRows, r => norm(r.title));
-    const courseTitles = Array.from(courseMap.keys()).sort((a,b)=>a.localeCompare(b));
+    function classifyFamily(courseTitle){
+      const t = String(courseTitle || "").toUpperCase();
+      if (t.includes("ACLS")) return "ACLS";
+      if (t.includes("PALS")) return "PALS";
+      if (t.includes("BLS")) return "BLS";
+      if (t.includes("HEARTSAVER") || t.includes("CPR/AED") || t.includes("CPR AED") || t.includes("CPR-AED")) return "Heartsaver / CPR-AED";
+      if (t.includes("FIRST AID") || t.includes("FA/") || t.includes("FA ")) return "First Aid";
+      if (t.includes("OSHA") || t.includes("USCG") || t.includes("COAST GUARD") || t.includes("DAN")) return "OSHA";
+      if (t.includes("STOP THE BLEED")) return "Stop the Bleed";
+      if (t.includes("INSTRUCTOR")) return "Instructor";
+      return "Other";
+    }
 
-    for (const title of courseTitles){
-      const items = courseMap.get(title).slice();
+    function buildUpcomingIndex(scheduleRows, nowMs){
+      const groups = new Map();
+      for(const row of (scheduleRows || [])){
+        const key = pickCourseKey(row);
+        if(!key) continue;
+        if(!isUpcomingRow(row, nowMs)) continue; // HARD RULE
 
-      items.sort((a,b)=>{
-        const af = isFuture(a), bf = isFuture(b);
-        if (af !== bf) return af ? -1 : 1;
-        const ad = new Date(norm(a.start_iso) || 0).getTime();
-        const bd = new Date(norm(b.start_iso) || 0).getTime();
-        if (!isNaN(ad) && !isNaN(bd) && ad !== bd) return ad - bd;
-        return norm(a.date).localeCompare(norm(b.date));
-      });
+        if(!groups.has(key)){
+          groups.set(key, {
+            courseKey: key,
+            courseTitle: pickCourseTitle(row),
+            family: classifyFamily(pickCourseTitle(row)),
+            scheduleUrl: pickScheduleUrl(row),
+            sessions:[]
+          });
+        }
+        const g = groups.get(key);
+        if (!g.scheduleUrl) g.scheduleUrl = pickScheduleUrl(row);
+        g.sessions.push(row);
+      }
+      for(const g of groups.values()){
+        g.sessions.sort(sortRowsByStartAsc);
+        g.nextStartMs = toMillisFromRow(g.sessions[0]) ?? 9e15;
+      }
+      const list = Array.from(groups.values());
+      list.sort((A,B)=>A.nextStartMs - B.nextStartMs);
+      return list;
+    }
 
-      const upcoming = items.filter(isFuture);
-      const show = (upcoming.length ? upcoming : items).slice(0, 6);
+    function countFamilyInventory(groups){
+      const m = new Map();
+      for(const fam of FAMILY_ORDER) m.set(fam,0);
+      for(const g of groups){
+        m.set(g.family, (m.get(g.family)||0) + g.sessions.length);
+      }
+      return m;
+    }
 
-      let p = "";
-      for (const it of items){
-        const fp = fmtPrice(it.price);
-        if (fp){ p = fp; break; }
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    const elStatus = document.getElementById("status");
+    const elCards = document.getElementById("courseCards");
+    const elFamilySelect = document.getElementById("familySelect");
+    const elSearchBox = document.getElementById("searchBox");
+
+    let COURSE_DESC = {};
+    let ALL_GROUPS = [];
+    let ACTIVE_FAMILY = "BLS";
+
+    function pickCourseDescription(courseKey, courseTitle){
+      return COURSE_DESC[courseKey] || COURSE_DESC[courseTitle] || "";
+    }
+
+    function renderFamilySelect(){
+      const inv = countFamilyInventory(ALL_GROUPS);
+
+      elFamilySelect.innerHTML = "";
+      for(const fam of FAMILY_ORDER){
+        const opt = document.createElement("option");
+        const c = inv.get(fam) || 0;
+        opt.value = fam;
+        opt.textContent = `${fam} (${c})`;
+        elFamilySelect.appendChild(opt);
       }
 
-      const box = document.createElement("div");
-      box.className = "course";
-      box.innerHTML =
-        "<div class='title'>" + title + "</div>" +
-        "<div class='meta'>" +
-          (p ? ("Typical price: " + p + " • ") : "") +
-          (upcoming.length ? (upcoming.length + " upcoming sessions") : "Past-only fallback") +
-        "</div>";
+      // If default family has 0, pick the first with inventory
+      if ((inv.get(ACTIVE_FAMILY)||0) === 0){
+        for (const fam of FAMILY_ORDER){
+          if ((inv.get(fam)||0) > 0){
+            ACTIVE_FAMILY = fam;
+            break;
+          }
+        }
+      }
+      elFamilySelect.value = ACTIVE_FAMILY;
+    }
 
-      for (const it of show){
-        const future = isFuture(it);
-        const enrollUrl = pickEnrollUrl(it);
-        const schedUrl = courseScheduleUrl(it);
-        const priceTxt = fmtPrice(it.price);
+    function renderCards(){
+      const q = String(elSearchBox.value || "").trim().toUpperCase();
 
-        const s = document.createElement("div");
-        s.className = "sess";
-        s.innerHTML =
-          "<div class='d'>" + (norm(it.date) || "Date/time TBD") + "</div>" +
-          "<div class='l'>" + (norm(it.location) || "Location TBD") + "</div>" +
-          (priceTxt ? ("<div class='p'>Price: " + priceTxt + "</div>") : "") +
-          "<div class='cta'></div>";
+      const groups = ALL_GROUPS
+        .filter(g => g.family === ACTIVE_FAMILY)
+        .filter(g => !q || String(g.courseTitle||"").toUpperCase().includes(q));
 
-        const cta = s.querySelector(".cta");
+      elCards.innerHTML = "";
 
-        if (future){
-          const b1 = document.createElement("a");
-          b1.className = "btn btnPrimary";
-          b1.href = enrollUrl;
-          b1.target = "_blank";
-          b1.rel = "noopener";
-          b1.textContent = "Register";
-          cta.appendChild(b1);
-        } else {
-          const b2 = document.createElement("a");
-          b2.className = "btn btnWarn";
-          b2.href = schedUrl;
-          b2.target = "_blank";
-          b2.rel = "noopener";
-          b2.textContent = "Date passed";
-          cta.appendChild(b2);
+      if (groups.length === 0){
+        elStatus.className = "notice";
+        elStatus.textContent = "No upcoming sessions found for this filter.";
+        return;
+      }
+
+      elStatus.className = "notice";
+      elStatus.textContent = `Showing upcoming sessions for: ${ACTIVE_FAMILY}`;
+
+      for(const g of groups){
+        const card = document.createElement("div");
+        card.className = "courseCard";
+
+        const desc = pickCourseDescription(g.courseKey, g.courseTitle);
+
+        const top = document.createElement("div");
+        top.className = "courseTop";
+        top.innerHTML = `
+          <h3>${escapeHtml(g.courseTitle)}</h3>
+          ${desc ? `<div class="desc">${desc}</div>` : ``}
+          <div class="badge">Shown: ${g.sessions.length} upcoming</div>
+        `;
+
+        const sessions = document.createElement("div");
+        sessions.className = "sessions";
+
+        for(const row of g.sessions.slice(0, 4)){
+          const ms = toMillisFromRow(row);
+          const when = ms ? formatWhen(ms) : "Date/time";
+          const where = pickLocation(row);
+
+          const regUrl = pickRegisterUrl(row);
+          const schedUrl = pickScheduleUrl(row) || g.scheduleUrl;
+
+          const sr = document.createElement("div");
+          sr.className = "sessionRow";
+          sr.innerHTML = `
+            <div class="when">${escapeHtml(when)}</div>
+            <div class="where">${escapeHtml(where)}</div>
+            <div class="btnRow">
+              <a class="btn btnPrimary" href="${escapeHtml(regUrl || schedUrl || "#")}" target="_blank" rel="noopener">Register now</a>
+              <a class="btn btnGhost" href="${escapeHtml(schedUrl || "#")}" target="_blank" rel="noopener">More dates/times</a>
+            </div>
+          `;
+          sessions.appendChild(sr);
         }
 
-        const b3 = document.createElement("a");
-        b3.className = "btn";
-        b3.href = schedUrl;
-        b3.target = "_blank";
-        b3.rel = "noopener";
-        b3.textContent = "More dates";
-        cta.appendChild(b3);
+        // Full schedule button
+        if (g.scheduleUrl){
+          const sr = document.createElement("div");
+          sr.className = "sessionRow";
+          sr.innerHTML = `
+            <div class="btnRow">
+              <a class="btn btnGhost" href="${escapeHtml(g.scheduleUrl)}" target="_blank" rel="noopener">See full schedule for this course</a>
+            </div>
+          `;
+          sessions.appendChild(sr);
+        }
 
-        box.appendChild(s);
+        card.appendChild(top);
+        card.appendChild(sessions);
+        elCards.appendChild(card);
       }
-
-      elCourses.appendChild(box);
     }
-  }
 
-  async function boot(){
-    try{
-      const res = await fetch(SCHEDULE_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      rows = await res.json();
-      if (!Array.isArray(rows)) rows = [];
-
-      rows = rows.map(r => {
-        const rr = Object.assign({}, r);
-        rr.title = rr.title || rr.course_name || rr.courseTitle || "";
-        rr.family = rr.family || inferFamily(rr.title);
-        return rr;
-      });
-
-      renderFamilies();
-      renderCourses();
-    }catch(err){
-      elFamilyEmpty.style.display = "block";
-      elFamilyEmpty.textContent = "Could not load schedule.json (" + err.message + "). Check ./data/schedule.json is published.";
+    async function loadJson(url){
+      const r = await fetch(url, { cache:"no-store" });
+      if(!r.ok) throw new Error(`Fetch failed: ${url} (${r.status})`);
+      return await r.json();
     }
-  }
 
-  elQ.addEventListener("input", ()=>{
-    query = norm(elQ.value).toLowerCase();
-    renderFamilies();
-    renderCourses();
-  });
+    async function boot(){
+      try{
+        const [scheduleRows, descJson] = await Promise.all([
+          loadJson(SCHEDULE_JSON_URL),
+          loadJson(COURSE_DESC_JSON_URL).catch(()=> ({}))
+        ]);
 
-  boot();
-})();
-</script>
+        COURSE_DESC = descJson || {};
+        ALL_GROUPS = buildUpcomingIndex(scheduleRows, Date.now());
 
+        renderFamilySelect();
+        renderCards();
+      }catch(err){
+        elStatus.className = "error";
+        elStatus.innerHTML = `
+          <div style="font-weight:950;margin-bottom:6px;">Schedule failed to load.</div>
+          <div style="margin-bottom:10px;">${escapeHtml(err?.message || String(err))}</div>
+          <a class="btn btnGhost" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar">Open Enrollware schedule (full URL)</a>
+        `;
+      }
+    }
+
+    elFamilySelect.addEventListener("change", () => {
+      ACTIVE_FAMILY = elFamilySelect.value;
+      renderCards();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    elSearchBox.addEventListener("input", renderCards);
+
+    boot();
+  </script>
 </body>
 </html>
