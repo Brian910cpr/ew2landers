@@ -46,24 +46,38 @@
     .brand{
       min-width:0;
       display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .brand img{
+      height: 28px;
+      width:auto;
+      display:block;
+      border-radius: 6px;
+      background: rgba(255,255,255,.12);
+      padding: 4px;
+    }
+    .brandText{
+      min-width:0;
+      display:flex;
       flex-direction:column;
       gap:2px;
     }
-    .brand .t{
+    .brandText .t{
       font-weight: 950;
       font-size: 13px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 70vw;
+      max-width: 56vw;
     }
-    .brand .s{
+    .brandText .s{
       font-size: 11px;
       opacity:.9;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 74vw;
+      max-width: 62vw;
     }
     .chipRow{
       display:flex;
@@ -85,8 +99,42 @@
       white-space:nowrap;
     }
 
+    .themeCenter{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      background:
+        url("./assets/images/brand/theme_center.png") center 180px / 650px auto no-repeat;
+      opacity: 0.06;
+      z-index: 0;
+    }
+    .themeCorner{
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(255,255,255,.75);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      z-index: 40;
+      text-decoration:none;
+    }
+    .themeCorner img{
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      display:block;
+      opacity: .9;
+    }
+    header, main{ position: relative; z-index: 1; }
+
     main{
-      max-width: 760px;
+      max-width: 860px;
       margin: 14px auto 36px;
       padding: 0 12px;
     }
@@ -168,6 +216,7 @@
       align-items:flex-start;
       justify-content:space-between;
       gap: 10px 12px;
+      width: 100%;
     }
     .courseTitle{
       flex: 1 1 260px;
@@ -180,6 +229,19 @@
       font-size: 14px;
       font-weight: 950;
       line-height:1.2;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+    .courseTitle .s{
+      font-size: 12px;
+      opacity:.92;
+      line-height:1.25;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
       overflow-wrap:anywhere;
       word-break:break-word;
     }
@@ -191,13 +253,6 @@
       border-radius:4px;
       background: rgba(255,255,255,.12);
       margin-right:6px;
-    }
-    .courseTitle .s{
-      font-size: 12px;
-      opacity:.92;
-      line-height:1.25;
-      overflow-wrap:anywhere;
-      word-break:break-word;
     }
     .courseActions{
       display:flex;
@@ -224,17 +279,26 @@
 
     .courseBody{ padding: 12px 14px; }
     .sessions{ display:flex; flex-direction:column; gap:10px; }
+
+    /* MOBILE REAL ESTATE: compact row + right-side button */
     .session{
       border:1px solid var(--line);
       border-radius: 14px;
       padding: 10px 12px;
       display:flex;
-      flex-direction:column;
-      gap:8px;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
     }
-    .when strong{ font-size: 13px; font-weight: 950; }
-    .when small{ font-size: 12px; color:var(--muted); overflow-wrap:anywhere; word-break:break-word; }
+    .when{ min-width:0; }
+    .when strong{ font-size: 13px; font-weight: 950; line-height:1.15; }
+    .when small{
+      font-size: 12px; color:var(--muted);
+      overflow-wrap:anywhere; word-break:break-word;
+      display:block;
+    }
     .reg{
+      flex: 0 0 auto;
       display:inline-flex;
       justify-content:center;
       align-items:center;
@@ -244,6 +308,7 @@
       padding: 10px 12px;
       border-radius: 999px;
       font-weight: 950;
+      white-space:nowrap;
     }
 
     footer{
@@ -257,11 +322,19 @@
 </head>
 
 <body>
+  <div class="themeCenter" aria-hidden="true"></div>
+  <a class="themeCorner" href="tel:+19103955193" aria-label="Call 910CPR">
+    <img src="./assets/images/brand/theme_mark.png" alt="" />
+  </a>
+
   <header>
     <div class="headRow">
       <div class="brand">
-        <div class="t">910CPR — Schedule</div>
-        <div class="s">Live &amp; blended classes with fast certificates</div>
+        <img src="./assets/images/brand/910cpr_logo.png" alt="910CPR" />
+        <div class="brandText">
+          <div class="t">910CPR — Schedule</div>
+          <div class="s">Live &amp; blended classes with fast certificates</div>
+        </div>
       </div>
       <a class="chip" href="./index.html">Desktop</a>
     </div>
@@ -292,6 +365,7 @@
   <script>
     const SCHEDULE_JSON_URL = "./data/schedule.json";
     const COURSE_DESC_JSON_URL = "./data/course-descriptions.json";
+    const ENROLLWARE_SITE = "https://www.enrollware.com/site/coastalcprtraining/schedule";
 
     const FAMILY_ORDER = [
       "ACLS","BLS","PALS","Heartsaver / CPR-AED","First Aid","OSHA","Stop the Bleed","Instructor","Other"
@@ -396,8 +470,23 @@
       return row.register_url || row.registerUrl || row.enroll_url || row.enrollUrl ||
              row.enroll_link || row.enrollLink || row.url || row.register || row.enroll || "";
     }
+    function pickCtId(row){
+      const v = row.ct_id || row.ctId || row.courseTypeId || row.course_type_id || row.course_type || null;
+      if (v == null) return null;
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
     function pickScheduleUrl(row){
       return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || row.ct_url || row.ctUrl || "";
+    }
+    function inferScheduleUrl(row, courseKey){
+      const direct = pickScheduleUrl(row);
+      if (direct) return direct;
+      const ct = pickCtId(row);
+      if (ct) return `${ENROLLWARE_SITE}#ct${ct}`;
+      const m = String(courseKey || "").match(/ct(\d{3,})/i);
+      if (m && m[1]) return `${ENROLLWARE_SITE}#ct${m[1]}`;
+      return "";
     }
 
     function classifyFamily(title){
@@ -430,12 +519,12 @@
             title,
             subtitle: pickCourseSubtitle(r),
             family: fam,
-            scheduleUrl: pickScheduleUrl(r),
+            scheduleUrl: inferScheduleUrl(r, key),
             sessions: []
           });
         }
         const g = map.get(key);
-        if (!g.scheduleUrl) g.scheduleUrl = pickScheduleUrl(r);
+        if (!g.scheduleUrl) g.scheduleUrl = inferScheduleUrl(r, key);
         g.sessions.push(r);
       }
 
@@ -611,34 +700,4 @@
       try{
         const [scheduleRows, desc] = await Promise.all([
           loadJson(SCHEDULE_JSON_URL),
-          loadJson(COURSE_DESC_JSON_URL).catch(()=> ({}))
-        ]);
-
-        COURSE_DESC = desc || {};
-        GROUPS = buildGroups(scheduleRows);
-
-        renderFamilySelect();
-        renderCards();
-      }catch(err){
-        elStatus.className = "error";
-        elStatus.textContent = "Schedule failed to load. Please refresh, or register directly through Enrollware.";
-        console.error(err);
-        elCards.innerHTML = `
-          <div class="error">
-            <div style="font-weight:950;margin-bottom:6px;">Details</div>
-            <div style="margin-bottom:10px;">${escapeHtml(err?.message || String(err))}</div>
-            <a class="chip" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar" target="_blank" rel="noopener">
-              Open Enrollware schedule
-            </a>
-          </div>
-        `;
-      }
-    }
-
-    elFamilySelect.addEventListener("change", () => { ACTIVE_FAMILY = elFamilySelect.value; renderCards(); window.scrollTo({top:0,behavior:"smooth"}); });
-    elSearchBox.addEventListener("input", renderCards);
-
-    boot();
-  </script>
-</body>
-</html>
+          load

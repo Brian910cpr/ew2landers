@@ -18,7 +18,7 @@
       --ok:#0c6b52;
       --shadow: 0 10px 30px rgba(10,35,60,.10);
       --radius:16px;
-      --max: 1260px;
+      --max: 1400px;
       --headerH: 68px;
     }
 
@@ -51,27 +51,40 @@
       margin:0 auto;
       padding: 0 16px;
     }
-    .brand{
+
+    .brand{ min-width:0; }
+    .brandRow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .brandLogo img{
+      height: 34px;
+      width:auto;
+      display:block;
+    }
+    .brandText{
       display:flex;
       flex-direction:column;
       line-height:1.1;
       min-width:0;
     }
-    .brand strong{
+    .brandText strong{
       font-size: 15px;
       font-weight: 950;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 60vw;
+      max-width: 62vw;
     }
-    .brand span{
+    .brandText span{
       font-size: 12px;
       color:var(--muted);
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 60vw;
+      max-width: 62vw;
     }
 
     .top-actions{
@@ -98,10 +111,51 @@
       color:#fff;
     }
 
+    /* THEME DECOR (optional assets; safe if missing) */
+    .themeCenter{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      background:
+        url("./assets/images/brand/theme_center.png") center 140px / 900px auto no-repeat;
+      opacity: 0.06;
+      z-index: 0;
+    }
+    .themeCorner{
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(255,255,255,.75);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      z-index: 40;
+      text-decoration:none;
+    }
+    .themeCorner img{
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      display:block;
+      opacity: .9;
+    }
+    @media (max-width: 520px){
+      .themeCorner{ width:56px; height:56px; }
+      .themeCorner img{ width:40px; height:40px; }
+    }
+
+    /* Keep content above watermark */
+    .topbar, main{ position: relative; z-index: 1; }
+
     /* LAYOUT */
     .layout{
       display:grid;
-      grid-template-columns: 320px 1fr;
+      grid-template-columns: 340px 1fr;
       gap: 16px;
       align-items:start;
       margin-top: 14px;
@@ -211,65 +265,62 @@
       box-shadow: var(--shadow);
     }
 
-    /* Header is now WRAPPABLE so pills never force zoom-out */
     .course-head{
       padding: 12px 14px;
       background: linear-gradient(90deg, var(--brand2), var(--brand));
       color:#fff;
       display:flex;
-      flex-wrap:wrap;               /* key */
+      flex-wrap:wrap;
       align-items:flex-start;
       justify-content:space-between;
       gap: 10px 12px;
+      width: 100%;
     }
-
-    /* Title block: allow HTML and allow line breaks */
     .course-title{
-      min-width: 260px;
-      flex: 1 1 520px;              /* key: takes available space */
+      min-width: 0;
+      flex: 1 1 520px;
       display:flex;
       flex-direction:column;
       gap:4px;
     }
-
     .course-title .titleLine{
       font-size: 15px;
       font-weight: 950;
       line-height:1.2;
-      display:block;
-      overflow-wrap:anywhere;       /* key */
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      overflow-wrap:anywhere;
       word-break:break-word;
     }
-
-    /* Make Enrollware icons behave */
-    .course-title .titleLine img,
-    .course-title .subLine img{
-      height: 18px;
-      width: auto;
-      vertical-align: middle;
-      border-radius: 4px;
-      background: rgba(255,255,255,.12);
-      margin-right: 6px;
-    }
-
     .course-title .subLine{
       font-size: 12px;
       opacity:.92;
       line-height:1.25;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
       overflow-wrap:anywhere;
       word-break:break-word;
     }
-
+    .course-title .titleLine img,
+    .course-title .subLine img{
+      height: 18px;
+      width:auto;
+      vertical-align: middle;
+      border-radius:4px;
+      background: rgba(255,255,255,.12);
+      margin-right:6px;
+    }
     .course-head-right{
       flex: 0 0 auto;
       display:flex;
-      flex-wrap:wrap;               /* key */
+      flex-wrap:wrap;
       align-items:center;
       gap:8px;
       justify-content:flex-end;
       margin-left:auto;
     }
-
     .pillBtn, .pillLink{
       background: rgba(255,255,255,.14);
       border: 1px solid rgba(255,255,255,.25);
@@ -320,7 +371,6 @@
       white-space:nowrap;
     }
 
-    /* FOOTER */
     footer{
       margin-top: 18px;
       padding: 16px 0 26px;
@@ -329,21 +379,31 @@
       text-align:center;
     }
 
-    /* RESPONSIVE */
     @media (max-width: 979px){
       .layout{ grid-template-columns: 1fr; }
-      .course-title{ min-width: 0; flex: 1 1 100%; }
       .course-head-right{ width: 100%; justify-content:flex-start; }
     }
   </style>
 </head>
 
 <body>
+  <div class="themeCenter" aria-hidden="true"></div>
+  <a class="themeCorner" href="tel:+19103955193" aria-label="Call 910CPR">
+    <img src="./assets/images/brand/theme_mark.png" alt="" />
+  </a>
+
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <strong>CPR, BLS, ACLS &amp; First Aid — Wilmington / Burgaw</strong>
-        <span>Live &amp; blended classes with fast certificates — powered by 910CPR</span>
+        <div class="brandRow">
+          <a class="brandLogo" href="./index.html" aria-label="910CPR home">
+            <img src="./assets/images/brand/910cpr_logo.png" alt="910CPR" />
+          </a>
+          <div class="brandText">
+            <strong>CPR, BLS, ACLS &amp; First Aid — Wilmington / Burgaw</strong>
+            <span>Live &amp; blended classes with fast certificates — powered by 910CPR</span>
+          </div>
+        </div>
       </div>
 
       <div class="top-actions">
@@ -381,6 +441,9 @@
   <script>
     const SCHEDULE_JSON_URL = "./data/schedule.json";
     const COURSE_DESC_JSON_URL = "./data/course-descriptions.json";
+
+    // If a row doesn’t include a schedule URL, infer it from ct_id/courseTypeId.
+    const ENROLLWARE_SITE = "https://www.enrollware.com/site/coastalcprtraining/schedule";
 
     const FAMILY_ORDER = [
       "ACLS","BLS","PALS","Heartsaver / CPR-AED","First Aid","OSHA","Stop the Bleed","Instructor","Other"
@@ -488,8 +551,26 @@
       return row.register_url || row.registerUrl || row.enroll_url || row.enrollUrl ||
              row.enroll_link || row.enrollLink || row.url || row.register || row.enroll || "";
     }
+    function pickCtId(row){
+      const v = row.ct_id || row.ctId || row.courseTypeId || row.course_type_id || row.course_type || null;
+      if (v == null) return null;
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
     function pickScheduleUrl(row){
       return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || row.ct_url || row.ctUrl || "";
+    }
+    function inferScheduleUrl(row, courseKey){
+      const direct = pickScheduleUrl(row);
+      if (direct) return direct;
+
+      const ct = pickCtId(row);
+      if (ct) return `${ENROLLWARE_SITE}#ct${ct}`;
+
+      const m = String(courseKey || "").match(/ct(\d{3,})/i);
+      if (m && m[1]) return `${ENROLLWARE_SITE}#ct${m[1]}`;
+
+      return "";
     }
 
     function classifyFamily(title){
@@ -514,20 +595,20 @@
 
         const key = String(pickCourseKey(r));
         const title = pickCourseTitle(r);
-        const fam = classifyFamily(title);
+        const famText = classifyFamily(title);
 
         if (!map.has(key)){
           map.set(key, {
             key,
             title,
             subtitle: pickCourseSubtitle(r),
-            family: fam,
-            scheduleUrl: pickScheduleUrl(r),
+            family: famText,
+            scheduleUrl: inferScheduleUrl(r, key),
             sessions: []
           });
         }
         const g = map.get(key);
-        if (!g.scheduleUrl) g.scheduleUrl = pickScheduleUrl(r);
+        if (!g.scheduleUrl) g.scheduleUrl = inferScheduleUrl(r, key);
         g.sessions.push(r);
       }
 
@@ -702,6 +783,7 @@
         });
 
         body.appendChild(sessions);
+
         card.appendChild(head);
         card.appendChild(body);
         elCards.appendChild(card);
@@ -735,7 +817,7 @@
           <div class="error">
             <div style="font-weight:950;margin-bottom:6px;">Details</div>
             <div style="margin-bottom:10px;">${escapeHtml(err?.message || String(err))}</div>
-            <a class="btn" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar" target="_blank" rel="noopener">
+            <a class="btn" href="${ENROLLWARE_SITE}#view=calendar" target="_blank" rel="noopener">
               Open Enrollware schedule
             </a>
           </div>
