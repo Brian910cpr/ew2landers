@@ -1,2 +1,388 @@
-﻿<!doctype html><meta charset='utf-8'><title>Not found</title>
-<h1>Page not found</h1><p>Try the <a href='/ew2landers/'>home page</a>.</p>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>910CPR — Page Not Found</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root{
+      --bg1:#ffffff;
+      --bg2:#eaf4ff;
+      --card:#ffffff;
+      --ink:#0b1b2a;
+      --muted:#5b6b7a;
+      --line:#d7e3f0;
+      --brand:#0b5fa5;
+      --brand2:#083b64;
+      --ok:#0c6b52;
+      --shadow: 0 14px 40px rgba(10,35,60,.12);
+      --radius:18px;
+      --max: 980px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background: linear-gradient(180deg,var(--bg1),var(--bg2));
+      min-height: 100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+    }
+
+    /* Subtle theme decorations (safe if missing) */
+    .themeCenter{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      background:
+        url("./assets/images/brand/theme_center.png") center 26% / 900px auto no-repeat;
+      opacity: 0.06;
+      z-index: 0;
+    }
+    .cornerMark{
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(255,255,255,.78);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      z-index: 5;
+      text-decoration:none;
+    }
+    .cornerMark img{
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      display:block;
+      opacity: .9;
+    }
+
+    .wrap{
+      width: min(var(--max), 100%);
+      position: relative;
+      z-index: 2;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .head{
+      padding: 16px 16px 14px;
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      min-width:0;
+    }
+    .brand img{
+      height: 36px;
+      width:auto;
+      display:block;
+      background: rgba(255,255,255,.10);
+      border-radius: 10px;
+      padding: 6px 8px;
+    }
+    .brandText{
+      display:flex;
+      flex-direction:column;
+      line-height:1.15;
+      min-width:0;
+    }
+    .brandText strong{
+      font-size: 15px;
+      font-weight: 950;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 70vw;
+    }
+    .brandText span{
+      font-size: 12px;
+      opacity:.92;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 70vw;
+    }
+
+    .badge404{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      font-weight: 950;
+      letter-spacing:.35px;
+      text-transform:uppercase;
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.25);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space:nowrap;
+    }
+
+    .body{
+      padding: 16px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      align-items:start;
+    }
+    @media (max-width: 840px){
+      .body{ grid-template-columns: 1fr; }
+    }
+
+    h1{
+      margin: 0 0 8px;
+      font-size: 22px;
+      font-weight: 950;
+      letter-spacing: .2px;
+    }
+    p{
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.35;
+      font-size: 14px;
+    }
+
+    .big{
+      font-size: 14px;
+      color: #17324a;
+      background: #f7fbff;
+      border: 1px dashed #c7d9ee;
+      border-radius: 14px;
+      padding: 12px;
+      line-height:1.35;
+      margin-top: 10px;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 12.5px;
+    }
+
+    .actions{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    .btn{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background:#fff;
+      text-decoration:none;
+      box-shadow: 0 1px 0 rgba(10,35,60,.04);
+    }
+    .btn:hover{ background:#f7fbff; }
+    .btn strong{ font-weight: 950; }
+    .btn small{ color: var(--muted); }
+    .btn .left{
+      display:flex;
+      flex-direction:column;
+      gap: 2px;
+      min-width:0;
+    }
+    .btn .right{
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg, rgba(11,95,165,.12), rgba(8,59,100,.10));
+      border: 1px solid rgba(11,95,165,.18);
+    }
+    .btn .right img{
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      display:block;
+      opacity:.9;
+    }
+
+    .footer{
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--line);
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .footer a{ text-decoration: underline; }
+
+    /* Big 404 graphic */
+    .big404{
+      font-size: 74px;
+      font-weight: 950;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin: 4px 0 10px;
+      background: linear-gradient(90deg, rgba(11,95,165,1), rgba(8,59,100,1));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .illus{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(11,95,165,.14), transparent 42%),
+        radial-gradient(circle at 85% 30%, rgba(12,107,82,.12), transparent 45%),
+        radial-gradient(circle at 55% 90%, rgba(8,59,100,.10), transparent 50%),
+        #fff;
+    }
+    .illusRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 10px;
+      border: 1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.8);
+      font-weight: 900;
+      font-size: 12px;
+      color: #18314a;
+      white-space:nowrap;
+    }
+    .pill .dot{
+      width: 10px; height: 10px; border-radius: 99px;
+      background: rgba(11,95,165,.9);
+      box-shadow: 0 0 0 3px rgba(11,95,165,.14);
+    }
+  </style>
+</head>
+<body>
+  <div class="themeCenter" aria-hidden="true"></div>
+
+  <a class="cornerMark" href="./index.html" aria-label="Back to schedule">
+    <img src="./assets/images/brand/theme_mark.png" alt="">
+  </a>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="head">
+        <div class="brand">
+          <img src="./assets/images/brand/910cpr_logo.png" alt="910CPR">
+          <div class="brandText">
+            <strong>910CPR</strong>
+            <span>We couldn’t find that page — here are the fastest ways to get what you need.</span>
+          </div>
+        </div>
+        <div class="badge404">Error <span style="opacity:.9">—</span> 404</div>
+      </div>
+
+      <div class="body">
+        <div>
+          <div class="big404">404</div>
+          <h1>Page not found</h1>
+          <p>
+            The link may be outdated, or the page may have moved.
+            Use one of the options on the right to jump straight to scheduling or contact us.
+          </p>
+
+          <div class="illus">
+            <div class="illusRow">
+              <div class="pill"><span class="dot"></span> Wilmington • Burgaw • Holly Ridge</div>
+              <div class="pill"><span class="dot" style="background:rgba(12,107,82,.9);box-shadow:0 0 0 3px rgba(12,107,82,.14)"></span> Fast certificates</div>
+              <div class="pill"><span class="dot" style="background:rgba(8,59,100,.9);box-shadow:0 0 0 3px rgba(8,59,100,.14)"></span> Live & blended</div>
+            </div>
+          </div>
+
+          <div class="big">
+            <strong>Backup scheduler:</strong>
+            <div class="mono" style="margin-top:6px;">
+              https://coastalcprtraining.enrollware.com/schedule
+            </div>
+          </div>
+        </div>
+
+        <div class="actions" aria-label="Quick actions">
+          <a class="btn" href="./index.html">
+            <div class="left">
+              <strong>Return to the 910CPR schedule</strong>
+              <small>Browse classes and register</small>
+            </div>
+            <div class="right">
+              <img src="./assets/images/classroom_icon.png" alt="">
+            </div>
+          </a>
+
+          <a class="btn" href="tel:+19103955193">
+            <div class="left">
+              <strong>Call or text (910) 395-5193</strong>
+              <small>Quick help choosing the right class</small>
+            </div>
+            <div class="right">
+              <img src="./assets/images/phone_icon.png" alt="">
+            </div>
+          </a>
+
+          <a class="btn" href="mailto:info@910cpr.com">
+            <div class="left">
+              <strong>Email: info@910cpr.com</strong>
+              <small>Group quotes & questions</small>
+            </div>
+            <div class="right">
+              <img src="./assets/images/email_icon.png" alt="">
+            </div>
+          </a>
+
+          <a class="btn" href="https://coastalcprtraining.enrollware.com/schedule" target="_blank" rel="noopener">
+            <div class="left">
+              <strong>Open Enrollware schedule (backup)</strong>
+              <small class="mono">https://coastalcprtraining.enrollware.com/schedule</small>
+            </div>
+            <div class="right">
+              <img src="./assets/images/classroom_icon.png" alt="">
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div>Need help? Call/text <a href="tel:+19103955193">(910) 395-5193</a> • Email <a href="mailto:info@910cpr.com">info@910cpr.com</a></div>
+        <div class="mono">404 • 910CPR</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
