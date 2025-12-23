@@ -111,7 +111,10 @@
       color:#fff;
     }
 
-    /* THEME DECOR (optional assets; safe if missing) */
+    
+    .btn.hasIcon{ display:inline-flex; align-items:center; gap:8px; }
+    .btn.hasIcon img{ width:18px; height:18px; object-fit:contain; display:block; }
+/* THEME DECOR (optional assets; safe if missing) */
     .themeCenter{
       position: fixed;
       inset: 0;
@@ -213,7 +216,10 @@
     .family .meta{ display:flex; flex-direction:column; gap:2px; }
     .family .meta strong{ font-size: 14px; font-weight: 950; }
     .family .meta small{ font-size: 12px; color:var(--muted); }
-    .badge{
+        .familyThumb{ width:44px; height:44px; border-radius:12px; object-fit:cover; border:1px solid var(--line); flex:0 0 auto; }
+    .family .meta{ min-width:0; }
+    .family .meta small{ line-height:1.25; }
+.badge{
       min-width: 44px;
       text-align:center;
       padding: 6px 10px;
@@ -407,7 +413,9 @@
       </div>
 
       <div class="top-actions">
-        <a class="btn" href="./index-mobile.html">Mobile view</a>
+        
+        <a class="btn hasIcon group" href="./onsite.html"><img src="./assets/images/classroom_icon.png" alt=""><strong>Group Class Quote / Inquiry</strong></a>
+<a class="btn" href="./index-mobile.html">Mobile view</a>
         <a class="btn primary" href="tel:+19103955193">Call or text (910) 395-5193</a>
         <a class="btn" href="mailto:info@910cpr.com">Email 910CPR</a>
       </div>
@@ -431,10 +439,7 @@
         <div id="status" class="notice">Loading schedule…</div>
         <div id="courseCards"></div>
 
-        <footer>
-          No hidden URLs. If needed, you can always register directly through Enrollware.
-        </footer>
-      </section>
+        </section>
     </section>
   </main>
 
@@ -449,7 +454,23 @@
       "ACLS","BLS","PALS","Heartsaver / CPR-AED","First Aid","OSHA","Stop the Bleed","Instructor","Other"
     ];
 
-    function withCacheBust(url){
+    
+
+    // Step 1 (left rail): friendly descriptions + family images (no session counts)
+    const FAMILY_META = {
+      "ACLS": { desc: "Advanced cardiac life support for clinical teams.", img: "./assets/images/family/family-acls.jpg" },
+      "BLS": { desc: "Healthcare CPR for nurses, EMS, CNA, and students.", img: "./assets/images/family/family-bls.jpg" },
+      "PALS": { desc: "Pediatric advanced life support for providers.", img: "./assets/images/family/family-pals.jpg" },
+      "Heartsaver / CPR-AED": { desc: "Workplace & community CPR/AED training.", img: "./assets/images/family/family-cpr-aed.jpg" },
+      "First Aid": { desc: "Practical first aid skills for jobsite readiness.", img: "./assets/images/family/family-fa-cpr-aed.jpg" },
+      "OSHA": { desc: "Compliance-oriented options (OSHA / USCG / DAN).", img: "./assets/images/family/family-fa-cpr-aed.jpg" },
+      "Stop the Bleed": { desc: "Bleeding control skills for teams and workplaces.", img: "./assets/images/family/family-fa-cpr-aed.jpg" },
+      "Instructor": { desc: "Instructor development & renewals.", img: "./assets/images/family/family-bls.jpg" },
+      "Other": { desc: "Specialty, blended, and custom programs.", img: "./assets/images/family/family-bls.jpg" }
+    };
+    const FAMILY_IMG_FALLBACK = "./assets/images/family/family-bls.jpg";
+
+function withCacheBust(url){
       const u = new URL(url, window.location.href);
       u.searchParams.set("ts", String(Date.now()));
       return u.toString();
@@ -652,18 +673,18 @@
         .filter(f => (COUNTS.get(f) || 0) > 0)
         .filter(f => !q || f.toUpperCase().includes(q));
 
-      for (const fam of ordered){
-        const total = COUNTS.get(fam) || 0;
-        const div = document.createElement("div");
+      for (const fam of ordered){const div = document.createElement("div");
         div.className = "family" + (fam === ACTIVE_FAMILY ? " active" : "");
+        const meta = FAMILY_META[fam] || { desc:"", img: FAMILY_IMG_FALLBACK };
+        const img = meta.img || FAMILY_IMG_FALLBACK;
         div.innerHTML = `
           <div class="meta">
             <strong>${escapeHtml(fam)}</strong>
-            <small>${total} upcoming sessions</small>
+            <small>${escapeHtml(meta.desc || "")}</small>
           </div>
-          <div class="badge">${total}</div>
+          <img class="familyThumb" src="${escapeHtml(img)}" alt="">
         `;
-        div.addEventListener("click", () => {
+div.addEventListener("click", () => {
           ACTIVE_FAMILY = fam;
           renderFamilies();
           renderCards();
@@ -828,5 +849,10 @@
     elFamilySearch.addEventListener("input", renderFamilies);
     boot();
   </script>
+
+  <!-- 247 AI Receptionist / Voice Widget (self-positions) -->
+  <embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
+  <script src="https://cdn.247aireceptionist.com/script.js"></script>
+
 </body>
 </html>
