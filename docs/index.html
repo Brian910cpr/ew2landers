@@ -1,10 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>910CPR — Schedule</title>
-
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>CPR, BLS, ACLS & First Aid — Wilmington / Burgaw</title>
   <style>
     :root{
       --bg1:#ffffff;
@@ -16,675 +15,525 @@
       --brand:#0b5fa5;
       --brand2:#083b64;
       --ok:#0c6b52;
-      --shadow: 0 10px 30px rgba(10,35,60,.10);
-      --radius:16px;
-      --max: 1400px;
-      --headerH: 68px;
+      --shadow: 0 14px 40px rgba(10,35,60,.12);
+      --radius:18px;
+      --max: 1240px;
     }
-
     *{ box-sizing:border-box; }
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--ink);
       background: linear-gradient(180deg,var(--bg1),var(--bg2));
+      min-height: 100vh;
     }
-    a{ color:inherit; }
-    .wrap{ max-width: var(--max); margin:0 auto; padding: 16px; }
+    img{max-width:100%;height:auto;}
 
-    /* TOP BAR */
+    /* Layout */
+    .wrap{
+      width: min(var(--max), 100%);
+      margin: 0 auto;
+      padding: 18px 14px 30px;
+    }
+
+    /* Header */
     .topbar{
       position: sticky;
-      top:0;
+      top: 0;
       z-index: 50;
-      background: rgba(255,255,255,.90);
-      backdrop-filter: blur(10px);
+      background: #fff;
       border-bottom: 1px solid var(--line);
+      box-shadow: 0 6px 16px rgba(10,35,60,.06);
     }
-    .topbar-inner{
-      height: var(--headerH);
+    .topbarInner{
+      width: min(var(--max), 100%);
+      margin: 0 auto;
+      padding: 10px 14px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap: 12px;
-      max-width: var(--max);
-      margin:0 auto;
-      padding: 0 16px;
+      gap: 10px;
     }
-
-    .brand{ min-width:0; }
-    .brandRow{
-      display:flex;
-      align-items:center;
-      gap:10px;
+    .brand{
+      display:flex; align-items:center; gap:10px;
       min-width:0;
     }
-    .brandLogo img{
-      height: 34px;
-      width:auto;
-      display:block;
-    }
-    .brandText{
-      display:flex;
-      flex-direction:column;
-      line-height:1.1;
-      min-width:0;
-    }
-    .brandText strong{
-      font-size: 15px;
-      font-weight: 950;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 62vw;
-    }
-    .brandText span{
-      font-size: 12px;
-      color:var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 62vw;
-    }
+    .brand img{ height:34px; width:auto; display:block; border-radius:8px; }
+    .brandText{ display:flex; flex-direction:column; min-width:0; line-height:1.12; }
+    .brandText strong{ font-weight:950; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .brandText span{ color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
     .top-actions{
       display:flex;
-      align-items:center;
       gap:10px;
+      align-items:center;
       flex-wrap:wrap;
       justify-content:flex-end;
     }
     .btn{
-      border:1px solid var(--line);
-      background:#fff;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
       border-radius: 999px;
-      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-weight: 950;
       font-size: 13px;
       text-decoration:none;
       box-shadow: 0 1px 0 rgba(10,35,60,.04);
-      white-space:nowrap;
-      font-weight: 850;
+      cursor:pointer;
     }
     .btn.primary{
-      border-color: transparent;
-      background: var(--brand);
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
       color:#fff;
+      border-color: rgba(11,95,165,.25);
+    }
+    .btn.hasIcon{ display:inline-flex; align-items:center; gap:8px; }
+    .btn.hasIcon img{ width:18px; height:18px; object-fit:contain; display:block; }
+
+    /* Main 2-column layout */
+    .grid{
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap: 16px;
+      align-items:start;
+      margin-top: 14px;
+    }
+    .panel{
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panel > .pad{ padding: 14px; }
+    h2{
+      margin:0;
+      font-size: 16px;
+      font-weight: 950;
+    }
+    .hint{
+      margin:6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+    .searchBox{
+      margin-top:10px;
+      width:100%;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      outline:none;
+      font-size: 14px;
     }
 
-    /* THEME DECOR (optional assets; safe if missing) */
+    /* Step 1 families */
+    .families{ padding: 12px; display:flex; flex-direction:column; gap: 10px; }
+    .family{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      cursor:pointer;
+      background: #fff;
+    }
+    .family.active{ background: #f1f8ff; border-color: #bcd6ef; }
+    .family .left{ min-width:0; }
+    .family strong{ display:block; font-size: 14px; font-weight: 950; }
+    .family small{ display:block; font-size: 12px; color: var(--muted); line-height:1.2; }
+    .family .count{
+      font-weight: 950;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #c7d9ee;
+      background: #f7fbff;
+    }
+    .family .img{
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid rgba(0,0,0,.06);
+      flex: 0 0 auto;
+    }
+
+    /* Step 2 cards */
+    .notice{
+      margin: 10px 14px 0;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px dashed #c7d9ee;
+      background: #f7fbff;
+      font-size: 13px;
+      color: #17324a;
+    }
+
+    .cards{ padding: 12px; display:flex; flex-direction:column; gap: 12px; }
+    .courseCard{
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid var(--line);
+      background:#fff;
+      box-shadow: 0 10px 26px rgba(10,35,60,.08);
+    }
+    .course-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 12px 14px;
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      color:#fff;
+    }
+    .course-title{ min-width:0; }
+    .titleLine{
+      font-weight: 950;
+      font-size: 14px;
+      line-height: 1.15;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .subLine{
+      margin-top:2px;
+      font-size: 12px;
+      opacity:.9;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .course-head-right{ display:flex; gap: 10px; align-items:center; }
+    .pillBtn{
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.14);
+      color:#fff;
+      font-weight: 950;
+      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+    }
+    .pillLink{
+      border: 1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.08);
+      color:#fff;
+      font-weight: 950;
+      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    .sessions{
+      display:none;
+      flex-direction:column;
+      gap: 10px;
+      padding: 12px 14px 14px;
+      background: #fff;
+    }
+    .session{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .session .when{ min-width:0; }
+    .session strong{ display:block; font-size: 13px; font-weight: 950; }
+    .session small{ display:block; color: var(--muted); font-size: 12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 56ch; }
+    .reg{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--ok);
+      color:#fff;
+      font-weight: 950;
+      text-decoration:none;
+      border: 0;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .session.moreRow{ align-items:center; }
+    .session .reg.moreBtn{ display:inline-flex; align-items:center; justify-content:center; }
+
+    /* Theme center decoration (fixed path) */
     .themeCenter{
       position: fixed;
       inset: 0;
       pointer-events:none;
       background:
-        url("./assets/images/910CPR_wave.jpg") center 140px / 900px auto no-repeat;
-      opacity: 0.06;
+        url("./assets/images/theme/default-divider.png") center 26% / 900px auto no-repeat;
+      opacity: 0.07;
       z-index: 0;
     }
-    .themeCorner{
-      position: fixed;
-      right: 14px;
-      bottom: 14px;
-      width: 72px;
-      height: 72px;
-      border-radius: 18px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: rgba(255,255,255,.75);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      z-index: 40;
-      text-decoration:none;
-    }
-    .themeCorner img{
-      width: 54px;
-      height: 54px;
-      object-fit: contain;
-      display:block;
-      opacity: .9;
-    }
-    @media (max-width: 520px){
-      .themeCorner{ width:56px; height:56px; }
-      .themeCorner img{ width:40px; height:40px; }
-    }
 
-    /* Keep content above watermark */
-    .topbar, main{ position: relative; z-index: 1; }
+    .pageLayer{ position:relative; z-index: 2; }
 
-    /* LAYOUT */
-    .layout{
-      display:grid;
-      grid-template-columns: 340px 1fr;
-      gap: 16px;
-      align-items:start;
-      margin-top: 14px;
-    }
-
-    /* LEFT RAIL */
-    .rail{
-      background: var(--card);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 14px;
-    }
-    @media (min-width: 980px){
-      .rail{
-        position: sticky;
-        top: calc(var(--headerH) + 14px);
-        max-height: calc(100vh - (var(--headerH) + 28px));
-        overflow:auto;
-      }
-    }
-    .rail h3{
-      margin: 4px 0 10px;
-      font-size: 14px;
-      letter-spacing:.2px;
-      font-weight: 950;
-    }
-    .search{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 14px;
-      outline:none;
-    }
-    .family-list{ margin-top: 12px; display:flex; flex-direction:column; gap:10px; }
-    .family{
-      border:1px solid var(--line);
-      border-radius: 14px;
-      padding: 10px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      cursor:pointer;
-      background:#fff;
-      user-select:none;
-      transition: background .1s ease;
-    }
-    .family:hover{ background:#f7fbff; }
-    .family.active{
-      border-color: #b9d3ee;
-      background:#eef6ff;
-    }
-    .family .meta{ display:flex; flex-direction:column; gap:2px; }
-    .family .meta strong{ font-size: 14px; font-weight: 950; }
-    .family .meta small{ font-size: 12px; color:var(--muted); }
-    .badge{
-      min-width: 44px;
-      text-align:center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border:1px solid var(--line);
-      font-weight: 950;
-      font-size: 13px;
-      color:#123;
-      background: #f4f8fd;
-    }
-
-    /* MAIN */
-    .main{ display:flex; flex-direction:column; gap: 12px; }
-    .panel{
-      background: var(--card);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 14px;
-    }
-    .panel h2{ margin: 0 0 6px; font-size: 16px; font-weight: 950; }
-    .hint{ margin:0; font-size: 13px; color: var(--muted); line-height:1.35; }
-
-    .notice{
-      background:#f7fbff;
-      border:1px dashed #c7d9ee;
-      border-radius: 14px;
-      padding: 10px 12px;
-      color:#18314a;
-      font-size: 13px;
-      line-height:1.35;
-    }
-    .error{
-      background:#fff5f1;
-      border:1px solid #ffd2c1;
-      border-radius: 14px;
-      padding: 12px 12px;
-      color:#5b1f0b;
-      font-size: 13px;
-      line-height:1.35;
-    }
-
-    /* COURSE CARD */
-    .course{
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      overflow:hidden;
-      background:#fff;
-      box-shadow: var(--shadow);
-    }
-
-    .course-head{
-      padding: 12px 14px;
-      background: linear-gradient(90deg, var(--brand2), var(--brand));
-      color:#fff;
-      display:flex;
-      flex-wrap:wrap;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap: 10px 12px;
-      width: 100%;
-    }
-    .course-title{
-      min-width: 0;
-      flex: 1 1 520px;
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-    .course-title .titleLine{
-      font-size: 15px;
-      font-weight: 950;
-      line-height:1.2;
-      white-space: normal !important;
-      overflow: visible !important;
-      text-overflow: clip !important;
-      overflow-wrap:anywhere;
-      word-break:break-word;
-    }
-    .course-title .subLine{
-      font-size: 12px;
-      opacity:.92;
-      line-height:1.25;
-      white-space: normal !important;
-      overflow: visible !important;
-      text-overflow: clip !important;
-      overflow-wrap:anywhere;
-      word-break:break-word;
-    }
-    .course-title .titleLine img,
-    .course-title .subLine img{
-      height: 18px;
-      width:auto;
-      vertical-align: middle;
-      border-radius:4px;
-      background: rgba(255,255,255,.12);
-      margin-right:6px;
-    }
-    .course-head-right{
-      flex: 0 0 auto;
-      display:flex;
-      flex-wrap:wrap;
-      align-items:center;
-      gap:8px;
-      justify-content:flex-end;
-      margin-left:auto;
-    }
-    .pillBtn, .pillLink{
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.25);
-      color:#fff;
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 950;
-      letter-spacing:.35px;
-      text-transform:uppercase;
-      cursor:pointer;
-      white-space:nowrap;
-      text-decoration:none;
-      user-select:none;
-    }
-    .pillBtn:hover, .pillLink:hover{ background: rgba(255,255,255,.20); }
-
-    .course-body{ padding: 12px 14px; }
-
-    .sessions{ display:flex; flex-direction:column; gap:10px; }
-    .session{
-      border:1px solid var(--line);
-      border-radius: 14px;
-      padding: 10px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .session .when{
-      display:flex; flex-direction:column; gap:2px;
-      min-width:0;
-    }
-    .session .when strong{ font-size: 13px; font-weight: 950; }
-    .session .when small{
-      font-size: 12px; color: var(--muted);
-      overflow-wrap:anywhere;
-      word-break:break-word;
-    }
-    .reg{
-      background: var(--ok);
-      color:#fff;
-      border:0;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-weight:950;
-      text-decoration:none;
-      white-space:nowrap;
-    }
-
-    footer{
-      margin-top: 18px;
-      padding: 16px 0 26px;
-      color: var(--muted);
-      font-size: 12px;
-      text-align:center;
-    }
-
-    @media (max-width: 979px){
-      .layout{ grid-template-columns: 1fr; }
-      .course-head-right{ width: 100%; justify-content:flex-start; }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
-
 <body>
   <div class="themeCenter" aria-hidden="true"></div>
-  <a class="themeCorner" href="tel:+19103955193" aria-label="Call 910CPR">
-    <img src="./assets/images/910CPR_wave.jpg" alt="" />
-  </a>
 
-  <header class="topbar">
-    <div class="topbar-inner">
+  <div class="topbar">
+    <div class="topbarInner">
       <div class="brand">
-        <div class="brandRow">
-          <a class="brandLogo" href="./index.html" aria-label="910CPR home">
-            <img src="./assets/images/910CPR_wave.jpg" alt="910CPR" />
-          </a>
-          <div class="brandText">
-            <strong>CPR, BLS, ACLS &amp; First Aid — Wilmington / Burgaw</strong>
-            <span>Live &amp; blended classes with fast certificates — powered by 910CPR</span>
-          </div>
+        <img src="./assets/images/910CPR_wave.jpg" alt="910CPR">
+        <div class="brandText">
+          <strong>CPR, BLS, ACLS &amp; First Aid — Wilmington / Burgaw</strong>
+          <span>Live &amp; blended classes with fast certificates — powered by 910CPR</span>
         </div>
       </div>
 
       <div class="top-actions">
-        
-        <a class="btn hasIcon group" href="./onsite.html"><img src="./assets/images/classroom_icon.png" alt=""><strong>Group Class Quote / Inquiry</strong></a>
-<a class="btn" href="./index-mobile.html">Mobile view</a>
-        <a class="btn primary" href="tel:+19103955193">Call or text (910) 395-5193</a>
-        <a class="btn" href="mailto:info@910cpr.com">Email 910CPR</a>
+        <a class="btn hasIcon" href="./onsite.html">
+          <img src="./assets/images/classroom_icon.png" alt="">
+          <strong>Group Class Quote / Inquiry</strong>
+        </a>
+
+        <a class="btn primary hasIcon" href="tel:+19103955193">
+          <img src="./assets/images/phone_icon.png" alt="">
+          <strong>Call or text (910) 395-5193</strong>
+        </a>
+
+        <a class="btn hasIcon" href="mailto:info@910cpr.com">
+          <img src="./assets/images/email-icon.png" alt="">
+          <strong>Email 910CPR</strong>
+        </a>
+
+        <a class="btn" href="./index-mobile.html"><strong>Mobile view</strong></a>
       </div>
     </div>
-  </header>
+  </div>
 
-  <main class="wrap">
-    <section class="layout">
-      <aside class="rail">
-        <h3>Step 1: Choose a class family</h3>
-        <input id="familySearch" class="search" placeholder="Search (BLS, ACLS, Heartsaver, OSHA…)" />
-        <div id="familyList" class="family-list"></div>
-      </aside>
-
-      <section class="main">
-        <div class="panel">
-          <h2>Step 2: Pick the exact class</h2>
-          <p class="hint">Upcoming sessions are shown first. Courses are collapsed by default — expand the one you want.</p>
+  <div class="wrap pageLayer">
+    <div class="grid">
+      <section class="panel">
+        <div class="pad">
+          <h2>Step 1: Choose a class family</h2>
+          <input id="familySearch" class="searchBox" placeholder="Search (BLS, ACLS, Heartsaver, OSHA…)" />
         </div>
+        <div id="families" class="families"></div>
+      </section>
 
+      <section class="panel">
+        <div class="pad">
+          <h2>Step 2: Pick the exact class</h2>
+          <div class="hint">Upcoming sessions are shown first. Courses are collapsed by default — expand the one you want.</div>
+        </div>
         <div id="status" class="notice">Loading schedule…</div>
-        <div id="courseCards"></div>
+        <div id="cards" class="cards"></div>
+      </section>
+    </div>
+  </div>
 
-        </section>
-    </section>
-  </main>
+  <embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
+  <script src="https://cdn.247aireceptionist.com/script.js"></script>
 
   <script>
-    
-    // --- Family override rules (surgical) ---
-    // Some provider-only cards come through as "American Heart Association" without a course keyword.
-    // Treat that placeholder as CPR/AED so it doesn't land in "Other".
-    function forceFamilyOverride(obj){
-      const title = (obj && (obj.title || obj.name || obj.provider)) ? (obj.title || obj.name || obj.provider) : (obj || "");
-      const t = (title || "").trim().toLowerCase();
-      if(t === "american heart association") return "Heartsaver / CPR-AED";
-      return null;
+    // Per-course paging: start with 10 visible, then add +10 each time.
+    const VISIBLE_LIMIT = new Map(); // key -> number
+    function getLimit(key, total){
+      const cur = VISIBLE_LIMIT.get(String(key));
+      const base = Math.min(10, total);
+      return Math.min(cur ?? base, total);
+    }
+    function bumpLimit(key, total){
+      const next = Math.min(getLimit(key, total) + 10, total);
+      VISIBLE_LIMIT.set(String(key), next);
+      return next;
     }
 
-const SCHEDULE_JSON_URL = "./data/schedule.json";
-    const COURSE_DESC_JSON_URL = "./data/course-descriptions.json";
+    const ENROLLWARE_SITE = "https://coastalcprtraining.enrollware.com/schedule";
 
-    // If a row doesn’t include a schedule URL, infer it from ct_id/courseTypeId.
-    const ENROLLWARE_SITE = "https://www.enrollware.com/site/coastalcprtraining/schedule";
+    const DATA_URL = "./data/schedule.json";
+    const COURSE_DESC_URL = "./data/course-descriptions.json";
 
-    const FAMILY_ORDER = [
-      "ACLS","BLS","PALS","Heartsaver / CPR-AED","First Aid","OSHA","Stop the Bleed","Instructor","Other"
+    const elFamilies = document.getElementById("families");
+    const elFamilySearch = document.getElementById("familySearch");
+    const elStatus = document.getElementById("status");
+    const elCards = document.getElementById("cards");
+
+    const FAMILY_META = [
+      { key:"ACLS", label:"ACLS", desc:"Advanced cardiac life support for clinical teams.", img:"./assets/images/family/family-acls.jpg" },
+      { key:"BLS", label:"BLS", desc:"Healthcare CPR for nurses, EMS, CNA, and students.", img:"./assets/images/family/family-bls.jpg" },
+      { key:"PALS", label:"PALS", desc:"Pediatric advanced life support for providers.", img:"./assets/images/family/family-pals.jpg" },
+      { key:"Heartsaver / CPR-AED", label:"Heartsaver / CPR-AED", desc:"Workplace & community CPR/AED training.", img:"./assets/images/family/family-cpr-aed.jpg" },
+      { key:"First Aid", label:"First Aid", desc:"Practical first aid skills for jobsite readiness.", img:"./assets/images/family/family-fa-cpr-aed.jpg" },
+      { key:"Other", label:"Other", desc:"Specialty, blended, and custom programs.", img:"./assets/images/family/family-bls.jpg" }
     ];
 
+    const FAMILY_BY_KEY = new Map(FAMILY_META.map(x => [x.key, x]));
+    const FAMILY_ORDER = FAMILY_META.map(x => x.key);
+
+    let SCHEDULE = null;
+    let COURSE_DESCS = null;
+    let GROUPS = [];
+    let ACTIVE_FAMILY = "BLS";
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
     function withCacheBust(url){
-      const u = new URL(url, window.location.href);
-      u.searchParams.set("ts", String(Date.now()));
+      const u = new URL(url, location.href);
+      u.searchParams.set("_", String(Date.now()));
       return u.toString();
     }
-    async function loadJson(url){
-      const r = await fetch(withCacheBust(url), { cache:"no-store" });
-      if(!r.ok) throw new Error(`HTTP ${r.status} while fetching ${url}`);
-      return await r.json();
-    }
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#39;");
-    }
 
-    // Sanitize but still render Enrollware HTML (icons + line breaks)
-    function sanitizeEnrollwareHtml(html) {
-      const allowedTags = new Set(["IMG","I","B","STRONG","EM","BR","SPAN","SMALL","DIV"]);
-      const allowedAttrs = new Set(["src","alt","title","style","class","loading"]);
-
-      const tpl = document.createElement("template");
-      tpl.innerHTML = String(html || "");
-
-      const walk = (node) => {
-        if (node.nodeType === Node.COMMENT_NODE) { node.remove(); return; }
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const tag = node.tagName.toUpperCase();
-          if (!allowedTags.has(tag)) {
-            const text = document.createTextNode(node.textContent || "");
-            node.replaceWith(text);
-            return;
-          }
-          [...node.attributes].forEach(attr => {
-            const name = attr.name.toLowerCase();
-            if (name.startsWith("on")) { node.removeAttribute(attr.name); return; }
-            if (!allowedAttrs.has(name)) { node.removeAttribute(attr.name); return; }
-            if (tag === "IMG" && name === "src") {
-              const v = (attr.value || "").trim();
-              if (!(v.startsWith("http://") || v.startsWith("https://"))) node.removeAttribute("src");
-            }
-          });
-        }
-        [...node.childNodes].forEach(walk);
-      };
-      [...tpl.content.childNodes].forEach(walk);
-      return tpl.innerHTML;
-    }
-
-    // Time parsing
-    function _pickStartField(s){
-      return (
-        s.start_ms || s.startMs || s.start_iso || s.startISO || s.start || s.start_datetime ||
-        s.startDateTime || s.datetime || s.dateTime || s.when || s.class_start || null
-      );
-    }
-    function toMillis(row){
-      const v = _pickStartField(row);
-      if (v == null) return null;
-      if (typeof v === "number" && Number.isFinite(v)) return v;
-      if (typeof v === "string"){
-        const t = Date.parse(v);
-        return Number.isFinite(t) ? t : null;
-      }
-      return null;
-    }
-    function isUpcoming(row, nowMs){
-      if (typeof row?.is_past === "boolean") return !row.is_past;
-      const ms = toMillis(row);
-      return ms != null && ms >= nowMs;
-    }
-    function fmtWhen(ms){
-      const d = new Date(ms);
-      return d.toLocaleString(undefined, {
-        weekday:"long", year:"numeric", month:"long", day:"numeric", hour:"numeric", minute:"2-digit"
+    function safeFetchJson(url){
+      return fetch(withCacheBust(url), { cache:"no-store" }).then(r => {
+        if(!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
       });
     }
 
-    // Field pickers
-    function pickCourseKey(row){
-      return row.course_number || row.courseNumber || row.course_id || row.courseId ||
-             row.ct_id || row.ctId || row.courseTypeId || row.course_type_id ||
-             row.course_slug || row.courseSlug || row.course_url || row.courseUrl ||
-             row.schedule_url || row.scheduleUrl || row.title || row.course_name || row.courseName || "unknown";
-    }
-    function pickCourseTitle(row){
-      return row.title || row.course_name || row.courseName || row.course_title || row.courseTitle || "Course";
-    }
-    function pickCourseSubtitle(row){
-      return row.subtitle || row.course_subtitle || row.courseSubtitle || row.course_tagline || "";
-    }
-    function pickLocation(row){
-      return row.location || row.location_name || row.locationName || row.city_state ||
-             row.cityState || row.site || row.address || "Location TBD";
-    }
-    function pickRegisterUrl(row){
-      return row.register_url || row.registerUrl || row.enroll_url || row.enrollUrl ||
-             row.enroll_link || row.enrollLink || row.url || row.register || row.enroll || "";
-    }
-    function pickCtId(row){
-      const v = row.ct_id || row.ctId || row.courseTypeId || row.course_type_id || row.course_type || null;
-      if (v == null) return null;
-      const n = Number(v);
-      return Number.isFinite(n) ? n : null;
-    }
-    function pickScheduleUrl(row){
-      return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || row.ct_url || row.ctUrl || "";
-    }
-    function inferScheduleUrl(row, courseKey){
-      const direct = pickScheduleUrl(row);
-      if (direct) return direct;
-
-      const ct = pickCtId(row);
-      if (ct) return `${ENROLLWARE_SITE}#ct${ct}`;
-
-      const m = String(courseKey || "").match(/ct(\d{3,})/i);
-      if (m && m[1]) return `${ENROLLWARE_SITE}#ct${m[1]}`;
-
-      return "";
-    }
-
-    function classifyFamily(title){
-      const t = String(title || "").toUpperCase();
-      if (t.includes("ACLS")) return "ACLS";
-      if (t.includes("PALS")) return "PALS";
-      if (t.includes("BLS")) return "BLS";
-      if (t.includes("HEARTSAVER") || t.includes("CPR/AED") || t.includes("CPR AED") || t.includes("CPR-AED")) return "Heartsaver / CPR-AED";
-      if (t.includes("FIRST AID") || t.includes("FA/") || t.includes("FA ")) return "First Aid";
-      if (t.includes("OSHA") || t.includes("USCG") || t.includes("COAST GUARD") || t.includes("DAN")) return "OSHA";
-      if (t.includes("STOP THE BLEED")) return "Stop the Bleed";
-      if (t.includes("INSTRUCTOR")) return "Instructor";
+    function normalizeFamilyKey(k){
+      const s = String(k||"").trim();
+      if(!s) return "Other";
+      if(FAMILY_BY_KEY.has(s)) return s;
       return "Other";
     }
 
-    function buildGroups(rows){
-      const now = Date.now();
-      const map = new Map();
+    function pickLocation(row){
+      const raw = (row.location || row.where || row.place || row.city || "").trim();
+      return raw || "NC";
+    }
 
-      for (const r of (rows || [])){
-        if (!isUpcoming(r, now)) continue;
+    function pickRegisterUrl(row){
+      return row.registerUrl || row.enrollUrl || row.url || row.link || "";
+    }
 
-        const key = String(pickCourseKey(r));
-        const title = pickCourseTitle(r);
-        const famText = classifyFamily(title);
+    function fmtWhen(ms){
+      try{
+        const d = new Date(ms);
+        const opt = { weekday:"long", year:"numeric", month:"long", day:"numeric", hour:"numeric", minute:"2-digit" };
+        return d.toLocaleString(undefined, opt).replace(":00 ", " ");
+      }catch{ return "Date/time"; }
+    }
 
-        if (!map.has(key)){
-          map.set(key, {
-            key,
-            title,
-            subtitle: pickCourseSubtitle(r),
-            family: famText,
-            scheduleUrl: inferScheduleUrl(r, key),
-            sessions: []
-          });
-        }
-        const g = map.get(key);
-        if (!g.scheduleUrl) g.scheduleUrl = inferScheduleUrl(r, key);
+    function toMillis(row){
+      const ms = row.ms ?? row.start_ms ?? row.startMs;
+      if(Number.isFinite(ms)) return ms;
+      const iso = row.iso ?? row.start_iso ?? row.startIso ?? row.start;
+      if(iso){
+        const t = Date.parse(iso);
+        if(Number.isFinite(t)) return t;
+      }
+      return null;
+    }
+
+    function cleanTitle(s){
+      return String(s||"").replace(/\s+/g," ").trim();
+    }
+
+    function getCourseDesc(courseId){
+      if(!COURSE_DESCS) return "";
+      return COURSE_DESCS[String(courseId)] || COURSE_DESCS[Number(courseId)] || "";
+    }
+
+    function buildGroups(){
+      const groups = [];
+      const rows = (SCHEDULE?.sessions || SCHEDULE?.classes || SCHEDULE || []);
+      const byKey = new Map();
+
+      for(const r of rows){
+        const family = normalizeFamilyKey(r.family || r.familyKey || r.bucket || r.category);
+        const key = r.courseKey || r.courseId || r.course_id || r.course || r.key || r.ct || r.typeKey || r.title || r.name;
+        const k = String(key || "").trim();
+        if(!k) continue;
+
+        const g = byKey.get(k) || {
+          key: k,
+          family,
+          title: cleanTitle(r.title || r.name || r.courseName || r.course_title || "Course"),
+          desc: "",
+          scheduleUrl: r.scheduleUrl || r.courseScheduleUrl || r.schedule || "",
+          sessions: []
+        };
+        g.family = family;
+        g.title = cleanTitle(r.title || r.name || r.courseName || r.course_title || g.title);
+
         g.sessions.push(r);
+
+        byKey.set(k, g);
       }
 
-      const list = Array.from(map.values());
-      for (const g of list){
-        g.sessions.sort((a,b)=>(toMillis(a) ?? 9e15) - (toMillis(b) ?? 9e15));
-        g.nextMs = toMillis(g.sessions[0]) ?? 9e15;
+      for(const g of byKey.values()){
+        g.sessions.sort((a,b) => (toMillis(a)||0) - (toMillis(b)||0));
+        const maybeCourseId = g.sessions[0]?.courseId || g.sessions[0]?.course_id || g.sessions[0]?.courseKey || g.key;
+        g.desc = getCourseDesc(maybeCourseId) || g.sessions[0]?.subtitle || g.sessions[0]?.desc || "";
+        groups.push(g);
       }
-      list.sort((a,b)=>a.nextMs - b.nextMs);
-      return list;
-    }
 
-    function familyCounts(groups){
-      const m = new Map();
-      for (const f of FAMILY_ORDER) m.set(f, 0);
-      for (const g of groups){
-        m.set(g.family, (m.get(g.family)||0) + g.sessions.length);
-      }
-      return m;
-    }
-
-    const elFamilyList = document.getElementById("familyList");
-    const elFamilySearch = document.getElementById("familySearch");
-    const elStatus = document.getElementById("status");
-    const elCards = document.getElementById("courseCards");
-
-    let GROUPS = [];
-    let COUNTS = new Map();
-    let ACTIVE_FAMILY = "BLS";
-    let COURSE_DESC = {};
-
-    function pickDesc(key, title){
-      return COURSE_DESC[key] || COURSE_DESC[title] || "";
+      groups.sort((a,b) => a.title.localeCompare(b.title));
+      GROUPS = groups;
     }
 
     function renderFamilies(){
-      const q = String(elFamilySearch.value || "").trim().toUpperCase();
-      elFamilyList.innerHTML = "";
+      const q = String(elFamilySearch.value||"").trim().toLowerCase();
+      elFamilies.innerHTML = "";
 
-      const ordered = FAMILY_ORDER
-        .filter(f => (COUNTS.get(f) || 0) > 0)
-        .filter(f => !q || f.toUpperCase().includes(q));
+      const counts = new Map();
+      for(const g of GROUPS){
+        counts.set(g.family, (counts.get(g.family)||0) + g.sessions.length);
+      }
 
-      for (const fam of ordered){
-        const total = COUNTS.get(fam) || 0;
+      for(const famKey of FAMILY_ORDER){
+        const meta = FAMILY_BY_KEY.get(famKey);
+        const label = meta?.label || famKey;
+        const desc = meta?.desc || "";
+        const count = counts.get(famKey) || 0;
+
+        if(q && !(label.toLowerCase().includes(q) || desc.toLowerCase().includes(q))) continue;
+
         const div = document.createElement("div");
-        div.className = "family" + (fam === ACTIVE_FAMILY ? " active" : "");
+        div.className = "family" + (famKey === ACTIVE_FAMILY ? " active" : "");
+        div.dataset.key = famKey;
+
         div.innerHTML = `
-          <div class="meta">
-            <strong>${escapeHtml(fam)}</strong>
-            <small>${total} upcoming sessions</small>
+          <div class="left">
+            <strong>${escapeHtml(label)}</strong>
+            <small>${escapeHtml(desc)}</small>
           </div>
-          <div class="badge">${total}</div>
+          <img class="img" src="${escapeHtml(meta?.img || "./assets/images/family/family-bls.jpg")}" alt="">
         `;
+
         div.addEventListener("click", () => {
-          ACTIVE_FAMILY = fam;
+          ACTIVE_FAMILY = famKey;
           renderFamilies();
           renderCards();
         });
-        elFamilyList.appendChild(div);
+
+        elFamilies.appendChild(div);
+
+        // (Removed session counts per your earlier request)
       }
     }
 
     function setCollapsed(sessionsEl, toggleBtn, collapsed){
       sessionsEl.style.display = collapsed ? "none" : "flex";
-      toggleBtn.textContent = collapsed ? "SHOW 5" : "HIDE";
+      toggleBtn.textContent = collapsed ? "SHOW 10" : "HIDE";
       toggleBtn.dataset.collapsed = collapsed ? "true" : "false";
       toggleBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
     }
@@ -695,7 +544,7 @@ const SCHEDULE_JSON_URL = "./data/schedule.json";
       });
       document.querySelectorAll("button.pillBtn[data-key]").forEach(btn => {
         if (btn.dataset.key !== key){
-          btn.textContent = "SHOW 5";
+          btn.textContent = "SHOW 10";
           btn.dataset.collapsed = "true";
           btn.setAttribute("aria-expanded","false");
         }
@@ -718,10 +567,10 @@ const SCHEDULE_JSON_URL = "./data/schedule.json";
 
       for (const g of groups){
         const card = document.createElement("article");
-        card.className = "course";
+        card.className = "courseCard";
 
-        const descHtml = sanitizeEnrollwareHtml(pickDesc(g.key, g.title) || g.subtitle || "");
-        const titleHtml = sanitizeEnrollwareHtml(g.title);
+        const titleHtml = escapeHtml(g.title);
+        const descHtml = g.desc ? escapeHtml(g.desc) : "";
 
         const head = document.createElement("div");
         head.className = "course-head";
@@ -743,7 +592,7 @@ const SCHEDULE_JSON_URL = "./data/schedule.json";
 
         const more = document.createElement("a");
         more.className = "pillLink";
-        more.textContent = "More dates";
+        more.textContent = "See all dates";
         more.href = g.scheduleUrl || "#";
         more.target = "_blank";
         more.rel = "noopener";
@@ -752,17 +601,29 @@ const SCHEDULE_JSON_URL = "./data/schedule.json";
         right.appendChild(toggle);
         right.appendChild(more);
 
+        // Click anywhere on the blue header to expand/collapse (except on buttons/links)
+        head.style.cursor = "pointer";
+        head.addEventListener("click", (ev) => {
+          if (ev.target.closest("button,a")) return;
+          toggle.click();
+        });
+
         head.appendChild(left);
         head.appendChild(right);
-
-        const body = document.createElement("div");
-        body.className = "course-body";
 
         const sessions = document.createElement("div");
         sessions.className = "sessions";
         sessions.dataset.key = String(g.key);
 
-        for (const r of g.sessions.slice(0,5)){
+        toggle.addEventListener("click", () => {
+          const collapsed = toggle.dataset.collapsed !== "false";
+          if (collapsed) closeAllExcept(String(g.key));
+          setCollapsed(sessions, toggle, !collapsed);
+        });
+
+        // Render sessions (first 10, then bottom pager shows next 10)
+        const __limit = getLimit(g.key, g.sessions.length);
+        for (const r of g.sessions.slice(0, __limit)){
           const ms = toMillis(r);
           const when = ms ? fmtWhen(ms) : "Date/time";
           const where = pickLocation(r);
@@ -780,67 +641,65 @@ const SCHEDULE_JSON_URL = "./data/schedule.json";
           sessions.appendChild(row);
         }
 
+        // Bottom pager: show next 10 without leaving the page
+        if (g.sessions.length > __limit){
+          const moreRow = document.createElement("div");
+          moreRow.className = "session moreRow";
+          moreRow.innerHTML = `<div class="when"><strong>See more times…</strong><small>Show the next ${Math.min(10, g.sessions.length-__limit)} session(s)</small></div>`;
+          const moreBtn = document.createElement("button");
+          moreBtn.type = "button";
+          moreBtn.className = "reg moreBtn";
+          moreBtn.textContent = `Show next ${Math.min(10, g.sessions.length-__limit)}`;
+          moreBtn.addEventListener("click", (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            bumpLimit(g.key, g.sessions.length);
+            renderCards();
+            // keep this course open
+            const btn = document.querySelector(`button.pillBtn[data-key="${String(g.key)}"]`);
+            const sess = document.querySelector(`.sessions[data-key="${String(g.key)}"]`);
+            if (btn && sess) setCollapsed(sess, btn, false);
+          });
+          moreRow.appendChild(moreBtn);
+          sessions.appendChild(moreRow);
+        }
+
         setCollapsed(sessions, toggle, true);
 
-        toggle.addEventListener("click", () => {
-          const isCollapsed = (toggle.dataset.collapsed === "true");
-          if (isCollapsed){
-            closeAllExcept(String(g.key));
-            setCollapsed(sessions, toggle, false);
-          } else {
-            setCollapsed(sessions, toggle, true);
-          }
-        });
-
-        body.appendChild(sessions);
-
         card.appendChild(head);
-        card.appendChild(body);
+        card.appendChild(sessions);
         elCards.appendChild(card);
       }
     }
 
     async function boot(){
       try{
-        const [scheduleRows, desc] = await Promise.all([
-          loadJson(SCHEDULE_JSON_URL),
-          loadJson(COURSE_DESC_JSON_URL).catch(()=> ({}))
-        ]);
-
-        COURSE_DESC = desc || {};
-        GROUPS = buildGroups(scheduleRows);
-        COUNTS = familyCounts(GROUPS);
-
-        if ((COUNTS.get(ACTIVE_FAMILY)||0) === 0){
-          for (const fam of FAMILY_ORDER){
-            if ((COUNTS.get(fam)||0) > 0){ ACTIVE_FAMILY = fam; break; }
-          }
-        }
-
-        renderFamilies();
-        renderCards();
-      }catch(err){
-        elStatus.className = "error";
-        elStatus.textContent = "Schedule failed to load. Please refresh, or register directly through Enrollware.";
-        console.error(err);
-        elCards.innerHTML = `
-          <div class="error">
-            <div style="font-weight:950;margin-bottom:6px;">Details</div>
-            <div style="margin-bottom:10px;">${escapeHtml(err?.message || String(err))}</div>
-            <a class="btn" href="${ENROLLWARE_SITE}#view=calendar" target="_blank" rel="noopener">
-              Open Enrollware schedule
-            </a>
-          </div>
+        SCHEDULE = await safeFetchJson(DATA_URL);
+      }catch(e){
+        elStatus.className = "notice";
+        elStatus.innerHTML = `
+          <div style="font-weight:950;margin-bottom:8px;">Schedule feed unavailable.</div>
+          <div style="margin-bottom:10px;">${escapeHtml(e?.message || String(e))}</div>
+          <a class="btn" href="${ENROLLWARE_SITE}#view=calendar" target="_blank" rel="noopener">
+            Open Enrollware schedule
+          </a>
         `;
+        return;
       }
+
+      try{
+        COURSE_DESCS = await safeFetchJson(COURSE_DESC_URL);
+      }catch{
+        COURSE_DESCS = {};
+      }
+
+      buildGroups();
+      renderFamilies();
+      renderCards();
     }
 
     elFamilySearch.addEventListener("input", renderFamilies);
     boot();
   </script>
-
-  <embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
-  <script src="https://cdn.247aireceptionist.com/script.js"></script>
-
 </body>
 </html>
