@@ -4,322 +4,289 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>910CPR — Schedule (Mobile)</title>
-  <meta name="description" content="Mobile schedule — powered by 910CPR" />
 
   <style>
     :root{
       --bg1:#ffffff;
       --bg2:#eaf4ff;
-      --ink:#0b1b2b;
-      --muted:#5b6a79;
+      --ink:#0b1b2a;
+      --muted:#5b6b7a;
+      --line:#d7e3f0;
       --card:#ffffff;
-      --line:#e3e8ef;
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
-      --radius2:18px;
+      --brand:#0b5fa5;
+      --brand2:#083b64;
+      --ok:#0c6b52;
+      --shadow: 0 10px 30px rgba(10,35,60,.10);
+      --radius:18px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--ink);
       background: linear-gradient(180deg,var(--bg1),var(--bg2));
     }
     a{color:inherit}
 
-    .topbar{
-      position:sticky; top:0; z-index:10;
-      background: linear-gradient(90deg,#0a1a2b,#102b4a);
+    header{
+      position: sticky;
+      top:0;
+      z-index: 50;
+      background: linear-gradient(90deg,var(--brand2),var(--brand));
       color:#fff;
-      padding:12px 14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.2);
+      padding: 12px 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
     }
-    .row1{
+    .headRow{
       display:flex;
-      gap:10px;
       align-items:center;
       justify-content:space-between;
+      gap:10px;
     }
     .brand{
-      display:flex; align-items:center; gap:10px;
       min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
     }
-    .logoDot{
-      width:16px;height:16px;border-radius:6px;background:#fff;
-      flex:0 0 auto;
-    }
-    .brandText{min-width:0}
-    .brandText .t{
-      font-weight:950;
-      font-size:13px;
-      line-height:1.15;
+    .brand .t{
+      font-weight: 950;
+      font-size: 13px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 68vw;
+      max-width: 70vw;
     }
-    .brandText .s{
-      font-size:11px;
-      opacity:.85;
-      margin-top:2px;
+    .brand .s{
+      font-size: 11px;
+      opacity:.9;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 78vw;
+      max-width: 74vw;
     }
     .chipRow{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
+      margin-top: 10px;
     }
     .chip{
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:9px 12px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 9px 12px;
       border-radius:999px;
-      background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.22);
       text-decoration:none;
-      font-weight:850;
-      font-size:12px;
+      font-weight: 900;
+      font-size: 12px;
       white-space:nowrap;
     }
 
-    .wrap{
+    main{
       max-width: 760px;
-      margin: 12px auto 50px;
+      margin: 14px auto 36px;
       padding: 0 12px;
     }
 
     .panel{
       background: var(--card);
       border:1px solid var(--line);
-      border-radius: var(--radius2);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
-      margin-bottom: 12px;
     }
-    .panelHeader{
-      padding:12px 14px;
+    .panelHead{
+      padding: 12px 14px;
       border-bottom:1px solid var(--line);
-      background: linear-gradient(180deg,#ffffff,#f7fbff);
+      background: linear-gradient(180deg,#fff,#f7fbff);
     }
-    .panelHeader .title{
+    .panelHead .h{
       margin:0;
-      font-weight:950;
-      font-size:14px;
+      font-weight: 950;
+      font-size: 14px;
     }
-    .panelHeader .hint{
+    .panelHead .p{
       margin:6px 0 0;
-      font-size:12px;
-      color:var(--muted);
+      font-size: 12px;
+      color: var(--muted);
       line-height:1.35;
     }
-
     .filters{
       padding: 12px 14px 14px;
       display:flex;
       flex-direction:column;
       gap:10px;
     }
-    .filters input, .filters select{
+    select,input{
       width:100%;
       padding: 11px 12px;
       border-radius: 12px;
-      border: 1px solid var(--line);
+      border:1px solid var(--line);
+      font-size: 13px;
       outline:none;
-      font-size:13px;
       background:#fff;
     }
 
     .notice{
-      padding: 10px 14px;
-      border:1px dashed #c9d8ea;
-      background:#f7fbff;
-      color:#18314a;
-      border-radius: 14px;
-      font-size:12px;
-      line-height:1.4;
       margin: 12px 0;
+      background:#f7fbff;
+      border:1px dashed #c7d9ee;
+      border-radius: 14px;
+      padding: 10px 12px;
+      color:#18314a;
+      font-size: 13px;
+      line-height:1.35;
     }
     .error{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border:1px solid #ffd2c1;
+      margin: 12px 0;
       background:#fff5f1;
+      border:1px solid #ffd2c1;
+      border-radius: 14px;
+      padding: 12px 12px;
       color:#5b1f0b;
+      font-size: 13px;
       line-height:1.35;
-      font-size:13px;
-      margin: 14px 0;
     }
 
-    .courseCard{
+    .course{
       border:1px solid var(--line);
-      border-radius: var(--radius2);
+      border-radius: var(--radius);
       overflow:hidden;
       background:#fff;
-      box-shadow: 0 10px 24px rgba(0,0,0,.06);
-      margin: 12px 0 16px;
+      box-shadow: var(--shadow);
+      margin: 12px 0;
     }
-    .courseTop{
+    .courseHead{
       padding: 12px 14px;
-      background: linear-gradient(90deg,#0b4f92,#0b6aa6);
+      background: linear-gradient(90deg,var(--brand2),var(--brand));
       color:#fff;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px 12px;
     }
-    .courseTop h3{
-      margin:0;
-      font-size:14px;
+    .courseTitle{
+      flex: 1 1 260px;
+      min-width: 0;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .courseTitle .t{
+      font-size: 14px;
+      font-weight: 950;
       line-height:1.2;
-      font-weight:950;
-      letter-spacing:.2px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
     }
-    .courseTop .desc{
-      margin:6px 0 0;
-      font-size:12px;
+    .courseTitle .t img,
+    .courseTitle .s img{
+      height: 18px;
+      width:auto;
+      vertical-align: middle;
+      border-radius:4px;
+      background: rgba(255,255,255,.12);
+      margin-right:6px;
+    }
+    .courseTitle .s{
+      font-size: 12px;
       opacity:.92;
       line-height:1.25;
+      overflow-wrap:anywhere;
+      word-break:break-word;
     }
-    .courseTop img{
-      height: 20px;
-      width: auto;
-      vertical-align: middle;
-      margin-right: 6px;
-      border-radius: 4px;
-      background: rgba(255,255,255,.08);
-    }
-    .courseTop .badge{
-      margin-top:10px;
-      display:inline-flex;
-      font-size:11px;
-      font-weight:950;
-      padding:6px 10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.22);
-    }
-
-    .controls{
+    .courseActions{
       display:flex;
-      gap:10px;
-      justify-content:space-between;
-      align-items:center;
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--line);
-      background:#fff;
+      gap:8px;
       flex-wrap:wrap;
+      justify-content:flex-end;
+      margin-left:auto;
     }
-
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border:1px solid var(--line);
-      background:#fff;
-      text-decoration:none;
-      font-weight:950;
-      font-size:12px;
-      white-space:nowrap;
-      width:100%;
-    }
-    button.btn{font-family:inherit}
-    .btnPrimary{
-      background: #0d6b63;
-      border-color:#0d6b63;
+    .pillBtn, .pillLink{
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.25);
       color:#fff;
-    }
-    .btnPrimary:hover{background:#0b5e57}
-    .btnGhost:hover{background:#f6f9fe}
-    .btnToggle{
-      width:auto;
       padding: 8px 10px;
       border-radius: 999px;
-      font-size:11px;
-      letter-spacing:.4px;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing:.35px;
       text-transform:uppercase;
+      cursor:pointer;
+      white-space:nowrap;
+      text-decoration:none;
+      user-select:none;
     }
-    .btnInline{ width:auto; }
 
-    .sessions{
-      padding: 10px 12px 12px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .sessionRow{
-      padding: 10px 10px;
-      border-radius: 14px;
+    .courseBody{ padding: 12px 14px; }
+    .sessions{ display:flex; flex-direction:column; gap:10px; }
+    .session{
       border:1px solid var(--line);
-      background:#fff;
+      border-radius: 14px;
+      padding: 10px 12px;
       display:flex;
       flex-direction:column;
       gap:8px;
     }
-    .when{
-      font-weight:950;
-      font-size:13px;
-      line-height:1.15;
-    }
-    .where{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.2;
-      word-break: break-word;
-    }
-    .btnRow{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
+    .when strong{ font-size: 13px; font-weight: 950; }
+    .when small{ font-size: 12px; color:var(--muted); overflow-wrap:anywhere; word-break:break-word; }
+    .reg{
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      background: var(--ok);
+      color:#fff;
+      text-decoration:none;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 950;
     }
 
-    .footer{
-      padding: 18px 0 0;
-      color: var(--muted);
-      font-size:12px;
+    footer{
+      margin-top: 14px;
+      padding: 10px 0 0;
       text-align:center;
+      color: var(--muted);
+      font-size: 12px;
     }
   </style>
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="row1">
+  <header>
+    <div class="headRow">
       <div class="brand">
-        <div class="logoDot" aria-hidden="true"></div>
-        <div class="brandText">
-          <div class="t">910CPR — Schedule</div>
-          <div class="s">Live &amp; blended classes with fast certificates</div>
-        </div>
+        <div class="t">910CPR — Schedule</div>
+        <div class="s">Live &amp; blended classes with fast certificates</div>
       </div>
-      <a class="chip" href="./index.html" title="Desktop view">Desktop</a>
+      <a class="chip" href="./index.html">Desktop</a>
     </div>
-
     <div class="chipRow">
       <a class="chip" href="tel:+19103955193">📞 Call or text (910) 395-5193</a>
       <a class="chip" href="mailto:info@910cpr.com">✉️ Email help</a>
     </div>
   </header>
 
-  <main class="wrap">
+  <main>
     <section class="panel">
-      <div class="panelHeader">
-        <p class="title">Filter</p>
-        <p class="hint">Only upcoming sessions are shown. Courses are collapsed by default—expand the one you want.</p>
+      <div class="panelHead">
+        <p class="h">Filter</p>
+        <p class="p">Only upcoming sessions are shown. Courses are collapsed by default — expand the one you want.</p>
       </div>
       <div class="filters">
         <select id="familySelect"></select>
-        <input id="searchBox" type="search" placeholder="Search within titles (BLS, ACLS, Heartsaver…)" autocomplete="off" />
+        <input id="searchBox" type="search" placeholder="Search within titles (BLS, ACLS, Heartsaver…)" />
       </div>
     </section>
 
     <div id="status" class="notice">Loading schedule…</div>
     <div id="courseCards"></div>
 
-    <div class="footer">
-      No hidden URLs. If needed, you can always register directly through Enrollware.
-    </div>
+    <footer>No hidden URLs. If needed, you can always register directly through Enrollware.</footer>
   </main>
 
   <script>
@@ -327,79 +294,31 @@
     const COURSE_DESC_JSON_URL = "./data/course-descriptions.json";
 
     const FAMILY_ORDER = [
-      "BLS","ACLS","PALS","Heartsaver / CPR-AED","First Aid","OSHA","Stop the Bleed","Instructor","Other"
+      "ACLS","BLS","PALS","Heartsaver / CPR-AED","First Aid","OSHA","Stop the Bleed","Instructor","Other"
     ];
 
-    function _pickStartField(s) {
-      return (
-        s.start_ms || s.startMs || s.start_iso || s.startISO || s.start || s.start_datetime ||
-        s.startDateTime || s.datetime || s.dateTime || s.when || s.class_start || null
-      );
+    function withCacheBust(url){
+      const u = new URL(url, window.location.href);
+      u.searchParams.set("ts", String(Date.now()));
+      return u.toString();
     }
-    function toMillisFromRow(s) {
-      const v = _pickStartField(s);
-      if (v === null || v === undefined) return null;
-      if (typeof v === "number" && Number.isFinite(v)) return v;
-      if (typeof v === "string") {
-        const t = Date.parse(v);
-        return Number.isFinite(t) ? t : null;
-      }
-      return null;
+    async function loadJson(url){
+      const r = await fetch(withCacheBust(url), { cache:"no-store" });
+      if(!r.ok) throw new Error(`HTTP ${r.status} while fetching ${url}`);
+      return await r.json();
     }
-    function isUpcomingRow(s, nowMs) {
-      if (typeof s?.is_past === "boolean") return !s.is_past;
-      const ms = toMillisFromRow(s);
-      if (ms === null) return false;
-      return ms >= nowMs;
-    }
-    function sortRowsByStartAsc(a, b) {
-      const am = toMillisFromRow(a);
-      const bm = toMillisFromRow(b);
-      return (am ?? 9e15) - (bm ?? 9e15);
-    }
-    function formatWhen(ms) {
-      const d = new Date(ms);
-      return d.toLocaleString(undefined, {
-        weekday:"long", year:"numeric", month:"long", day:"numeric", hour:"numeric", minute:"2-digit"
-      });
-    }
-
-    function pickRegisterUrl(row){
-      return row.register_url || row.registerUrl || row.url || row.enroll_url || row.enrollUrl || row.enroll_link || row.enrollLink || row.register || row.enroll || "";
-    }
-    function pickScheduleUrl(row){
-      return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || row.ct_url || row.ctUrl || "";
-    }
-    function pickCourseKey(row){
-      return (
-        row.course_number || row.courseNumber || row.course_id || row.courseId || row.ct_id || row.ctId ||
-        row.courseTypeId || row.course_type_id || row.course_type || row.course_slug || row.courseSlug ||
-        pickScheduleUrl(row) || row.title || row.course_name || row.courseName || row.name || null
-      );
-    }
-    function pickCourseTitle(row){
-      return row.title || row.course_name || row.courseName || row.course_title || row.courseTitle || row.name || "Course";
-    }
-    function pickLocation(row){
-      return row.location || row.location_name || row.locationName || row.city_state || row.cityState || row.city || row.site || row.address || "Location TBD";
-    }
-
-    function classifyFamily(courseTitle){
-      const t = String(courseTitle || "").toUpperCase();
-      if (t.includes("ACLS")) return "ACLS";
-      if (t.includes("PALS")) return "PALS";
-      if (t.includes("BLS")) return "BLS";
-      if (t.includes("HEARTSAVER") || t.includes("CPR/AED") || t.includes("CPR AED") || t.includes("CPR-AED")) return "Heartsaver / CPR-AED";
-      if (t.includes("FIRST AID") || t.includes("FA/") || t.includes("FA ")) return "First Aid";
-      if (t.includes("OSHA") || t.includes("USCG") || t.includes("COAST GUARD") || t.includes("DAN")) return "OSHA";
-      if (t.includes("STOP THE BLEED")) return "Stop the Bleed";
-      if (t.includes("INSTRUCTOR")) return "Instructor";
-      return "Other";
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
     }
 
     function sanitizeEnrollwareHtml(html) {
-      const allowedTags = new Set(["IMG", "I", "B", "STRONG", "EM", "BR", "SPAN", "DIV", "SMALL"]);
-      const allowedAttrs = new Set(["src", "alt", "title", "style", "class", "loading"]);
+      const allowedTags = new Set(["IMG","I","B","STRONG","EM","BR","SPAN","SMALL","DIV"]);
+      const allowedAttrs = new Set(["src","alt","title","style","class","loading"]);
 
       const tpl = document.createElement("template");
       tpl.innerHTML = String(html || "");
@@ -429,76 +348,113 @@
       return tpl.innerHTML;
     }
 
-    function setCollapsed(containerEl, toggleBtnEl, collapsed) {
-      containerEl.style.display = collapsed ? "none" : "flex";
-      toggleBtnEl.textContent = collapsed ? "SHOW 5" : "HIDE";
-      toggleBtnEl.setAttribute("aria-expanded", collapsed ? "false" : "true");
-      toggleBtnEl.dataset.collapsed = collapsed ? "true" : "false";
+    function _pickStartField(s){
+      return (
+        s.start_ms || s.startMs || s.start_iso || s.startISO || s.start || s.start_datetime ||
+        s.startDateTime || s.datetime || s.dateTime || s.when || s.class_start || null
+      );
+    }
+    function toMillis(row){
+      const v = _pickStartField(row);
+      if (v == null) return null;
+      if (typeof v === "number" && Number.isFinite(v)) return v;
+      if (typeof v === "string"){
+        const t = Date.parse(v);
+        return Number.isFinite(t) ? t : null;
+      }
+      return null;
+    }
+    function isUpcoming(row, nowMs){
+      if (typeof row?.is_past === "boolean") return !row.is_past;
+      const ms = toMillis(row);
+      return ms != null && ms >= nowMs;
+    }
+    function fmtWhen(ms){
+      const d = new Date(ms);
+      return d.toLocaleString(undefined, {
+        weekday:"long", year:"numeric", month:"long", day:"numeric", hour:"numeric", minute:"2-digit"
+      });
     }
 
-    function closeAllCurtainsExcept(courseKeyToKeep){
-      const wraps = document.querySelectorAll(".courseCard .sessions[data-course-key]");
-      wraps.forEach(wrap => {
-        const k = wrap.dataset.courseKey;
-        if (k !== courseKeyToKeep) wrap.style.display = "none";
-      });
-
-      const toggles = document.querySelectorAll(".courseCard button[data-role='toggle'][data-course-key]");
-      toggles.forEach(btn => {
-        const k = btn.dataset.courseKey;
-        if (k !== courseKeyToKeep){
-          btn.textContent = "SHOW 5";
-          btn.setAttribute("aria-expanded","false");
-          btn.dataset.collapsed = "true";
-        }
-      });
+    function pickCourseKey(row){
+      return row.course_number || row.courseNumber || row.course_id || row.courseId ||
+             row.ct_id || row.ctId || row.courseTypeId || row.course_type_id ||
+             row.course_slug || row.courseSlug || row.course_url || row.courseUrl ||
+             row.schedule_url || row.scheduleUrl || row.title || row.course_name || row.courseName || "unknown";
+    }
+    function pickCourseTitle(row){
+      return row.title || row.course_name || row.courseName || row.course_title || row.courseTitle || "Course";
+    }
+    function pickCourseSubtitle(row){
+      return row.subtitle || row.course_subtitle || row.courseSubtitle || row.course_tagline || "";
+    }
+    function pickLocation(row){
+      return row.location || row.location_name || row.locationName || row.city_state ||
+             row.cityState || row.site || row.address || "Location TBD";
+    }
+    function pickRegisterUrl(row){
+      return row.register_url || row.registerUrl || row.enroll_url || row.enrollUrl ||
+             row.enroll_link || row.enrollLink || row.url || row.register || row.enroll || "";
+    }
+    function pickScheduleUrl(row){
+      return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || row.ct_url || row.ctUrl || "";
     }
 
-    function buildUpcomingIndex(scheduleRows, nowMs){
-      const groups = new Map();
-      for(const row of (scheduleRows || [])){
-        const key = pickCourseKey(row);
-        if(!key) continue;
-        if(!isUpcomingRow(row, nowMs)) continue;
+    function classifyFamily(title){
+      const t = String(title || "").toUpperCase();
+      if (t.includes("ACLS")) return "ACLS";
+      if (t.includes("PALS")) return "PALS";
+      if (t.includes("BLS")) return "BLS";
+      if (t.includes("HEARTSAVER") || t.includes("CPR/AED") || t.includes("CPR AED") || t.includes("CPR-AED")) return "Heartsaver / CPR-AED";
+      if (t.includes("FIRST AID") || t.includes("FA/") || t.includes("FA ")) return "First Aid";
+      if (t.includes("OSHA") || t.includes("USCG") || t.includes("COAST GUARD") || t.includes("DAN")) return "OSHA";
+      if (t.includes("STOP THE BLEED")) return "Stop the Bleed";
+      if (t.includes("INSTRUCTOR")) return "Instructor";
+      return "Other";
+    }
 
-        if(!groups.has(key)){
-          groups.set(key, {
-            courseKey: String(key),
-            courseTitle: pickCourseTitle(row),
-            family: classifyFamily(pickCourseTitle(row)),
-            scheduleUrl: pickScheduleUrl(row),
-            sessions:[]
+    function buildGroups(rows){
+      const now = Date.now();
+      const map = new Map();
+
+      for (const r of (rows || [])){
+        if (!isUpcoming(r, now)) continue;
+
+        const key = String(pickCourseKey(r));
+        const title = pickCourseTitle(r);
+        const fam = classifyFamily(title);
+
+        if (!map.has(key)){
+          map.set(key, {
+            key,
+            title,
+            subtitle: pickCourseSubtitle(r),
+            family: fam,
+            scheduleUrl: pickScheduleUrl(r),
+            sessions: []
           });
         }
-        const g = groups.get(key);
-        if (!g.scheduleUrl) g.scheduleUrl = pickScheduleUrl(row);
-        g.sessions.push(row);
+        const g = map.get(key);
+        if (!g.scheduleUrl) g.scheduleUrl = pickScheduleUrl(r);
+        g.sessions.push(r);
       }
-      for(const g of groups.values()){
-        g.sessions.sort(sortRowsByStartAsc);
-        g.nextStartMs = toMillisFromRow(g.sessions[0]) ?? 9e15;
+
+      const list = Array.from(map.values());
+      for (const g of list){
+        g.sessions.sort((a,b)=>(toMillis(a) ?? 9e15) - (toMillis(b) ?? 9e15));
+        g.nextMs = toMillis(g.sessions[0]) ?? 9e15;
       }
-      const list = Array.from(groups.values());
-      list.sort((A,B)=>A.nextStartMs - B.nextStartMs);
+      list.sort((a,b)=>a.nextMs - b.nextMs);
       return list;
     }
 
-    function countFamilyInventory(groups){
+    function countFamilies(groups){
       const m = new Map();
-      for(const fam of FAMILY_ORDER) m.set(fam,0);
-      for(const g of groups){
+      for (const f of FAMILY_ORDER) m.set(f, 0);
+      for (const g of groups){
         m.set(g.family, (m.get(g.family)||0) + g.sessions.length);
       }
       return m;
-    }
-
-    function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#39;");
     }
 
     const elStatus = document.getElementById("status");
@@ -507,46 +463,59 @@
     const elSearchBox = document.getElementById("searchBox");
 
     let COURSE_DESC = {};
-    let ALL_GROUPS = [];
+    let GROUPS = [];
     let ACTIVE_FAMILY = "BLS";
 
-    function pickCourseDescription(courseKey, courseTitle){
-      return COURSE_DESC[courseKey] || COURSE_DESC[courseTitle] || "";
+    function pickDesc(key, title){
+      return COURSE_DESC[key] || COURSE_DESC[title] || "";
     }
 
     function renderFamilySelect(){
-      const inv = countFamilyInventory(ALL_GROUPS);
-
+      const inv = countFamilies(GROUPS);
       elFamilySelect.innerHTML = "";
-      for(const fam of FAMILY_ORDER){
+      for (const fam of FAMILY_ORDER){
         const opt = document.createElement("option");
-        const c = inv.get(fam) || 0;
         opt.value = fam;
-        opt.textContent = `${fam} (${c})`;
+        opt.textContent = `${fam} (${inv.get(fam)||0})`;
         elFamilySelect.appendChild(opt);
       }
-
       if ((inv.get(ACTIVE_FAMILY)||0) === 0){
         for (const fam of FAMILY_ORDER){
-          if ((inv.get(fam)||0) > 0){
-            ACTIVE_FAMILY = fam;
-            break;
-          }
+          if ((inv.get(fam)||0) > 0){ ACTIVE_FAMILY = fam; break; }
         }
       }
       elFamilySelect.value = ACTIVE_FAMILY;
     }
 
+    function setCollapsed(sessionsEl, toggleBtn, collapsed){
+      sessionsEl.style.display = collapsed ? "none" : "flex";
+      toggleBtn.textContent = collapsed ? "SHOW 5" : "HIDE";
+      toggleBtn.dataset.collapsed = collapsed ? "true" : "false";
+      toggleBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    }
+
+    function closeAllExcept(key){
+      document.querySelectorAll(".sessions[data-key]").forEach(el => {
+        if (el.dataset.key !== key) el.style.display = "none";
+      });
+      document.querySelectorAll("button.pillBtn[data-key]").forEach(btn => {
+        if (btn.dataset.key !== key){
+          btn.textContent = "SHOW 5";
+          btn.dataset.collapsed = "true";
+          btn.setAttribute("aria-expanded","false");
+        }
+      });
+    }
+
     function renderCards(){
       const q = String(elSearchBox.value || "").trim().toUpperCase();
-
-      const groups = ALL_GROUPS
+      const list = GROUPS
         .filter(g => g.family === ACTIVE_FAMILY)
-        .filter(g => !q || String(g.courseTitle||"").toUpperCase().includes(q));
+        .filter(g => !q || String(g.title||"").toUpperCase().includes(q));
 
       elCards.innerHTML = "";
 
-      if (groups.length === 0){
+      if (list.length === 0){
         elStatus.className = "notice";
         elStatus.textContent = "No upcoming sessions found for this filter.";
         return;
@@ -555,121 +524,110 @@
       elStatus.className = "notice";
       elStatus.textContent = `Showing upcoming sessions for: ${ACTIVE_FAMILY}`;
 
-      for(const g of groups){
-        const card = document.createElement("div");
-        card.className = "courseCard";
+      for (const g of list){
+        const card = document.createElement("article");
+        card.className = "course";
 
-        const descRaw = pickCourseDescription(g.courseKey, g.courseTitle);
-        const titleHtml = sanitizeEnrollwareHtml(g.courseTitle);
-        const descHtml  = descRaw ? sanitizeEnrollwareHtml(descRaw) : "";
+        const titleHtml = sanitizeEnrollwareHtml(g.title);
+        const descHtml  = sanitizeEnrollwareHtml(pickDesc(g.key, g.title) || g.subtitle || "");
 
-        const top = document.createElement("div");
-        top.className = "courseTop";
-        top.innerHTML = `
-          <h3>${titleHtml}</h3>
-          ${descHtml ? `<div class="desc">${descHtml}</div>` : ``}
-          <div class="badge">Shown: ${g.sessions.length} upcoming</div>
+        const head = document.createElement("div");
+        head.className = "courseHead";
+
+        const left = document.createElement("div");
+        left.className = "courseTitle";
+        left.innerHTML = `
+          <div class="t">${titleHtml}</div>
+          ${descHtml ? `<div class="s">${descHtml}</div>` : ``}
         `;
 
-        const controls = document.createElement("div");
-        controls.className = "controls";
+        const actions = document.createElement("div");
+        actions.className = "courseActions";
 
-        const toggleBtn = document.createElement("button");
-        toggleBtn.type = "button";
-        toggleBtn.className = "btn btnGhost btnToggle";
-        toggleBtn.style.cursor = "pointer";
-        toggleBtn.dataset.role = "toggle";
-        toggleBtn.dataset.courseKey = String(g.courseKey);
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "pillBtn";
+        toggle.dataset.key = String(g.key);
 
-        const hasScheduleUrl = !!(g.scheduleUrl && String(g.scheduleUrl).trim());
+        const more = document.createElement("a");
+        more.className = "pillLink";
+        more.textContent = "More dates";
+        more.href = g.scheduleUrl || "#";
+        more.target = "_blank";
+        more.rel = "noopener";
+        if (!g.scheduleUrl) more.style.display = "none";
 
-        const moreDates = document.createElement("a");
-        moreDates.className = "btn btnGhost btnInline";
-        moreDates.textContent = "See even more dates";
-        moreDates.href = g.scheduleUrl || "#";
-        moreDates.target = "_blank";
-        moreDates.rel = "noopener";
-        if (!hasScheduleUrl) moreDates.style.display = "none";
+        actions.appendChild(toggle);
+        actions.appendChild(more);
 
-        controls.appendChild(toggleBtn);
-        controls.appendChild(moreDates);
+        head.appendChild(left);
+        head.appendChild(actions);
+
+        const body = document.createElement("div");
+        body.className = "courseBody";
 
         const sessions = document.createElement("div");
         sessions.className = "sessions";
-        sessions.dataset.courseKey = String(g.courseKey);
+        sessions.dataset.key = String(g.key);
 
-        for(const row of g.sessions.slice(0, 5)){
-          const ms = toMillisFromRow(row);
-          const when = ms ? formatWhen(ms) : "Date/time";
-          const where = pickLocation(row);
-          const regUrl = pickRegisterUrl(row);
+        for (const r of g.sessions.slice(0,5)){
+          const ms = toMillis(r);
+          const when = ms ? fmtWhen(ms) : "Date/time";
+          const where = pickLocation(r);
+          const regUrl = pickRegisterUrl(r);
 
-          const sr = document.createElement("div");
-          sr.className = "sessionRow";
-          sr.innerHTML = `
-            <div class="when">${escapeHtml(when)}</div>
-            <div class="where">${escapeHtml(where)}</div>
-            <div class="btnRow">
-              <a class="btn btnPrimary" href="${escapeHtml(regUrl || "#")}" target="_blank" rel="noopener">Register now</a>
+          const row = document.createElement("div");
+          row.className = "session";
+          row.innerHTML = `
+            <div class="when">
+              <strong>${escapeHtml(when)}</strong><br/>
+              <small>${escapeHtml(where)}</small>
             </div>
+            <a class="reg" href="${escapeHtml(regUrl || "#")}" target="_blank" rel="noopener">Register now</a>
           `;
-          sessions.appendChild(sr);
+          sessions.appendChild(row);
         }
 
-        setCollapsed(sessions, toggleBtn, true);
+        setCollapsed(sessions, toggle, true);
 
-        toggleBtn.addEventListener("click", () => {
-          const isCollapsed = (toggleBtn.dataset.collapsed === "true");
-          if (isCollapsed) {
-            closeAllCurtainsExcept(String(g.courseKey));
-            setCollapsed(sessions, toggleBtn, false);
+        toggle.addEventListener("click", () => {
+          const isCollapsed = (toggle.dataset.collapsed === "true");
+          if (isCollapsed){
+            closeAllExcept(String(g.key));
+            setCollapsed(sessions, toggle, false);
           } else {
-            setCollapsed(sessions, toggleBtn, true);
+            setCollapsed(sessions, toggle, true);
           }
         });
 
-        card.appendChild(top);
-        card.appendChild(controls);
-        card.appendChild(sessions);
+        body.appendChild(sessions);
+        card.appendChild(head);
+        card.appendChild(body);
         elCards.appendChild(card);
       }
     }
 
-    function withCacheBust(url){
-      const u = new URL(url, window.location.href);
-      u.searchParams.set("ts", String(Date.now()));
-      return u.toString();
-    }
-
-    async function loadJson(url){
-      const r = await fetch(withCacheBust(url), { cache:"no-store" });
-      if(!r.ok) throw new Error(`HTTP ${r.status} while fetching ${url}`);
-      return await r.json();
-    }
-
     async function boot(){
-      try {
-        const [scheduleRows, descJson] = await Promise.all([
+      try{
+        const [scheduleRows, desc] = await Promise.all([
           loadJson(SCHEDULE_JSON_URL),
-          loadJson(COURSE_DESC_JSON_URL).catch(() => ({}))
+          loadJson(COURSE_DESC_JSON_URL).catch(()=> ({}))
         ]);
 
-        COURSE_DESC = descJson || {};
-        ALL_GROUPS = buildUpcomingIndex(scheduleRows, Date.now());
+        COURSE_DESC = desc || {};
+        GROUPS = buildGroups(scheduleRows);
 
         renderFamilySelect();
         renderCards();
-      } catch (err) {
-        const statusEl = document.querySelector("#status");
-        statusEl.className = "error";
-        statusEl.textContent = "Schedule failed to load. Please refresh, or register directly through Enrollware.";
+      }catch(err){
+        elStatus.className = "error";
+        elStatus.textContent = "Schedule failed to load. Please refresh, or register directly through Enrollware.";
         console.error(err);
-
         elCards.innerHTML = `
           <div class="error">
             <div style="font-weight:950;margin-bottom:6px;">Details</div>
             <div style="margin-bottom:10px;">${escapeHtml(err?.message || String(err))}</div>
-            <a class="btn btnGhost" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar" target="_blank" rel="noopener">
+            <a class="chip" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar" target="_blank" rel="noopener">
               Open Enrollware schedule
             </a>
           </div>
@@ -677,12 +635,7 @@
       }
     }
 
-    elFamilySelect.addEventListener("change", () => {
-      ACTIVE_FAMILY = elFamilySelect.value;
-      renderCards();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
+    elFamilySelect.addEventListener("change", () => { ACTIVE_FAMILY = elFamilySelect.value; renderCards(); window.scrollTo({top:0,behavior:"smooth"}); });
     elSearchBox.addEventListener("input", renderCards);
 
     boot();

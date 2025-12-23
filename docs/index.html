@@ -14,10 +14,12 @@
       --muted:#5b6b7a;
       --line:#d7e3f0;
       --brand:#0b5fa5;
+      --brand2:#083b64;
+      --ok:#0c6b52;
       --shadow: 0 10px 30px rgba(10,35,60,.10);
       --radius:16px;
-      --max: 1200px;
-      --headerH: 64px;
+      --max: 1260px;
+      --headerH: 68px;
     }
 
     *{ box-sizing:border-box; }
@@ -28,14 +30,14 @@
       background: linear-gradient(180deg,var(--bg1),var(--bg2));
     }
     a{ color:inherit; }
-    .wrap{ max-width: var(--max); margin:0 auto; padding: 18px; }
+    .wrap{ max-width: var(--max); margin:0 auto; padding: 16px; }
 
-    /* HEADER */
+    /* TOP BAR */
     .topbar{
       position: sticky;
       top:0;
       z-index: 50;
-      background: rgba(255,255,255,.85);
+      background: rgba(255,255,255,.90);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--line);
     }
@@ -47,22 +49,30 @@
       gap: 12px;
       max-width: var(--max);
       margin:0 auto;
-      padding: 0 18px;
+      padding: 0 16px;
     }
     .brand{
       display:flex;
       flex-direction:column;
-      line-height:1.15;
+      line-height:1.1;
       min-width:0;
     }
     .brand strong{
-      font-size: 16px;
+      font-size: 15px;
+      font-weight: 950;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 64vw;
+      max-width: 60vw;
     }
-    .brand span{ font-size: 12px; color:var(--muted); }
+    .brand span{
+      font-size: 12px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 60vw;
+    }
 
     .top-actions{
       display:flex;
@@ -80,6 +90,7 @@
       text-decoration:none;
       box-shadow: 0 1px 0 rgba(10,35,60,.04);
       white-space:nowrap;
+      font-weight: 850;
     }
     .btn.primary{
       border-color: transparent;
@@ -91,9 +102,9 @@
     .layout{
       display:grid;
       grid-template-columns: 320px 1fr;
-      gap: 18px;
+      gap: 16px;
       align-items:start;
-      margin-top: 18px;
+      margin-top: 14px;
     }
 
     /* LEFT RAIL */
@@ -107,16 +118,16 @@
     @media (min-width: 980px){
       .rail{
         position: sticky;
-        top: calc(var(--headerH) + 18px);
-        max-height: calc(100vh - (var(--headerH) + 36px));
+        top: calc(var(--headerH) + 14px);
+        max-height: calc(100vh - (var(--headerH) + 28px));
         overflow:auto;
       }
     }
-
     .rail h3{
       margin: 4px 0 10px;
       font-size: 14px;
       letter-spacing:.2px;
+      font-weight: 950;
     }
     .search{
       width:100%;
@@ -138,16 +149,15 @@
       cursor:pointer;
       background:#fff;
       user-select:none;
-      transition: transform .04s ease, background .1s ease;
+      transition: background .1s ease;
     }
     .family:hover{ background:#f7fbff; }
-    .family:active{ transform: scale(.995); }
     .family.active{
       border-color: #b9d3ee;
       background:#eef6ff;
     }
     .family .meta{ display:flex; flex-direction:column; gap:2px; }
-    .family .meta strong{ font-size: 14px; }
+    .family .meta strong{ font-size: 14px; font-weight: 950; }
     .family .meta small{ font-size: 12px; color:var(--muted); }
     .badge{
       min-width: 44px;
@@ -155,14 +165,14 @@
       padding: 6px 10px;
       border-radius: 999px;
       border:1px solid var(--line);
-      font-weight: 700;
+      font-weight: 950;
       font-size: 13px;
       color:#123;
       background: #f4f8fd;
     }
 
     /* MAIN */
-    .main{ display:flex; flex-direction:column; gap: 14px; }
+    .main{ display:flex; flex-direction:column; gap: 12px; }
     .panel{
       background: var(--card);
       border:1px solid var(--line);
@@ -170,7 +180,7 @@
       box-shadow: var(--shadow);
       padding: 14px;
     }
-    .panel h2{ margin: 0 0 8px; font-size: 16px; }
+    .panel h2{ margin: 0 0 6px; font-size: 16px; font-weight: 950; }
     .hint{ margin:0; font-size: 13px; color: var(--muted); line-height:1.35; }
 
     .notice{
@@ -192,91 +202,90 @@
       line-height:1.35;
     }
 
-    /* COURSE CARDS */
+    /* COURSE CARD */
     .course{
       border:1px solid var(--line);
       border-radius: var(--radius);
       overflow:hidden;
       background:#fff;
-    }
-    .course-head{
-      padding: 12px 14px;
-      background: linear-gradient(90deg, #083b64, #0b5fa5);
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
+      box-shadow: var(--shadow);
     }
 
-    /* Title block: allow HTML (icons) + keep clean */
+    /* Header is now WRAPPABLE so pills never force zoom-out */
+    .course-head{
+      padding: 12px 14px;
+      background: linear-gradient(90deg, var(--brand2), var(--brand));
+      color:#fff;
+      display:flex;
+      flex-wrap:wrap;               /* key */
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px 12px;
+    }
+
+    /* Title block: allow HTML and allow line breaks */
     .course-title{
+      min-width: 260px;
+      flex: 1 1 520px;              /* key: takes available space */
       display:flex;
       flex-direction:column;
-      gap:2px;
-      min-width:0;
+      gap:4px;
     }
+
     .course-title .titleLine{
       font-size: 15px;
-      font-weight: 800;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      min-width:0;
+      font-weight: 950;
+      line-height:1.2;
+      display:block;
+      overflow-wrap:anywhere;       /* key */
+      word-break:break-word;
     }
-    .course-title .titleLine img{
+
+    /* Make Enrollware icons behave */
+    .course-title .titleLine img,
+    .course-title .subLine img{
       height: 18px;
       width: auto;
       vertical-align: middle;
       border-radius: 4px;
       background: rgba(255,255,255,.12);
-      flex: 0 0 auto;
-    }
-    .course-title .subLine{
-      font-size: 12px;
-      opacity:.9;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      margin-right: 6px;
     }
 
-    /* Minimal right cluster: SHOW 5 + More dates */
-    .course-head-right{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex: 0 0 auto;
+    .course-title .subLine{
+      font-size: 12px;
+      opacity:.92;
+      line-height:1.25;
+      overflow-wrap:anywhere;
+      word-break:break-word;
     }
-    .pillBtn{
+
+    .course-head-right{
+      flex: 0 0 auto;
+      display:flex;
+      flex-wrap:wrap;               /* key */
+      align-items:center;
+      gap:8px;
+      justify-content:flex-end;
+      margin-left:auto;
+    }
+
+    .pillBtn, .pillLink{
       background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.28);
+      border: 1px solid rgba(255,255,255,.25);
       color:#fff;
       padding: 8px 10px;
       border-radius: 999px;
       font-size: 12px;
-      font-weight: 900;
-      letter-spacing:.4px;
+      font-weight: 950;
+      letter-spacing:.35px;
       text-transform:uppercase;
       cursor:pointer;
       white-space:nowrap;
+      text-decoration:none;
       user-select:none;
     }
-    .pillBtn:hover{ background: rgba(255,255,255,.20); }
-    .pillLink{
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.22);
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight:700;
-      text-decoration:none;
-      white-space:nowrap;
-      color:#fff;
-    }
-    .pillLink:hover{ background: rgba(255,255,255,.20); }
+    .pillBtn:hover, .pillLink:hover{ background: rgba(255,255,255,.20); }
 
     .course-body{ padding: 12px 14px; }
 
@@ -294,29 +303,37 @@
       display:flex; flex-direction:column; gap:2px;
       min-width:0;
     }
-    .session .when strong{ font-size: 13px; }
+    .session .when strong{ font-size: 13px; font-weight: 950; }
     .session .when small{
       font-size: 12px; color: var(--muted);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-      max-width: 520px;
+      overflow-wrap:anywhere;
+      word-break:break-word;
     }
     .reg{
-      background: #0c6b52;
+      background: var(--ok);
       color:#fff;
       border:0;
       padding: 10px 14px;
       border-radius: 999px;
-      font-weight:800;
+      font-weight:950;
       text-decoration:none;
       white-space:nowrap;
+    }
+
+    /* FOOTER */
+    footer{
+      margin-top: 18px;
+      padding: 16px 0 26px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align:center;
     }
 
     /* RESPONSIVE */
     @media (max-width: 979px){
       .layout{ grid-template-columns: 1fr; }
-      .session .when small{ max-width: 60vw; }
-      .course-head-right{ gap:8px; }
-      .pillBtn, .pillLink{ padding: 7px 9px; font-size: 11px; }
+      .course-title{ min-width: 0; flex: 1 1 100%; }
+      .course-head-right{ width: 100%; justify-content:flex-start; }
     }
   </style>
 </head>
@@ -339,7 +356,6 @@
 
   <main class="wrap">
     <section class="layout">
-
       <aside class="rail">
         <h3>Step 1: Choose a class family</h3>
         <input id="familySearch" class="search" placeholder="Search (BLS, ACLS, Heartsaver, OSHA…)" />
@@ -354,8 +370,11 @@
 
         <div id="status" class="notice">Loading schedule…</div>
         <div id="courseCards"></div>
-      </section>
 
+        <footer>
+          No hidden URLs. If needed, you can always register directly through Enrollware.
+        </footer>
+      </section>
     </section>
   </main>
 
@@ -386,10 +405,10 @@
         .replaceAll("'","&#39;");
     }
 
-    // Allow Enrollware HTML in title (icons/logos), but sanitized
+    // Sanitize but still render Enrollware HTML (icons + line breaks)
     function sanitizeEnrollwareHtml(html) {
-      const allowedTags = new Set(["IMG", "I", "B", "STRONG", "EM", "BR", "SPAN", "SMALL"]);
-      const allowedAttrs = new Set(["src", "alt", "title", "style", "class", "loading"]);
+      const allowedTags = new Set(["IMG","I","B","STRONG","EM","BR","SPAN","SMALL","DIV"]);
+      const allowedAttrs = new Set(["src","alt","title","style","class","loading"]);
 
       const tpl = document.createElement("template");
       tpl.innerHTML = String(html || "");
@@ -419,7 +438,7 @@
       return tpl.innerHTML;
     }
 
-    // --- Time parsing (handles most schedule.json shapes)
+    // Time parsing
     function _pickStartField(s){
       return (
         s.start_ms || s.startMs || s.start_iso || s.startISO || s.start || s.start_datetime ||
@@ -448,7 +467,7 @@
       });
     }
 
-    // --- Field pickers (use whatever schedule.json provides)
+    // Field pickers
     function pickCourseKey(row){
       return row.course_number || row.courseNumber || row.course_id || row.courseId ||
              row.ct_id || row.ctId || row.courseTypeId || row.course_type_id ||
@@ -540,6 +559,10 @@
     let ACTIVE_FAMILY = "BLS";
     let COURSE_DESC = {};
 
+    function pickDesc(key, title){
+      return COURSE_DESC[key] || COURSE_DESC[title] || "";
+    }
+
     function renderFamilies(){
       const q = String(elFamilySearch.value || "").trim().toUpperCase();
       elFamilyList.innerHTML = "";
@@ -588,10 +611,6 @@
       });
     }
 
-    function pickDesc(key, title){
-      return COURSE_DESC[key] || COURSE_DESC[title] || "";
-    }
-
     function renderCards(){
       const groups = GROUPS.filter(g => g.family === ACTIVE_FAMILY);
 
@@ -610,7 +629,7 @@
         const card = document.createElement("article");
         card.className = "course";
 
-        const desc = pickDesc(g.key, g.title);
+        const descHtml = sanitizeEnrollwareHtml(pickDesc(g.key, g.title) || g.subtitle || "");
         const titleHtml = sanitizeEnrollwareHtml(g.title);
 
         const head = document.createElement("div");
@@ -620,7 +639,7 @@
         left.className = "course-title";
         left.innerHTML = `
           <div class="titleLine">${titleHtml}</div>
-          <div class="subLine">${escapeHtml(desc || g.subtitle || "")}</div>
+          ${descHtml ? `<div class="subLine">${descHtml}</div>` : ``}
         `;
 
         const right = document.createElement("div");
@@ -670,7 +689,6 @@
           sessions.appendChild(row);
         }
 
-        // collapsed by default
         setCollapsed(sessions, toggle, true);
 
         toggle.addEventListener("click", () => {
@@ -684,7 +702,6 @@
         });
 
         body.appendChild(sessions);
-
         card.appendChild(head);
         card.appendChild(body);
         elCards.appendChild(card);
@@ -716,7 +733,7 @@
         console.error(err);
         elCards.innerHTML = `
           <div class="error">
-            <div style="font-weight:900;margin-bottom:6px;">Details</div>
+            <div style="font-weight:950;margin-bottom:6px;">Details</div>
             <div style="margin-bottom:10px;">${escapeHtml(err?.message || String(err))}</div>
             <a class="btn" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar" target="_blank" rel="noopener">
               Open Enrollware schedule
