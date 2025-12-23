@@ -199,7 +199,6 @@
       border: 1px solid rgba(255,255,255,.22);
     }
 
-    /* tight controls row */
     .controls{
       display:flex;
       gap:10px;
@@ -211,7 +210,6 @@
       flex-wrap:wrap;
     }
 
-    /* compact toggle */
     .btn{
       display:inline-flex;
       align-items:center;
@@ -242,11 +240,8 @@
       letter-spacing:.4px;
       text-transform:uppercase;
     }
-    .btnInline{
-      width:auto;
-    }
+    .btnInline{ width:auto; }
 
-    /* tight session rows */
     .sessions{
       padding: 10px 12px 12px;
       display:flex;
@@ -442,13 +437,12 @@
     }
 
     // ---------- Curtain labels ----------
-function setCollapsed(containerEl, toggleBtnEl, collapsed) {
-  containerEl.style.display = collapsed ? "none" : "flex";
-  toggleBtnEl.textContent = collapsed ? "Show next 5 times" : "Hide times";
-  toggleBtnEl.setAttribute("aria-expanded", collapsed ? "false" : "true");
-  toggleBtnEl.dataset.collapsed = collapsed ? "true" : "false";
-}
-
+    function setCollapsed(containerEl, toggleBtnEl, collapsed) {
+      containerEl.style.display = collapsed ? "none" : "flex";
+      toggleBtnEl.textContent = collapsed ? "SHOW 5" : "HIDE";
+      toggleBtnEl.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      toggleBtnEl.dataset.collapsed = collapsed ? "true" : "false";
+    }
 
     // Accordion: only one open at a time
     function closeAllCurtainsExcept(courseKeyToKeep){
@@ -587,7 +581,6 @@ function setCollapsed(containerEl, toggleBtnEl, collapsed) {
           <div class="badge">Shown: ${g.sessions.length} upcoming</div>
         `;
 
-        // Controls row (toggle + optional "even more")
         const controls = document.createElement("div");
         controls.className = "controls";
 
@@ -633,34 +626,43 @@ function setCollapsed(containerEl, toggleBtnEl, collapsed) {
           sessions.appendChild(sr);
         }
 
-        let collapsed = true;
-        setCollapsed(sessions, toggleBtn, collapsed);
+        // default collapsed
+        setCollapsed(sessions, toggleBtn, true);
 
-toggleBtn.addEventListener("click", () => {
-  const isCollapsed = (toggleBtn.dataset.collapsed === "true");
+        toggleBtn.addEventListener("click", () => {
+          const isCollapsed = (toggleBtn.dataset.collapsed === "true");
+          if (isCollapsed) {
+            closeAllCurtainsExcept(String(g.courseKey));
+            setCollapsed(sessions, toggleBtn, false);
+          } else {
+            setCollapsed(sessions, toggleBtn, true);
+          }
+        });
 
-  if (isCollapsed) {
-    // opening THIS curtain: close everything else first
-    closeAllCurtainsExcept(String(g.courseKey));
-    setCollapsed(sessionsWrap, toggleBtn, false);
-  } else {
-    // closing THIS curtain
-    setCollapsed(sessionsWrap, toggleBtn, true);
-  }
-});
+        card.appendChild(top);
+        card.appendChild(controls);
+        card.appendChild(sessions);
+        elCards.appendChild(card);
+      }
+    }
 
+    function withCacheBust(url){
+      const u = new URL(url, window.location.href);
+      u.searchParams.set("ts", String(Date.now()));
+      return u.toString();
+    }
 
     async function loadJson(url){
-      const r = await fetch(url, { cache:"no-store" });
-      if(!r.ok) throw new Error(`Fetch failed: ${url} (${r.status})`);
+      const r = await fetch(withCacheBust(url), { cache:"no-store" });
+      if(!r.ok) throw new Error(`HTTP ${r.status} while fetching ${url}`);
       return await r.json();
     }
 
     async function boot(){
-      try{
+      try {
         const [scheduleRows, descJson] = await Promise.all([
           loadJson(SCHEDULE_JSON_URL),
-          loadJson(COURSE_DESC_JSON_URL).catch(()=> ({}))
+          loadJson(COURSE_DESC_JSON_URL).catch(() => ({}))
         ]);
 
         COURSE_DESC = descJson || {};
@@ -668,12 +670,21 @@ toggleBtn.addEventListener("click", () => {
 
         renderFamilySelect();
         renderCards();
-      }catch(err){
+      } catch (err) {
+        // This is your "corrected appropriately" block, integrated properly:
         elStatus.className = "error";
-        elStatus.innerHTML = `
-          <div style="font-weight:950;margin-bottom:6px;">Schedule failed to load.</div>
-          <div style="margin-bottom:10px;">${escapeHtml(err?.message || String(err))}</div>
-          <a class="btn btnGhost" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar">Open Enrollware schedule (full URL)</a>
+        elStatus.textContent = "Schedule failed to load. Please refresh, or register directly through Enrollware.";
+        console.error(err);
+
+        // give the user a concrete escape hatch
+        elCards.innerHTML = `
+          <div class="error">
+            <div style="font-weight:950;margin-bottom:6px;">Details</div>
+            <div style="margin-bottom:10px;">${escapeHtml(err?.message || String(err))}</div>
+            <a class="btn btnGhost" href="https://www.enrollware.com/site/coastalcprtraining/schedule#view=calendar" target="_blank" rel="noopener">
+              Open Enrollware schedule (full URL)
+            </a>
+          </div>
         `;
       }
     }
