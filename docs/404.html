@@ -39,7 +39,7 @@
       inset: 0;
       pointer-events:none;
       background:
-        url("./assets/images/brand/theme_center.png") center 26% / 900px auto no-repeat;
+        url("./assets/images/910CPR_wave.jpg") center 26% / 900px auto no-repeat;
       opacity: 0.06;
       z-index: 0;
     }
@@ -201,6 +201,9 @@
       box-shadow: 0 1px 0 rgba(10,35,60,.04);
     }
     .btn:hover{ background:#f7fbff; }
+    .btn.primary404{ border-color: rgba(11,95,165,.55); background: linear-gradient(90deg, rgba(11,95,165,.14), rgba(8,59,100,.10)); }
+    .btn.primary404 strong{ color: #083b64; }
+
     .btn strong{ font-weight: 950; }
     .btn small{ color: var(--muted); }
     .btn .left{
@@ -293,15 +296,15 @@
 <body>
   <div class="themeCenter" aria-hidden="true"></div>
 
-  <a class="cornerMark" href="./index.html" aria-label="Back to schedule">
-    <img src="./assets/images/brand/theme_mark.png" alt="">
+  <a class="cornerMark" href="https://coastalcprtraining.enrollware.com/schedule" aria-label="Back to schedule">
+    <img src="./assets/images/theme/default-corner.png" alt="">
   </a>
 
   <div class="wrap">
     <div class="card">
       <div class="head">
         <div class="brand">
-          <img src="./assets/images/brand/910cpr_logo.png" alt="910CPR">
+          <img src="./assets/images/910CPR_wave.jpg" alt="910CPR">
           <div class="brandText">
             <strong>910CPR</strong>
             <span>We couldn’t find that page — here are the fastest ways to get what you need.</span>
@@ -336,16 +339,6 @@
         </div>
 
         <div class="actions" aria-label="Quick actions">
-          <a class="btn" href="./index.html">
-            <div class="left">
-              <strong>Return to the 910CPR schedule</strong>
-              <small>Browse classes and register</small>
-            </div>
-            <div class="right">
-              <img src="./assets/images/classroom_icon.png" alt="">
-            </div>
-          </a>
-
           <a class="btn" href="tel:+19103955193">
             <div class="left">
               <strong>Call or text (910) 395-5193</strong>
@@ -362,11 +355,11 @@
               <small>Group quotes & questions</small>
             </div>
             <div class="right">
-              <img src="./assets/images/email_icon.png" alt="">
+              <img src="./assets/images/email-icon.png" alt="">
             </div>
           </a>
 
-          <a class="btn" href="https://coastalcprtraining.enrollware.com/schedule" target="_blank" rel="noopener">
+          <a class="btn primary404" href="https://coastalcprtraining.enrollware.com/schedule" target="_blank" rel="noopener">
             <div class="left">
               <strong>Open Enrollware schedule (backup)</strong>
               <small class="mono">https://coastalcprtraining.enrollware.com/schedule</small>
@@ -379,7 +372,7 @@
       </div>
 
       <div class="footer">
-        <div>Need help? Call/text <a href="tel:+19103955193">(910) 395-5193</a> • Email <a href="mailto:info@910cpr.com">info@910cpr.com</a></div>
+        <div>Need help? Call/text <a href="tel:+19103955193">(910) 395-5193</a> • Email <a href="mailto:info@910cpr.com">info@910cpr.com</a> • Backup schedule: <a href="https://coastalcprtraining.enrollware.com/schedule" target="_blank" rel="noopener">Enrollware</a></div>
         <div class="mono">404 • 910CPR</div>
       </div>
     </div>

@@ -104,7 +104,7 @@
       inset: 0;
       pointer-events:none;
       background:
-        url("./assets/images/brand/theme_center.png") center 180px / 650px auto no-repeat;
+        url("./assets/images/910CPR_wave.jpg") center 180px / 650px auto no-repeat;
       opacity: 0.06;
       z-index: 0;
     }
@@ -324,13 +324,13 @@
 <body>
   <div class="themeCenter" aria-hidden="true"></div>
   <a class="themeCorner" href="tel:+19103955193" aria-label="Call 910CPR">
-    <img src="./assets/images/brand/theme_mark.png" alt="" />
+    <img src="./assets/images/910CPR_wave.jpg" alt="" />
   </a>
 
   <header>
     <div class="headRow">
       <div class="brand">
-        <img src="./assets/images/brand/910cpr_logo.png" alt="910CPR" />
+        <img src="./assets/images/910CPR_wave.jpg" alt="910CPR" />
         <div class="brandText">
           <div class="t">910CPR — Schedule</div>
           <div class="s">Live &amp; blended classes with fast certificates</div>
@@ -364,7 +364,18 @@
     </main>
 
   <script>
-    const SCHEDULE_JSON_URL = "./data/schedule.json";
+    
+    // --- Family override rules (surgical) ---
+    // Some provider-only cards come through as "American Heart Association" without a course keyword.
+    // Treat that placeholder as CPR/AED so it doesn't land in "Other".
+    function forceFamilyOverride(obj){
+      const title = (obj && (obj.title || obj.name || obj.provider)) ? (obj.title || obj.name || obj.provider) : (obj || "");
+      const t = (title || "").trim().toLowerCase();
+      if(t === "american heart association") return "Heartsaver / CPR-AED";
+      return null;
+    }
+
+const SCHEDULE_JSON_URL = "./data/schedule.json";
     const COURSE_DESC_JSON_URL = "./data/course-descriptions.json";
     const ENROLLWARE_SITE = "https://www.enrollware.com/site/coastalcprtraining/schedule";
 
