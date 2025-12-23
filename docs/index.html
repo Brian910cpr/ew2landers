@@ -208,24 +208,47 @@
       justify-content:space-between;
       gap: 12px;
     }
+
+    /* Title block: allow HTML (icons) + keep clean */
     .course-title{
       display:flex;
       flex-direction:column;
       gap:2px;
       min-width:0;
     }
-    .course-title strong{
+    .course-title .titleLine{
       font-size: 15px;
+      font-weight: 800;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
     }
-    .course-title span{
+    .course-title .titleLine img{
+      height: 18px;
+      width: auto;
+      vertical-align: middle;
+      border-radius: 4px;
+      background: rgba(255,255,255,.12);
+      flex: 0 0 auto;
+    }
+    .course-title .subLine{
       font-size: 12px;
       opacity:.9;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
+    }
+
+    /* Right side cluster in header (shown count + toggle in same “pill row”) */
+    .course-head-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex: 0 0 auto;
     }
     .pill{
       background: rgba(255,255,255,.14);
@@ -236,40 +259,35 @@
       font-weight:700;
       white-space:nowrap;
     }
-
-    .course-body{ padding: 12px 14px; }
-    .controls{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
-      flex-wrap:wrap;
-    }
-    .toggle{
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius: 999px;
+    .pillBtn{
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.28);
+      color:#fff;
       padding: 8px 10px;
+      border-radius: 999px;
       font-size: 12px;
-      font-weight: 800;
-      cursor:pointer;
+      font-weight: 900;
       letter-spacing:.4px;
       text-transform:uppercase;
-    }
-    .more{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border:1px solid var(--line);
-      text-decoration:none;
-      font-weight:700;
-      color:#0b3a66;
-      background:#f4f8fd;
+      cursor:pointer;
       white-space:nowrap;
+      user-select:none;
     }
+    .pillBtn:hover{ background: rgba(255,255,255,.20); }
+    .pillLink{
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.22);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight:700;
+      text-decoration:none;
+      white-space:nowrap;
+      color:#fff;
+    }
+    .pillLink:hover{ background: rgba(255,255,255,.20); }
+
+    .course-body{ padding: 12px 14px; }
 
     .sessions{ display:flex; flex-direction:column; gap:10px; }
     .session{
@@ -306,6 +324,8 @@
     @media (max-width: 979px){
       .layout{ grid-template-columns: 1fr; }
       .session .when small{ max-width: 60vw; }
+      .course-head-right{ gap:8px; }
+      .pill, .pillBtn, .pillLink{ padding: 7px 9px; font-size: 11px; }
     }
   </style>
 </head>
@@ -339,7 +359,6 @@
         <div class="panel">
           <h2>Step 2: Pick the exact class</h2>
           <p class="hint">Upcoming sessions are shown first. Courses are collapsed by default — expand the one you want.</p>
-          <p class="hint" style="margin-top:6px; opacity:.75;">BUILD: LIVE-WIRED-1</p>
         </div>
 
         <div id="status" class="notice">Loading schedule…</div>
@@ -362,13 +381,11 @@
       u.searchParams.set("ts", String(Date.now()));
       return u.toString();
     }
-
     async function loadJson(url){
       const r = await fetch(withCacheBust(url), { cache:"no-store" });
       if(!r.ok) throw new Error(`HTTP ${r.status} while fetching ${url}`);
       return await r.json();
     }
-
     function escapeHtml(str){
       return String(str ?? "")
         .replaceAll("&","&amp;")
@@ -376,6 +393,39 @@
         .replaceAll(">","&gt;")
         .replaceAll('"',"&quot;")
         .replaceAll("'","&#39;");
+    }
+
+    // Allow Enrollware HTML in title (icons/logos), but sanitized
+    function sanitizeEnrollwareHtml(html) {
+      const allowedTags = new Set(["IMG", "I", "B", "STRONG", "EM", "BR", "SPAN", "SMALL"]);
+      const allowedAttrs = new Set(["src", "alt", "title", "style", "class", "loading"]);
+
+      const tpl = document.createElement("template");
+      tpl.innerHTML = String(html || "");
+
+      const walk = (node) => {
+        if (node.nodeType === Node.COMMENT_NODE) { node.remove(); return; }
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const tag = node.tagName.toUpperCase();
+          if (!allowedTags.has(tag)) {
+            const text = document.createTextNode(node.textContent || "");
+            node.replaceWith(text);
+            return;
+          }
+          [...node.attributes].forEach(attr => {
+            const name = attr.name.toLowerCase();
+            if (name.startsWith("on")) { node.removeAttribute(attr.name); return; }
+            if (!allowedAttrs.has(name)) { node.removeAttribute(attr.name); return; }
+            if (tag === "IMG" && name === "src") {
+              const v = (attr.value || "").trim();
+              if (!(v.startsWith("http://") || v.startsWith("https://"))) node.removeAttribute("src");
+            }
+          });
+        }
+        [...node.childNodes].forEach(walk);
+      };
+      [...tpl.content.childNodes].forEach(walk);
+      return tpl.innerHTML;
     }
 
     // --- Time parsing (handles most schedule.json shapes)
@@ -452,7 +502,7 @@
       for (const r of (rows || [])){
         if (!isUpcoming(r, now)) continue;
 
-        const key = pickCourseKey(r);
+        const key = String(pickCourseKey(r));
         const title = pickCourseTitle(r);
         const fam = classifyFamily(title);
 
@@ -538,7 +588,7 @@
       document.querySelectorAll(".sessions[data-key]").forEach(el => {
         if (el.dataset.key !== key) el.style.display = "none";
       });
-      document.querySelectorAll("button.toggle[data-key]").forEach(btn => {
+      document.querySelectorAll("button.pillBtn[data-key]").forEach(btn => {
         if (btn.dataset.key !== key){
           btn.textContent = "SHOW 5";
           btn.dataset.collapsed = "true";
@@ -570,38 +620,47 @@
         card.className = "course";
 
         const desc = pickDesc(g.key, g.title);
+        const titleHtml = sanitizeEnrollwareHtml(g.title);
 
         const head = document.createElement("div");
         head.className = "course-head";
-        head.innerHTML = `
-          <div class="course-title">
-            <strong>${escapeHtml(g.title)}</strong>
-            <span>${escapeHtml(desc || g.subtitle || "")}</span>
-          </div>
-          <div class="pill">Shown: ${g.sessions.length} upcoming</div>
+
+        const left = document.createElement("div");
+        left.className = "course-title";
+        left.innerHTML = `
+          <div class="titleLine">${titleHtml}</div>
+          <div class="subLine">${escapeHtml(desc || g.subtitle || "")}</div>
         `;
 
-        const body = document.createElement("div");
-        body.className = "course-body";
+        const right = document.createElement("div");
+        right.className = "course-head-right";
 
-        const controls = document.createElement("div");
-        controls.className = "controls";
+        const shown = document.createElement("div");
+        shown.className = "pill";
+        shown.textContent = `Shown: ${g.sessions.length} upcoming`;
 
         const toggle = document.createElement("button");
-        toggle.className = "toggle";
         toggle.type = "button";
+        toggle.className = "pillBtn";
         toggle.dataset.key = String(g.key);
 
         const more = document.createElement("a");
-        more.className = "more";
-        more.textContent = "See even more dates for this course";
+        more.className = "pillLink";
+        more.textContent = "More dates";
         more.href = g.scheduleUrl || "#";
         more.target = "_blank";
         more.rel = "noopener";
         if (!g.scheduleUrl) more.style.display = "none";
 
-        controls.appendChild(toggle);
-        controls.appendChild(more);
+        right.appendChild(shown);
+        right.appendChild(toggle);
+        right.appendChild(more);
+
+        head.appendChild(left);
+        head.appendChild(right);
+
+        const body = document.createElement("div");
+        body.className = "course-body";
 
         const sessions = document.createElement("div");
         sessions.className = "sessions";
@@ -625,7 +684,9 @@
           sessions.appendChild(row);
         }
 
+        // collapsed by default
         setCollapsed(sessions, toggle, true);
+
         toggle.addEventListener("click", () => {
           const isCollapsed = (toggle.dataset.collapsed === "true");
           if (isCollapsed){
@@ -636,7 +697,6 @@
           }
         });
 
-        body.appendChild(controls);
         body.appendChild(sessions);
 
         card.appendChild(head);
