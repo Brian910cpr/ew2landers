@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>910CPR | Group Class Quote / Inquiry</title>
+
+  <!-- Reuse site styles if present -->
+  <link rel="stylesheet" href="./assets/css/site.css">
+  <link rel="stylesheet" href="./assets/css/themes.css">
+
+  <style>
+    body { margin: 0; }
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px 16px 60px;
+    }
+    .topbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .brand {
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      text-decoration:none;
+      color: inherit;
+    }
+    .brand img {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+    .brand .title { font-weight: 800; }
+    .pillrow {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .pill {
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+      border-radius:999px;
+      padding:10px 14px;
+      text-decoration:none;
+      color:inherit;
+      white-space:nowrap;
+    }
+    .pill img { width:18px; height:18px; }
+    .hero {
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 18px;
+      padding: 18px 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,1), rgba(235,245,255,.55));
+      margin-bottom: 14px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 22px; }
+    .hero p { margin: 0; opacity: .85; line-height: 1.35; }
+
+    .grid {
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 900px){
+      .grid { grid-template-columns: 1.3fr .7fr; }
+    }
+
+    .card {
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 18px;
+      background:#fff;
+      padding: 16px;
+    }
+    .card h2 { margin: 0 0 10px; font-size: 16px; }
+    .muted { opacity:.75; font-size: 13px; line-height: 1.35; }
+
+    form { display:grid; gap: 10px; }
+    .row2 { display:grid; grid-template-columns: 1fr; gap:10px; }
+    @media (min-width: 700px){ .row2 { grid-template-columns: 1fr 1fr; } }
+
+    label { font-size: 12px; opacity: .8; display:block; margin-bottom: 4px; }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,.12);
+      font: inherit;
+      box-sizing: border-box;
+      background: #fff;
+    }
+    textarea { min-height: 110px; resize: vertical; }
+
+    .choices {
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .chip {
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip input { width:auto; }
+
+    .primary {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+      background: #0b5bd3;
+      color: #fff;
+    }
+    .fineprint { margin-top: 8px; font-size: 12px; opacity: .7; line-height: 1.35; }
+    .backlink { margin-top: 12px; display:inline-block; opacity:.8; }
+
+    .noteBox {
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(235,245,255,.55);
+      border: 1px solid rgba(0,0,0,.06);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .stack { display:grid; gap: 10px; }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="topbar">
+      <a class="brand" href="./index.html">
+        <img src="./assets/images/910CPR_wave.jpg" alt="910CPR">
+        <div>
+          <div class="title">910CPR</div>
+          <div class="muted">Group / Onsite Training Quote</div>
+        </div>
+      </a>
+
+      <div class="pillrow">
+        <a class="pill" href="tel:+19103955193">
+          <img src="./assets/images/phone_icon.png" alt="">
+          <span>Call or text (910) 395-5193</span>
+        </a>
+        <a class="pill" href="mailto:info@910cpr.com">
+          <img src="./assets/images/email_icon.png" alt="">
+          <span>Email 910CPR</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <h1>Group Class Quote / Inquiry</h1>
+      <p>
+        Tell us what you need, and we’ll recommend the right program, confirm instructors, and reply with a simple quote.
+        This is ideal for workplaces, schools, church groups, teams, and any “we need to train everyone” situation.
+      </p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Your details</h2>
+
+        <!--
+          IMPORTANT:
+          This form is static HTML. To actually receive submissions, connect it to ONE of:
+          - Formspree (easy)   -> set action="https://formspree.io/f/YOUR_ID"
+          - Cloudflare Worker -> set action="/api/onsite-inquiry" and handle POST
+          - Google Form       -> replace this section with an embedded form iframe
+        -->
+        <form method="post" action="https://formspree.io/f/REPLACE_ME">
+          <div class="row2">
+            <div>
+              <label for="name">Your name</label>
+              <input id="name" name="name" autocomplete="name" required>
+            </div>
+            <div>
+              <label for="org">Organization</label>
+              <input id="org" name="organization" autocomplete="organization" placeholder="Company / School / Team">
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div>
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" autocomplete="tel" placeholder="(optional)">
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label for="city">City</label>
+              <input id="city" name="city" placeholder="Wilmington / Burgaw / Holly Ridge / Onslow…" required>
+            </div>
+            <div>
+              <label for="students">Estimated number of students</label>
+              <input id="students" name="students" type="number" min="1" step="1" required>
+            </div>
+          </div>
+
+          <div>
+            <label>What training do you need?</label>
+            <div class="choices">
+              <label class="chip"><input type="checkbox" name="courses" value="BLS"> BLS (Healthcare)</label>
+              <label class="chip"><input type="checkbox" name="courses" value="Heartsaver CPR/AED"> Heartsaver CPR/AED</label>
+              <label class="chip"><input type="checkbox" name="courses" value="Heartsaver FA/CPR/AED"> Heartsaver First Aid/CPR/AED</label>
+              <label class="chip"><input type="checkbox" name="courses" value="First Aid Only"> First Aid Only</label>
+              <label class="chip"><input type="checkbox" name="courses" value="ACLS"> ACLS</label>
+              <label class="chip"><input type="checkbox" name="courses" value="PALS"> PALS</label>
+              <label class="chip"><input type="checkbox" name="courses" value="Other"> Other / Not sure</label>
+            </div>
+            <div class="fineprint">If you’re not sure, pick “Other” and describe your requirements below.</div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label for="where">Training location</label>
+              <select id="where" name="location_type" required>
+                <option value="">Select…</option>
+                <option value="Your site / onsite">Your site (onsite)</option>
+                <option value="910CPR office">At 910CPR (Wilmington / Burgaw)</option>
+                <option value="Either works">Either works</option>
+              </select>
+            </div>
+            <div>
+              <label for="timeframe">Timeframe</label>
+              <select id="timeframe" name="timeframe" required>
+                <option value="">Select…</option>
+                <option value="Within 2 weeks">Within 2 weeks</option>
+                <option value="2–4 weeks">2–4 weeks</option>
+                <option value="Next 2–3 months">Next 2–3 months</option>
+                <option value="Flexible">Flexible</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="details">Anything else we should know?</label>
+            <textarea id="details" name="details" placeholder="Preferred days/times, address (if onsite), any compliance requirements, etc."></textarea>
+          </div>
+
+          <button class="primary" type="submit">Send Inquiry</button>
+          <div class="fineprint">
+            By submitting, you’re requesting a quote/instructor availability check. We’ll reply as quickly as possible (usually within 1 business day).
+          </div>
+        </form>
+
+        <a class="backlink" href="./index.html">← Back to class schedule</a>
+      </div>
+
+      <div class="card">
+        <div class="stack">
+          <h2>Fast options</h2>
+
+          <div class="noteBox">
+            <strong>Need help choosing?</strong><br>
+            If your staff needs healthcare credentials (nursing, EMS, hospital, clinical), it’s usually <strong>BLS</strong>.
+            Workplace / community roles usually fall under <strong>Heartsaver</strong>.
+          </div>
+
+          <div class="noteBox">
+            <strong>Onsite vs office:</strong><br>
+            Onsite is great when you want everyone trained on the same day.
+            Office sessions are great for small teams or staggered schedules.
+          </div>
+
+          <div class="noteBox">
+            <strong>Preferred contact:</strong><br>
+            Call/text: <a href="tel:+19103955193">(910) 395-5193</a><br>
+            Email: <a href="mailto:info@910cpr.com">info@910cpr.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional: include the voice widget here too if you want it on this page -->
+  <embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
+  <script src="https://cdn.247aireceptionist.com/script.js"></script>
+</body>
+</html>
