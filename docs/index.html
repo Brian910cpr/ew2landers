@@ -243,21 +243,12 @@
       text-overflow:ellipsis;
     }
 
-    /* Right side cluster in header (shown count + toggle in same “pill row”) */
+    /* Minimal right cluster: SHOW 5 + More dates */
     .course-head-right{
       display:flex;
       align-items:center;
       gap:10px;
       flex: 0 0 auto;
-    }
-    .pill{
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.22);
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight:700;
-      white-space:nowrap;
     }
     .pillBtn{
       background: rgba(255,255,255,.14);
@@ -325,7 +316,7 @@
       .layout{ grid-template-columns: 1fr; }
       .session .when small{ max-width: 60vw; }
       .course-head-right{ gap:8px; }
-      .pill, .pillBtn, .pillLink{ padding: 7px 9px; font-size: 11px; }
+      .pillBtn, .pillLink{ padding: 7px 9px; font-size: 11px; }
     }
   </style>
 </head>
@@ -635,10 +626,6 @@
         const right = document.createElement("div");
         right.className = "course-head-right";
 
-        const shown = document.createElement("div");
-        shown.className = "pill";
-        shown.textContent = `Shown: ${g.sessions.length} upcoming`;
-
         const toggle = document.createElement("button");
         toggle.type = "button";
         toggle.className = "pillBtn";
@@ -652,7 +639,6 @@
         more.rel = "noopener";
         if (!g.scheduleUrl) more.style.display = "none";
 
-        right.appendChild(shown);
         right.appendChild(toggle);
         right.appendChild(more);
 
@@ -716,7 +702,6 @@
         GROUPS = buildGroups(scheduleRows);
         COUNTS = familyCounts(GROUPS);
 
-        // pick default family sensibly
         if ((COUNTS.get(ACTIVE_FAMILY)||0) === 0){
           for (const fam of FAMILY_ORDER){
             if ((COUNTS.get(fam)||0) > 0){ ACTIVE_FAMILY = fam; break; }
