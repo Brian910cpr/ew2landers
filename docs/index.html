@@ -26,6 +26,56 @@
       --max-width: 1200px;
     }
 
+/* Render course description HTML cleanly */
+.course-card-desc{
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+/* Normalize common HTML blocks */
+.course-card-desc p{ margin: 0 0 8px; }
+.course-card-desc p:last-child{ margin-bottom: 0; }
+
+.course-card-desc br{ content: ""; }
+
+.course-card-desc ul,
+.course-card-desc ol{
+  margin: 6px 0 8px 18px;
+  padding: 0;
+}
+
+.course-card-desc li{
+  margin: 2px 0;
+}
+
+.course-card-desc strong,
+.course-card-desc b{
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.course-card-desc em,
+.course-card-desc i{
+  font-style: italic;
+}
+
+.course-card-desc a{
+  color: var(--accent-color);
+  font-weight: 650;
+  text-decoration: none;
+}
+.course-card-desc a:hover{ text-decoration: underline; }
+
+/* Prevent long unbroken strings from wrecking layout */
+.course-card-desc *{
+  overflow-wrap: anywhere;
+}
+
+
+
+
     /* Family tint layer (shared with mobile) */
     body.family-BLS       { --accent-color: #0d47a1; --accent-soft: rgba(13, 71, 161, 0.08); }
     body.family-ACLS      { --accent-color: #b71c1c; --accent-soft: rgba(183, 28, 28, 0.08); }
