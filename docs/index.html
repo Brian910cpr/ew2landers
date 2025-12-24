@@ -26,57 +26,7 @@
       --max-width: 1200px;
     }
 
-/* Render course description HTML cleanly */
-.course-card-desc{
-  font-size: 12.5px;
-  color: var(--text-muted);
-  line-height: 1.35;
-  margin-bottom: 8px;
-}
-
-/* Normalize common HTML blocks */
-.course-card-desc p{ margin: 0 0 8px; }
-.course-card-desc p:last-child{ margin-bottom: 0; }
-
-.course-card-desc br{ content: ""; }
-
-.course-card-desc ul,
-.course-card-desc ol{
-  margin: 6px 0 8px 18px;
-  padding: 0;
-}
-
-.course-card-desc li{
-  margin: 2px 0;
-}
-
-.course-card-desc strong,
-.course-card-desc b{
-  color: var(--text-main);
-  font-weight: 700;
-}
-
-.course-card-desc em,
-.course-card-desc i{
-  font-style: italic;
-}
-
-.course-card-desc a{
-  color: var(--accent-color);
-  font-weight: 650;
-  text-decoration: none;
-}
-.course-card-desc a:hover{ text-decoration: underline; }
-
-/* Prevent long unbroken strings from wrecking layout */
-.course-card-desc *{
-  overflow-wrap: anywhere;
-}
-
-
-
-
-    /* Family tint layer (shared with mobile) */
+    /* Family tint layer */
     body.family-BLS       { --accent-color: #0d47a1; --accent-soft: rgba(13, 71, 161, 0.08); }
     body.family-ACLS      { --accent-color: #b71c1c; --accent-soft: rgba(183, 28, 28, 0.08); }
     body.family-PALS      { --accent-color: #4a148c; --accent-soft: rgba(74, 20, 140, 0.08); }
@@ -324,7 +274,7 @@
       overflow: hidden;
     }
 
-    /* Right-edge “peek” image (cropped sliver) */
+    /* Right-edge “peek” image */
     .family-btn::after{
       content:"";
       position:absolute;
@@ -353,7 +303,7 @@
       opacity: 1;
     }
 
-    /* Assign images per family (edit paths if needed) */
+    /* Assign images per family */
     .family-btn[data-family="BLS"]::after        { background-image: url("assets/images/family/BLS.jpg"); }
     .family-btn[data-family="ACLS"]::after       { background-image: url("assets/images/family/ACLS.jpg"); }
     .family-btn[data-family="PALS"]::after       { background-image: url("assets/images/family/PALS.jpg"); }
@@ -397,6 +347,7 @@
       white-space: nowrap;
     }
 
+    /* Selected FAMILY pill highlighted */
     .family-btn.active {
       background: #ffffff;
       border-color: var(--accent-color);
@@ -412,10 +363,41 @@
     .family-help a { color: var(--accent-color); text-decoration: none; font-weight: 650; }
     .family-help a:hover { text-decoration: underline; }
 
-    /* Theme separator hook */
-    .theme-separator { margin: 16px 0 18px; }
+    /* ===== Seasonal / holiday decor hooks =====
+       theme-scheduler.js / themes.css can override these backgrounds.
+       We give sane defaults so it's never blank. */
+    #seasonalDivider.theme-separator {
+      margin: 16px 0 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background:
+        radial-gradient(circle at left, rgba(255,255,255,0.9), rgba(255,255,255,0.2)),
+        linear-gradient(to right, rgba(13,71,161,0.12), rgba(255,255,255,0));
+      overflow: hidden;
+    }
+    #seasonalDivider.theme-separator.has-image{
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
 
-    /* Right panel: schedule */
+    #seasonalCorner.theme-corner {
+      position: fixed;
+      right: 8px;
+      bottom: 8px;
+      width: 96px;
+      height: 96px;
+      opacity: 0.22;
+      pointer-events: none;
+      z-index: 50;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      filter: drop-shadow(0 6px 10px rgba(15,23,42,0.25));
+    }
+
+    /* Right panel */
     .schedule-header {
       display: flex;
       align-items: baseline;
@@ -451,44 +433,90 @@
       gap: 10px;
     }
 
+    /* ===== Course "curtain" accordion ===== */
     .course-card {
       background: var(--card-bg);
       border-radius: 16px;
       border: 1px solid rgba(148, 163, 184, 0.6);
       box-shadow: var(--shadow-soft);
-      padding: 11px 12px 12px;
+      overflow: hidden;
     }
 
-    .course-card-header {
+    .course-head {
+      padding: 11px 12px 10px;
+      cursor: pointer;
+      user-select: none;
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
       gap: 10px;
-      margin-bottom: 4px;
-      flex-wrap: wrap;
-      align-items: center;
+      background: rgba(248, 250, 252, 0.9);
     }
 
-    .course-card-title {
+    .course-head:hover {
+      background: rgba(248, 250, 252, 1);
+    }
+
+    .course-head-left {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* Main + subtitle outline (fix ugly HTML titles) */
+    .course-title {
       font-size: 14px;
-      font-weight: 650;
+      font-weight: 750;
       line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .course-card-badge {
+    .course-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .course-badge {
       font-size: 11px;
       padding: 3px 7px;
       border-radius: 999px;
       background: var(--accent-soft);
       color: var(--accent-color);
       white-space: nowrap;
+      flex: 0 0 auto;
     }
 
-    .course-card-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      line-height: 1.25;
+    .course-body {
+      padding: 0 12px 12px;
+      display: none;
     }
+
+    .course-card.open .course-body {
+      display: block;
+    }
+
+    /* Render "ugly" HTML course description cleanly (when we show it in body) */
+    .course-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+      margin: 8px 0 10px;
+    }
+    .course-desc p{ margin: 0 0 8px; }
+    .course-desc p:last-child{ margin-bottom: 0; }
+    .course-desc ul, .course-desc ol{ margin: 6px 0 8px 18px; padding: 0; }
+    .course-desc li{ margin: 2px 0; }
+    .course-desc strong, .course-desc b{ color: var(--text-main); font-weight: 750; }
+    .course-desc a{ color: var(--accent-color); font-weight: 650; text-decoration: none; }
+    .course-desc a:hover{ text-decoration: underline; }
+    .course-desc *{ overflow-wrap: anywhere; }
 
     .session-list {
       display: flex;
@@ -553,11 +581,6 @@
       white-space: nowrap;
     }
 
-    .session-btn:active {
-      transform: translateY(1px);
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.35);
-    }
-
     .see-more-wrap{
       margin-top: 8px;
       display: flex;
@@ -611,20 +634,7 @@
     }
     .footer-inner a:hover { text-decoration: underline; }
 
-    /* Theme corner hook (bottom-right icon) */
-    .theme-corner {
-      position: fixed;
-      right: 8px;
-      bottom: 8px;
-      width: 80px;
-      height: 80px;
-      opacity: 0.18;
-      pointer-events: none;
-      z-index: 50;
-      /* background-image is controlled by themes.css per theme-XXX */
-    }
-
-    /* Chatbot container */
+    /* Chatbot */
     .chatbot-wrap{
       margin-top: 12px;
       border-top: 1px solid rgba(148,163,184,0.45);
@@ -645,13 +655,13 @@
   </style>
 </head>
 
+<!-- Default should be BLS -->
 <body class="family-BLS theme-default">
   <div class="page-shell">
     <header class="site-header">
       <div class="header-inner">
         <div class="header-left">
           <div class="header-logo-wrap">
-            <!-- Keep your "good build" logo -->
             <img src="assets/images/910CPR_wave.jpg" alt="910CPR logo">
           </div>
 
@@ -761,7 +771,6 @@
             <div class="chatbot-title">Need help picking the right class?</div>
             <p class="chatbot-note">Ask the assistant what you need the class for — it’ll point you to the right program and the best upcoming dates.</p>
 
-            <!-- Your chatbot widget -->
             <embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
             <script src="https://cdn.247aireceptionist.com/call-embeddable-widget-v2.js"></script>
           </div>
@@ -776,8 +785,8 @@
             </div>
           </div>
 
-          <!-- THEME SEPARATOR HOOK -->
-          <div class="theme-separator"></div>
+          <!-- Holiday / theme divider hook -->
+          <div id="seasonalDivider" class="theme-separator"></div>
 
           <div class="filter-badges" id="filterBadges">
             <span class="filter-chip"><strong>Location:</strong> All locations</span>
@@ -802,28 +811,15 @@
     </footer>
   </div>
 
-  <!-- THEME CORNER HOOK -->
-  <div class="theme-corner"></div>
+  <!-- Holiday / theme corner hook -->
+  <div id="seasonalCorner" class="theme-corner"></div>
 
 <script>
-/**
- * SCHEDULE WIRING:
- * - Accepts schedule.json as:
- *   1) [ ...sessions ]  (your current live output)
- *   2) { sessions:[...] }
- *   3) { courses:[...], sessions:[...] }
- *
- * - Keeps the “good layout”
- * - Renders session rows with:
- *   date/time + location + price + Register button
- * - Adds “See 10 more…” per course (progressive reveal)
- */
-
 (function(){
   // ====== EDITABLE LINKS (no hidden URLs) ======
   const LINKS = {
     scheduleJson: "/data/schedule.json",
-    groupInquiry: "/group-pricing.html",        // <- change if your real URL differs
+    groupInquiry: "/group-pricing.html",
     scheduleFallback: "https://www.enrollware.com/site/coastalcprtraining/schedule"
   };
 
@@ -835,44 +831,15 @@
 
   // ====== Family meta (titles/subtitles) ======
   const FAMILY_META = {
-    BLS: {
-      bodyClass: "family-BLS",
-      title: "BLS · Healthcare Provider CPR – Live Schedule",
-      subtitle: "Showing upcoming BLS classes across Wilmington & Burgaw."
-    },
-    ACLS: {
-      bodyClass: "family-ACLS",
-      title: "ACLS · Advanced Cardiac Life Support – Live Schedule",
-      subtitle: "Upcoming ACLS sessions across Wilmington & Burgaw."
-    },
-    PALS: {
-      bodyClass: "family-PALS",
-      title: "PALS · Pediatric Advanced Life Support – Live Schedule",
-      subtitle: "Upcoming PALS sessions across Wilmington & Burgaw."
-    },
-    FirstAid: {
-      bodyClass: "family-FirstAid",
-      title: "First Aid / CPR / AED – Live Schedule",
-      subtitle: "Upcoming First Aid / CPR / AED classes across Wilmington & Burgaw."
-    },
-    Heartsaver: {
-      bodyClass: "family-Heartsaver",
-      title: "Heartsaver – Live Schedule",
-      subtitle: "Upcoming Heartsaver sessions across Wilmington & Burgaw."
-    },
-    Online: {
-      bodyClass: "family-Online",
-      title: "Online + Skills Check – Live Schedule",
-      subtitle: "Upcoming skills sessions and blended options."
-    },
-    Other: {
-      bodyClass: "family-Other",
-      title: "Other & Specialty Programs – Live Schedule",
-      subtitle: "USCG, OSHA, instructor programs, and more."
-    }
+    BLS: { bodyClass: "family-BLS", title: "BLS · Healthcare Provider CPR – Live Schedule", subtitle: "Showing upcoming BLS classes across Wilmington & Burgaw." },
+    ACLS:{ bodyClass: "family-ACLS", title: "ACLS · Advanced Cardiac Life Support – Live Schedule", subtitle: "Upcoming ACLS sessions across Wilmington & Burgaw." },
+    PALS:{ bodyClass: "family-PALS", title: "PALS · Pediatric Advanced Life Support – Live Schedule", subtitle: "Upcoming PALS sessions across Wilmington & Burgaw." },
+    FirstAid:{ bodyClass: "family-FirstAid", title: "First Aid / CPR / AED – Live Schedule", subtitle: "Upcoming First Aid / CPR / AED classes across Wilmington & Burgaw." },
+    Heartsaver:{ bodyClass: "family-Heartsaver", title: "Heartsaver – Live Schedule", subtitle: "Upcoming Heartsaver sessions across Wilmington & Burgaw." },
+    Online:{ bodyClass: "family-Online", title: "Online + Skills Check – Live Schedule", subtitle: "Upcoming skills sessions and blended options." },
+    Other:{ bodyClass: "family-Other", title: "Other & Specialty Programs – Live Schedule", subtitle: "USCG, OSHA, instructor programs, and more." }
   };
 
-  // ====== Helpers ======
   const $ = (sel) => document.querySelector(sel);
 
   function parseMoney(v){
@@ -887,20 +854,12 @@
 
   function toDateObj(session){
     const raw =
-      session.start ||
-      session.start_time ||
-      session.startTime ||
-      session.startISO ||
-      session.start_iso ||
-      session.datetime ||
-      session.date_time ||
-      session.dateTime ||
-      session.begin ||
-      session.dt ||
-      null;
+      session.start || session.start_time || session.startTime ||
+      session.startISO || session.start_iso ||
+      session.datetime || session.date_time || session.dateTime ||
+      session.begin || session.dt || null;
 
     if (!raw) return null;
-
     const d1 = new Date(raw);
     if (!isNaN(d1.getTime())) return d1;
 
@@ -929,6 +888,48 @@
     return `${wd}, ${md} '${yr} · ${tm}`;
   }
 
+  // Turn Enrollware HTML title into (main, subtitle)
+  function splitTitleHtml(html){
+    const safe = String(html || "");
+    // Normalize line breaks and drop images (they don't belong in the title)
+    const normalized = safe
+      .replace(/<img[^>]*>/gi, "")
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/&nbsp;/gi, " ");
+
+    const tmp = document.createElement("div");
+    tmp.innerHTML = normalized;
+
+    // Pull text (not HTML tags)
+    const text = (tmp.textContent || "").replace(/\s+\n/g, "\n").replace(/\n\s+/g, "\n").trim();
+
+    // If Enrollware crams the "requirements" after a dash or pipe, prefer splitting there
+    const firstLine = text.split("\n")[0] || "";
+    const restLines = text.split("\n").slice(1).join(" • ").trim();
+
+    // Secondary split if it’s all in one line
+    let main = firstLine;
+    let sub = restLines;
+
+    if (!sub){
+      const byDash = firstLine.split("—");
+      const byPipe = firstLine.split("|");
+      if (byDash.length > 1){
+        main = byDash[0].trim();
+        sub = byDash.slice(1).join("—").trim();
+      } else if (byPipe.length > 1){
+        main = byPipe[0].trim();
+        sub = byPipe.slice(1).join("|").trim();
+      }
+    }
+
+    // Final cleanup
+    main = main.replace(/\s+/g, " ").trim();
+    sub = sub.replace(/\s+/g, " ").trim();
+
+    return { main: main || "Course", sub };
+  }
+
   function getCourseKey(s){
     return (
       s.course_id || s.courseId ||
@@ -940,8 +941,13 @@
     );
   }
 
-  function getCourseTitle(s){
+  // Prefer HTML title fields if present
+  function getCourseTitleHtml(s){
     return (
+      s.course_title_html ||
+      s.courseTitleHtml ||
+      s.title_html ||
+      s.titleHtml ||
       s.course_title ||
       s.courseTitle ||
       s.course_name ||
@@ -953,10 +959,16 @@
     );
   }
 
-  function getCourseSubtitleHtml(s){
+  function getCourseDescriptionHtml(s){
+    // This is the long "description-like" HTML. If you later add a dedicated field, hook it here.
     return (
-      s.course_subtitle_html ||
-      s.courseSubtitleHtml ||
+      s.course_desc_html ||
+      s.courseDescHtml ||
+      s.description_html ||
+      s.descriptionHtml ||
+      s.course_description_html ||
+      s.courseDescriptionHtml ||
+      s.course_subtitle_html ||   // (fallback)
       s.subtitle_html ||
       s.subtitleHtml ||
       s.course_subtitle ||
@@ -968,27 +980,18 @@
 
   function getEnrollUrl(s){
     return (
-      s.enroll_url ||
-      s.enrollUrl ||
-      s.registration_url ||
-      s.registrationUrl ||
-      s.register_url ||
-      s.registerUrl ||
-      s.url_enroll ||
-      s.url ||
-      null
+      s.enroll_url || s.enrollUrl ||
+      s.registration_url || s.registrationUrl ||
+      s.register_url || s.registerUrl ||
+      s.url_enroll || s.url || null
     );
   }
 
   function getLocation(s){
     return (
-      s.location_display ||
-      s.locationDisplay ||
-      s.location_name ||
-      s.locationName ||
-      s.location ||
-      s.place ||
-      ""
+      s.location_display || s.locationDisplay ||
+      s.location_name || s.locationName ||
+      s.location || s.place || ""
     );
   }
 
@@ -1003,7 +1006,7 @@
     if (t.includes("BLS")) return "BLS";
     if (t.includes("HEARTSAVER")) return "Heartsaver";
     if (t.includes("HEARTCODE") || t.includes("SKILLS") || t.includes("ONLINE")) return "Online";
-    if (t.includes("HSI")) return "FirstAid"; // HSI FA/CPR/AED tends to live here
+    if (t.includes("HSI")) return "FirstAid";
     if (t.includes("FIRST AID")) return "FirstAid";
     if (t.includes("USCG") || t.includes("OSHA") || t.includes("DAN") || t.includes("INSTRUCTOR")) return "Other";
     if (t.includes("RED CROSS") || t.includes("ARC")) return "Other";
@@ -1012,49 +1015,34 @@
 
   function normalizeSchedule(raw){
     let sessions = [];
-    let courses = [];
-
-    if (Array.isArray(raw)){
-      sessions = raw;
-    } else if (raw && typeof raw === "object"){
+    if (Array.isArray(raw)) sessions = raw;
+    else if (raw && typeof raw === "object"){
       if (Array.isArray(raw.sessions)) sessions = raw.sessions;
       else if (Array.isArray(raw.items)) sessions = raw.items;
       else if (Array.isArray(raw.data)) sessions = raw.data;
-
-      if (Array.isArray(raw.courses)) courses = raw.courses;
     }
 
+    sessions = sessions.map(s => Object.assign({}, s, { __courseKey: s.course_key || s.courseKey || getCourseKey(s) }));
+
+    // Build course map from sessions (most stable for your live JSON)
     const courseMap = new Map();
     for (const s of sessions){
-      const key = getCourseKey(s);
+      const key = s.__courseKey;
       if (!courseMap.has(key)){
-        const title = getCourseTitle(s);
+        const titleHtml = getCourseTitleHtml(s);
+        const split = splitTitleHtml(titleHtml);
         courseMap.set(key, {
           key,
-          title,
-          subtitleHtml: getCourseSubtitleHtml(s),
-          family: s.family || s.family_name || s.familyName || inferFamily(title)
+          titleHtml,
+          titleMain: split.main,
+          titleSub: split.sub,
+          descHtml: getCourseDescriptionHtml(s),
+          family: s.family || s.family_name || s.familyName || inferFamily(split.main)
         });
       }
     }
 
-    if (!courses.length){
-      courses = Array.from(courseMap.values());
-    } else {
-      courses = courses.map(c => {
-        const title = c.title || c.courseTitle || c.course_name || c.name || "Course";
-        const key = c.key || c.id || c.course_id || c.courseId || title;
-        return {
-          key,
-          title,
-          subtitleHtml: c.subtitleHtml || c.subtitle_html || c.course_subtitle_html || c.subtitle || "",
-          family: c.family || c.familyName || c.family_name || inferFamily(title)
-        };
-      });
-    }
-
-    sessions = sessions.map(s => Object.assign({}, s, { __courseKey: s.course_key || s.courseKey || getCourseKey(s) }));
-    return { courses, sessions };
+    return { courses: Array.from(courseMap.values()), sessions };
   }
 
   function buildModel({courses, sessions}){
@@ -1063,7 +1051,7 @@
     const sessionsByCourse = new Map();
 
     for (const s of sessions){
-      const ck = s.__courseKey || getCourseKey(s);
+      const ck = s.__courseKey;
       if (!sessionsByCourse.has(ck)) sessionsByCourse.set(ck, []);
       sessionsByCourse.get(ck).push(s);
     }
@@ -1073,7 +1061,7 @@
       list.sort((a,b) => (toDateObj(a)?.getTime() ?? 0) - (toDateObj(b)?.getTime() ?? 0));
     }
 
-    // keep only upcoming (with small grace)
+    // keep only upcoming
     const upcomingByCourse = new Map();
     for (const [ck, list] of sessionsByCourse){
       const upcoming = list.filter(s => {
@@ -1086,14 +1074,9 @@
     // group by family -> courses
     const familyMap = new Map();
     for (const [ck, list] of upcomingByCourse){
-      const c = courseByKey.get(ck) || {
-        key: ck,
-        title: getCourseTitle(list[0]),
-        subtitleHtml: getCourseSubtitleHtml(list[0]),
-        family: inferFamily(getCourseTitle(list[0]))
-      };
-
-      const fam = c.family || inferFamily(c.title);
+      const c = courseByKey.get(ck);
+      if (!c) continue;
+      const fam = c.family || inferFamily(c.titleMain);
 
       if (!familyMap.has(fam)) familyMap.set(fam, []);
       familyMap.get(fam).push({ course: c, sessions: list });
@@ -1107,11 +1090,9 @@
     return { familyMap };
   }
 
-  // ====== Rendering ======
   function setFamilyUI(family){
     const meta = FAMILY_META[family] || FAMILY_META.BLS;
 
-    // Swap body class "family-XXX"
     document.body.className = document.body.className
       .split(/\s+/)
       .filter(c => !c.startsWith("family-"))
@@ -1131,66 +1112,85 @@
     });
   }
 
-  function escapeHtml(str){
-    return String(str)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
+  // Single-open "curtain" behavior
+  function closeAllCourseCurtains(listEl){
+    listEl.querySelectorAll(".course-card.open").forEach(card => card.classList.remove("open"));
   }
 
   function renderFamilyCourses(family, model){
     const listEl = $("#courseList");
     listEl.innerHTML = "";
 
-    const courses = model.familyMap.get(family) || [];
-    if (!courses.length){
+    const blocks = model.familyMap.get(family) || [];
+    if (!blocks.length){
       listEl.innerHTML = `
         <div class="status">
           <strong>No upcoming sessions found.</strong>
           Try another class family, or view the full schedule:
-          <div style="margin-top:6px;"><a href="${LINKS.scheduleFallback}" target="_blank" rel="noopener" style="color:var(--accent-color); font-weight:650;">${LINKS.scheduleFallback}</a></div>
+          <div style="margin-top:6px;">
+            <a href="${LINKS.scheduleFallback}" target="_blank" rel="noopener" style="color:var(--accent-color); font-weight:650;">${LINKS.scheduleFallback}</a>
+          </div>
         </div>
       `;
       return;
     }
 
-    for (const block of courses){
+    blocks.forEach((block, idx) => {
       const c = block.course;
       const allSessions = block.sessions;
 
-      // progressive reveal
       const INITIAL_SHOW = 2;
       const INCREMENT = 10;
 
-      const courseCard = document.createElement("div");
-      courseCard.className = "course-card";
+      const card = document.createElement("div");
+      card.className = "course-card";
 
-      const header = document.createElement("div");
-      header.className = "course-card-header";
+      const head = document.createElement("div");
+      head.className = "course-head";
 
-      const title = document.createElement("div");
-      title.className = "course-card-title";
-      title.textContent = c.title;
+      const headLeft = document.createElement("div");
+      headLeft.className = "course-head-left";
+
+      const t = document.createElement("div");
+      t.className = "course-title";
+      t.textContent = c.titleMain || "Course";
+
+      const st = document.createElement("div");
+      st.className = "course-subtitle";
+      st.textContent = c.titleSub || "Select a date below to go directly to registration.";
+
+      headLeft.appendChild(t);
+      headLeft.appendChild(st);
 
       const badge = document.createElement("div");
-      badge.className = "course-card-badge";
+      badge.className = "course-badge";
       badge.textContent = "Instructor-led · Wilmington & Burgaw";
 
-      header.appendChild(title);
-      header.appendChild(badge);
+      head.appendChild(headLeft);
+      head.appendChild(badge);
 
+      const body = document.createElement("div");
+      body.className = "course-body";
+
+      // Long HTML description lives here (not in the title line)
       const desc = document.createElement("div");
-      desc.className = "course-card-desc";
-      // IMPORTANT: subtitle html should render as HTML (no visible tags)
-      desc.innerHTML = c.subtitleHtml || "Select a date below to go directly to registration.";
+      desc.className = "course-desc";
+      // Render HTML (but you should still keep your Enrollware HTML reasonably clean)
+      desc.innerHTML = c.descHtml || "";
 
       const sessionList = document.createElement("div");
       sessionList.className = "session-list";
 
-      // state
       let shown = 0;
+
+      function escapeHtml(str){
+        return String(str)
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
 
       function addNext(n){
         const slice = allSessions.slice(shown, shown + n);
@@ -1212,7 +1212,7 @@
 
           const mid = document.createElement("div");
           mid.className = "session-price";
-          mid.textContent = price != null ? `${fmtMoney(price)} · ${c.title}` : "";
+          mid.textContent = price != null ? `${fmtMoney(price)} · ${c.titleMain}` : "";
 
           const right = document.createElement("div");
           right.className = "session-cta";
@@ -1220,7 +1220,10 @@
           btn.type = "button";
           btn.className = "session-btn";
           btn.textContent = "Register";
-          btn.addEventListener("click", () => { window.location.href = enroll; });
+          btn.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            window.location.href = enroll;
+          });
           right.appendChild(btn);
 
           row.appendChild(left);
@@ -1252,7 +1255,8 @@
         seeMoreWrap.style.display = "flex";
       }
 
-      seeMoreBtn.addEventListener("click", () => {
+      seeMoreBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
         addNext(INCREMENT);
         refreshSeeMore();
       });
@@ -1260,18 +1264,35 @@
       seeMoreWrap.appendChild(seeMoreBtn);
       refreshSeeMore();
 
-      courseCard.appendChild(header);
-      courseCard.appendChild(desc);
-      courseCard.appendChild(sessionList);
-      courseCard.appendChild(seeMoreWrap);
+      // Assemble body
+      if ((c.descHtml || "").trim()){
+        body.appendChild(desc);
+      }
+      body.appendChild(sessionList);
+      body.appendChild(seeMoreWrap);
 
-      listEl.appendChild(courseCard);
-    }
+      // Click header = open this curtain, close others
+      head.addEventListener("click", () => {
+        const wasOpen = card.classList.contains("open");
+        closeAllCourseCurtains(listEl);
+        card.classList.toggle("open", !wasOpen);
+      });
+
+      card.appendChild(head);
+      card.appendChild(body);
+
+      listEl.appendChild(card);
+
+      // Default: open the first curtain in the selected family
+      if (idx === 0){
+        card.classList.add("open");
+      }
+    });
   }
 
-  // ====== Load schedule + bind UI ======
+  // ===== Load schedule + bind UI =====
   let MODEL = null;
-  let ACTIVE_FAMILY = "BLS";
+  let ACTIVE_FAMILY = "BLS"; // Default BLS on initial open
 
   async function loadSchedule(){
     const status = $("#statusMessage");
@@ -1288,17 +1309,16 @@
 
       MODEL = buildModel(norm);
 
-      // Pick a valid family that actually has data
       const availableFamilies = Array.from(MODEL.familyMap.keys());
       if (!availableFamilies.length){
         throw new Error("No upcoming sessions grouped by family");
       }
 
+      // Force BLS default if it exists, otherwise first available
       if (!MODEL.familyMap.has(ACTIVE_FAMILY)){
         ACTIVE_FAMILY = availableFamilies[0];
       }
 
-      // UI render
       status?.remove();
       setFamilyUI(ACTIVE_FAMILY);
       clearActiveFamilyBtn(ACTIVE_FAMILY);
@@ -1336,7 +1356,21 @@
     });
   }
 
+  // Optional: let theme-scheduler.js set images if it wants.
+  // If it doesn't, you can hard-set a fallback here later.
+  function hookSeasonalDecorFallbacks(){
+    const divider = document.getElementById("seasonalDivider");
+    const corner = document.getElementById("seasonalCorner");
+
+    // If themes.css sets backgrounds via body theme classes, we don't touch it.
+    // But if nothing is set, your defaults above still show (no empty UI).
+    // This is here mainly as a "hook point" if theme-scheduler exposes globals later.
+    if (divider) divider.classList.add("ready");
+    if (corner) corner.classList.add("ready");
+  }
+
   bindFamilyButtons();
+  hookSeasonalDecorFallbacks();
   loadSchedule();
 })();
 </script>
