@@ -17,24 +17,20 @@
       --line:#e2e8f0;
       --soft:#f1f5f9;
       --accent:#0b5cab;
-      --accent2:#0a4a86;
-      --good:#16a34a;
       --btn:#e6f4ea;
       --btnInk:#14532d;
       --shadow: 0 10px 30px rgba(2, 6, 23, .08);
       --radius:18px;
-      --radius2:14px;
     }
 
     *{ box-sizing:border-box; }
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--ink);
       background: linear-gradient(180deg, var(--bg0), var(--bg1));
     }
 
-    /* Top header */
     .topbar{
       max-width: 1320px;
       margin: 16px auto 0;
@@ -45,7 +41,7 @@
       border:1px solid var(--line);
       box-shadow: var(--shadow);
       border-radius: 24px;
-      padding: 16px 16px;
+      padding: 16px;
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -93,7 +89,7 @@
       background: #fff;
       color: var(--ink);
       text-decoration:none;
-      font-weight: 650;
+      font-weight: 750;
       font-size: 14px;
       white-space:nowrap;
     }
@@ -108,7 +104,6 @@
       color:#064e3b;
     }
 
-    /* Layout */
     .wrap{
       max-width: 1320px;
       margin: 14px auto 40px;
@@ -135,13 +130,7 @@
       font-size:16px;
       letter-spacing:-.01em;
     }
-    .panel-h p{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size: 13px;
-    }
 
-    /* Left: families */
     .searchbox{
       padding: 12px 14px 14px;
       border-bottom:1px solid var(--line);
@@ -156,10 +145,6 @@
       outline:none;
       background:#fff;
     }
-    .searchbox input:focus{
-      border-color:#b8d8ff;
-      box-shadow: 0 0 0 4px rgba(11,92,171,.12);
-    }
 
     .list{
       padding: 10px;
@@ -173,7 +158,7 @@
       border:1px solid var(--line);
       background:#fff;
       border-radius: 16px;
-      padding: 12px 12px;
+      padding: 12px;
       display:flex;
       gap:10px;
       align-items:flex-start;
@@ -197,7 +182,7 @@
     }
     .fam .txt{ flex:1; min-width:0; }
     .fam .title{
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: -.01em;
       margin:0;
       font-size: 15px;
@@ -209,7 +194,6 @@
       line-height: 1.2;
     }
 
-    /* Right: courses + sessions */
     .right-top{
       display:flex;
       align-items:center;
@@ -226,7 +210,7 @@
       border:1px dashed #cfe3ff;
       background:#f2f8ff;
       color:#073763;
-      font-weight: 750;
+      font-weight: 850;
       font-size: 14px;
     }
     .smallbtn{
@@ -237,10 +221,9 @@
       border-radius: 999px;
       border:1px solid var(--line);
       background:#fff;
-      font-weight: 750;
+      font-weight: 850;
       font-size: 14px;
       color: var(--ink);
-      text-decoration:none;
       cursor:pointer;
     }
 
@@ -258,7 +241,7 @@
       overflow:hidden;
     }
     .course-head{
-      padding: 12px 12px;
+      padding: 12px;
       display:grid;
       grid-template-columns: 1fr auto;
       gap: 10px;
@@ -269,7 +252,7 @@
     }
     .course-title .t{
       margin:0;
-      font-weight: 900;
+      font-weight: 950;
       letter-spacing: -.015em;
       font-size: 15px;
       line-height: 1.15;
@@ -282,25 +265,6 @@
       line-height: 1.2;
       word-break: break-word;
     }
-    .course-title .meta{
-      margin:8px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: var(--soft);
-      font-weight: 700;
-      color:#0f172a;
-    }
-
     .course-actions{
       display:flex;
       gap: 10px;
@@ -311,7 +275,7 @@
       border-radius: 999px;
       border:1px solid var(--line);
       background:#fff;
-      font-weight: 850;
+      font-weight: 900;
       cursor:pointer;
       white-space:nowrap;
     }
@@ -341,7 +305,7 @@
       margin: 10px 2px;
     }
     .session .when{
-      font-weight: 900;
+      font-weight: 950;
       letter-spacing:-.01em;
       margin:0;
       font-size: 14px;
@@ -361,15 +325,9 @@
       border: 1px solid #b7e4c7;
       background: var(--btn);
       color: var(--btnInk);
-      font-weight: 900;
+      font-weight: 950;
       text-decoration:none;
       white-space:nowrap;
-    }
-
-    .hint{
-      padding: 0 14px 14px;
-      color: var(--muted);
-      font-size: 13px;
     }
 
     .empty{
@@ -377,15 +335,21 @@
       color: var(--muted);
       font-size: 14px;
     }
+    .debug{
+      margin-top:10px;
+      padding:12px;
+      border-radius:14px;
+      border:1px dashed #cbd5e1;
+      background:#f8fafc;
+      color:#0f172a;
+      font-size: 12.5px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
-    /* Responsive */
     @media (max-width: 980px){
-      .wrap{
-        grid-template-columns: 1fr;
-      }
-      .list{
-        max-height: unset;
-      }
+      .wrap{ grid-template-columns: 1fr; }
+      .list{ max-height: unset; }
     }
   </style>
 </head>
@@ -411,7 +375,6 @@
   </div>
 
   <div class="wrap">
-    <!-- LEFT -->
     <section class="panel" aria-label="Class families">
       <div class="panel-h">
         <h2>Step 1: Choose a class family</h2>
@@ -422,7 +385,6 @@
       <div id="familyList" class="list"></div>
     </section>
 
-    <!-- RIGHT -->
     <section class="panel" aria-label="Classes">
       <div class="panel-h">
         <div class="right-top">
@@ -435,91 +397,220 @@
       </div>
 
       <div id="courses" class="courses"></div>
-      <div class="hint" id="hint"></div>
+      <div id="status" class="empty" style="display:none;"></div>
     </section>
   </div>
 
 <script>
 /**
- * 910CPR schedule UI
- * - No counts
- * - Sanitizes Enrollware HTML into clean title/subtitle text
- * - Shows session date/time + location + Register link without requiring clicking registration page
+ * Robust schedule loader:
+ * - Works whether deployed at / or /index.html or nested
+ * - Accepts multiple schedule.json shapes
+ * - If it can't find course/session data, it shows debug keys + URL used
  */
 
-const SCHEDULE_URL = './data/schedule.json';
-
-/* ------------ helpers ------------ */
-
-function safeTextFromHtml(html) {
-  // Convert Enrollware-ish HTML into readable text with line breaks.
-  if (!html) return '';
-  const tmp = document.createElement('div');
-  tmp.innerHTML = String(html);
-
-  // Remove junk we never want users seeing
-  tmp.querySelectorAll('script,style,img,svg,iframe,object,embed,link,meta').forEach(n => n.remove());
-
-  // Turn block-ish elements into line breaks
-  tmp.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
-  tmp.querySelectorAll('div,p,li,ul,ol,table,tr,td,th,section,header,footer,article').forEach(el => {
-    // ensure separation
-    if (el.childNodes.length) {
-      el.insertAdjacentText('beforebegin', '\n');
-      el.insertAdjacentText('afterend', '\n');
-    }
-  });
-
-  // Get text, normalize whitespace, keep intentional newlines
-  let text = tmp.textContent || '';
-  text = text.replace(/\r/g, '');
-  // collapse 3+ newlines down to 2
-  text = text.replace(/\n{3,}/g, '\n\n');
-  // trim each line
-  text = text.split('\n').map(l => l.trim()).join('\n').trim();
-  return text;
-}
-
-function splitTitleSubtitle(rawHtmlOrText) {
-  const cleaned = safeTextFromHtml(rawHtmlOrText);
-  if (!cleaned) return { title: '', subtitle: '' };
-
-  // If there are blank-line sections, treat first "paragraph" as title
-  const parts = cleaned.split('\n').filter(Boolean);
-  const title = parts[0] || '';
-  const subtitle = parts.slice(1).join(' — ').trim();
-  return { title, subtitle };
-}
-
-function formatWhen(isoOrString) {
-  if (!isoOrString) return '';
-  const d = new Date(isoOrString);
-  if (isNaN(d.getTime())) return String(isoOrString);
-
-  const fmt = new Intl.DateTimeFormat(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit'
-  });
-  return fmt.format(d);
-}
-
-function normalizeLocation(loc) {
-  if (!loc) return '';
-  return String(loc).replace(/\s+/g, ' ').trim();
-}
-
-/* ------------ state ------------ */
+const SCHEDULE_URL = new URL('data/schedule.json', window.location.href).toString();
 
 let schedule = null;
 let families = [];
 let activeFamilyKey = null;
 let showAllDates = false;
 
-/* ------------ render ------------ */
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+function escapeAttr(str) { return String(str ?? '').replace(/"/g, '&quot;'); }
+
+function safeTextFromHtml(html) {
+  if (!html) return '';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = String(html);
+
+  // remove stuff we never want rendered as user-visible garbage
+  tmp.querySelectorAll('script,style,img,svg,iframe,object,embed,link,meta').forEach(n => n.remove());
+
+  tmp.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+  tmp.querySelectorAll('div,p,li,ul,ol,table,tr,td,th,section,header,footer,article').forEach(el => {
+    if (el.childNodes.length) {
+      el.insertAdjacentText('beforebegin', '\n');
+      el.insertAdjacentText('afterend', '\n');
+    }
+  });
+
+  let text = tmp.textContent || '';
+  text = text.replace(/\r/g, '');
+  text = text.replace(/\n{3,}/g, '\n\n');
+  text = text.split('\n').map(l => l.trim()).join('\n').trim();
+  return text;
+}
+
+function splitTitleSubtitle(rawHtmlOrText) {
+  const cleaned = safeTextFromHtml(rawHtmlOrText);
+  if (!cleaned) return { title:'', subtitle:'' };
+  const lines = cleaned.split('\n').filter(Boolean);
+  return {
+    title: lines[0] || '',
+    subtitle: lines.slice(1).join(' — ').trim()
+  };
+}
+
+function formatWhen(isoOrString) {
+  if (!isoOrString) return '';
+  const d = new Date(isoOrString);
+  if (isNaN(d.getTime())) return String(isoOrString);
+  return new Intl.DateTimeFormat(undefined, {
+    weekday:'short', month:'short', day:'numeric', year:'numeric',
+    hour:'numeric', minute:'2-digit'
+  }).format(d);
+}
+
+function normalizeLocation(loc) {
+  return String(loc || '').replace(/\s+/g,' ').trim();
+}
+
+/**
+ * Find an array candidate by checking known paths (schema tolerance).
+ */
+function getFirstArray(obj, paths) {
+  for (const p of paths) {
+    const parts = p.split('.');
+    let cur = obj;
+    let ok = true;
+    for (const k of parts) {
+      if (!cur || typeof cur !== 'object' || !(k in cur)) { ok = false; break; }
+      cur = cur[k];
+    }
+    if (ok && Array.isArray(cur)) return cur;
+  }
+  return null;
+}
+
+/**
+ * Extract courses from unknown schedule.json shapes.
+ * We support:
+ *  - schedule.courses
+ *  - schedule.data.courses
+ *  - schedule.payload.courses
+ *  - schedule.items / schedule.courseList
+ *  - OR: a flat sessions list we can group into courses.
+ */
+function extractCoursesAndFamilies(scheduleObj) {
+  const courseArr = getFirstArray(scheduleObj, [
+    'courses', 'data.courses', 'payload.courses', 'result.courses',
+    'courseList', 'data.courseList', 'items', 'data.items'
+  ]);
+
+  // Try sessions list if courses not present
+  const sessionArr = getFirstArray(scheduleObj, [
+    'sessions', 'data.sessions', 'payload.sessions', 'result.sessions',
+    'classes', 'data.classes', 'events', 'data.events'
+  ]);
+
+  let courses = [];
+
+  if (Array.isArray(courseArr) && courseArr.length) {
+    courses = courseArr.map(c => normalizeCourse(c));
+  } else if (Array.isArray(sessionArr) && sessionArr.length) {
+    // group flat sessions into courses by course id/name
+    const map = new Map();
+    for (const raw of sessionArr) {
+      const s = normalizeSession(raw);
+      const key = s.courseKey || s.courseTitle || 'Course';
+      if (!map.has(key)) {
+        map.set(key, {
+          id: key,
+          familyKey: s.familyKey || s.family || '',
+          title: s.courseTitle || key,
+          subtitle: s.courseSubtitle || '',
+          sessions: []
+        });
+      }
+      map.get(key).sessions.push(s);
+    }
+    courses = Array.from(map.values()).map(c => normalizeCourse(c));
+  }
+
+  // Families may exist, but if not, infer from courses
+  let famArr = getFirstArray(scheduleObj, [
+    'families', 'classFamilies', 'data.families', 'data.classFamilies', 'payload.families'
+  ]);
+
+  let families = [];
+  if (Array.isArray(famArr) && famArr.length) {
+    families = famArr.map(f => ({
+      key: f.key || f.id || f.slug || f.name,
+      name: f.name || f.title || f.key || f.id,
+      description: f.description || f.desc || '',
+      order: f.order
+    })).filter(f => f.key);
+  } else {
+    const set = new Map();
+    for (const c of courses) {
+      const k = (c.familyKey || c.family || c.category || 'All').toString();
+      if (!set.has(k)) set.set(k, { key:k, name:k, description:'' });
+    }
+    families = Array.from(set.values());
+  }
+
+  return { courses, families };
+}
+
+function normalizeCourse(c) {
+  const rawTitle =
+    c.title_html || c.titleHtml || c.title || c.name_html || c.nameHtml || c.name || '';
+
+  const rawSubtitle =
+    c.subtitle_html || c.subtitleHtml || c.subtitle || c.description || '';
+
+  const t1 = splitTitleSubtitle(rawTitle);
+  const t2 = splitTitleSubtitle(rawSubtitle);
+
+  const title = t1.title || t2.title || 'Course';
+  const subtitle = (t1.subtitle || t2.title || t2.subtitle || '').trim();
+
+  const sessionsRaw = Array.isArray(c.sessions) ? c.sessions : (Array.isArray(c.classSessions) ? c.classSessions : []);
+  const sessions = sessionsRaw.map(s => normalizeSession(s)).filter(s => s.whenISO);
+
+  return {
+    id: c.id || c.courseId || c.course_id || title,
+    familyKey: c.familyKey || c.family || c.family_key || c.categoryKey || c.category || '',
+    title,
+    subtitle,
+    sessions
+  };
+}
+
+function normalizeSession(s) {
+  const whenISO =
+    s.startISO || s.start || s.startUtc || s.startLocal || s.datetime || s.when ||
+    s.starts_at || s.start_time || s.startDateTime || s.begin || null;
+
+  const registerUrl =
+    s.enroll_url || s.enrollUrl || s.register_url || s.registerUrl || s.url || s.link || '#';
+
+  const where =
+    normalizeLocation(s.location || s.where || s.site || s.city || s.address || s.locationText || '');
+
+  return {
+    whenISO,
+    whenDisplay: formatWhen(whenISO),
+    where,
+    registerUrl,
+    // optional grouping hints if sessions were flat:
+    courseKey: s.courseKey || s.course_id || s.courseId || s.course || '',
+    courseTitle: s.courseTitle || s.course_name || s.courseName || '',
+    courseSubtitle: s.courseSubtitle || s.course_desc || s.courseDescription || '',
+    familyKey: s.familyKey || s.family || s.category || ''
+  };
+}
+
+function showStatus(html) {
+  const status = document.getElementById('status');
+  status.style.display = 'block';
+  status.innerHTML = html;
+}
 
 function renderFamilies() {
   const list = document.getElementById('familyList');
@@ -561,9 +652,9 @@ function renderFamilies() {
 function renderCourses() {
   const badge = document.getElementById('rightBadge');
   const coursesWrap = document.getElementById('courses');
-  const hint = document.getElementById('hint');
   coursesWrap.innerHTML = '';
-  hint.textContent = '';
+  document.getElementById('status').style.display = 'none';
+  document.getElementById('status').innerHTML = '';
 
   const family = families.find(f => f.key === activeFamilyKey) || families[0];
   if (!family) {
@@ -576,22 +667,24 @@ function renderCourses() {
     ? `Showing all sessions for: ${family.name || family.key}`
     : `Showing upcoming sessions for: ${family.name || family.key}`;
 
-  // Gather courses belonging to this family
-  const courses = (schedule?.courses || [])
-    .filter(c => (c.familyKey || c.family || '').toLowerCase() === String(family.key||'').toLowerCase());
+  const familyKeyLower = String(family.key || '').toLowerCase();
+  const familyCourses = (window.__COURSES__ || [])
+    .filter(c => String(c.familyKey || '').toLowerCase() === familyKeyLower);
 
-  if (!courses.length) {
+  if (!familyCourses.length) {
     coursesWrap.innerHTML = `<div class="empty">No classes found for this family.</div>`;
     return;
   }
 
-  // Sort courses by "next session date" if available
   const now = new Date();
-  const courseWithNext = courses.map(c => {
-    const sessions = (c.sessions || []).map(s => ({...s, _d: new Date(s.start || s.startISO || s.startUtc || s.startLocal || s.datetime || s.when)}));
-    const upcoming = sessions.filter(s => s._d && !isNaN(s._d) && s._d >= now).sort((a,b)=>a._d-b._d);
-    const next = upcoming[0]?._d || null;
-    return { c, next };
+
+  // Sort by next upcoming session
+  const sorted = familyCourses.map(c => {
+    const upcoming = c.sessions
+      .map(s => ({...s, _d: new Date(s.whenISO)}))
+      .filter(s => s._d && !isNaN(s._d) && s._d >= now)
+      .sort((a,b)=>a._d-b._d);
+    return { c, next: upcoming[0]?._d || null };
   }).sort((a,b)=>{
     if (a.next && b.next) return a.next - b.next;
     if (a.next && !b.next) return -1;
@@ -599,55 +692,29 @@ function renderCourses() {
     return (a.c.title || '').localeCompare(b.c.title || '');
   });
 
-  // Render
-  for (const item of courseWithNext) {
+  for (const item of sorted) {
     const c = item.c;
 
-    // Title/subtitle from Enrollware HTML or plain
-    const rawTitle = c.title_html || c.titleHtml || c.title || c.name_html || c.nameHtml || c.name || '';
-    const rawSubtitle = c.subtitle_html || c.subtitleHtml || c.subtitle || c.description || '';
-
-    const t1 = splitTitleSubtitle(rawTitle);
-    const t2 = splitTitleSubtitle(rawSubtitle);
-
-    const title = t1.title || t2.title || 'Course';
-    const subtitle = (t1.subtitle || t2.title || t2.subtitle || '').trim();
-
-    const metaBits = [];
-    if (c.category) metaBits.push(`<span class="chip">${escapeHtml(c.category)}</span>`);
-    if (c.subcategory) metaBits.push(`<span class="chip">${escapeHtml(c.subcategory)}</span>`);
-
-    // Sessions: upcoming only unless showAllDates
-    let sessions = (c.sessions || []).map(s => normalizeSession(s));
-    sessions = sessions.filter(s => s.whenISO); // keep parseable
-    sessions.sort((a,b) => new Date(a.whenISO) - new Date(b.whenISO));
-
-    if (!showAllDates) {
-      sessions = sessions.filter(s => new Date(s.whenISO) >= now);
-    }
+    let sessions = c.sessions.slice().sort((a,b)=>new Date(a.whenISO)-new Date(b.whenISO));
+    if (!showAllDates) sessions = sessions.filter(s => new Date(s.whenISO) >= now);
 
     const courseEl = document.createElement('div');
     courseEl.className = 'course';
-
-    const open = false;
-    const courseId = c.id || c.courseId || c.course_id || (title + '|' + subtitle);
-    const btnId = 'exp_' + hash(courseId);
+    const btnId = 'exp_' + Math.abs(hash(c.id)).toString(36);
 
     courseEl.innerHTML = `
       <div class="course-head">
         <div class="course-title">
-          <p class="t">${escapeHtml(title)}</p>
-          ${subtitle ? `<p class="s">${escapeHtml(subtitle)}</p>` : ``}
-          ${metaBits.length ? `<div class="meta">${metaBits.join('')}</div>` : ``}
+          <p class="t">${escapeHtml(c.title)}</p>
+          ${c.subtitle ? `<p class="s">${escapeHtml(c.subtitle)}</p>` : ``}
         </div>
         <div class="course-actions">
-          <button class="expandbtn" id="${btnId}" type="button" aria-expanded="${open ? 'true':'false'}">
-            ${sessions.length ? `${sessions.length} dates` : `No dates`}
-            &nbsp;·&nbsp; Expand
+          <button class="expandbtn" id="${btnId}" type="button" aria-expanded="false">
+            ${sessions.length ? `${sessions.length} dates · Expand` : `No dates`}
           </button>
         </div>
       </div>
-      <div class="sessions" role="region" aria-label="Sessions"></div>
+      <div class="sessions"></div>
     `;
 
     const btn = courseEl.querySelector('#' + CSS.escape(btnId));
@@ -678,82 +745,52 @@ function renderCourses() {
 
     coursesWrap.appendChild(courseEl);
   }
-
-  hint.textContent = showAllDates
-    ? 'Showing every session we have for this family.'
-    : 'Showing only upcoming sessions (no clicking required to see times).';
 }
 
-function normalizeSession(s) {
-  const whenISO =
-    s.startISO || s.start || s.startUtc || s.startLocal || s.datetime || s.when ||
-    s.starts_at || s.start_time || null;
-
-  const registerUrl =
-    s.enroll_url || s.enrollUrl || s.register_url || s.registerUrl || s.url || '#';
-
-  const where =
-    normalizeLocation(s.location || s.where || s.site || s.city || s.address || '');
-
-  return {
-    whenISO,
-    whenDisplay: formatWhen(whenISO),
-    where,
-    registerUrl
-  };
-}
-
-/* ------------ tiny utilities ------------ */
-
-function escapeHtml(str) {
-  return String(str ?? '').replace(/[&<>"']/g, c => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
-}
-function escapeAttr(str) {
-  return String(str ?? '').replace(/"/g, '&quot;');
-}
 function hash(str){
-  // tiny stable hash -> base36
   let h = 0;
   const s = String(str);
   for (let i=0;i<s.length;i++){
     h = (h<<5) - h + s.charCodeAt(i);
     h |= 0;
   }
-  return Math.abs(h).toString(36);
+  return h;
 }
-
-/* ------------ load ------------ */
 
 async function init(){
   try{
     const res = await fetch(SCHEDULE_URL, { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     schedule = await res.json();
   } catch (e) {
-    document.getElementById('courses').innerHTML =
-      `<div class="empty">Could not load schedule.json (${escapeHtml(e.message)}).<br><br>
-       Expected at: <code>${escapeHtml(SCHEDULE_URL)}</code></div>`;
+    showStatus(
+      `Could not load schedule.json.\n\n` +
+      `URL tried: ${SCHEDULE_URL}\n` +
+      `Error: ${e.message}\n\n` +
+      `Fix: confirm the file exists at /data/schedule.json in GitHub Pages output.`
+        .split('\n').map(l => escapeHtml(l)).join('<br>')
+    );
+    document.getElementById('courses').innerHTML = `<div class="empty">No schedule data.</div>`;
+    document.getElementById('familyList').innerHTML = `<div class="empty">No matches.</div>`;
     return;
   }
 
-  // Build families from schedule.json if present; otherwise infer from courses
-  families = (schedule.families || schedule.classFamilies || []).map(f => ({
-    key: f.key || f.id || f.slug || f.name,
-    name: f.name || f.title || f.key,
-    description: f.description || f.desc || '',
-    order: f.order
-  })).filter(f => f.key);
+  const { courses, families: fams } = extractCoursesAndFamilies(schedule);
+  window.__COURSES__ = courses;
+  families = fams;
 
-  if (!families.length) {
-    // infer
-    const set = new Map();
-    for (const c of (schedule.courses || [])) {
-      const k = (c.familyKey || c.family || c.category || 'All').toString();
-      if (!set.has(k)) set.set(k, { key:k, name:k, description:'' });
-    }
-    families = Array.from(set.values());
+  if (!courses.length || !families.length) {
+    const keys = Object.keys(schedule || {}).sort();
+    showStatus(
+      `<div><b>Loaded schedule.json</b> but couldn't find course/session arrays.</div>` +
+      `<div class="debug">URL: ${escapeHtml(SCHEDULE_URL)}\n` +
+      `Top-level keys: ${escapeHtml(keys.join(', '))}\n` +
+      `Courses found: ${courses.length}\nFamilies found: ${families.length}\n\n` +
+      `Open /data/schedule.json in your browser and tell me the keys/shape if this persists.</div>`
+    );
+    document.getElementById('courses').innerHTML = `<div class="empty">No schedule data.</div>`;
+    document.getElementById('familyList').innerHTML = `<div class="empty">No matches.</div>`;
+    return;
   }
 
   activeFamilyKey = families[0]?.key || null;
