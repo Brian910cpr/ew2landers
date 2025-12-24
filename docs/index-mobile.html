@@ -167,6 +167,7 @@
       padding: 12px 12px;
       background: linear-gradient(90deg, #0b4f86, #0b5fa5);
       color:#fff;
+      cursor:pointer; /* header clickable */
     }
     .head .twrap{
       min-width:0;
@@ -316,7 +317,7 @@
     <div class="menuRow">
       <a class="btn" href="./onsite.html"><img src="./assets/images/classroom_icon.png" alt="">Group Class Quote / Inquiry</a>
       <a class="btn primary" href="tel:+19103955193"><img src="./assets/images/phone_icon.png" alt="">Call / Text</a>
-      <a class="btn" href="mailto:info@910cpr.com"><img src="./assets/images/email_icon.png" alt="">Email help</a>
+      <a class="btn" href="mailto:info@910cpr.com"><img src="./assets/images/email-icon.png" alt="">Email help</a>
     </div>
 
     <section class="panel">
@@ -329,15 +330,13 @@
     <div id="cards" class="cards"></div>
   </main>
 
-  <!-- AI Frontdesk embed -->
   <embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
   <script src="https://cdn.247aireceptionist.com/script.js"></script>
 
   <script>
     const SCHEDULE_JSON_URL = "./data/schedule.json";
 
-    // Per-course paging: start with 10, then add +10 each time you click "See more times…"
-    const VISIBLE_LIMIT = new Map(); // courseKey -> number
+    const VISIBLE_LIMIT = new Map();
     function getLimit(key, total){
       const cur = VISIBLE_LIMIT.get(String(key));
       const base = Math.min(10, total);
@@ -361,7 +360,6 @@
       u.searchParams.set("_", String(Date.now()));
       return u.toString();
     }
-
     async function loadJson(url){
       const res = await fetch(withCacheBust(url), { cache:"no-store" });
       if (!res.ok) throw new Error(`Failed to load ${url} (${res.status})`);
@@ -401,13 +399,32 @@
       return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || "";
     }
 
-    function toMillis(row){
-      const dt = row.datetime || row.date_time || row.dateTime || row.start || row.start_time || row.startTime || row.when || row.date || "";
-      if (!dt) return null;
-      const s = String(dt).replace(" at ", " ").trim();
-      const d = new Date(s);
+    function pickWhenText(row){
+      const direct =
+        row.display_datetime || row.displayDateTime || row.display_time ||
+        row.date_time_label || row.datetime_label || row.when_text || row.whenText ||
+        row.datetime || row.date_time || row.dateTime || row.start_text || row.startText;
+
+      if (direct && String(direct).trim()) return String(direct).trim();
+
+      const d = row.date || row.class_date || row.classDate || row.start_date || row.startDate;
+      const t = row.time || row.class_time || row.classTime || row.start_time || row.startTime;
+      if (d && t) return `${String(d).trim()} ${String(t).trim()}`.trim();
+      if (d && !t) return String(d).trim();
+
+      const iso = row.start_iso || row.startISO || row.start_datetime_iso || row.startDateTimeISO || row.start_datetime;
+      if (iso) return String(iso).trim();
+
+      return "Date/time";
+    }
+
+    function toMillisFromRow(row){
+      const s = pickWhenText(row);
+      if (!s || s === "Date/time") return null;
+      const norm = String(s).replace(" at ", " ").trim();
+      const d = new Date(norm);
       if (!isNaN(d.getTime())) return d.getTime();
-      const d2 = new Date(String(dt));
+      const d2 = new Date(String(s));
       return isNaN(d2.getTime()) ? null : d2.getTime();
     }
 
@@ -419,8 +436,8 @@
 
     function isUpcoming(row, nowMs){
       if (typeof row?.is_past === "boolean") return !row.is_past;
-      const ms = toMillis(row);
-      return ms != null && ms >= nowMs;
+      const ms = toMillisFromRow(row);
+      return ms != null ? (ms >= nowMs) : true;
     }
 
     function buildGroups(rows){
@@ -447,8 +464,8 @@
 
       const list = Array.from(map.values());
       for (const g of list){
-        g.sessions.sort((a,b)=>(toMillis(a) ?? 9e15) - (toMillis(b) ?? 9e15));
-        g.nextMs = toMillis(g.sessions[0]) ?? 9e15;
+        g.sessions.sort((a,b)=>(toMillisFromRow(a) ?? 9e15) - (toMillisFromRow(b) ?? 9e15));
+        g.nextMs = toMillisFromRow(g.sessions[0]) ?? 9e15;
       }
       list.sort((a,b)=>a.nextMs - b.nextMs);
       return list;
@@ -473,7 +490,6 @@
 
     function render(){
       const q = QUERY.trim().toLowerCase();
-
       const groups = GROUPS.filter(g=>{
         if (!q) return true;
         const blob = `${g.title} ${g.subtitle}`.toLowerCase();
@@ -528,8 +544,6 @@
         head.appendChild(left);
         head.appendChild(actions);
 
-        // Click the blue header to expand/collapse (don’t require hunting the SHOW button)
-        head.style.cursor = "pointer";
         head.addEventListener("click", (ev) => {
           if (ev.target.closest("button,a")) return;
           toggle.click();
@@ -546,8 +560,8 @@
         const __limit = getLimit(g.key, g.sessions.length);
 
         for (const r of g.sessions.slice(0,__limit)){
-          const ms = toMillis(r);
-          const when = ms ? fmtWhen(ms) : "Date/time";
+          const ms = toMillisFromRow(r);
+          const when = (ms != null) ? fmtWhen(ms) : pickWhenText(r);
           const where = pickLocation(r);
           const regUrl = pickRegisterUrl(r);
 
@@ -571,7 +585,6 @@
           sessions.appendChild(row);
         }
 
-        // Bottom pager: show next 10 without leaving the page
         if (g.sessions.length > __limit){
           const moreRow = document.createElement("div");
           moreRow.className = "session moreRow";
@@ -585,11 +598,10 @@
             ev.stopPropagation();
             bumpLimit(g.key, g.sessions.length);
             render();
-            // keep this course open
+            // keep open
             const btn = document.querySelector(`button.pillBtn[data-key="${String(g.key)}"]`);
-            const sess = document.querySelector(`.sessions[data-key="${String(g.key)}"]`);
             const body2 = document.querySelector(`.courseBody[data-key="${String(g.key)}"]`);
-            if (btn && sess && body2){
+            if (btn && body2){
               body2.style.display = "block";
               btn.textContent = "HIDE";
               btn.dataset.collapsed = "false";
@@ -626,7 +638,6 @@
       try{
         const rows = await loadJson(SCHEDULE_JSON_URL);
         GROUPS = buildGroups(rows);
-
         elStatus.textContent = `Loaded ${GROUPS.length} course(s).`;
         render();
       }catch(err){
