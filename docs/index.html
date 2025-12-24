@@ -188,17 +188,6 @@
       gap: 10px;
       flex-shrink:0;
     }
-    .family .badge{
-      min-width: 44px;
-      text-align:center;
-      font-weight: 900;
-      font-size: 13px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #f1f6ff;
-      border: 1px solid #d4e4fb;
-      color: #143b66;
-    }
     .family .icon{
       width: 38px;
       height: 38px;
@@ -256,6 +245,7 @@
       padding: 12px 12px;
       background: linear-gradient(90deg, #0b4f86, #0b5fa5);
       color:#fff;
+      cursor: pointer; /* header is clickable */
     }
     .course-title{
       display:flex;
@@ -302,6 +292,7 @@
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: .4px;
+      white-space: nowrap;
     }
     .pillBtn:hover{background: rgba(255,255,255,.20)}
     .pillLink{
@@ -377,7 +368,6 @@
     .moreBtn{background:#0b5fa5}
     .moreRow{background:#f7fbff}
 
-    /* subtle branded background elements */
     .bg-center{
       position: fixed;
       inset: 0;
@@ -415,7 +405,7 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <img src="./assets/images/class/910CPR_wave.jpg" onerror="this.onerror=null;this.src='./assets/images/910CPR_wave.jpg';" alt="910CPR" />
+        <img src="./assets/images/910CPR_wave.jpg" alt="910CPR" />
         <div>
           <div class="title">CPR, BLS, ACLS &amp; First Aid — Wilmington / Burgaw</div>
           <span class="sub">Live &amp; blended classes with fast certificates — powered by 910CPR</span>
@@ -434,7 +424,7 @@
           Call or text (910) 395-5193
         </a>
         <a class="btn" href="mailto:info@910cpr.com">
-          <img src="./assets/images/email_icon.png" alt="" />
+          <img src="./assets/images/email-icon.png" alt="" />
           Email 910CPR
         </a>
         <a class="btn" href="./index-mobile.html">
@@ -462,15 +452,14 @@
     </section>
   </main>
 
-  <!-- AI Frontdesk embed (keep simple; it places its own UI) -->
   <embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
   <script src="https://cdn.247aireceptionist.com/script.js"></script>
 
   <script>
     const SCHEDULE_JSON_URL = "./data/schedule.json";
 
-    // Per-course paging: start with 10, then add +10 each time you click "See more times…"
-    const VISIBLE_LIMIT = new Map(); // courseKey -> number
+    // Per-course paging: start with 10, then add +10
+    const VISIBLE_LIMIT = new Map();
     function getLimit(key, total){
       const cur = VISIBLE_LIMIT.get(String(key));
       const base = Math.min(10, total);
@@ -507,55 +496,10 @@
       u.searchParams.set("_", String(Date.now()));
       return u.toString();
     }
-
     async function loadJson(url){
       const res = await fetch(withCacheBust(url), { cache:"no-store" });
       if (!res.ok) throw new Error(`Failed to load ${url} (${res.status})`);
       return await res.json();
-    }
-
-    function sanitizeEnrollwareHtml(html) {
-      const allowedTags = new Set(["B","I","EM","STRONG","BR","SMALL","SPAN","DIV","P","UL","OL","LI","A","IMG"]);
-      const allowedAttrs = {
-        "A": new Set(["href","target","rel","title"]),
-        "IMG": new Set(["src","alt","title","width","height"]),
-        "SPAN": new Set(["class"]),
-        "DIV": new Set(["class"]),
-        "P": new Set(["class"])
-      };
-      const tpl = document.createElement("template");
-      tpl.innerHTML = html || "";
-      const walk = (node) => {
-        if (node.nodeType === Node.ELEMENT_NODE){
-          const tag = node.tagName;
-          if (!allowedTags.has(tag)) {
-            const text = document.createTextNode(node.textContent || "");
-            node.replaceWith(text);
-            return;
-          }
-          const keep = allowedAttrs[tag] || new Set();
-          [...node.attributes].forEach(attr => {
-            const n = attr.name.toLowerCase();
-            if (!keep.has(n)) node.removeAttribute(attr.name);
-          });
-          if (tag === "A"){
-            node.setAttribute("rel","noopener");
-            const href = node.getAttribute("href") || "";
-            if (href && !href.startsWith("http") && !href.startsWith("mailto:") && !href.startsWith("tel:")) {
-              node.removeAttribute("href");
-            }
-          }
-          if (tag === "IMG"){
-            const src = node.getAttribute("src") || "";
-            if (src && !(src.startsWith("http") || src.startsWith("./") || src.startsWith("../") || src.startsWith("https://"))) {
-              node.removeAttribute("src");
-            }
-          }
-        }
-        [...node.childNodes].forEach(walk);
-      };
-      [...tpl.content.childNodes].forEach(walk);
-      return tpl.innerHTML;
     }
 
     function stripToText(input){
@@ -566,7 +510,7 @@
       return (tmp.textContent || "").replace(/\s+/g," ").trim();
     }
 
-    // ---- schedule normalization helpers ----
+    // ---- Field getters ----
     function pickCourseKey(row){
       const v = row.ct_id || row.ctId || row.courseTypeId || row.course_type_id || row.courseTypeID || row.courseType ||
                 row.course_id || row.courseId || row.courseID || row.course ||
@@ -592,15 +536,40 @@
       return row.schedule_url || row.scheduleUrl || row.course_url || row.courseUrl || "";
     }
 
-    function toMillis(row){
-      const dt = row.datetime || row.date_time || row.dateTime || row.start || row.start_time || row.startTime || row.when || row.date || "";
-      if (!dt) return null;
-      // schedule.json typically uses local-ish strings like "Thu 1/1/2026 at 12:30 PM"
-      const s = String(dt).replace(" at ", " ").trim();
-      const d = new Date(s);
+    // ---- Date/time: robust display first, parse second ----
+    function pickWhenText(row){
+      // If your JSON already includes a friendly label, use it.
+      const direct =
+        row.display_datetime || row.displayDateTime || row.display_time ||
+        row.date_time_label || row.datetime_label || row.when_text || row.whenText ||
+        row.datetime || row.date_time || row.dateTime || row.start_text || row.startText;
+
+      if (direct && String(direct).trim()) return String(direct).trim();
+
+      // If it has separate date + time fields, combine.
+      const d = row.date || row.class_date || row.classDate || row.start_date || row.startDate;
+      const t = row.time || row.class_time || row.classTime || row.start_time || row.startTime;
+      if (d && t) return `${String(d).trim()} ${String(t).trim()}`.trim();
+      if (d && !t) return String(d).trim();
+
+      // Last: try ISO-ish.
+      const iso = row.start_iso || row.startISO || row.start_datetime_iso || row.startDateTimeISO || row.start_datetime;
+      if (iso) return String(iso).trim();
+
+      return "Date/time";
+    }
+
+    function toMillisFromRow(row){
+      // Try parsing a best-effort string. If it fails, return null.
+      const s = pickWhenText(row);
+      if (!s || s === "Date/time") return null;
+
+      // normalize common Enrollware-ish patterns like "Thu 1/1/2026 at 12:30 PM"
+      const norm = String(s).replace(" at ", " ").trim();
+      const d = new Date(norm);
       if (!isNaN(d.getTime())) return d.getTime();
-      // fallback if schedule builder stored ISO
-      const d2 = new Date(String(dt));
+
+      const d2 = new Date(String(s));
       return isNaN(d2.getTime()) ? null : d2.getTime();
     }
 
@@ -612,21 +581,18 @@
 
     function isUpcoming(row, nowMs){
       if (typeof row?.is_past === "boolean") return !row.is_past;
-      const ms = toMillis(row);
-      return ms != null && ms >= nowMs;
+      const ms = toMillisFromRow(row);
+      return ms != null ? (ms >= nowMs) : true; // if we can't parse time, don't drop it
     }
 
     function classifyFamily(title){
       const t = String(title || "").toLowerCase().trim();
       if (t === "american heart association") return "Heartsaver / CPR-AED";
-
       if (t.includes("acls")) return "ACLS";
       if (t.includes("pals")) return "PALS";
       if (t.includes("bls")) return "BLS";
-
       if (t.includes("heartsaver") || t.includes("cpr") || t.includes("aed")) return "Heartsaver / CPR-AED";
       if (t.includes("first aid") || t.includes("fa/") || t.includes("fa ")) return "First Aid";
-
       return "Other";
     }
 
@@ -656,8 +622,8 @@
 
       const list = Array.from(map.values());
       for (const g of list){
-        g.sessions.sort((a,b)=>(toMillis(a) ?? 9e15) - (toMillis(b) ?? 9e15));
-        g.nextMs = toMillis(g.sessions[0]) ?? 9e15;
+        g.sessions.sort((a,b)=>(toMillisFromRow(a) ?? 9e15) - (toMillisFromRow(b) ?? 9e15));
+        g.nextMs = toMillisFromRow(g.sessions[0]) ?? 9e15;
       }
       list.sort((a,b)=>a.nextMs - b.nextMs);
       return list;
@@ -667,6 +633,7 @@
       const m = new Map();
       for (const f of FAMILY_ORDER) m.set(f, 0);
       for (const g of groups){
+        // counts reflect number of sessions inside each family (still used internally to hide empty families)
         m.set(g.family, (m.get(g.family)||0) + g.sessions.length);
       }
       return m;
@@ -687,13 +654,13 @@
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "family" + (family === ACTIVE_FAMILY ? " active" : "");
+        // ✅ NO COUNT BADGE (removed)
         btn.innerHTML = `
           <div class="left">
             <div class="name">${family}</div>
             <div class="desc">${meta.desc}</div>
           </div>
           <div class="right">
-            <div class="badge">${count}</div>
             <div class="icon"><img src="${meta.img}" alt=""></div>
           </div>
         `;
@@ -780,8 +747,7 @@
         head.appendChild(left);
         head.appendChild(right);
 
-        // Click the blue header to expand/collapse (don’t require hunting the SHOW button)
-        head.style.cursor = "pointer";
+        // ✅ Header is the toggle (don’t hunt the button)
         head.addEventListener("click", (ev) => {
           if (ev.target.closest("button,a")) return;
           toggle.click();
@@ -798,8 +764,8 @@
         const __limit = getLimit(g.key, g.sessions.length);
 
         for (const r of g.sessions.slice(0,__limit)){
-          const ms = toMillis(r);
-          const when = ms ? fmtWhen(ms) : "Date/time";
+          const ms = toMillisFromRow(r);
+          const when = (ms != null) ? fmtWhen(ms) : pickWhenText(r); // ✅ use a real string if parsing fails
           const where = pickLocation(r);
           const regUrl = pickRegisterUrl(r);
 
@@ -818,17 +784,11 @@
           a.href = regUrl || (g.scheduleUrl || "#");
           a.target = "_blank";
           a.rel = "noopener";
-          if (!a.href || a.href === "#"){
-            a.removeAttribute("href");
-            a.style.opacity = ".6";
-            a.style.cursor = "not-allowed";
-          }
           row.appendChild(a);
 
           sessions.appendChild(row);
         }
 
-        // Bottom pager: show next 10 without leaving the page
         if (g.sessions.length > __limit){
           const moreRow = document.createElement("div");
           moreRow.className = "session moreRow";
@@ -842,11 +802,11 @@
             ev.stopPropagation();
             bumpLimit(g.key, g.sessions.length);
             renderCards();
-            // keep this course open
+            // keep open
             const btn = document.querySelector(`button.pillBtn[data-key="${String(g.key)}"]`);
-            const sess = document.querySelector(`.sessions[data-key="${String(g.key)}"]`);
-            if (btn && sess){
-              sess.style.display = "flex";
+            const bdy = document.querySelector(`.course-body[data-key="${String(g.key)}"]`);
+            if (btn && bdy){
+              bdy.style.display = "block";
               btn.textContent = "HIDE";
               btn.dataset.collapsed = "false";
               btn.setAttribute("aria-expanded","true");
@@ -884,7 +844,6 @@
         GROUPS = buildGroups(scheduleRows);
         FAMILY_COUNTS = familyCounts(GROUPS);
 
-        // default family: first with any count, prefer BLS if present
         if ((FAMILY_COUNTS.get("BLS")||0) > 0) ACTIVE_FAMILY = "BLS";
         else {
           for (const f of FAMILY_ORDER){
