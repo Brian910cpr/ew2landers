@@ -274,34 +274,33 @@
       overflow: hidden;
     }
 
-    /* Right-edge “peek” image */
-    .family-btn::after{
-      content:"";
-      position:absolute;
-      top:-6px;
-      right:-10px;
-      width: 92px;
-      height: calc(100% + 12px);
-      background-size: cover;
-      background-position: center;
-      opacity: 0.18;
-      transform: skewX(-10deg);
-      border-left: 1px solid rgba(148,163,184,0.35);
-      filter: saturate(1.05) contrast(1.05);
-      pointer-events: none;
-    }
-    .family-btn::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: linear-gradient(to right,
-        rgba(255,255,255,0.0) 0%,
-        rgba(255,255,255,0.0) 55%,
-        rgba(255,255,255,0.85) 88%,
-        rgba(255,255,255,1.0) 100%);
-      pointer-events:none;
-      opacity: 1;
-    }
+  /* Right 25% image fill (cropped) */
+.family-btn::after{
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  width:25%;
+  height:100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.28;              /* raise visibility */
+  transform: none;            /* remove skew so it truly "fills" */
+  border-left: 1px solid rgba(148,163,184,0.35);
+  pointer-events: none;
+}
+/* Fade the image under the text area */
+.family-btn::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(to right,
+    rgba(255,255,255,1.0) 0%,
+    rgba(255,255,255,0.96) 55%,
+    rgba(255,255,255,0.55) 78%,
+    rgba(255,255,255,0.0) 100%);
+  pointer-events:none;
+}
 
     /* Assign images per family */
     .family-btn[data-family="BLS"]::after        { background-image: url("assets/images/family/BLS.jpg"); }
