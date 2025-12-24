@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CPR, BLS, ACLS & First Aid Classes in Wilmington & Burgaw, NC | 910CPR Class Schedule</title>
+  <title>CPR, BLS, ACLS & First Aid Classes – Wilmington & Burgaw, NC | 910CPR</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Keep your existing theme system -->
+  <!-- Keep your existing theme system if present -->
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/themes.css">
   <script src="assets/js/theme-scheduler.js" defer></script>
@@ -274,42 +274,45 @@
       overflow: hidden;
     }
 
-  /* Right 25% image fill (cropped) */
-.family-btn::after{
-  content:"";
-  position:absolute;
-  top:0;
-  right:0;
-  width:25%;
-  height:100%;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.28;              /* raise visibility */
-  transform: none;            /* remove skew so it truly "fills" */
-  border-left: 1px solid rgba(148,163,184,0.35);
-  pointer-events: none;
-}
-/* Fade the image under the text area */
-.family-btn::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: linear-gradient(to right,
-    rgba(255,255,255,1.0) 0%,
-    rgba(255,255,255,0.96) 55%,
-    rgba(255,255,255,0.55) 78%,
-    rgba(255,255,255,0.0) 100%);
-  pointer-events:none;
-}
+    /* Right 25% image fill (cropped) */
+    .family-btn::after{
+      content:"";
+      position:absolute;
+      top:0;
+      right:0;
+      width:25%;
+      height:100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.32;
+      transform: none;
+      border-left: 1px solid rgba(148,163,184,0.35);
+      pointer-events: none;
+    }
 
-    /* Assign images per family */
-    .family-btn[data-family="BLS"]::after        { background-image: url("assets/images/family/BLS.jpg"); }
-    .family-btn[data-family="ACLS"]::after       { background-image: url("assets/images/family/ACLS.jpg"); }
-    .family-btn[data-family="PALS"]::after       { background-image: url("assets/images/family/PALS.jpg"); }
-    .family-btn[data-family="FirstAid"]::after   { background-image: url("assets/images/family/FirstAid.jpg"); }
-    .family-btn[data-family="Heartsaver"]::after { background-image: url("assets/images/family/Heartsaver.jpg"); }
-    .family-btn[data-family="Online"]::after     { background-image: url("assets/images/family/Online.jpg"); }
-    .family-btn[data-family="Other"]::after      { background-image: url("assets/images/family/Other.jpg"); }
+    /* Fade the image under the text area */
+    .family-btn::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(to right,
+        rgba(255,255,255,1.0) 0%,
+        rgba(255,255,255,0.96) 55%,
+        rgba(255,255,255,0.55) 78%,
+        rgba(255,255,255,0.0) 100%);
+      pointer-events:none;
+    }
+
+    /* Assign images per family (REAL FILENAMES) */
+    .family-btn[data-family="BLS"]::after        { background-image: url("assets/images/family/family-bls.jpg"); }
+    .family-btn[data-family="ACLS"]::after       { background-image: url("assets/images/family/family-acls.jpg"); }
+    .family-btn[data-family="PALS"]::after       { background-image: url("assets/images/family/family-pals.jpg"); }
+
+    /* Map these to your current available set */
+    .family-btn[data-family="Heartsaver"]::after { background-image: url("assets/images/family/family-cpr-aed.jpg"); }
+    .family-btn[data-family="FirstAid"]::after   { background-image: url("assets/images/family/family-fa-cpr-aed.jpg"); }
+    .family-btn[data-family="Online"]::after     { background-image: url("assets/images/family/family-bls.jpg"); }
+    .family-btn[data-family="Other"]::after      { background-image: url("assets/images/family/family-cpr-aed.jpg"); }
 
     .family-btn-main {
       position: relative;
@@ -353,6 +356,19 @@
       box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
     }
 
+    /* Family list CTA button */
+    .family-action{
+      background: var(--accent-soft);
+      border-color: rgba(148,163,184,0.75);
+    }
+    .family-action .family-btn-label{ color: var(--accent-color); }
+    .family-action .family-btn-tag{
+      background: rgba(255,255,255,0.75);
+      color: var(--accent-color);
+    }
+    /* No image peek on the CTA row */
+    .family-action::after{ background-image:none !important; opacity: 0 !important; }
+
     .family-help {
       margin-top: 10px;
       font-size: 11px;
@@ -362,9 +378,7 @@
     .family-help a { color: var(--accent-color); text-decoration: none; font-weight: 650; }
     .family-help a:hover { text-decoration: underline; }
 
-    /* ===== Seasonal / holiday decor hooks =====
-       theme-scheduler.js / themes.css can override these backgrounds.
-       We give sane defaults so it's never blank. */
+    /* Seasonal / holiday decor hooks */
     #seasonalDivider.theme-separator {
       margin: 16px 0 18px;
       height: 18px;
@@ -432,7 +446,7 @@
       gap: 10px;
     }
 
-    /* ===== Course "curtain" accordion ===== */
+    /* Course curtain accordion */
     .course-card {
       background: var(--card-bg);
       border-radius: 16px;
@@ -452,9 +466,7 @@
       background: rgba(248, 250, 252, 0.9);
     }
 
-    .course-head:hover {
-      background: rgba(248, 250, 252, 1);
-    }
+    .course-head:hover { background: rgba(248, 250, 252, 1); }
 
     .course-head-left {
       min-width: 0;
@@ -463,7 +475,7 @@
       gap: 2px;
     }
 
-    /* Main + subtitle outline (fix ugly HTML titles) */
+    /* Main + subtitle outline */
     .course-title {
       font-size: 14px;
       font-weight: 750;
@@ -492,16 +504,10 @@
       flex: 0 0 auto;
     }
 
-    .course-body {
-      padding: 0 12px 12px;
-      display: none;
-    }
+    .course-body { padding: 0 12px 12px; display: none; }
+    .course-card.open .course-body { display: block; }
 
-    .course-card.open .course-body {
-      display: block;
-    }
-
-    /* Render "ugly" HTML course description cleanly (when we show it in body) */
+    /* Render "ugly" HTML description cleanly (in body) */
     .course-desc {
       font-size: 12.5px;
       color: var(--text-muted);
@@ -535,22 +541,12 @@
     }
 
     @media (max-width: 520px){
-      .session-row{
-        grid-template-columns: 1fr;
-        gap: 8px;
-      }
+      .session-row{ grid-template-columns: 1fr; gap: 8px; }
       .session-cta { justify-content: flex-start; }
     }
 
-    .session-datetime {
-      font-size: 12px;
-      font-weight: 650;
-    }
-
-    .session-location {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
+    .session-datetime { font-size: 12px; font-weight: 650; }
+    .session-location { font-size: 11px; color: var(--text-muted); }
 
     .session-price {
       font-size: 11px;
@@ -558,14 +554,9 @@
       font-style: italic;
       text-align: right;
     }
-    @media (max-width: 520px){
-      .session-price { text-align: left; }
-    }
+    @media (max-width: 520px){ .session-price { text-align: left; } }
 
-    .session-cta {
-      display: flex;
-      justify-content: flex-end;
-    }
+    .session-cta { display: flex; justify-content: flex-end; }
 
     .session-btn {
       border-radius: 999px;
@@ -580,11 +571,8 @@
       white-space: nowrap;
     }
 
-    .see-more-wrap{
-      margin-top: 8px;
-      display: flex;
-      justify-content: flex-start;
-    }
+    .see-more-wrap{ margin-top: 8px; display: flex; justify-content: flex-start; }
+
     .see-more-btn{
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.75);
@@ -595,9 +583,7 @@
       padding: 7px 10px;
       cursor: pointer;
     }
-    .see-more-btn:hover{
-      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12);
-    }
+    .see-more-btn:hover{ box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12); }
 
     .status {
       font-size: 12px;
@@ -606,6 +592,17 @@
       line-height: 1.25;
     }
     .status strong { display:block; margin-bottom: 4px; color: var(--text-main); }
+
+    /* Onsite embed */
+    #onsiteWrap { display:none; }
+    #onsiteFrame{
+      width:100%;
+      height:78vh;
+      border:0;
+      border-radius:14px;
+      background:#fff;
+      box-shadow: var(--shadow-soft);
+    }
 
     /* Footer */
     .site-footer {
@@ -627,10 +624,7 @@
       align-items: center;
     }
 
-    .footer-inner a {
-      color: #e5e7eb;
-      text-decoration: none;
-    }
+    .footer-inner a { color: #e5e7eb; text-decoration: none; }
     .footer-inner a:hover { text-decoration: underline; }
 
     /* Chatbot */
@@ -654,7 +648,6 @@
   </style>
 </head>
 
-<!-- Default should be BLS -->
 <body class="family-BLS theme-default">
   <div class="page-shell">
     <header class="site-header">
@@ -681,7 +674,7 @@
           </div>
 
           <div class="top-links">
-            <a class="top-link-btn primary" href="#" id="groupInquiryLink">Group Pricing / Inquiry</a>
+            <a class="top-link-btn primary" href="/onsite.html">Group Pricing / Inquiry</a>
             <a class="top-link-btn" href="mailto:info@910cpr.com">Email 910CPR</a>
             <a class="top-link-btn" href="tel:+19103955193">Call / Text</a>
           </div>
@@ -704,6 +697,15 @@
           </div>
 
           <div class="family-list" id="familyList">
+            <!-- Onsite button shows onsite.html in right panel -->
+            <button type="button" class="family-btn family-action" id="btnOnsite">
+              <div class="family-btn-main">
+                <span class="family-btn-label">Group Pricing / Inquiry</span>
+                <span class="family-btn-note">On-site training • multiple employees • fast scheduling</span>
+              </div>
+              <span class="family-btn-tag">Onsite</span>
+            </button>
+
             <button type="button" class="family-btn active" data-family="BLS">
               <div class="family-btn-main">
                 <span class="family-btn-label">BLS · Healthcare Provider CPR</span>
@@ -792,6 +794,11 @@
             <span class="filter-chip"><strong>Class family:</strong> <span id="chipFamily">BLS</span></span>
           </div>
 
+          <!-- Onsite embed area -->
+          <div id="onsiteWrap">
+            <iframe id="onsiteFrame" src="/onsite.html" loading="lazy"></iframe>
+          </div>
+
           <div id="courseList" class="course-list">
             <div class="status" id="statusMessage">
               <strong>Loading schedule…</strong>
@@ -805,7 +812,7 @@
     <footer class="site-footer">
       <div class="footer-inner">
         <div>© 910CPR · Wilmington &amp; Burgaw, NC · <a href="tel:+19103955193">(910) 395-5193</a></div>
-        <div>Need a group class at your workplace? <a href="#" id="groupInquiryFooter">Request on-site training</a></div>
+        <div>Need a group class at your workplace? <a href="/onsite.html">Request on-site training</a></div>
       </div>
     </footer>
   </div>
@@ -815,20 +822,12 @@
 
 <script>
 (function(){
-  // ====== EDITABLE LINKS (no hidden URLs) ======
   const LINKS = {
     scheduleJson: "/data/schedule.json",
-    groupInquiry: "/group-pricing.html",
-    scheduleFallback: "https://www.enrollware.com/site/coastalcprtraining/schedule"
+    scheduleFallback: "https://www.enrollware.com/site/coastalcprtraining/schedule",
+    onsiteUrl: "/onsite.html"
   };
 
-  // Wire top links
-  const gi = document.getElementById("groupInquiryLink");
-  const gi2 = document.getElementById("groupInquiryFooter");
-  if (gi) gi.href = LINKS.groupInquiry;
-  if (gi2) gi2.href = LINKS.groupInquiry;
-
-  // ====== Family meta (titles/subtitles) ======
   const FAMILY_META = {
     BLS: { bodyClass: "family-BLS", title: "BLS · Healthcare Provider CPR – Live Schedule", subtitle: "Showing upcoming BLS classes across Wilmington & Burgaw." },
     ACLS:{ bodyClass: "family-ACLS", title: "ACLS · Advanced Cardiac Life Support – Live Schedule", subtitle: "Upcoming ACLS sessions across Wilmington & Burgaw." },
@@ -841,15 +840,15 @@
 
   const $ = (sel) => document.querySelector(sel);
 
+  let MODEL = null;
+  let ACTIVE_FAMILY = "BLS";
+
   function parseMoney(v){
     if (v == null) return null;
     const n = Number(String(v).replace(/[^0-9.]/g,""));
     return Number.isFinite(n) ? n : null;
   }
-  function fmtMoney(n){
-    if (!Number.isFinite(n)) return "";
-    return "$" + n.toFixed(0);
-  }
+  function fmtMoney(n){ return Number.isFinite(n) ? "$" + n.toFixed(0) : ""; }
 
   function toDateObj(session){
     const raw =
@@ -887,10 +886,8 @@
     return `${wd}, ${md} '${yr} · ${tm}`;
   }
 
-  // Turn Enrollware HTML title into (main, subtitle)
   function splitTitleHtml(html){
     const safe = String(html || "");
-    // Normalize line breaks and drop images (they don't belong in the title)
     const normalized = safe
       .replace(/<img[^>]*>/gi, "")
       .replace(/<br\s*\/?>/gi, "\n")
@@ -899,14 +896,10 @@
     const tmp = document.createElement("div");
     tmp.innerHTML = normalized;
 
-    // Pull text (not HTML tags)
     const text = (tmp.textContent || "").replace(/\s+\n/g, "\n").replace(/\n\s+/g, "\n").trim();
-
-    // If Enrollware crams the "requirements" after a dash or pipe, prefer splitting there
     const firstLine = text.split("\n")[0] || "";
     const restLines = text.split("\n").slice(1).join(" • ").trim();
 
-    // Secondary split if it’s all in one line
     let main = firstLine;
     let sub = restLines;
 
@@ -922,11 +915,24 @@
       }
     }
 
-    // Final cleanup
     main = main.replace(/\s+/g, " ").trim();
     sub = sub.replace(/\s+/g, " ").trim();
 
     return { main: main || "Course", sub };
+  }
+
+  function inferFamily(courseTitle){
+    const t = (courseTitle || "").toUpperCase();
+    if (t.includes("ACLS")) return "ACLS";
+    if (t.includes("PALS")) return "PALS";
+    if (t.includes("BLS")) return "BLS";
+    if (t.includes("HEARTSAVER")) return "Heartsaver";
+    if (t.includes("HEARTCODE") || t.includes("SKILLS") || t.includes("ONLINE")) return "Online";
+    if (t.includes("HSI")) return "FirstAid";
+    if (t.includes("FIRST AID")) return "FirstAid";
+    if (t.includes("USCG") || t.includes("OSHA") || t.includes("DAN") || t.includes("INSTRUCTOR")) return "Other";
+    if (t.includes("RED CROSS") || t.includes("ARC")) return "Other";
+    return "Other";
   }
 
   function getCourseKey(s){
@@ -940,7 +946,6 @@
     );
   }
 
-  // Prefer HTML title fields if present
   function getCourseTitleHtml(s){
     return (
       s.course_title_html ||
@@ -959,7 +964,6 @@
   }
 
   function getCourseDescriptionHtml(s){
-    // This is the long "description-like" HTML. If you later add a dedicated field, hook it here.
     return (
       s.course_desc_html ||
       s.courseDescHtml ||
@@ -967,7 +971,7 @@
       s.descriptionHtml ||
       s.course_description_html ||
       s.courseDescriptionHtml ||
-      s.course_subtitle_html ||   // (fallback)
+      s.course_subtitle_html ||
       s.subtitle_html ||
       s.subtitleHtml ||
       s.course_subtitle ||
@@ -998,20 +1002,6 @@
     return parseMoney(s.price ?? s.cost ?? s.amount ?? s.class_price ?? s.classPrice);
   }
 
-  function inferFamily(courseTitle){
-    const t = (courseTitle || "").toUpperCase();
-    if (t.includes("ACLS")) return "ACLS";
-    if (t.includes("PALS")) return "PALS";
-    if (t.includes("BLS")) return "BLS";
-    if (t.includes("HEARTSAVER")) return "Heartsaver";
-    if (t.includes("HEARTCODE") || t.includes("SKILLS") || t.includes("ONLINE")) return "Online";
-    if (t.includes("HSI")) return "FirstAid";
-    if (t.includes("FIRST AID")) return "FirstAid";
-    if (t.includes("USCG") || t.includes("OSHA") || t.includes("DAN") || t.includes("INSTRUCTOR")) return "Other";
-    if (t.includes("RED CROSS") || t.includes("ARC")) return "Other";
-    return "Other";
-  }
-
   function normalizeSchedule(raw){
     let sessions = [];
     if (Array.isArray(raw)) sessions = raw;
@@ -1023,7 +1013,6 @@
 
     sessions = sessions.map(s => Object.assign({}, s, { __courseKey: s.course_key || s.courseKey || getCourseKey(s) }));
 
-    // Build course map from sessions (most stable for your live JSON)
     const courseMap = new Map();
     for (const s of sessions){
       const key = s.__courseKey;
@@ -1055,12 +1044,10 @@
       sessionsByCourse.get(ck).push(s);
     }
 
-    // sort sessions by date
     for (const [ck, list] of sessionsByCourse){
       list.sort((a,b) => (toDateObj(a)?.getTime() ?? 0) - (toDateObj(b)?.getTime() ?? 0));
     }
 
-    // keep only upcoming
     const upcomingByCourse = new Map();
     for (const [ck, list] of sessionsByCourse){
       const upcoming = list.filter(s => {
@@ -1070,18 +1057,15 @@
       if (upcoming.length) upcomingByCourse.set(ck, upcoming);
     }
 
-    // group by family -> courses
     const familyMap = new Map();
     for (const [ck, list] of upcomingByCourse){
       const c = courseByKey.get(ck);
       if (!c) continue;
       const fam = c.family || inferFamily(c.titleMain);
-
       if (!familyMap.has(fam)) familyMap.set(fam, []);
       familyMap.get(fam).push({ course: c, sessions: list });
     }
 
-    // sort courses by next session
     for (const [fam, arr] of familyMap){
       arr.sort((a,b) => (toDateObj(a.sessions[0])?.getTime() ?? 0) - (toDateObj(b.sessions[0])?.getTime() ?? 0));
     }
@@ -1107,13 +1091,44 @@
 
   function clearActiveFamilyBtn(family){
     document.querySelectorAll(".family-btn").forEach(btn => {
+      if (btn.id === "btnOnsite") { btn.classList.remove("active"); return; }
       btn.classList.toggle("active", btn.dataset.family === family);
     });
   }
 
-  // Single-open "curtain" behavior
   function closeAllCourseCurtains(listEl){
     listEl.querySelectorAll(".course-card.open").forEach(card => card.classList.remove("open"));
+  }
+
+  function showOnsitePanel(){
+    document.querySelectorAll(".family-btn").forEach(b => b.classList.remove("active"));
+
+    const courseList = document.getElementById("courseList");
+    const onsiteWrap = document.getElementById("onsiteWrap");
+    if (courseList) courseList.style.display = "none";
+    if (onsiteWrap) onsiteWrap.style.display = "block";
+
+    document.getElementById("scheduleTitle").textContent = "Group Pricing / Inquiry";
+    document.getElementById("scheduleSubtitle").textContent =
+      "Request on-site training for your workplace, school, or organization.";
+
+    const chip = document.getElementById("chipFamily");
+    if (chip) chip.textContent = "Onsite";
+  }
+
+  function showSchedulePanel(){
+    const courseList = document.getElementById("courseList");
+    const onsiteWrap = document.getElementById("onsiteWrap");
+    if (onsiteWrap) onsiteWrap.style.display = "none";
+    if (courseList) courseList.style.display = "block";
+  }
+
+  // MOBILE UX: scroll to the schedule panel after selection
+  function scrollToSchedulePanel(){
+    if (window.matchMedia("(max-width: 900px)").matches){
+      const panel = document.getElementById("schedulePanel");
+      if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 
   function renderFamilyCourses(family, model){
@@ -1171,10 +1186,8 @@
       const body = document.createElement("div");
       body.className = "course-body";
 
-      // Long HTML description lives here (not in the title line)
       const desc = document.createElement("div");
       desc.className = "course-desc";
-      // Render HTML (but you should still keep your Enrollware HTML reasonably clean)
       desc.innerHTML = c.descHtml || "";
 
       const sessionList = document.createElement("div");
@@ -1228,7 +1241,6 @@
           row.appendChild(left);
           row.appendChild(mid);
           row.appendChild(right);
-
           sessionList.appendChild(row);
         }
         shown += slice.length;
@@ -1263,14 +1275,12 @@
       seeMoreWrap.appendChild(seeMoreBtn);
       refreshSeeMore();
 
-      // Assemble body
       if ((c.descHtml || "").trim()){
         body.appendChild(desc);
       }
       body.appendChild(sessionList);
       body.appendChild(seeMoreWrap);
 
-      // Click header = open this curtain, close others
       head.addEventListener("click", () => {
         const wasOpen = card.classList.contains("open");
         closeAllCourseCurtains(listEl);
@@ -1279,19 +1289,11 @@
 
       card.appendChild(head);
       card.appendChild(body);
-
       listEl.appendChild(card);
 
-      // Default: open the first curtain in the selected family
-      if (idx === 0){
-        card.classList.add("open");
-      }
+      if (idx === 0) card.classList.add("open");
     });
   }
-
-  // ===== Load schedule + bind UI =====
-  let MODEL = null;
-  let ACTIVE_FAMILY = "BLS"; // Default BLS on initial open
 
   async function loadSchedule(){
     const status = $("#statusMessage");
@@ -1313,12 +1315,12 @@
         throw new Error("No upcoming sessions grouped by family");
       }
 
-      // Force BLS default if it exists, otherwise first available
       if (!MODEL.familyMap.has(ACTIVE_FAMILY)){
         ACTIVE_FAMILY = availableFamilies[0];
       }
 
       status?.remove();
+      showSchedulePanel();
       setFamilyUI(ACTIVE_FAMILY);
       clearActiveFamilyBtn(ACTIVE_FAMILY);
       renderFamilyCourses(ACTIVE_FAMILY, MODEL);
@@ -1343,27 +1345,30 @@
       const btn = e.target.closest(".family-btn");
       if (!btn) return;
 
+      // Onsite
+      if (btn.id === "btnOnsite"){
+        showOnsitePanel();
+        scrollToSchedulePanel();
+        return;
+      }
+
       const fam = btn.dataset.family || "BLS";
       ACTIVE_FAMILY = fam;
 
+      showSchedulePanel();
       setFamilyUI(fam);
       clearActiveFamilyBtn(fam);
 
       if (MODEL){
         renderFamilyCourses(fam, MODEL);
+        scrollToSchedulePanel();
       }
     });
   }
 
-  // Optional: let theme-scheduler.js set images if it wants.
-  // If it doesn't, you can hard-set a fallback here later.
   function hookSeasonalDecorFallbacks(){
     const divider = document.getElementById("seasonalDivider");
     const corner = document.getElementById("seasonalCorner");
-
-    // If themes.css sets backgrounds via body theme classes, we don't touch it.
-    // But if nothing is set, your defaults above still show (no empty UI).
-    // This is here mainly as a "hook point" if theme-scheduler exposes globals later.
     if (divider) divider.classList.add("ready");
     if (corner) corner.classList.add("ready");
   }
