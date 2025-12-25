@@ -65,20 +65,16 @@
     .panel-head h2{ margin:0; font-size:13px; font-weight:800; }
     .panel-head p{ margin:4px 0 0; color:var(--muted); font-size:12px; line-height:1.25; }
 
-/* MAIFD widget: make sure it has visible size and is not clipped */
-.chatbot embeddable-voice{
+/* MAIFD embed: visible, sized, and nicely separated from the text above */
+#familyPanel .maifdInline{
+  margin-top:12px;
+}
+
+#familyPanel .maifdInline embeddable-voice{
   display:block;
-  min-height:520px;   /* adjust if you want it shorter */
   width:100%;
+  min-height:520px;  /* adjust shorter/taller as you like */
 }
-
-/* IMPORTANT: prevent the left panel from clipping widget internals */
-#familyPanel{
-  overflow:visible;
-}
-
-
-
 
 
     /* Family list */
@@ -428,7 +424,7 @@
 
         <div class="chatbot">
           <h3>Need help picking the right class?</h3>
-          <p>Share with the AI Assistant: What do you need it for — She will point you to the best match.</p>
+          <p>Share with the AI Assistant; What do you need it for — She will point you to the best match.</p>
         <!-- MAIFD / 247 AI Receptionist widget -->
 <embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
 <script src="https://cdn.247aireceptionist.com/call-embeddable-widget-v2.js"></script>
