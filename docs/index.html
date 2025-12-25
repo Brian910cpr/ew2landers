@@ -65,6 +65,22 @@
     .panel-head h2{ margin:0; font-size:13px; font-weight:800; }
     .panel-head p{ margin:4px 0 0; color:var(--muted); font-size:12px; line-height:1.25; }
 
+/* MAIFD widget: make sure it has visible size and is not clipped */
+.chatbot embeddable-voice{
+  display:block;
+  min-height:520px;   /* adjust if you want it shorter */
+  width:100%;
+}
+
+/* IMPORTANT: prevent the left panel from clipping widget internals */
+#familyPanel{
+  overflow:visible;
+}
+
+
+
+
+
     /* Family list */
     .family-list{ padding:12px 12px 14px; display:flex; flex-direction:column; gap:8px; }
     .family-btn{
