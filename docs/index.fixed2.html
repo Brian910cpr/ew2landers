@@ -478,7 +478,211 @@
       gap: 10px;
     }
 
-    .course-card {
+    function renderFamilyCourses(family, model){
+    const listEl = $("#courseList");
+    listEl.innerHTML = "";
+
+    const courses = model.familyMap.get(family) || [];
+    if (!courses.length){
+      listEl.innerHTML = `
+        <div class="status">
+          <strong>No upcoming sessions found.</strong><br>
+          Try another class family, or view the full schedule:
+          <div style="margin-top:6px;">
+            <a href="${LINKS.scheduleFallback}" style="color:var(--accent-color); font-weight:650;">${LINKS.scheduleFallback}</a>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // helper: split "pill_html" title into main + subtitle text (no tags)
+    function splitTitleAndSubtitle(htmlOrText){
+      const raw = String(htmlOrText || "").trim();
+      if (!raw) return { main:"Course", sub:"" };
+
+      // If it contains tags, parse it; otherwise treat as plain text.
+      if (raw.includes("<")){
+        const wrap = document.createElement("div");
+        wrap.innerHTML = raw;
+
+        // Prefer innerText because Enrollware pills often use <br> and block divs.
+        const lines = (wrap.innerText || "")
+          .split("\n")
+          .map(s => s.replace(/\s+/g," ").trim())
+          .filter(Boolean);
+
+        return {
+          main: lines[0] || "Course",
+          sub: lines.slice(1).join(" · ")
+        };
+      }
+
+      // plain text fallback
+      return { main: raw, sub: "" };
+    }
+
+    // only one open at a time
+    function setOpen(card, shouldOpen){
+      // close others
+      listEl.querySelectorAll(".course-card.open").forEach(el => {
+        if (el !== card) el.classList.remove("open");
+      });
+      if (shouldOpen) card.classList.add("open");
+      else card.classList.remove("open");
+    }
+
+    const INITIAL_SHOW = 10;
+    const INCREMENT = 10;
+
+    courses.forEach((c, idx) => {
+      const allSessions = c.sessions || [];
+
+      const card = document.createElement("div");
+      card.className = "course-card" + (idx === 0 ? " open" : "");
+
+      const header = document.createElement("div");
+      header.className = "course-card-header";
+      header.setAttribute("role","button");
+      header.setAttribute("tabindex","0");
+      header.setAttribute("aria-expanded", idx === 0 ? "true" : "false");
+
+      // provider badge (AHA/ARC/HSI)
+      const prov = providerFromTitle(c.title);
+      if (prov){
+        const pb = document.createElement("span");
+        pb.className = "provider-badge provider-" + prov.toLowerCase();
+        pb.textContent = prov;
+        header.appendChild(pb);
+      }
+
+      // Title (clean) + subtitle (clean)
+      const t = splitTitleAndSubtitle(c.title);
+      const titleWrap = document.createElement("div");
+      titleWrap.className = "course-card-titlewrap";
+
+      const title = document.createElement("div");
+      title.className = "course-card-title";
+      title.textContent = t.main;
+
+      const sub = document.createElement("div");
+      sub.className = "course-card-subtitle";
+      sub.textContent = t.sub || "";
+
+      titleWrap.appendChild(title);
+      if (t.sub) titleWrap.appendChild(sub);
+
+      const badge = document.createElement("div");
+      badge.className = "course-card-badge";
+      badge.textContent = "Instructor-led · Wilmington & Burgaw";
+
+      header.appendChild(titleWrap);
+      header.appendChild(badge);
+
+      // BODY (this is the "curtain")
+      const body = document.createElement("div");
+      body.className = "course-card-body";
+
+      const desc = document.createElement("div");
+      desc.className = "course-card-desc";
+      // IMPORTANT: "ugly" HTML subtitle should render as HTML (no visible tags)
+      desc.innerHTML = c.subtitleHtml || "Select a date below to go directly to registration.";
+      body.appendChild(desc);
+
+      const sessionList = document.createElement("div");
+      sessionList.className = "session-list";
+      body.appendChild(sessionList);
+
+      // state
+      let shown = 0;
+
+      function addNext(n){
+        const slice = allSessions.slice(shown, shown + n);
+        for (const s of slice){
+          const d = toDateObj(s);
+          const when = d ? formatWhen(d) : (s.when || s.date || "Date TBD");
+          const loc = s.location || s.cityState || "";
+          const enroll = s.enroll || s.enroll_url || s.enrollUrl || s.url || "";
+
+          const row = document.createElement("div");
+          row.className = "session-row";
+
+          const left = document.createElement("div");
+          left.className = "session-left";
+          left.innerHTML = `<div class="session-when">${escapeHtml(when)}</div>
+                            <div class="session-loc">${escapeHtml(loc)}</div>`;
+
+          const mid = document.createElement("div");
+          mid.className = "session-mid";
+          mid.textContent = s.price || "";
+
+          const right = document.createElement("div");
+          right.className = "session-right";
+          const btn = document.createElement("button");
+          btn.className = "session-btn";
+          btn.textContent = "Register";
+          btn.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            if (enroll) window.location.href = enroll;
+          });
+          right.appendChild(btn);
+
+          row.appendChild(left);
+          row.appendChild(mid);
+          row.appendChild(right);
+
+          sessionList.appendChild(row);
+        }
+        shown += slice.length;
+      }
+
+      addNext(INITIAL_SHOW);
+
+      let moreBtn = null;
+      function updateMoreBtn(){
+        if (moreBtn) moreBtn.remove();
+        if (shown >= allSessions.length) return;
+
+        moreBtn = document.createElement("button");
+        moreBtn.className = "see-more";
+        const remaining = allSessions.length - shown;
+        const take = Math.min(INCREMENT, remaining);
+        moreBtn.textContent = `See ${take} more…`;
+        moreBtn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          addNext(INCREMENT);
+          updateMoreBtn();
+        });
+
+        body.appendChild(moreBtn);
+      }
+      updateMoreBtn();
+
+      // header click/keyboard toggles curtain, and closes others
+      function toggle(){
+        const isOpen = card.classList.contains("open");
+        setOpen(card, !isOpen);
+        header.setAttribute("aria-expanded", String(!isOpen));
+      }
+      header.addEventListener("click", toggle);
+      header.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " "){
+          e.preventDefault();
+          toggle();
+        }
+      });
+
+      card.appendChild(header);
+      card.appendChild(body);
+      listEl.appendChild(card);
+    });
+
+    // Ensure only the first is open on render
+    const first = listEl.querySelector(".course-card");
+    if (first){
+      listEl.querySelectorAll(".course-card").forEach((c, i)=>c.classList.toggle("open", i===0));
+    }
+  }
       background: var(--card-bg);
       border-radius: 16px;
       border: 1px solid rgba(148, 163, 184, 0.6);
@@ -493,6 +697,34 @@
       margin-bottom: 4px;
       flex-wrap: wrap;
       align-items: center;
+    }
+
+    .course-card-header{
+      cursor: pointer;
+    }
+
+    .course-card-titlewrap{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+
+    .course-card-subtitle{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .course-card-body{
+      display:none;
+      margin-top:8px;
+    }
+    .course-card.open .course-card-body{
+      display:block;
     }
 
     .course-card-title {
