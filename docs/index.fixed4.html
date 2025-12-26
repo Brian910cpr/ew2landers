@@ -1,0 +1,1212 @@
+!DOCTYPE html
+html lang=en
+head
+  meta charset=utf-8 
+  title910CPR Class Scheduletitle
+  meta name=viewport content=width=device-width, initial-scale=1 
+
+  !-- Styles --
+  link rel=stylesheet href=assetscssthemes.css 
+  link rel=stylesheet href=assetscssmain.css 
+
+  style
+    root{
+      --bg#f5f7fb;
+      --card#ffffff;
+      --text#111827;
+      --muted#6b7280;
+      --borderrgba(148,163,184,.6);
+      --shadow0 8px 20px rgba(15,23,42,.12);
+      --max1200px;
+      --accent#0d47a1;
+      --accentSoftrgba(13,71,161,.08);
+
+       image vars (set at runtime) 
+      --img-family-bls none;
+      --img-family-acls none;
+      --img-family-pals none;
+      --img-family-cpr-aed none;
+      --img-family-fa-cpr-aed none;
+      --img-divider none;
+      --img-corner none;
+    }
+
+    body{ margin0; font-familysystem-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; backgroundvar(--bg); colorvar(--text); }
+    .wrap{ max-widthvar(--max); margin0 auto; padding14px 16px 40px; }
+
+    header{ positionsticky; top0; z-index50; backgroundrgba(255,255,255,.92); backdrop-filterblur(10px); border-bottom1px solid rgba(148,163,184,.3); }
+    .hdr{ displayflex; gap12px; align-itemscenter; justify-contentspace-between; max-widthvar(--max); margin0 auto; padding10px 16px; }
+    .hdr-left{ displayflex; gap12px; align-itemscenter; min-width0; }
+    .logo{ height44px; widthauto; border-radius10px; border1px solid rgba(148,163,184,.5); background#fff; padding4px; }
+    .hdr-title{ font-weight800; font-size16px; line-height1.1; margin0; white-spacenowrap; overflowhidden; text-overflowellipsis; }
+    .hdr-sub{ margin2px 0 0; font-size12px; colorvar(--muted); white-spacenowrap; overflowhidden; text-overflowellipsis; }
+    .hdr-right{ displayflex; gap8px; flex-wrapwrap; justify-contentflex-end; }
+    .top-btn{
+      displayinline-flex; align-itemscenter; gap6px;
+      font-size12px; font-weight700;
+      padding7px 10px; border-radius999px;
+      text-decorationnone; color#0f172a;
+      background#fff; border1px solid rgba(148,163,184,.7);
+      box-shadow0 2px 8px rgba(15,23,42,.08);
+    }
+    .top-btn.primary{ colorvar(--accent); backgroundvar(--accentSoft); border-colorrgba(13,71,161,.35); }
+
+    .grid{ displaygrid; grid-template-columnsminmax(260px,340px) minmax(0,1fr); gap18px; margin-top14px; }
+    @media (max-width900px){ .grid{ grid-template-columns1fr; } }
+
+    .panel{
+      backgroundrgba(255,255,255,.96);
+      border1px solid var(--border);
+      border-radius16px;
+      box-shadowvar(--shadow);
+      overflowhidden;
+    }
+    .panel-head{ padding12px 14px 8px; border-bottom1px solid rgba(148,163,184,.25); }
+    .panel-head h2{ margin0; font-size13px; font-weight800; }
+    .panel-head p{ margin4px 0 0; colorvar(--muted); font-size12px; line-height1.25; }
+
+ MAIFD embed visible, sized, and nicely separated from the text above 
+#familyPanel .maifdInline{
+  margin-top12px;
+}
+
+#familyPanel .maifdInline embeddable-voice{
+  displayblock;
+  width100%;
+  min-height520px;   adjust shortertaller as you like 
+}
+
+
+     Family list 
+    .family-list{ padding12px 12px 14px; displayflex; flex-directioncolumn; gap8px; }
+    .family-btn{
+      positionrelative;
+      width100%;
+      text-alignleft;
+      border-radius999px;
+      border1px solid rgba(148,163,184,.7);
+      padding9px 12px;
+      background#f9fafb;
+      cursorpointer;
+      overflowhidden;
+      displaygrid;
+      grid-template-columnsminmax(0,1fr) auto;
+      align-itemscenter;
+      gap10px;
+      transition box-shadow .15s ease, border-color .15s ease, background .15s ease;
+    }
+    .family-btn.active{
+      background#fff;
+      border-colorvar(--accent);
+      box-shadow0 6px 18px rgba(15,23,42,.16);
+    }
+
+     Right 25% image peek 
+    .family-btnafter{
+      content;
+      positionabsolute;
+      top0; right0;
+      width25%;
+      height100%;
+      background-sizecover;
+      background-positioncenter;
+      opacity.55;
+      border-left1px solid rgba(148,163,184,.25);
+      pointer-eventsnone;
+      filtercontrast(1.15) saturate(1.1);
+    }
+
+     Fade mask keep left readable, show image better at far-right 
+    .family-btnbefore{
+      content;
+      positionabsolute;
+      inset0;
+      pointer-eventsnone;
+      backgroundlinear-gradient(to right,
+        rgba(255,255,255,0.98) 0%,
+        rgba(255,255,255,0.92) 50%,
+        rgba(255,255,255,0.55) 72%,
+        rgba(255,255,255,0.10) 88%,
+        rgba(255,255,255,0.00) 100%);
+    }
+
+     Family image vars (set via JS) 
+    .family-btn[data-family=BLS]after        { background-imagevar(--img-family-bls); }
+    .family-btn[data-family=ACLS]after       { background-imagevar(--img-family-acls); }
+    .family-btn[data-family=PALS]after       { background-imagevar(--img-family-pals); }
+    .family-btn[data-family=Heartsaver]after { background-imagevar(--img-family-cpr-aed); }
+    .family-btn[data-family=FirstAid]after   { background-imagevar(--img-family-fa-cpr-aed); }
+    .family-btn[data-family=Online]after     { background-imagevar(--img-family-bls); }
+    .family-btn[data-family=Other]after      { background-imagevar(--img-family-cpr-aed); }
+
+    .family-main{ positionrelative; z-index2; min-width0; displayflex; flex-directioncolumn; gap2px; }
+    .family-label{ font-weight800; font-size13px; white-spacenowrap; overflowhidden; text-overflowellipsis; }
+    .family-note{ font-size11px; colorvar(--muted); white-spacenowrap; overflowhidden; text-overflowellipsis; }
+
+     Tag hidden by default; shown on hoverfocus or if image fails 
+    .family-tag{
+      positionrelative; z-index2;
+      font-size11px; font-weight800;
+      padding3px 8px;
+      border-radius999px;
+      backgroundvar(--accentSoft);
+      colorvar(--accent);
+      white-spacenowrap;
+      opacity0;
+      transformtranslateX(6px);
+      transitionopacity .15s ease, transform .15s ease;
+    }
+    .family-btnhover .family-tag,
+    .family-btnfocus-visible .family-tag{
+      opacity1;
+      transformnone;
+    }
+    .family-btn.noimg .family-tag{
+      opacity1;
+      transformnone;
+    }
+
+    .family-action{ backgroundvar(--accentSoft); }
+    .family-action .family-tag{ opacity1; transformnone; backgroundrgba(255,255,255,.75); }
+
+     Right panel 
+    .sched-wrap{ padding12px 14px 14px; }
+    .sched-title{ margin0; font-size18px; font-weight900; line-height1.15; }
+    .sched-sub{ margin4px 0 0; font-size12px; colorvar(--muted); }
+
+     seasonal decor 
+    #seasonalDivider{
+      margin14px 0 12px;
+      height18px;
+      border-radius999px;
+      border1px solid rgba(148,163,184,.45);
+      background-imagevar(--img-divider);
+      background-repeatno-repeat;
+      background-positioncenter;
+      background-sizecover;
+      overflowhidden;
+    }
+    #seasonalCorner{
+      positionfixed;
+      right10px;
+      bottom10px;
+      width96px;
+      height96px;
+      opacity.22;
+      pointer-eventsnone;
+      z-index60;
+      background-imagevar(--img-corner);
+      background-repeatno-repeat;
+      background-positioncenter;
+      background-sizecontain;
+      filterdrop-shadow(0 6px 10px rgba(15,23,42,.25));
+    }
+
+     course cards (curtains) 
+    .course-list{ displayflex; flex-directioncolumn; gap12px; margin-top10px; }
+    .course-card{
+      backgroundvar(--card);
+      border1px solid rgba(148,163,184,.55);
+      border-radius16px;
+      box-shadowvar(--shadow);
+      overflowhidden;
+    }
+    .course-card-header{
+      padding10px 12px;
+      cursorpointer;
+      backgroundrgba(248,250,252,.92);
+      displayflex;
+      justify-contentspace-between;
+      gap10px;
+      align-itemsflex-start;
+    }
+    .course-card-titlewrap{ min-width0; displayflex; flex-directioncolumn; gap2px; }
+    .course-card-title{
+      font-size14px;
+      font-weight900;
+      line-height1.2;
+      white-spacenowrap;
+      overflowhidden;
+      text-overflowellipsis;
+    }
+    .course-card-subtitle{
+      font-size12px;
+      colorvar(--muted);
+      line-height1.25;
+      white-spacenowrap;
+      overflowhidden;
+      text-overflowellipsis;
+    }
+
+     Certifying-body logo badge (replaces text pill) 
+    .certBadge{
+      displayinline-flex;
+      align-itemscenter;
+      justify-contentcenter;
+      padding6px 10px;
+      border1px solid rgba(0,0,0,.12);
+      border-radius999px;
+      background#fff;
+      box-shadow0 1px 2px rgba(0,0,0,.08);
+    }
+    .certBadge img{
+      displayblock;
+      height20px;
+      widthauto;
+      max-width70px;
+      object-fitcontain;
+    }
+    @media (max-width420px){
+      .certBadge img{ height18px; max-width64px; }
+    }
+
+    .provider-badge{
+      font-size11px;
+      font-weight900;
+      padding3px 8px;
+      border-radius999px;
+      backgroundrgba(15,23,42,.06);
+      border1px solid rgba(148,163,184,.6);
+      color#0f172a;
+      white-spacenowrap;
+    }
+
+     Curtain body wrapper - only show when .open 
+    .course-card-body{ displaynone !important; padding0 12px 12px; }
+    .course-card.open .course-card-body{ displayblock !important; }
+
+    .course-desc{ margin10px 0 10px; colorvar(--muted); font-size12.5px; line-height1.35; }
+    .course-desc a{ colorvar(--accent); font-weight800; text-decorationnone; }
+    .course-desc ahover{ text-decorationunderline; }
+
+     session list with indentation for prominence 
+    .sessions{ displayflex; flex-directioncolumn; gap7px; margin-top6px; }
+    .session-row{
+      border1px solid #e5e7eb;
+      border-radius12px;
+      background#f9fafb;
+      padding8px 10px 8px 18px;  -- indent 
+      displaygrid;
+      grid-template-columnsminmax(0, 2.5fr) minmax(0, 1.4fr) auto;
+      gap10px;
+      align-itemscenter;
+    }
+    @media (max-width560px){
+      .session-row{ grid-template-columns1fr; padding-left14px; }
+    }
+    .session-when{ font-size12px; font-weight900; }
+    .session-where{ font-size11px; colorvar(--muted); margin-top1px; }
+    .session-price{ font-size11px; colorvar(--muted); font-styleitalic; text-alignright; }
+    .session-cta{ displayflex; justify-contentflex-end; }
+    .session-btn{
+      border0;
+      border-radius999px;
+      padding7px 12px;
+      font-size12px;
+      font-weight900;
+      cursorpointer;
+      backgroundvar(--accent);
+      color#fff;
+      box-shadow0 2px 8px rgba(15,23,42,.25);
+      white-spacenowrap;
+    }
+
+    .see-more-wrap{ margin-top8px; }
+    .see-more{
+      border1px solid rgba(148,163,184,.75);
+      background#fff;
+      border-radius999px;
+      padding7px 10px;
+      font-size12px;
+      font-weight900;
+      cursorpointer;
+    }
+
+     onsite iframe area 
+    #onsiteWrap{ displaynone; margin-top10px; }
+    #onsiteFrame{
+      width100%;
+      height75vh;
+      border0;
+      border-radius14px;
+      background#fff;
+      box-shadowvar(--shadow);
+    }
+
+    .status{
+      margin-top10px;
+      padding10px 2px;
+      colorvar(--muted);
+      font-size12px;
+      line-height1.25;
+    }
+    .status strong{ displayblock; colorvar(--text); margin-bottom4px; }
+
+     chatbot 
+    .chatbot{ margin-top12px; padding12px; border-top1px solid rgba(148,163,184,.25); }
+    .chatbot h3{ margin0 0 6px; font-size12px; font-weight900; }
+    .chatbot p{ margin0 0 10px; font-size11px; colorvar(--muted); line-height1.25; }
+  style
+head
+
+body
+  header
+    div class=hdr
+      div class=hdr-left
+        img class=logo src=assetsimages910CPR_wave.jpg alt=910CPR 
+        div style=min-width0;
+          div class=hdr-titleFind your CPR classdiv
+          div class=hdr-subPick a family — then choose a datetime. (Wilmington &amp; Burgaw)div
+        div
+      div
+      div class=hdr-right
+        a class=top-btn primary href=onsite.htmlGroup Pricing  Inquirya
+        a class=top-btn href=tel+19103955193Call  Texta
+        a class=top-btn href=mailtoinfo@910cpr.comEmaila
+      div
+    div
+  header
+
+  div class=wrap
+    div class=grid
+
+      !-- LEFT --
+      div class=panel id=familyPanel
+        div class=panel-head
+          h2Step 1 Choose your class familyh2
+          pCourse families help you find the right type fast. (OnlineHeartCode courses also appear in “Online”.)p
+        div
+
+        div class=family-list id=familyList
+
+          button type=button class=family-btn family-action id=btnOnsite
+            div class=family-main
+              div class=family-labelGroup Pricing  Inquirydiv
+              div class=family-noteOn-site training • multiple employees • easy schedulingdiv
+            div
+            div class=family-tagOnsitediv
+          button
+
+          button type=button class=family-btn active data-family=BLS
+            div class=family-main
+              div class=family-labelBLS · Healthcare Provider CPRdiv
+              div class=family-noteNursing, EMS, hospital &amp; clinical roles.div
+            div
+            div class=family-tagHealthcarediv
+          button
+
+          button type=button class=family-btn data-family=ACLS
+            div class=family-main
+              div class=family-labelACLS · Advanced Cardiac Life Supportdiv
+              div class=family-noteAdvanced providers, ERICUstep-down.div
+            div
+            div class=family-tagAdvanceddiv
+          button
+
+          button type=button class=family-btn data-family=PALS
+            div class=family-main
+              div class=family-labelPALS · Pediatric Life Supportdiv
+              div class=family-notePedsED, NICUPICU, transport teams.div
+            div
+            div class=family-tagPediatricsdiv
+          button
+
+          button type=button class=family-btn data-family=FirstAid
+            div class=family-main
+              div class=family-labelFirst Aid  CPR  AEDdiv
+              div class=family-noteWorkplace, schools, coaches, parents.div
+            div
+            div class=family-tagWorkplacediv
+          button
+
+          button type=button class=family-btn data-family=Heartsaver
+            div class=family-main
+              div class=family-labelHeartsaver CPR  AED (No First Aid)div
+              div class=family-noteLay rescuer CPRAED. (No FA)div
+            div
+            div class=family-tagCPR  AEDdiv
+          button
+
+          button type=button class=family-btn data-family=Online
+            div class=family-main
+              div class=family-labelOnline  HeartCode  Blendeddiv
+              div class=family-noteAll online + skills sessions listed together (plus in their family).div
+            div
+            div class=family-tagHybriddiv
+          button
+
+          button type=button class=family-btn data-family=Other
+            div class=family-main
+              div class=family-labelOther (OSHA  Instructor  Specialty)div
+              div class=family-noteOSHA 10  30, DAN BLS, Boodborne Pathogensdiv
+            div
+            div class=family-tagSpecialtydiv
+          button
+
+        div
+
+        div class=chatbot
+          h3Need help picking the right classh3
+          pShare with the AI Assistant; What do you need it for — She will point you to the best match.p
+        !-- MAIFD  247 AI Receptionist widget --
+embeddable-voice id=1cf9bf8f-38da-437e-abfb-efa1ce9a02ffembeddable-voice
+script src=httpscdn.247aireceptionist.comcall-embeddable-widget-v2.jsscript
+
+div
+
+
+      div
+
+      !-- RIGHT --
+      div class=panel id=schedulePanel
+        div class=sched-wrap
+          h1 class=sched-title id=scheduleTitleBLS · Healthcare Provider CPRh1
+          div class=sched-sub id=scheduleSubtitleChoose a course type, then pick your datetime.div
+
+          div id=seasonalDividerdiv
+
+          div class=status style=margin-top0;
+            strongFamilystrong span id=chipFamilyBLSspan
+          div
+
+          div id=onsiteWrap
+            iframe id=onsiteFrame src=onsite.html loading=lazyiframe
+          div
+
+          div id=courseList class=course-list
+            div class=status id=statusMessage
+              strongLoading schedule…strong
+              If this takes more than a couple seconds, the snapshot may be down.
+            div
+          div
+
+        div
+      div
+
+    div
+  div
+
+  div id=seasonalCornerdiv
+
+  script
+  (function(){
+     ====== EDITABLE LINKS (no hidden URLs) ======
+    const LINKS = {
+      scheduleJsonCandidates [.dataschedule.json, dataschedule.json, dataschedule.json],
+      scheduleFallback httpswww.enrollware.comsitecoastalcprtrainingschedule,
+      groupInquiry onsite.html
+    };
+
+    async function resolveScheduleJson(){
+      for (const url of LINKS.scheduleJsonCandidates){
+        try{
+          const r = await fetch(url + v= + Date.now(), { cacheno-store });
+          if (r.ok){
+            console.log(✔ schedule.json loaded from, url);
+            return r.json();
+          }
+        }catch(e){}
+      }
+      throw new Error(schedule.json not found at any candidate path);
+    }
+
+     --- Image base autodetect + CSS variable wiring (family pills + seasonal decor) ---
+    async function pickImageBase(){
+      const roots = [assetsimages, images, ., ];
+      async function exists(url){
+        try{
+          const r = await fetch(url, { methodHEAD, cacheno-store });
+          return r.ok;
+        }catch(e){ return false; }
+      }
+      for (const root of roots){
+        const base = root  root.replace(+$g,)  ;
+        const testUrl = (base  base +   ) + familyfamily-bls.jpg;
+        if (await exists(testUrl)) return base;
+      }
+      return assetsimages;
+    }
+
+    async function applyImageVars(){
+      const base = await pickImageBase();
+      const prefix = base  (base.endsWith()  base  base + )  ;
+      const r = document.documentElement.style;
+
+      r.setProperty(--img-family-bls,        `url(${prefix}familyfamily-bls.jpg)`);
+      r.setProperty(--img-family-acls,       `url(${prefix}familyfamily-acls.jpg)`);
+      r.setProperty(--img-family-pals,       `url(${prefix}familyfamily-pals.jpg)`);
+      r.setProperty(--img-family-cpr-aed,    `url(${prefix}familyfamily-cpr-aed.jpg)`);
+      r.setProperty(--img-family-fa-cpr-aed, `url(${prefix}familyfamily-fa-cpr-aed.jpg)`);
+
+      r.setProperty(--img-divider, `url(${prefix}themedefault-divider.png)`);
+      r.setProperty(--img-corner,  `url(${prefix}themedefault-corner.png)`);
+    }
+
+    function markFamilyImageFailures(){
+      document.querySelectorAll(.family-btn[data-family]).forEach(btn = {
+        const bg = getComputedStyle(btn, after).backgroundImage;
+        const m = bg && bg.match(url(['](.)['])i);
+        const url = m && m[1]  m[1]  null;
+        if (!url  url===none){ btn.classList.add(noimg); return; }
+
+        const img = new Image();
+        img.onload = () = btn.classList.remove(noimg);
+        img.onerror = () = btn.classList.add(noimg);
+        img.src = url;
+      });
+    }
+
+     ---------- UI metadata ----------
+    const FAMILY_META = {
+      BLS       { titleBLS · Healthcare Provider CPR, subtitleHealthcare-provider CPR courses and sessions. },
+      ACLS      { titleACLS · Advanced Cardiac Life Support, subtitleAdvanced resuscitation training sessions. },
+      PALS      { titlePALS · Pediatric Life Support, subtitlePediatric resuscitation training sessions. },
+      FirstAid  { titleFirst Aid  CPR  AED, subtitleWorkplace and lay-rescuer first aid + CPRAED. },
+      Heartsaver{ titleHeartsaver CPR  AED (No First Aid), subtitleCPRAED-only lay rescuer programs. },
+      Online    { titleOnline  HeartCode  Blended, subtitleAll online + skills sessions grouped together (also shown in their family). },
+      Other     { titleOther (OSHA  Instructor  Specialty), subtitleOSHA + instructorspecialty programs. }
+    };
+
+     ---------- utilities ----------
+    const $ = (s)=document.querySelector(s);
+
+    function esc(s){
+      return String(s)
+        .replaceAll(&,&amp;)
+        .replaceAll(,&lt;)
+        .replaceAll(,&gt;)
+        .replaceAll('',&quot;)
+        .replaceAll(',&#039;);
+    }
+
+    function toDateObj(s){
+      const raw = s.start  s.start_time  s.startTime  s.startISO  s.start_iso 
+                  s.datetime  s.date_time  s.dateTime  s.begin  s.dt  null;
+      if (!raw) return null;
+      const d1 = new Date(raw);
+      if (!isNaN(d1.getTime())) return d1;
+      return null;
+    }
+
+    function fmtWhen(d){
+      if (!d) return ;
+      const wd = d.toLocaleDateString(undefined,{weekdayshort});
+      const md = d.toLocaleDateString(undefined,{monthshort,daynumeric});
+      const yr = d.toLocaleDateString(undefined,{year2-digit});
+      const tm = d.toLocaleTimeString(undefined,{hournumeric,minute2-digit});
+      return `${wd}, ${md} '${yr} · ${tm}`;
+    }
+
+    function parseMoney(v){
+      if (v == null) return null;
+      const n = Number(String(v).replace([^0-9.]g,));
+      return Number.isFinite(n)  n  null;
+    }
+
+    function fmtMoney(n){ return Number.isFinite(n)  $ + n.toFixed(0)  ; }
+
+    function getCourseKey(s){
+      return s.course_id  s.courseId  s.course_number  s.courseNumber  s.course_code  s.courseCode 
+             s.course  s.course_name  s.courseName  s.title  s.name 
+             JSON.stringify([s.courseName,s.courseTitle,s.course_number]).slice(0,120);
+    }
+
+    function getEnrollUrl(s){
+      return s.enroll_url  s.enrollUrl  s.registration_url  s.registrationUrl 
+             s.register_url  s.registerUrl  s.url_enroll  s.url  null;
+    }
+
+    function getLocation(s){
+      return s.location_display  s.locationDisplay  s.location_name  s.locationName  s.location  s.place  ;
+    }
+
+    function getPrice(s){
+      return parseMoney(s.price  s.cost  s.amount  s.class_price  s.classPrice);
+    }
+
+    function inferProvider(s, courseTitle){
+      const t = (courseTitle).toUpperCase();
+      const a = (s.providers.certifyingBodys.cert_body).toString().toUpperCase();
+      const hay = (t +   + a);
+      if (hay.includes(AMERICAN HEART)  hay.includes(AHA)) return AHA;
+      if (hay.includes(RED CROSS)  hay.includes(ARC)) return ARC;
+      if (hay.includes(HSI)) return HSI;
+      return ;
+    }
+
+    function providerBadgeNode(prov){
+      const map = {
+        AHA { srcassetsimages_AHA.png, titleAmerican Heart Association, altAHA },
+        ARC { srcassetsimages_ARC.png, titleAmerican Red Cross, altARC },
+        HSI { srcassetsimages_HSI.png, titleHealth & Safety Institute, altHSI }
+      };
+      const c = map[(prov).toUpperCase()];
+      if (!c) return null;
+
+      const wrap = document.createElement(span);
+      wrap.className = certBadge;
+      wrap.title = c.title;
+
+      const img = document.createElement(img);
+      img.src = c.src;
+      img.alt = c.alt;
+
+       If a logo is missing, fall back to simple text so the UI still works.
+      img.onerror = () = {
+        wrap.textContent = c.alt;
+        wrap.className = provider-badge;
+      };
+
+      wrap.appendChild(img);
+      return wrap;
+    }
+
+     helper split Enrollware pill HTML into clean title + subtitle (no tags)
+     RULE everything BEFORE first img tag = main title, everything AFTER = subtitle
+    function splitTitleAndSubtitle(htmlOrText){
+      const raw = String(htmlOrText  ).trim();
+      if (!raw) return { mainCourse, sub };
+
+      if (raw.includes()){
+        const imgIdx = raw.search(imgbi);
+        let mainHtml = raw;
+        let subHtml  = ;
+
+        if (imgIdx = 0){
+          mainHtml = raw.slice(0, imgIdx);
+          const gt = raw.indexOf(, imgIdx);
+          subHtml = gt = 0  raw.slice(gt + 1)  raw.slice(imgIdx);
+        } else {
+          const wrap = document.createElement(div);
+          wrap.innerHTML = raw;
+          const lines = (wrap.innerText  )
+            .split(n)
+            .map(s = s.replace(s+g, ).trim())
+            .filter(Boolean);
+          return { main lines[0]  Course, sub lines.slice(1).join( · ) };
+        }
+
+        const w1 = document.createElement(div);
+        w1.innerHTML = mainHtml;
+        const main = (w1.innerText  ).replace(s+g, ).trim()  Course;
+
+        const w2 = document.createElement(div);
+        w2.innerHTML = subHtml;
+        const sub = (w2.innerText  ).replace(s+g, ).trim();
+
+        return { main, sub };
+      }
+
+      const lines = raw.split(n).map(s=s.replace(s+g, ).trim()).filter(Boolean);
+      return { main lines[0]  Course, sub lines.slice(1).join( · ) };
+    }
+
+     ----- family grouping -----
+    function detectFamily(s, titleText){
+      const t = (titleText  ).toUpperCase();
+
+       OTHER = OSHA  INSTRUCTOR  specialty
+      if (t.includes(OSHA)  t.includes(INSTRUCTOR)) return Other;
+
+       core families
+      if (t.includes(ACLS)) return ACLS;
+      if (t.includes(PALS)) return PALS;
+      if (t.includes(BLS)) return BLS;
+
+       Heartsaver CPRAED-only vs FA+CPRAED
+      if (t.includes(HEARTSAVER)){
+        if (t.includes(FIRST AID)) return FirstAid;
+        if (t.includes(CPR)  t.includes(AED)) return Heartsaver;
+        return Heartsaver;
+      }
+
+       First Aid family
+      if (t.includes(FIRST AID)) return FirstAid;
+
+       fallback
+      return Other;
+    }
+
+    function isOnlineType(s, titleText){
+      const t = (titleText  ).toUpperCase();
+      const hay = t +   + (s.formats.deliverys.type);
+      return hay.includes(HEARTCODE)  hay.includes(ONLINE)  hay.includes(BLENDED)  hay.includes(HYBRID)  hay.includes(SKILLS);
+    }
+
+     Normalize schedule.json into { courses, sessions }
+    function normalizeSchedule(raw){
+      let sessions = [];
+      if (Array.isArray(raw)) sessions = raw;
+      else if (raw && typeof raw === object){
+        if (Array.isArray(raw.sessions)) sessions = raw.sessions;
+        else if (Array.isArray(raw.items)) sessions = raw.items;
+        else if (Array.isArray(raw.data)) sessions = raw.data;
+      }
+
+      sessions = sessions.map(s = Object.assign({}, s, { __courseKey s.course_key  s.courseKey  getCourseKey(s) }));
+
+       Build courses map from sessions
+      const courseMap = new Map();
+      for (const s of sessions){
+        const key = s.__courseKey;
+        if (courseMap.has(key)) continue;
+
+        const title = s.pill_html  s.pillHtml  s.course_pill_html  s.coursePillHtml 
+                      s.course_title_html  s.courseTitleHtml  s.title_html  s.titleHtml 
+                      s.course_title  s.courseTitle  s.course_name  s.courseName  s.course  s.title  s.name  Course;
+
+        const descHtml = s.course_desc_html  s.courseDescHtml  s.description_html  s.descriptionHtml 
+                         s.course_description_html  s.courseDescriptionHtml  ;
+
+         titleText used for familyprovider detection
+        const split = splitTitleAndSubtitle(title);
+        const titleText = split.main + (split.sub    + split.sub  );
+
+        courseMap.set(key, {
+          key,
+          title,           keep raw (may be HTML pill)
+          titleMain split.main,
+          titleSub split.sub,
+          titleText,
+          descHtml
+        });
+      }
+
+      return { courses [...courseMap.values()], sessions };
+    }
+
+    function buildModel(norm){
+      const now = new Date();
+      const courseByKey = new Map(norm.courses.map(c = [c.key, c]));
+      const sessionsByCourse = new Map();
+
+      for (const s of norm.sessions){
+        const k = s.__courseKey;
+        if (!sessionsByCourse.has(k)) sessionsByCourse.set(k, []);
+        sessionsByCourse.get(k).push(s);
+      }
+
+       sort sessions by time
+      for (const [k, list] of sessionsByCourse){
+        list.sort((a,b)= (toDateObj(a).getTime()  0) - (toDateObj(b).getTime()  0));
+      }
+
+       upcoming filter
+      const upcomingByCourse = new Map();
+      for (const [k, list] of sessionsByCourse){
+        const up = list.filter(s={
+          const d = toDateObj(s);
+          return d && d.getTime() = (now.getTime() - 5601000);
+        });
+        if (up.length) upcomingByCourse.set(k, up);
+      }
+
+       group to families
+      const familyMap = new Map();
+      const onlineMap = new Map();
+
+      for (const [k, list] of upcomingByCourse){
+        const c = courseByKey.get(k);
+        if (!c) continue;
+
+        const fam = detectFamily(list[0], c.titleText);
+        if (!familyMap.has(fam)) familyMap.set(fam, []);
+        familyMap.get(fam).push({ coursec, sessionslist });
+
+         Duplicate into Online catch-all when applicable
+        if (isOnlineType(list[0], c.titleText)){
+          if (!onlineMap.has(Online)) onlineMap.set(Online, []);
+          onlineMap.get(Online).push({ coursec, sessionslist });
+        }
+      }
+
+       merge Online catch-all as its own family
+      if (onlineMap.has(Online)){
+        familyMap.set(Online, onlineMap.get(Online));
+      }
+
+       sort courses by earliest session
+      for (const [fam, arr] of familyMap){
+        arr.sort((a,b)= (toDateObj(a.sessions[0]).getTime()  0) - (toDateObj(b.sessions[0]).getTime()  0));
+      }
+
+      return { familyMap };
+    }
+
+     ----- render -----
+    let MODEL = null;
+    let ACTIVE_FAMILY = BLS;
+    let curtainBound = false;
+
+    function setFamilyUI(fam){
+      const meta = FAMILY_META[fam]  FAMILY_META.BLS;
+      $(#scheduleTitle).textContent = meta.title;
+      $(#scheduleSubtitle).textContent = meta.subtitle;
+      $(#chipFamily).textContent = fam;
+    }
+
+    function setActiveFamilyButton(fam, onsiteActive=false){
+      document.querySelectorAll(.family-btn).forEach(btn={
+        if (btn.id === btnOnsite){
+          btn.classList.toggle(active, onsiteActive);
+          return;
+        }
+        btn.classList.toggle(active, !onsiteActive && btn.getAttribute(data-family) === fam);
+      });
+    }
+
+    function showOnsite(){
+      $(#onsiteWrap).style.display = block;
+      $(#courseList).style.display = none;
+      $(#scheduleTitle).textContent = Group Pricing  Inquiry;
+      $(#scheduleSubtitle).textContent = Request on-site training for your workplace, school, or organization.;
+      $(#chipFamily).textContent = Onsite;
+    }
+
+    function showSchedule(){
+      $(#onsiteWrap).style.display = none;
+      $(#courseList).style.display = flex;
+    }
+
+    function scrollToSchedulePanel(){
+      if (window.matchMedia((max-width 900px)).matches){
+        $(#schedulePanel).scrollIntoView({behaviorsmooth, blockstart});
+      }
+    }
+
+    function bindCurtainDelegation(){
+      if (curtainBound) return;
+      curtainBound = true;
+
+      const listEl = $(#courseList);
+      listEl.addEventListener(click, (e)={
+        const head = e.target.closest(.course-card-header);
+        if (!head) return;
+        const card = head.closest(.course-card);
+        if (!card) return;
+
+        const wasOpen = card.classList.contains(open);
+        listEl.querySelectorAll(.course-card.open).forEach(c=c.classList.remove(open));
+        if (!wasOpen) card.classList.add(open);
+      });
+    }
+
+    function renderFamily(fam){
+      const listEl = $(#courseList);
+      listEl.innerHTML = ;
+
+      const blocks = MODEL.familyMap.get(fam)  [];
+      if (!blocks.length){
+        listEl.innerHTML = `
+          div class=status
+            strongNo upcoming sessions found.strong
+            Use the full schedule
+            div style=margin-top6px;
+              a href=${LINKS.scheduleFallback} target=_blank rel=noopener${LINKS.scheduleFallback}a
+            div
+          div`;
+        return;
+      }
+
+      const INITIAL_SHOW = 10;
+      const INCREMENT = 10;
+
+      blocks.forEach((block, idx)={
+        const c = block.course;
+        const allSessions = block.sessions;
+
+        const card = document.createElement(div);
+        card.className = course-card;
+
+        const header = document.createElement(div);
+        header.className = course-card-header;
+
+        const titleWrap = document.createElement(div);
+        titleWrap.className = course-card-titlewrap;
+
+         (mainsub already computed)
+        const title = document.createElement(div);
+        title.className = course-card-title;
+        title.textContent = c.titleMain  Course;
+
+        const sub = document.createElement(div);
+        sub.className = course-card-subtitle;
+        sub.textContent = c.titleSub  ;
+
+        titleWrap.appendChild(title);
+        titleWrap.appendChild(sub);
+        header.appendChild(titleWrap);
+
+        const prov = inferProvider(allSessions[0], c.titleText);
+        if (prov){
+          const badge = providerBadgeNode(prov);
+          if (badge) header.appendChild(badge);
+        }
+
+        const body = document.createElement(div);
+        body.className = course-card-body;
+
+        if ((c.descHtml).trim()){
+          const desc = document.createElement(div);
+          desc.className = course-desc;
+          desc.innerHTML = c.descHtml;  render ugly description as HTML (intended)
+          body.appendChild(desc);
+        }
+
+        const sessionsEl = document.createElement(div);
+        sessionsEl.className = sessions;
+        body.appendChild(sessionsEl);
+
+        let shown = 0;
+        function addNext(n){
+          const slice = allSessions.slice(shown, shown+n);
+          for (const s of slice){
+            const d = toDateObj(s);
+            const when = fmtWhen(d);
+            const loc = getLocation(s);
+            const price = getPrice(s);
+            const enroll = getEnrollUrl(s)  LINKS.scheduleFallback;
+
+            const row = document.createElement(div);
+            row.className = session-row;
+
+            const left = document.createElement(div);
+            left.innerHTML = `
+              div class=session-when${esc(when)}div
+              div class=session-where${esc(loc)}div
+            `;
+
+            const mid = document.createElement(div);
+            mid.className = session-price;
+            mid.textContent = (price != null)  (fmtMoney(price))  ;
+
+            const right = document.createElement(div);
+            right.className = session-cta;
+            const btn = document.createElement(button);
+            btn.type = button;
+            btn.className = session-btn;
+            btn.textContent = Register;
+            btn.addEventListener(click, (ev) = {
+              ev.stopPropagation();
+              window.location.href = enroll;
+            });
+            right.appendChild(btn);
+
+            row.appendChild(left);
+            row.appendChild(mid);
+            row.appendChild(right);
+
+            sessionsEl.appendChild(row);
+          }
+          shown += slice.length;
+        }
+
+        addNext(INITIAL_SHOW);
+
+        const seeMoreWrap = document.createElement(div);
+        seeMoreWrap.className = see-more-wrap;
+        const seeMoreBtn = document.createElement(button);
+        seeMoreBtn.type = button;
+        seeMoreBtn.className = see-more;
+        seeMoreWrap.appendChild(seeMoreBtn);
+
+        function refreshMore(){
+          const remaining = allSessions.length - shown;
+          if (remaining = 0){
+            seeMoreWrap.style.display = none;
+            return;
+          }
+          const nextCount = Math.min(INCREMENT, remaining);
+          seeMoreBtn.textContent = `See ${nextCount} more…`;
+          seeMoreWrap.style.display = block;
+        }
+
+        seeMoreBtn.addEventListener(click, (ev)={
+          ev.stopPropagation();
+          addNext(INCREMENT);
+          refreshMore();
+        });
+
+        refreshMore();
+        body.appendChild(seeMoreWrap);
+
+        card.appendChild(header);
+        card.appendChild(body);
+
+        if (idx === 0) card.classList.add(open);
+        listEl.appendChild(card);
+      });
+
+      bindCurtainDelegation();
+    }
+
+    async function loadSchedule(){
+      try{
+        $(#statusMessage).remove();
+
+        const raw = await resolveScheduleJson();
+        const norm = normalizeSchedule(raw);
+        MODEL = buildModel(norm);
+
+        if (!MODEL.familyMap.has(ACTIVE_FAMILY)){
+          ACTIVE_FAMILY = MODEL.familyMap.has(BLS)  BLS  (Array.from(MODEL.familyMap.keys())[0]  BLS);
+        }
+
+        showSchedule();
+        setFamilyUI(ACTIVE_FAMILY);
+        setActiveFamilyButton(ACTIVE_FAMILY, false);
+        renderFamily(ACTIVE_FAMILY);
+
+      }catch(err){
+        console.error(err);
+        const listEl = $(#courseList);
+        listEl.innerHTML = `
+          div class=status
+            strongSchedule is temporarily unavailable.strong
+            Use the full schedule
+            div style=margin-top6px;
+              a href=${LINKS.scheduleFallback} target=_blank rel=noopener${LINKS.scheduleFallback}a
+            div
+          div`;
+      }
+    }
+
+    function bindFamilyButtons(){
+      $(#familyList).addEventListener(click, (e)={
+        const btn = e.target.closest(.family-btn);
+        if (!btn) return;
+
+        if (btn.id === btnOnsite){
+          showOnsite();
+          setActiveFamilyButton(ACTIVE_FAMILY, true);
+          scrollToSchedulePanel();
+          return;
+        }
+
+        const fam = btn.getAttribute(data-family)  BLS;
+        ACTIVE_FAMILY = fam;
+
+        showSchedule();
+        setFamilyUI(fam);
+        setActiveFamilyButton(fam, false);
+        if (MODEL) renderFamily(fam);
+
+        scrollToSchedulePanel();
+      });
+    }
+
+    (async function init(){
+      await applyImageVars();
+      markFamilyImageFailures();
+      bindFamilyButtons();
+      await loadSchedule();
+    })();
+
+  })();
+  script
+
+  !-- 910CPR Interaction Tracking fires GA4GTMMeta events if tags exist --
+  script
+  (function () {
+    function norm(s){ return (s).toString().trim().replace(s+g, ).slice(0,180); }
+    function isVisible(el){
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return r.width  0 && r.height  0;
+    }
+
+    function getLabel(el){
+      const aria = el.getAttribute && el.getAttribute(aria-label);
+      if (aria) return norm(aria);
+      const t = norm(el.textContent);
+      if (t) return t;
+      return norm(el.id  el.className);
+    }
+
+    function getCtx(el){
+      const card = el.closest  el.closest(.course-card)  null;
+      const famBtn = el.closest  el.closest(.family-btn)  null;
+
+      return {
+        page_path location.pathname  ,
+        page_title document.title  ,
+        family_selected famBtn  (famBtn.getAttribute(data-family)  getLabel(famBtn))  null,
+        chip_family norm(document.querySelector(#chipFamily).textContent),
+        course_title card  norm(card.querySelector(.course-card-title).textContent)  null,
+        course_subtitle card  norm(card.querySelector(.course-card-subtitle).textContent)  null
+      };
+    }
+
+    function dispatch(eventName, params){
+      params = params  {};
+      try{
+        if (window.dataLayer && Array.isArray(window.dataLayer)){
+          window.dataLayer.push(Object.assign({ event eventName }, params));
+        }
+      }catch(e){}
+
+      try{
+        if (typeof window.gtag === function){
+          window.gtag(event, eventName, params);
+        }
+      }catch(e){}
+
+      try{
+        if (typeof window.fbq === function){
+          window.fbq(trackCustom, eventName, params);
+        }
+      }catch(e){}
+    }
+
+    document.addEventListener(click, function(e){
+      const el = e.target.closest(button, a, [role='button']);
+      if (!el  !isVisible(el)) return;
+
+      const label = getLabel(el);
+      const href = (el.matches && el.matches(a[href]))  (el.href  el.getAttribute(href)  )  ;
+      const cls = norm(el.className);
+
+      let action = click;
+      if (^register$i.test(label)  cls.includes(session-btn)) action = register_click;
+      else if (sees+d+s+morei.test(label)) action = see_more_click;
+      else if (group pricinginquiryonsitei.test(label)) action = group_inquiry_click;
+      else if (calltexti.test(label)) action = call_text_click;
+      else if (emaili.test(label)) action = email_click;
+
+      dispatch(ui_ + action, Object.assign({
+        element_label label,
+        element_href href
+      }, getCtx(el)));
+    }, true);
+
+    document.addEventListener(click, function(e){
+      const head = e.target.closest(.course-card-header);
+      if (!head) return;
+      const card = head.closest(.course-card);
+      if (!card) return;
+
+      setTimeout(function(){
+        dispatch(ui_curtain_toggle, Object.assign({
+          is_open card.classList.contains(open)  1  0
+        }, getCtx(card)));
+      }, 0);
+    }, true);
+
+    document.addEventListener(click, function(e){
+      const fam = e.target.closest(.family-btn);
+      if (!fam) return;
+      dispatch(ui_family_select, Object.assign({
+        family_selected fam.getAttribute(data-family)  getLabel(fam)
+      }, getCtx(fam)));
+    }, true);
+
+    dispatch(ui_page_view, {
+      page_path location.pathname  ,
+      page_title document.title  
+    });
+  })();
+  script
+
+
+body
+html
