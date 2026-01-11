@@ -1,0 +1,16 @@
+Install (ew2landers)
+====================
+
+Copy these into your ew2landers repo (repo root), preserving paths:
+
+- docs/index.html
+- docs/index-mobile.html
+- docs/assets/css/site.css
+- templates/class_lander_template.html
+- docs/assets/images/placeholders/README.txt
+
+Then:
+1) Ensure docs/data/schedule.json is published (your refresh pipeline already does this).
+2) Commit + push so GitHub Pages updates.
+
+Note: class_lander_template.html is a new template. Wire it into your builder (build_class_landers.py) by loading it instead of the older template.html.

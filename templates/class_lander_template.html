@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{TITLE}}</title>
+  <meta name="description" content="{{META_DESCRIPTION}}" />
+  <link rel="stylesheet" href="/assets/css/site.css" />
+  <style>
+    .page{max-width:980px;margin:0 auto;padding:18px 18px 60px}
+    .crumbs{color:var(--muted);font-size:13px;margin:10px 0 0}
+    .shell{margin-top:14px}
+    .hero2{display:grid;grid-template-columns: 1.25fr .75fr;gap:16px;align-items:stretch}
+    .panel{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .panel.pad{padding:16px}
+    .h1{margin:0;font-size:28px;line-height:1.15}
+    .sub{margin:10px 0 0;color:var(--muted);line-height:1.45}
+    .metaGrid{display:grid;grid-template-columns: repeat(3,1fr);gap:10px;margin-top:14px}
+    .metaBox{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+    .metaLbl{color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .metaVal{margin-top:4px;font-size:14px;font-weight:900}
+    .ctaRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .banner{display:none;margin-top:12px;border:1px solid rgba(180,83,9,.35);background:#fff7ed;color:#92400e;padding:10px 12px;border-radius:14px;font-weight:800}
+    .art{border-radius:16px;border:1px solid #dbeafe;overflow:hidden;background: linear-gradient(135deg, rgba(56,189,248,.35), rgba(167,139,250,.25));display:flex;align-items:center;justify-content:center}
+    .art img{width:100%;height:100%;object-fit:cover;opacity:.98}
+    .sectionTitle{margin:18px 0 10px;font-size:16px;font-weight:950}
+    .seo{margin-top:18px;color:var(--muted);line-height:1.6;font-size:14px}
+    @media (max-width: 980px){
+      .hero2{grid-template-columns:1fr}
+      .metaGrid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo"><img src="/assets/images/brand/910cpr_round.png" alt="910CPR" onerror="this.style.display='none'"></div>
+        <div class="txt">
+          <h1>910CPR — class details</h1>
+          <p>Pick a date, register, show up. We’ll handle the boring parts.</p>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="pill" href="/index.html">🏠 Schedule</a>
+        <a class="pill" href="tel:+19103955193">📞 (910) 395‑5193</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="crumbs"><a href="/index.html">Schedule</a> › {{BREADCRUMB}}</div>
+
+    <div class="shell hero2">
+      <div class="panel pad">
+        <h1 class="h1">{{COURSE_NAME}}</h1>
+        <div class="sub">{{COURSE_BLURB_SHORT}}</div>
+
+        <div class="metaGrid">
+          <div class="metaBox">
+            <div class="metaLbl">Price</div>
+            <div class="metaVal" id="price">{{PRICE_DISPLAY}}</div>
+          </div>
+          <div class="metaBox">
+            <div class="metaLbl">Date &amp; Time</div>
+            <div class="metaVal" id="dt">{{SESSION_DATE_DISPLAY}}</div>
+          </div>
+          <div class="metaBox">
+            <div class="metaLbl">Location</div>
+            <div class="metaVal" id="loc">{{SESSION_LOCATION_DISPLAY}}</div>
+          </div>
+        </div>
+
+        <div class="ctaRow">
+          <a id="mainCta" class="btn btnPrimary" href="{{ENROLL_URL}}" target="_blank" rel="noopener">Register for this class</a>
+          <a id="moreDates" class="btn btnGhost" href="{{COURSE_SCHEDULE_URL}}" target="_blank" rel="noopener">More dates/times</a>
+        </div>
+
+        <div id="pastBanner" class="banner">
+          This class date has passed. <a href="{{COURSE_SCHEDULE_URL}}" target="_blank" rel="noopener">See current schedule</a>
+        </div>
+      </div>
+
+      <div class="art panel">
+        <img src="{{COURSE_HERO_IMAGE_URL}}" alt="{{COURSE_HERO_IMAGE_ALT}}" onerror="this.src='/assets/images/placeholders/course-fun.png'">
+      </div>
+    </div>
+
+    <div class="sectionTitle">Other upcoming dates for this course</div>
+    <div id="otherDates" class="list"></div>
+
+    <div class="seo">
+      {{SEO_BLOCK_HTML}}
+    </div>
+  </div>
+
+<script>
+(() => {
+  // Hydrate the "other dates" list from schedule.json without rebuilding pages.
+  const SCHEDULE_URL = "/data/schedule.json";
+  const SESSION_ID = {{SESSION_ID}};
+  const COURSE_NUMBER = "{{COURSE_NUMBER}}";
+  const COURSE_TITLE = "{{COURSE_NAME}}";
+  const COURSE_SCHEDULE_URL = "{{COURSE_SCHEDULE_URL}}";
+  const elOther = document.getElementById("otherDates");
+  const elPast = document.getElementById("pastBanner");
+  const elMain = document.getElementById("mainCta");
+
+  const norm = (s) => (s ?? "").toString().trim();
+  const isFuture = (row) => {
+    const s = norm(row.start_iso);
+    if (s){
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) return d.getTime() >= Date.now() - 60*1000;
+    }
+    return true; // fall back to "assume future" if unknown
+  };
+
+  const sameCourse = (r) => {
+    if (COURSE_NUMBER && norm(r.course_number) === norm(COURSE_NUMBER)) return true;
+    // fallback: same title
+    return norm(r.title) === norm(COURSE_TITLE);
+  };
+
+  const pickEnrollUrl = (row) => {
+    const u = norm(row.url);
+    if (u) return u;
+    if (row.id) return "https://coastalcprtraining.enrollware.com/enroll?id=" + row.id;
+    return COURSE_SCHEDULE_URL || "https://coastalcprtraining.enrollware.com/schedule";
+  };
+
+  const render = async () => {
+    try{
+      const res = await fetch(SCHEDULE_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const rows = await res.json();
+      if (!Array.isArray(rows)) return;
+
+      const thisRow = rows.find(r => Number(r.id) === Number(SESSION_ID));
+      const future = thisRow ? isFuture(thisRow) : true;
+
+      if (!future){
+        elPast.style.display = "block";
+        elMain.classList.remove("btnPrimary");
+        elMain.classList.add("btnWarn");
+        elMain.textContent = "This date passed — see current schedule";
+        elMain.href = COURSE_SCHEDULE_URL;
+      }
+
+      const siblings = rows.filter(r => sameCourse(r) && Number(r.id) !== Number(SESSION_ID) && isFuture(r));
+      siblings.sort((a,b)=>{
+        const ad = new Date(norm(a.start_iso) || 0).getTime();
+        const bd = new Date(norm(b.start_iso) || 0).getTime();
+        if (!isNaN(ad) && !isNaN(bd) && ad !== bd) return ad - bd;
+        return norm(a.date).localeCompare(norm(b.date));
+      });
+
+      const show = siblings.slice(0, 10);
+      if (!show.length){
+        elOther.innerHTML = `<div class="empty">No other upcoming dates found. <a href="${COURSE_SCHEDULE_URL}" target="_blank" rel="noopener">View full schedule</a>.</div>`;
+        return;
+      }
+
+      elOther.innerHTML = "";
+      for (const it of show){
+        const enrollUrl = pickEnrollUrl(it);
+        const row = document.createElement("div");
+        row.className = "sess";
+        row.innerHTML = `
+          <div style="min-width:0">
+            <div class="date">${norm(it.date) || "Date/time TBD"}</div>
+            <div class="loc">${norm(it.location) || "Location TBD"}</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+            <a class="btn btnPrimary" href="${enrollUrl}" target="_blank" rel="noopener">Register</a>
+            <a class="btn btnGhost" href="${COURSE_SCHEDULE_URL}" target="_blank" rel="noopener">More dates</a>
+          </div>
+        `;
+        elOther.appendChild(row);
+      }
+    }catch(e){
+      // fail quietly
+    }
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,1164 +1,317 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>910CPR Class Schedule</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="assets/css/themes.css" />
-  <link rel="stylesheet" href="assets/css/main.css" />
-
-  <style>
-    :root{
-      --bg:#f5f7fb;
-      --card:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --border:rgba(148,163,184,.6);
-      --shadow:0 8px 20px rgba(15,23,42,.12);
-      --max:1200px;
-      --accent:#0d47a1;
-      --accentSoft:rgba(13,71,161,.08);
-
-      /* image vars (set at runtime) */
-      --img-family-bls: none;
-      --img-family-acls: none;
-      --img-family-pals: none;
-      --img-family-cpr-aed: none;
-      --img-family-fa-cpr-aed: none;
-      --img-divider: none;
-      --img-corner: none;
-    }
-
-    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); }
-    .wrap{ max-width:var(--max); margin:0 auto; padding:14px 16px 40px; }
-
-    header{ position:sticky; top:0; z-index:50; background:rgba(255,255,255,.92); backdrop-filter:blur(10px); border-bottom:1px solid rgba(148,163,184,.3); }
-    .hdr{ display:flex; gap:12px; align-items:center; justify-content:space-between; max-width:var(--max); margin:0 auto; padding:10px 16px; }
-    .hdr-left{ display:flex; gap:12px; align-items:center; min-width:0; }
-    .logo{ height:44px; width:auto; border-radius:10px; border:1px solid rgba(148,163,184,.5); background:#fff; padding:4px; }
-    .hdr-title{ font-weight:800; font-size:16px; line-height:1.1; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .hdr-sub{ margin:2px 0 0; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .hdr-right{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-    .top-btn{
-      display:inline-flex; align-items:center; gap:6px;
-      font-size:12px; font-weight:700;
-      padding:7px 10px; border-radius:999px;
-      text-decoration:none; color:#0f172a;
-      background:#fff; border:1px solid rgba(148,163,184,.7);
-      box-shadow:0 2px 8px rgba(15,23,42,.08);
-    }
-    .top-btn.primary{ color:var(--accent); background:var(--accentSoft); border-color:rgba(13,71,161,.35); }
-
-    .grid{ display:grid; grid-template-columns:minmax(260px,340px) minmax(0,1fr); gap:18px; margin-top:14px; }
-    @media (max-width:900px){ .grid{ grid-template-columns:1fr; } }
-
-    .panel{
-      background:rgba(255,255,255,.96);
-      border:1px solid var(--border);
-      border-radius:16px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .panel-head{ padding:12px 14px 8px; border-bottom:1px solid rgba(148,163,184,.25); }
-    .panel-head h2{ margin:0; font-size:13px; font-weight:800; }
-    .panel-head p{ margin:4px 0 0; color:var(--muted); font-size:12px; line-height:1.25; }
-
-/* MAIFD embed: visible, sized, and nicely separated from the text above */
-#familyPanel .maifdInline{
-  margin-top:12px;
-}
-
-#familyPanel .maifdInline embeddable-voice{
-  display:block;
-  width:100%;
-  min-height:520px;  /* adjust shorter/taller as you like */
-}
-
-
-    /* Family list */
-    .family-list{ padding:12px 12px 14px; display:flex; flex-direction:column; gap:8px; }
-    .family-btn{
-      position:relative;
-      width:100%;
-      text-align:left;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,.7);
-      padding:9px 12px;
-      background:#f9fafb;
-      cursor:pointer;
-      overflow:hidden;
-      display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
-      align-items:center;
-      gap:10px;
-      transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
-    }
-    .family-btn.active{
-      background:#fff;
-      border-color:var(--accent);
-      box-shadow:0 6px 18px rgba(15,23,42,.16);
-    }
-
-    /* Right 25% image peek */
-    .family-btn::after{
-      content:"";
-      position:absolute;
-      top:0; right:0;
-      width:25%;
-      height:100%;
-      background-size:cover;
-      background-position:center;
-      opacity:.55;
-      border-left:1px solid rgba(148,163,184,.25);
-      pointer-events:none;
-      filter:contrast(1.15) saturate(1.1);
-    }
-
-    /* Fade mask: keep left readable, show image better at far-right */
-    .family-btn::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      background:linear-gradient(to right,
-        rgba(255,255,255,0.98) 0%,
-        rgba(255,255,255,0.92) 50%,
-        rgba(255,255,255,0.55) 72%,
-        rgba(255,255,255,0.10) 88%,
-        rgba(255,255,255,0.00) 100%);
-    }
-
-    /* Family image vars (set via JS) */
-    .family-btn[data-family="BLS"]::after        { background-image:var(--img-family-bls); }
-    .family-btn[data-family="ACLS"]::after       { background-image:var(--img-family-acls); }
-    .family-btn[data-family="PALS"]::after       { background-image:var(--img-family-pals); }
-    .family-btn[data-family="Heartsaver"]::after { background-image:var(--img-family-cpr-aed); }
-    .family-btn[data-family="FirstAid"]::after   { background-image:var(--img-family-fa-cpr-aed); }
-    .family-btn[data-family="Online"]::after     { background-image:var(--img-family-bls); }
-    .family-btn[data-family="Other"]::after      { background-image:var(--img-family-cpr-aed); }
-
-    .family-main{ position:relative; z-index:2; min-width:0; display:flex; flex-direction:column; gap:2px; }
-    .family-label{ font-weight:800; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .family-note{ font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-    /* Tag hidden by default; shown on hover/focus or if image fails */
-    .family-tag{
-      position:relative; z-index:2;
-      font-size:11px; font-weight:800;
-      padding:3px 8px;
-      border-radius:999px;
-      background:var(--accentSoft);
-      color:var(--accent);
-      white-space:nowrap;
-      opacity:0;
-      transform:translateX(6px);
-      transition:opacity .15s ease, transform .15s ease;
-    }
-    .family-btn:hover .family-tag,
-    .family-btn:focus-visible .family-tag{
-      opacity:1;
-      transform:none;
-    }
-    .family-btn.noimg .family-tag{
-      opacity:1;
-      transform:none;
-    }
-
-    .family-action{ background:var(--accentSoft); }
-    .family-action .family-tag{ opacity:1; transform:none; background:rgba(255,255,255,.75); }
-
-    /* Right panel */
-    .sched-wrap{ padding:12px 14px 14px; }
-    .sched-title{ margin:0; font-size:18px; font-weight:900; line-height:1.15; }
-    .sched-sub{ margin:4px 0 0; font-size:12px; color:var(--muted); }
-
-    /* seasonal decor */
-    #seasonalDivider{
-      margin:14px 0 12px;
-      height:18px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,.45);
-      background-image:var(--img-divider);
-      background-repeat:no-repeat;
-      background-position:center;
-      background-size:cover;
-      overflow:hidden;
-    }
-    #seasonalCorner{
-      position:fixed;
-      right:10px;
-      bottom:10px;
-      width:96px;
-      height:96px;
-      opacity:.22;
-      pointer-events:none;
-      z-index:60;
-      background-image:var(--img-corner);
-      background-repeat:no-repeat;
-      background-position:center;
-      background-size:contain;
-      filter:drop-shadow(0 6px 10px rgba(15,23,42,.25));
-    }
-
-    /* course cards (curtains) */
-    .course-list{ display:flex; flex-direction:column; gap:12px; margin-top:10px; }
-    .course-card{
-      background:var(--card);
-      border:1px solid rgba(148,163,184,.55);
-      border-radius:16px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-    .course-card-header{
-      padding:10px 12px;
-      cursor:pointer;
-      background:rgba(248,250,252,.92);
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:flex-start;
-    }
-    .course-card-titlewrap{ min-width:0; display:flex; flex-direction:column; gap:2px; }
-    .course-card-title{
-      font-size:14px;
-      font-weight:900;
-      line-height:1.2;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .course-card-subtitle{
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.25;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .provider-badge{
-      font-size:11px;
-      font-weight:900;
-      padding:3px 8px;
-      border-radius:999px;
-      background:rgba(15,23,42,.06);
-      border:1px solid rgba(148,163,184,.6);
-      color:#0f172a;
-      white-space:nowrap;
-    }
-
-    /* Curtain body wrapper - only show when .open */
-    .course-card-body{ display:none !important; padding:0 12px 12px; }
-    .course-card.open .course-card-body{ display:block !important; }
-
-    .course-desc{ margin:10px 0 10px; color:var(--muted); font-size:12.5px; line-height:1.35; }
-    .course-desc a{ color:var(--accent); font-weight:800; text-decoration:none; }
-    .course-desc a:hover{ text-decoration:underline; }
-
-    /* session list with indentation for prominence */
-    .sessions{ display:flex; flex-direction:column; gap:7px; margin-top:6px; }
-    .session-row{
-      border:1px solid #e5e7eb;
-      border-radius:12px;
-      background:#f9fafb;
-      padding:8px 10px 8px 18px; /* <-- indent */
-      display:grid;
-      grid-template-columns:minmax(0, 2.5fr) minmax(0, 1.4fr) auto;
-      gap:10px;
-      align-items:center;
-    }
-    @media (max-width:560px){
-      .session-row{ grid-template-columns:1fr; padding-left:14px; }
-    }
-    .session-when{ font-size:12px; font-weight:900; }
-    .session-where{ font-size:11px; color:var(--muted); margin-top:1px; }
-    .session-price{ font-size:11px; color:var(--muted); font-style:italic; text-align:right; }
-    .session-cta{ display:flex; justify-content:flex-end; }
-    .session-btn{
-      border:0;
-      border-radius:999px;
-      padding:7px 12px;
-      font-size:12px;
-      font-weight:900;
-      cursor:pointer;
-      background:var(--accent);
-      color:#fff;
-      box-shadow:0 2px 8px rgba(15,23,42,.25);
-      white-space:nowrap;
-    }
-
-    .see-more-wrap{ margin-top:8px; }
-    .see-more{
-      border:1px solid rgba(148,163,184,.75);
-      background:#fff;
-      border-radius:999px;
-      padding:7px 10px;
-      font-size:12px;
-      font-weight:900;
-      cursor:pointer;
-    }
-
-    /* onsite iframe area */
-    #onsiteWrap{ display:none; margin-top:10px; }
-    #onsiteFrame{
-      width:100%;
-      height:75vh;
-      border:0;
-      border-radius:14px;
-      background:#fff;
-      box-shadow:var(--shadow);
-    }
-
-    .status{
-      margin-top:10px;
-      padding:10px 2px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.25;
-    }
-    .status strong{ display:block; color:var(--text); margin-bottom:4px; }
-
-    /* chatbot */
-    .chatbot{ margin-top:12px; padding:12px; border-top:1px solid rgba(148,163,184,.25); }
-    .chatbot h3{ margin:0 0 6px; font-size:12px; font-weight:900; }
-    .chatbot p{ margin:0 0 10px; font-size:11px; color:var(--muted); line-height:1.25; }
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>910CPR — Class Schedule</title>
+  <meta name="description" content="Book CPR, BLS, ACLS, PALS, and First Aid in Wilmington, Burgaw, Jacksonville and beyond. Clear options, fast registration." />
+  <link rel="stylesheet" href="./assets/css/site.css" />
 </head>
-
 <body>
-  <header>
-    <div class="hdr">
-      <div class="hdr-left">
-        <img class="logo" src="assets/images/910CPR_wave.jpg" alt="910CPR" />
-        <div style="min-width:0;">
-          <div class="hdr-title">Find your CPR class</div>
-          <div class="hdr-sub">Pick a family — then choose a date/time. (Wilmington &amp; Burgaw)</div>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <div class="logo"><img src="./assets/images/brand/910cpr_round.png" alt="910CPR" onerror="this.style.display='none'"></div>
+        <div class="txt">
+          <h1>910CPR — pick a class, get it done</h1>
+          <p>Friendly training. Work stuff. No drama. ✅</p>
         </div>
       </div>
-      <div class="hdr-right">
-        <a class="top-btn primary" href="onsite.html">Group Pricing / Inquiry</a>
-        <a class="top-btn" href="tel:+19103955193">Call / Text</a>
-        <a class="top-btn" href="mailto:info@910cpr.com">Email</a>
+      <div class="actions">
+        <a class="pill" href="./index-mobile.html">📱 Mobile</a>
+        <a class="pill" href="https://coastalcprtraining.enrollware.com/schedule" target="_blank" rel="noopener">📅 Full Enrollware schedule</a>
+        <a class="pill" href="tel:+19103955193">📞 (910) 395‑5193</a>
       </div>
-    </div>
-  </header>
-
-  <div class="wrap">
-    <div class="grid">
-
-      <!-- LEFT -->
-      <div class="panel" id="familyPanel">
-        <div class="panel-head">
-          <h2>Step 1: Choose your class family</h2>
-          <p>Course families help you find the right type fast. (Online/HeartCode courses also appear in “Online”.)</p>
-        </div>
-
-        <div class="family-list" id="familyList">
-
-          <button type="button" class="family-btn family-action" id="btnOnsite">
-            <div class="family-main">
-              <div class="family-label">Group Pricing / Inquiry</div>
-              <div class="family-note">On-site training • multiple employees • easy scheduling</div>
-            </div>
-            <div class="family-tag">Onsite</div>
-          </button>
-
-          <button type="button" class="family-btn active" data-family="BLS">
-            <div class="family-main">
-              <div class="family-label">BLS · Healthcare Provider CPR</div>
-              <div class="family-note">Nursing, EMS, hospital &amp; clinical roles.</div>
-            </div>
-            <div class="family-tag">Healthcare</div>
-          </button>
-
-          <button type="button" class="family-btn" data-family="ACLS">
-            <div class="family-main">
-              <div class="family-label">ACLS · Advanced Cardiac Life Support</div>
-              <div class="family-note">Advanced providers, ER/ICU/step-down.</div>
-            </div>
-            <div class="family-tag">Advanced</div>
-          </button>
-
-          <button type="button" class="family-btn" data-family="PALS">
-            <div class="family-main">
-              <div class="family-label">PALS · Pediatric Life Support</div>
-              <div class="family-note">Peds/ED, NICU/PICU, transport teams.</div>
-            </div>
-            <div class="family-tag">Pediatrics</div>
-          </button>
-
-          <button type="button" class="family-btn" data-family="FirstAid">
-            <div class="family-main">
-              <div class="family-label">First Aid / CPR / AED</div>
-              <div class="family-note">Workplace, schools, coaches, parents.</div>
-            </div>
-            <div class="family-tag">Workplace</div>
-          </button>
-
-          <button type="button" class="family-btn" data-family="Heartsaver">
-            <div class="family-main">
-              <div class="family-label">Heartsaver CPR / AED (No First Aid)</div>
-              <div class="family-note">Lay rescuer CPR/AED. (No FA)</div>
-            </div>
-            <div class="family-tag">CPR / AED</div>
-          </button>
-
-          <button type="button" class="family-btn" data-family="Online">
-            <div class="family-main">
-              <div class="family-label">Online / HeartCode / Blended</div>
-              <div class="family-note">All online + skills sessions listed together (plus in their family).</div>
-            </div>
-            <div class="family-tag">Hybrid</div>
-          </button>
-
-          <button type="button" class="family-btn" data-family="Other">
-            <div class="family-main">
-              <div class="family-label">Other (OSHA / Instructor / Specialty)</div>
-              <div class="family-note">OSHA 10 / 30, DAN BLS, Boodborne Pathogens</div>
-            </div>
-            <div class="family-tag">Specialty</div>
-          </button>
-
-        </div>
-
-        <div class="chatbot">
-          <h3>Need help picking the right class?</h3>
-          <p>Share with the AI Assistant; What do you need it for — She will point you to the best match.</p>
-        <!-- MAIFD / 247 AI Receptionist widget -->
-<embeddable-voice id="1cf9bf8f-38da-437e-abfb-efa1ce9a02ff"></embeddable-voice>
-<script src="https://cdn.247aireceptionist.com/call-embeddable-widget-v2.js"></script>
-
-</div>
-
-
-      </div>
-
-      <!-- RIGHT -->
-      <div class="panel" id="schedulePanel">
-        <div class="sched-wrap">
-          <h1 class="sched-title" id="scheduleTitle">BLS · Healthcare Provider CPR</h1>
-          <div class="sched-sub" id="scheduleSubtitle">Choose a course type, then pick your date/time.</div>
-
-          <div id="seasonalDivider"></div>
-
-          <div class="status" style="margin-top:0;">
-            <strong>Family:</strong> <span id="chipFamily">BLS</span>
-          </div>
-
-          <div id="onsiteWrap">
-            <iframe id="onsiteFrame" src="onsite.html" loading="lazy"></iframe>
-          </div>
-
-          <div id="courseList" class="course-list">
-            <div class="status" id="statusMessage">
-              <strong>Loading schedule…</strong>
-              If this takes more than a couple seconds, the snapshot may be down.
-            </div>
-          </div>
-
-        </div>
-      </div>
-
     </div>
   </div>
 
-  <div id="seasonalCorner"></div>
-
-  <script>
-  (function(){
-    // ====== EDITABLE LINKS (no hidden URLs) ======
-    const LINKS = {
-      scheduleJsonCandidates: ["./data/schedule.json", "data/schedule.json", "/data/schedule.json"],
-      scheduleFallback: "https://www.enrollware.com/site/coastalcprtraining/schedule",
-      groupInquiry: "onsite.html"
-    };
-
-    async function resolveScheduleJson(){
-      for (const url of LINKS.scheduleJsonCandidates){
-        try{
-          const r = await fetch(url + "?v=" + Date.now(), { cache:"no-store" });
-          if (r.ok){
-            console.log("✔ schedule.json loaded from:", url);
-            return r.json();
-          }
-        }catch(e){}
-      }
-      throw new Error("schedule.json not found at any candidate path");
-    }
-
-    // --- Image base autodetect + CSS variable wiring (family pills + seasonal decor) ---
-    async function pickImageBase(){
-      const roots = ["assets/images", "images", ".", ""];
-      async function exists(url){
-        try{
-          const r = await fetch(url, { method:"HEAD", cache:"no-store" });
-          return r.ok;
-        }catch(e){ return false; }
-      }
-      for (const root of roots){
-        const base = root ? root.replace(/\/+$/g,"") : "";
-        const testUrl = (base ? base + "/" : "") + "family/family-bls.jpg";
-        if (await exists(testUrl)) return base;
-      }
-      return "assets/images";
-    }
-
-    async function applyImageVars(){
-      const base = await pickImageBase();
-      const prefix = base ? (base.endsWith("/") ? base : base + "/") : "";
-      const r = document.documentElement.style;
-
-      r.setProperty("--img-family-bls",        `url("${prefix}family/family-bls.jpg")`);
-      r.setProperty("--img-family-acls",       `url("${prefix}family/family-acls.jpg")`);
-      r.setProperty("--img-family-pals",       `url("${prefix}family/family-pals.jpg")`);
-      r.setProperty("--img-family-cpr-aed",    `url("${prefix}family/family-cpr-aed.jpg")`);
-      r.setProperty("--img-family-fa-cpr-aed", `url("${prefix}family/family-fa-cpr-aed.jpg")`);
-
-      r.setProperty("--img-divider", `url("${prefix}theme/default-divider.png")`);
-      r.setProperty("--img-corner",  `url("${prefix}theme/default-corner.png")`);
-    }
-
-    function markFamilyImageFailures(){
-      document.querySelectorAll(".family-btn[data-family]").forEach(btn => {
-        const bg = getComputedStyle(btn, "::after").backgroundImage;
-        const m = bg && bg.match(/url\(["']?(.*?)["']?\)/i);
-        const url = m && m[1] ? m[1] : null;
-        if (!url || url==="none"){ btn.classList.add("noimg"); return; }
-
-        const img = new Image();
-        img.onload = () => btn.classList.remove("noimg");
-        img.onerror = () => btn.classList.add("noimg");
-        img.src = url;
-      });
-    }
-
-    // ---------- UI metadata ----------
-    const FAMILY_META = {
-      BLS:       { title:"BLS · Healthcare Provider CPR", subtitle:"Healthcare-provider CPR courses and sessions." },
-      ACLS:      { title:"ACLS · Advanced Cardiac Life Support", subtitle:"Advanced resuscitation training sessions." },
-      PALS:      { title:"PALS · Pediatric Life Support", subtitle:"Pediatric resuscitation training sessions." },
-      FirstAid:  { title:"First Aid / CPR / AED", subtitle:"Workplace and lay-rescuer first aid + CPR/AED." },
-      Heartsaver:{ title:"Heartsaver CPR / AED (No First Aid)", subtitle:"CPR/AED-only lay rescuer programs." },
-      Online:    { title:"Online / HeartCode / Blended", subtitle:"All online + skills sessions grouped together (also shown in their family)." },
-      Other:     { title:"Other (OSHA / Instructor / Specialty)", subtitle:"OSHA + instructor/specialty programs." }
-    };
-
-    // ---------- utilities ----------
-    const $ = (s)=>document.querySelector(s);
-
-    function esc(s){
-      return String(s||"")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function toDateObj(s){
-      const raw = s.start || s.start_time || s.startTime || s.startISO || s.start_iso ||
-                  s.datetime || s.date_time || s.dateTime || s.begin || s.dt || null;
-      if (!raw) return null;
-      const d1 = new Date(raw);
-      if (!isNaN(d1.getTime())) return d1;
-      return null;
-    }
-
-    function fmtWhen(d){
-      if (!d) return "";
-      const wd = d.toLocaleDateString(undefined,{weekday:"short"});
-      const md = d.toLocaleDateString(undefined,{month:"short",day:"numeric"});
-      const yr = d.toLocaleDateString(undefined,{year:"2-digit"});
-      const tm = d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
-      return `${wd}, ${md} '${yr} · ${tm}`;
-    }
-
-    function parseMoney(v){
-      if (v == null) return null;
-      const n = Number(String(v).replace(/[^0-9.]/g,""));
-      return Number.isFinite(n) ? n : null;
-    }
-
-    function fmtMoney(n){ return Number.isFinite(n) ? "$" + n.toFixed(0) : ""; }
-
-    function getCourseKey(s){
-      return s.course_id || s.courseId || s.course_number || s.courseNumber || s.course_code || s.courseCode ||
-             s.course || s.course_name || s.courseName || s.title || s.name ||
-             JSON.stringify([s.courseName,s.courseTitle,s.course_number]).slice(0,120);
-    }
-
-    function getEnrollUrl(s){
-      return s.enroll_url || s.enrollUrl || s.registration_url || s.registrationUrl ||
-             s.register_url || s.registerUrl || s.url_enroll || s.url || null;
-    }
-
-    function getLocation(s){
-      return s.location_display || s.locationDisplay || s.location_name || s.locationName || s.location || s.place || "";
-    }
-
-    function getPrice(s){
-      return parseMoney(s.price ?? s.cost ?? s.amount ?? s.class_price ?? s.classPrice);
-    }
-
-    function inferProvider(s, courseTitle){
-      const t = (courseTitle||"").toUpperCase();
-      const a = (s.provider||s.certifyingBody||s.cert_body||"").toString().toUpperCase();
-      const hay = (t + " " + a);
-      if (hay.includes("AMERICAN HEART") || hay.includes("AHA")) return "AHA";
-      if (hay.includes("RED CROSS") || hay.includes("ARC")) return "ARC";
-      if (hay.includes("HSI")) return "HSI";
-      return "";
-    }
-
-    // helper: split Enrollware pill HTML into clean title + subtitle (no tags)
-    // RULE: everything BEFORE first <img> tag => main title, everything AFTER => subtitle
-    function splitTitleAndSubtitle(htmlOrText){
-      const raw = String(htmlOrText || "").trim();
-      if (!raw) return { main:"Course", sub:"" };
-
-      if (raw.includes("<")){
-        const imgIdx = raw.search(/<img\b/i);
-        let mainHtml = raw;
-        let subHtml  = "";
-
-        if (imgIdx >= 0){
-          mainHtml = raw.slice(0, imgIdx);
-          const gt = raw.indexOf(">", imgIdx);
-          subHtml = gt >= 0 ? raw.slice(gt + 1) : raw.slice(imgIdx);
-        } else {
-          const wrap = document.createElement("div");
-          wrap.innerHTML = raw;
-          const lines = (wrap.innerText || "")
-            .split("\n")
-            .map(s => s.replace(/\s+/g," ").trim())
-            .filter(Boolean);
-          return { main: lines[0] || "Course", sub: lines.slice(1).join(" · ") };
-        }
-
-        const w1 = document.createElement("div");
-        w1.innerHTML = mainHtml;
-        const main = (w1.innerText || "").replace(/\s+/g," ").trim() || "Course";
-
-        const w2 = document.createElement("div");
-        w2.innerHTML = subHtml;
-        const sub = (w2.innerText || "").replace(/\s+/g," ").trim();
-
-        return { main, sub };
-      }
-
-      const lines = raw.split("\n").map(s=>s.replace(/\s+/g," ").trim()).filter(Boolean);
-      return { main: lines[0] || "Course", sub: lines.slice(1).join(" · ") };
-    }
-
-    // ----- family grouping -----
-    function detectFamily(s, titleText){
-      const t = (titleText || "").toUpperCase();
-
-      // OTHER = OSHA / INSTRUCTOR / specialty
-      if (t.includes("OSHA") || t.includes("INSTRUCTOR")) return "Other";
-
-      // core families
-      if (t.includes("ACLS")) return "ACLS";
-      if (t.includes("PALS")) return "PALS";
-      if (t.includes("BLS")) return "BLS";
-
-      // Heartsaver CPR/AED-only vs FA+CPR/AED
-      if (t.includes("HEARTSAVER")){
-        if (t.includes("FIRST AID")) return "FirstAid";
-        if (t.includes("CPR") || t.includes("AED")) return "Heartsaver";
-        return "Heartsaver";
-      }
-
-      // First Aid family
-      if (t.includes("FIRST AID")) return "FirstAid";
-
-      // fallback
-      return "Other";
-    }
-
-    function isOnlineType(s, titleText){
-      const t = (titleText || "").toUpperCase();
-      const hay = t + " " + (s.format||s.delivery||s.type||"");
-      return hay.includes("HEARTCODE") || hay.includes("ONLINE") || hay.includes("BLENDED") || hay.includes("HYBRID") || hay.includes("SKILLS");
-    }
-
-    // Normalize schedule.json into { courses, sessions }
-    function normalizeSchedule(raw){
-      let sessions = [];
-      if (Array.isArray(raw)) sessions = raw;
-      else if (raw && typeof raw === "object"){
-        if (Array.isArray(raw.sessions)) sessions = raw.sessions;
-        else if (Array.isArray(raw.items)) sessions = raw.items;
-        else if (Array.isArray(raw.data)) sessions = raw.data;
-      }
-
-      sessions = sessions.map(s => Object.assign({}, s, { __courseKey: s.course_key || s.courseKey || getCourseKey(s) }));
-
-      // Build courses map from sessions
-      const courseMap = new Map();
-      for (const s of sessions){
-        const key = s.__courseKey;
-        if (courseMap.has(key)) continue;
-
-        const title = s.pill_html || s.pillHtml || s.course_pill_html || s.coursePillHtml ||
-                      s.course_title_html || s.courseTitleHtml || s.title_html || s.titleHtml ||
-                      s.course_title || s.courseTitle || s.course_name || s.courseName || s.course || s.title || s.name || "Course";
-
-        const descHtml = s.course_desc_html || s.courseDescHtml || s.description_html || s.descriptionHtml ||
-                         s.course_description_html || s.courseDescriptionHtml || "";
-
-        // titleText used for family/provider detection
-        const split = splitTitleAndSubtitle(title);
-        const titleText = split.main + (split.sub ? " " + split.sub : "");
-
-        courseMap.set(key, {
-          key,
-          title,          // keep raw (may be HTML pill)
-          titleMain: split.main,
-          titleSub: split.sub,
-          titleText,
-          descHtml
-        });
-      }
-
-      return { courses: [...courseMap.values()], sessions };
-    }
-
-    function buildModel(norm){
-      const now = new Date();
-      const courseByKey = new Map(norm.courses.map(c => [c.key, c]));
-      const sessionsByCourse = new Map();
-
-      for (const s of norm.sessions){
-        const k = s.__courseKey;
-        if (!sessionsByCourse.has(k)) sessionsByCourse.set(k, []);
-        sessionsByCourse.get(k).push(s);
-      }
-
-      // sort sessions by time
-      for (const [k, list] of sessionsByCourse){
-        list.sort((a,b)=> (toDateObj(a)?.getTime() ?? 0) - (toDateObj(b)?.getTime() ?? 0));
-      }
-
-      // upcoming filter
-      const upcomingByCourse = new Map();
-      for (const [k, list] of sessionsByCourse){
-        const up = list.filter(s=>{
-          const d = toDateObj(s);
-          return d && d.getTime() >= (now.getTime() - 5*60*1000);
-        });
-        if (up.length) upcomingByCourse.set(k, up);
-      }
-
-      // group to families
-      const familyMap = new Map();
-      const onlineMap = new Map();
-
-      for (const [k, list] of upcomingByCourse){
-        const c = courseByKey.get(k);
-        if (!c) continue;
-
-        const fam = detectFamily(list[0], c.titleText);
-        if (!familyMap.has(fam)) familyMap.set(fam, []);
-        familyMap.get(fam).push({ course:c, sessions:list });
-
-        // Duplicate into Online catch-all when applicable
-        if (isOnlineType(list[0], c.titleText)){
-          if (!onlineMap.has("Online")) onlineMap.set("Online", []);
-          onlineMap.get("Online").push({ course:c, sessions:list });
-        }
-      }
-
-      // merge Online catch-all as its own family
-      if (onlineMap.has("Online")){
-        familyMap.set("Online", onlineMap.get("Online"));
-      }
-
-      // sort courses by earliest session
-      for (const [fam, arr] of familyMap){
-        arr.sort((a,b)=> (toDateObj(a.sessions[0])?.getTime() ?? 0) - (toDateObj(b.sessions[0])?.getTime() ?? 0));
-      }
-
-      return { familyMap };
-    }
-
-    // ----- render -----
-    let MODEL = null;
-    let ACTIVE_FAMILY = "BLS";
-    let curtainBound = false;
-
-    function setFamilyUI(fam){
-      const meta = FAMILY_META[fam] || FAMILY_META.BLS;
-      $("#scheduleTitle").textContent = meta.title;
-      $("#scheduleSubtitle").textContent = meta.subtitle;
-      $("#chipFamily").textContent = fam;
-    }
-
-    function setActiveFamilyButton(fam, onsiteActive=false){
-      document.querySelectorAll(".family-btn").forEach(btn=>{
-        if (btn.id === "btnOnsite"){
-          btn.classList.toggle("active", onsiteActive);
-          return;
-        }
-        btn.classList.toggle("active", !onsiteActive && btn.getAttribute("data-family") === fam);
-      });
-    }
-
-    function showOnsite(){
-      $("#onsiteWrap").style.display = "block";
-      $("#courseList").style.display = "none";
-      $("#scheduleTitle").textContent = "Group Pricing / Inquiry";
-      $("#scheduleSubtitle").textContent = "Request on-site training for your workplace, school, or organization.";
-      $("#chipFamily").textContent = "Onsite";
-    }
-
-    function showSchedule(){
-      $("#onsiteWrap").style.display = "none";
-      $("#courseList").style.display = "flex";
-    }
-
-    function scrollToSchedulePanel(){
-      if (window.matchMedia("(max-width: 900px)").matches){
-        $("#schedulePanel").scrollIntoView({behavior:"smooth", block:"start"});
-      }
-    }
-
-    function bindCurtainDelegation(){
-      if (curtainBound) return;
-      curtainBound = true;
-
-      const listEl = $("#courseList");
-      listEl.addEventListener("click", (e)=>{
-        const head = e.target.closest(".course-card-header");
-        if (!head) return;
-        const card = head.closest(".course-card");
-        if (!card) return;
-
-        const wasOpen = card.classList.contains("open");
-        listEl.querySelectorAll(".course-card.open").forEach(c=>c.classList.remove("open"));
-        if (!wasOpen) card.classList.add("open");
-      });
-    }
-
-    function renderFamily(fam){
-      const listEl = $("#courseList");
-      listEl.innerHTML = "";
-
-      const blocks = MODEL.familyMap.get(fam) || [];
-      if (!blocks.length){
-        listEl.innerHTML = `
-          <div class="status">
-            <strong>No upcoming sessions found.</strong>
-            Use the full schedule:
-            <div style="margin-top:6px;">
-              <a href="${LINKS.scheduleFallback}" target="_blank" rel="noopener">${LINKS.scheduleFallback}</a>
+  <div class="container">
+    <div class="grid">
+      <div class="card pad">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+          <div>
+            <div style="font-weight:900;color:var(--muted);font-size:13px">Step 1</div>
+            <div style="font-size:18px;font-weight:950;margin-top:2px">Choose a class family</div>
+            <div style="margin-top:6px;color:var(--muted);font-size:13px;line-height:1.35">
+              We’ll show only the stuff that fits your path.
             </div>
-          </div>`;
-        return;
-      }
+          </div>
+          <span class="tag" id="countTag">Loading…</span>
+        </div>
 
-      const INITIAL_SHOW = 10;
-      const INCREMENT = 10;
+        <input id="q" class="search" placeholder="Search (BLS, ACLS, PALS, First Aid…)" style="margin-top:12px" />
+        <div id="families" class="list" style="margin-top:12px"></div>
+        <div id="familyEmpty" class="empty" style="display:none;margin-top:12px">
+          Couldn’t find classes in <code>docs/data/schedule.json</code>.
+        </div>
+      </div>
 
-      blocks.forEach((block, idx)=>{
-        const c = block.course;
-        const allSessions = block.sessions;
+      <div class="card pad">
+        <div class="hero">
+          <div style="min-width:0">
+            <div style="font-weight:900;color:var(--muted);font-size:13px">Step 2</div>
+            <h2 id="rightTitle">Pick the exact class</h2>
+            <p id="rightSub">We’ll show upcoming sessions first. If a date passed, we’ll send you forward.</p>
+          </div>
+          <div class="heroArt">
+            <img src="./assets/images/placeholders/hero-fun.png" alt="placeholder hero" onerror="this.style.display='none'">
+          </div>
+        </div>
 
-        const card = document.createElement("div");
-        card.className = "course-card";
+        <div id="courses" class="list"></div>
+        <div id="courseEmpty" class="empty" style="display:none">
+          Pick a family on the left to see available courses.
+        </div>
 
-        const header = document.createElement("div");
-        header.className = "course-card-header";
+        <div style="margin-top:16px;color:var(--muted);font-size:13px;display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between">
+          <div>Need help? Text/call <a href="tel:+19103955193">(910) 395‑5193</a></div>
+          <div><a href="./index-mobile.html">Mobile view</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        const titleWrap = document.createElement("div");
-        titleWrap.className = "course-card-titlewrap";
+<script>
+(() => {
+  const SCHEDULE_URL = "./data/schedule.json"; // docs/data/schedule.json
+  const elFamilies = document.getElementById("families");
+  const elFamilyEmpty = document.getElementById("familyEmpty");
+  const elCourses = document.getElementById("courses");
+  const elCourseEmpty = document.getElementById("courseEmpty");
+  const elQ = document.getElementById("q");
+  const elCountTag = document.getElementById("countTag");
+  const elRightTitle = document.getElementById("rightTitle");
+  const elRightSub = document.getElementById("rightSub");
 
-        // (main/sub already computed)
-        const title = document.createElement("div");
-        title.className = "course-card-title";
-        title.textContent = c.titleMain || "Course";
+  const norm = (s) => (s ?? "").toString().trim();
 
-        const sub = document.createElement("div");
-        sub.className = "course-card-subtitle";
-        sub.textContent = c.titleSub || "";
+  const inferFamily = (title) => {
+    const t = norm(title).toLowerCase();
+    if (t.includes("acls")) return "ACLS";
+    if (t.includes("pals")) return "PALS";
+    if (t.includes("bls")) return "BLS";
+    if (t.includes("heartsaver") || t.includes("cpr aed") || t.includes("cpr/aed")) return "Heartsaver / CPR-AED";
+    if (t.includes("first aid") || t.includes("firstaid")) return "First Aid";
+    if (t.includes("stop the bleed") || t.includes("bleed")) return "Stop the Bleed";
+    if (t.includes("osha")) return "OSHA";
+    if (t.includes("instructor")) return "Instructor";
+    if (t.includes("asls")) return "ASLS";
+    if (t.includes("maritime") || t.includes("coast guard") || t.includes("elementary first aid")) return "Maritime / USCG";
+    return "Other";
+  };
 
-        titleWrap.appendChild(title);
-        titleWrap.appendChild(sub);
-        header.appendChild(titleWrap);
-
-        const prov = inferProvider(allSessions[0], c.titleText);
-        if (prov){
-          const pb = document.createElement("div");
-          pb.className = "provider-badge";
-          pb.textContent = prov;
-          header.appendChild(pb);
-        }
-
-        const body = document.createElement("div");
-        body.className = "course-card-body";
-
-        if ((c.descHtml||"").trim()){
-          const desc = document.createElement("div");
-          desc.className = "course-desc";
-          desc.innerHTML = c.descHtml; // render "ugly" description as HTML (intended)
-          body.appendChild(desc);
-        }
-
-        const sessionsEl = document.createElement("div");
-        sessionsEl.className = "sessions";
-        body.appendChild(sessionsEl);
-
-        let shown = 0;
-        function addNext(n){
-          const slice = allSessions.slice(shown, shown+n);
-          for (const s of slice){
-            const d = toDateObj(s);
-            const when = fmtWhen(d);
-            const loc = getLocation(s);
-            const price = getPrice(s);
-            const enroll = getEnrollUrl(s) || LINKS.scheduleFallback;
-
-            const row = document.createElement("div");
-            row.className = "session-row";
-
-            const left = document.createElement("div");
-            left.innerHTML = `
-              <div class="session-when">${esc(when)}</div>
-              <div class="session-where">${esc(loc)}</div>
-            `;
-
-            const mid = document.createElement("div");
-            mid.className = "session-price";
-            mid.textContent = (price != null) ? (fmtMoney(price)) : "";
-
-            const right = document.createElement("div");
-            right.className = "session-cta";
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "session-btn";
-            btn.textContent = "Register";
-            btn.addEventListener("click", (ev) => {
-              ev.stopPropagation();
-              window.location.href = enroll;
-            });
-            right.appendChild(btn);
-
-            row.appendChild(left);
-            row.appendChild(mid);
-            row.appendChild(right);
-
-            sessionsEl.appendChild(row);
-          }
-          shown += slice.length;
-        }
-
-        addNext(INITIAL_SHOW);
-
-        const seeMoreWrap = document.createElement("div");
-        seeMoreWrap.className = "see-more-wrap";
-        const seeMoreBtn = document.createElement("button");
-        seeMoreBtn.type = "button";
-        seeMoreBtn.className = "see-more";
-        seeMoreWrap.appendChild(seeMoreBtn);
-
-        function refreshMore(){
-          const remaining = allSessions.length - shown;
-          if (remaining <= 0){
-            seeMoreWrap.style.display = "none";
-            return;
-          }
-          const nextCount = Math.min(INCREMENT, remaining);
-          seeMoreBtn.textContent = `See ${nextCount} more…`;
-          seeMoreWrap.style.display = "block";
-        }
-
-        seeMoreBtn.addEventListener("click", (ev)=>{
-          ev.stopPropagation();
-          addNext(INCREMENT);
-          refreshMore();
-        });
-
-        refreshMore();
-        body.appendChild(seeMoreWrap);
-
-        card.appendChild(header);
-        card.appendChild(body);
-
-        if (idx === 0) card.classList.add("open");
-        listEl.appendChild(card);
-      });
-
-      bindCurtainDelegation();
+  const isFuture = (row) => {
+    const s = norm(row.start_iso);
+    if (s) {
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) return d.getTime() >= Date.now() - 60*1000;
     }
-
-    async function loadSchedule(){
-      try{
-        $("#statusMessage")?.remove();
-
-        const raw = await resolveScheduleJson();
-        const norm = normalizeSchedule(raw);
-        MODEL = buildModel(norm);
-
-        if (!MODEL.familyMap.has(ACTIVE_FAMILY)){
-          ACTIVE_FAMILY = MODEL.familyMap.has("BLS") ? "BLS" : (Array.from(MODEL.familyMap.keys())[0] || "BLS");
-        }
-
-        showSchedule();
-        setFamilyUI(ACTIVE_FAMILY);
-        setActiveFamilyButton(ACTIVE_FAMILY, false);
-        renderFamily(ACTIVE_FAMILY);
-
-      }catch(err){
-        console.error(err);
-        const listEl = $("#courseList");
-        listEl.innerHTML = `
-          <div class="status">
-            <strong>Schedule is temporarily unavailable.</strong>
-            Use the full schedule:
-            <div style="margin-top:6px;">
-              <a href="${LINKS.scheduleFallback}" target="_blank" rel="noopener">${LINKS.scheduleFallback}</a>
-            </div>
-          </div>`;
-      }
+    const dt = norm(row.date);
+    const m = dt.match(/(20\d{2})/);
+    if (m) {
+      const y = parseInt(m[1], 10);
+      if (!isNaN(y) && y >= (new Date()).getFullYear()) return true;
     }
+    return false;
+  };
 
-    function bindFamilyButtons(){
-      $("#familyList").addEventListener("click", (e)=>{
-        const btn = e.target.closest(".family-btn");
-        if (!btn) return;
+  const fmtPrice = (p) => {
+    if (p === null || p === undefined || p === "") return "";
+    const n = Number(p);
+    if (!isNaN(n)) return "$" + n.toFixed(2).replace(".00", "");
+    return String(p);
+  };
 
-        if (btn.id === "btnOnsite"){
-          showOnsite();
-          setActiveFamilyButton(ACTIVE_FAMILY, true);
-          scrollToSchedulePanel();
-          return;
-        }
-
-        const fam = btn.getAttribute("data-family") || "BLS";
-        ACTIVE_FAMILY = fam;
-
-        showSchedule();
-        setFamilyUI(fam);
-        setActiveFamilyButton(fam, false);
-        if (MODEL) renderFamily(fam);
-
-        scrollToSchedulePanel();
-      });
+  const groupBy = (arr, keyFn) => {
+    const m = new Map();
+    for (const x of arr) {
+      const k = keyFn(x);
+      if (!m.has(k)) m.set(k, []);
+      m.get(k).push(x);
     }
+    return m;
+  };
 
-    (async function init(){
-      await applyImageVars();
-      markFamilyImageFailures();
-      bindFamilyButtons();
-      await loadSchedule();
-    })();
+  const pickEnrollUrl = (row) => {
+    const u = norm(row.url);
+    if (u) return u;
+    if (row.id) return "https://coastalcprtraining.enrollware.com/enroll?id=" + row.id;
+    return "https://coastalcprtraining.enrollware.com/schedule";
+  };
 
-  })();
-  </script>
+  const courseScheduleUrl = (row) => {
+    const cn = norm(row.course_number);
+    if (cn) return "https://coastalcprtraining.enrollware.com/schedule#ct" + cn;
+    return "https://coastalcprtraining.enrollware.com/schedule";
+  };
 
-  <!-- 910CPR Interaction Tracking: fires GA4/GTM/Meta events if tags exist -->
-  <script>
-  (function () {
-    function norm(s){ return (s||"").toString().trim().replace(/\s+/g," ").slice(0,180); }
-    function isVisible(el){
-      if (!el) return false;
-      const r = el.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    }
+  let rows = [];
+  let selectedFamily = null;
+  let query = "";
 
-    function getLabel(el){
-      const aria = el.getAttribute && el.getAttribute("aria-label");
-      if (aria) return norm(aria);
-      const t = norm(el.textContent);
-      if (t) return t;
-      return norm(el.id || el.className);
-    }
-
-    function getCtx(el){
-      const card = el.closest ? el.closest(".course-card") : null;
-      const famBtn = el.closest ? el.closest(".family-btn") : null;
-
-      return {
-        page_path: location.pathname || "/",
-        page_title: document.title || "",
-        family_selected: famBtn ? (famBtn.getAttribute("data-family") || getLabel(famBtn)) : null,
-        chip_family: norm(document.querySelector("#chipFamily")?.textContent),
-        course_title: card ? norm(card.querySelector(".course-card-title")?.textContent) : null,
-        course_subtitle: card ? norm(card.querySelector(".course-card-subtitle")?.textContent) : null
-      };
-    }
-
-    function dispatch(eventName, params){
-      params = params || {};
-      try{
-        if (window.dataLayer && Array.isArray(window.dataLayer)){
-          window.dataLayer.push(Object.assign({ event: eventName }, params));
-        }
-      }catch(e){}
-
-      try{
-        if (typeof window.gtag === "function"){
-          window.gtag("event", eventName, params);
-        }
-      }catch(e){}
-
-      try{
-        if (typeof window.fbq === "function"){
-          window.fbq("trackCustom", eventName, params);
-        }
-      }catch(e){}
-    }
-
-    document.addEventListener("click", function(e){
-      const el = e.target.closest("button, a, [role='button']");
-      if (!el || !isVisible(el)) return;
-
-      const label = getLabel(el);
-      const href = (el.matches && el.matches("a[href]")) ? (el.href || el.getAttribute("href") || "") : "";
-      const cls = norm(el.className);
-
-      let action = "click";
-      if (/^register$/i.test(label) || cls.includes("session-btn")) action = "register_click";
-      else if (/see\s+\d+\s+more/i.test(label)) action = "see_more_click";
-      else if (/group pricing|inquiry|onsite/i.test(label)) action = "group_inquiry_click";
-      else if (/call|text/i.test(label)) action = "call_text_click";
-      else if (/email/i.test(label)) action = "email_click";
-
-      dispatch("ui_" + action, Object.assign({
-        element_label: label,
-        element_href: href
-      }, getCtx(el)));
-    }, true);
-
-    document.addEventListener("click", function(e){
-      const head = e.target.closest(".course-card-header");
-      if (!head) return;
-      const card = head.closest(".course-card");
-      if (!card) return;
-
-      setTimeout(function(){
-        dispatch("ui_curtain_toggle", Object.assign({
-          is_open: card.classList.contains("open") ? "1" : "0"
-        }, getCtx(card)));
-      }, 0);
-    }, true);
-
-    document.addEventListener("click", function(e){
-      const fam = e.target.closest(".family-btn");
-      if (!fam) return;
-      dispatch("ui_family_select", Object.assign({
-        family_selected: fam.getAttribute("data-family") || getLabel(fam)
-      }, getCtx(fam)));
-    }, true);
-
-    dispatch("ui_page_view", {
-      page_path: location.pathname || "/",
-      page_title: document.title || ""
+  const renderFamilies = () => {
+    elFamilies.innerHTML = "";
+    const filtered = rows.filter(r => {
+      const t = (norm(r.title) + " " + norm(r.date) + " " + norm(r.location)).toLowerCase();
+      return !query || t.includes(query);
     });
-  })();
-  </script>
 
+    elCountTag.textContent = filtered.length ? (filtered.length + " sessions") : "0 sessions";
 
+    if (!filtered.length) {
+      elFamilyEmpty.style.display = "block";
+      return;
+    }
+    elFamilyEmpty.style.display = "none";
+
+    const famMap = groupBy(filtered, r => r.family);
+    const fams = Array.from(famMap.keys()).sort((a,b)=> a.localeCompare(b));
+
+    for (const fam of fams) {
+      const upcoming = famMap.get(fam).filter(isFuture).length;
+      const div = document.createElement("div");
+      div.className = "item click" + (fam === selectedFamily ? " active" : "");
+      div.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <div style="font-weight:950">${fam}</div>
+          <span class="tag">${upcoming ? (upcoming + " upcoming") : "past only"}</span>
+        </div>`;
+      div.onclick = () => { selectedFamily = fam; renderFamilies(); renderCourses(); };
+      elFamilies.appendChild(div);
+    }
+
+    if (!selectedFamily && fams.length) {
+      selectedFamily = fams[0];
+      renderFamilies();
+      renderCourses();
+    }
+  };
+
+  const renderCourses = () => {
+    elCourses.innerHTML = "";
+    if (!selectedFamily) {
+      elCourseEmpty.style.display = "block";
+      return;
+    }
+    elCourseEmpty.style.display = "none";
+
+    const famRows = rows.filter(r => r.family === selectedFamily);
+    const qRows = famRows.filter(r => {
+      const t = (norm(r.title) + " " + norm(r.date) + " " + norm(r.location)).toLowerCase();
+      return !query || t.includes(query);
+    });
+
+    if (!qRows.length) {
+      elCourses.innerHTML = `<div class="empty">No matches for this family. Try a different search.</div>`;
+      return;
+    }
+
+    const courseMap = groupBy(qRows, r => norm(r.title));
+    const courseTitles = Array.from(courseMap.keys()).sort((a,b)=> a.localeCompare(b));
+
+    elRightTitle.textContent = "Pick the exact class";
+    elRightSub.textContent = "Friendly defaults up top. The full schedule is always a click away.";
+
+    for (const title of courseTitles) {
+      const items = courseMap.get(title).slice();
+
+      items.sort((a,b) => {
+        const af = isFuture(a), bf = isFuture(b);
+        if (af !== bf) return af ? -1 : 1;
+        const ad = new Date(norm(a.start_iso) || 0).getTime();
+        const bd = new Date(norm(b.start_iso) || 0).getTime();
+        if (!isNaN(ad) && !isNaN(bd) && ad !== bd) return ad - bd;
+        return norm(a.date).localeCompare(norm(b.date));
+      });
+
+      const upcoming = items.filter(isFuture);
+      const show = (upcoming.length ? upcoming : items).slice(0, 8);
+
+      let p = "";
+      for (const it of items) {
+        const fp = fmtPrice(it.price);
+        if (fp) { p = fp; break; }
+      }
+
+      const card = document.createElement("div");
+      card.className = "item";
+      card.style.cursor = "default";
+      card.innerHTML = `
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+          <div style="min-width:0">
+            <div style="font-size:16px;font-weight:950;line-height:1.25">${title}</div>
+            <div style="margin-top:6px;color:var(--muted);font-size:13px;line-height:1.35">
+              ${p ? ("Typical price: <b>" + p + "</b> • ") : ""}
+              Showing ${show.length}${upcoming.length ? " upcoming" : " (past-only fallback)"}
+            </div>
+          </div>
+          <span class="tag">${selectedFamily}</span>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px" class="sessions"></div>
+      `;
+
+      const sessWrap = card.querySelector(".sessions");
+
+      for (const it of show) {
+        const future = isFuture(it);
+        const enrollUrl = pickEnrollUrl(it);
+        const schedUrl = courseScheduleUrl(it);
+        const priceTxt = fmtPrice(it.price);
+
+        const row = document.createElement("div");
+        row.className = "sess";
+        row.innerHTML = `
+          <div style="min-width:0">
+            <div class="date">${norm(it.date) || "Date/time TBD"}</div>
+            <div class="loc">${norm(it.location) || "Location TBD"}</div>
+            ${priceTxt ? `<div class="price">Price: ${priceTxt}</div>` : ""}
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+            ${future
+              ? `<a class="btn btnPrimary" href="${enrollUrl}" target="_blank" rel="noopener">Register now</a>`
+              : `<a class="btn btnWarn" href="${schedUrl}" target="_blank" rel="noopener">Date passed → see current schedule</a>`
+            }
+            <a class="btn btnGhost" href="${schedUrl}" target="_blank" rel="noopener">More dates/times</a>
+          </div>
+        `;
+        sessWrap.appendChild(row);
+      }
+
+      elCourses.appendChild(card);
+    }
+  };
+
+  const boot = async () => {
+    try {
+      const res = await fetch(SCHEDULE_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      rows = await res.json();
+      if (!Array.isArray(rows)) rows = [];
+
+      rows = rows.map(r => {
+        const rr = Object.assign({}, r);
+        rr.title = rr.title || rr.course_name || rr.courseTitle || "";
+        rr.family = rr.family || inferFamily(rr.title);
+        return rr;
+      });
+
+      renderFamilies();
+      renderCourses();
+    } catch (err) {
+      elFamilyEmpty.style.display = "block";
+      elFamilyEmpty.textContent = "Could not load schedule.json (" + err.message + "). Check docs/data/schedule.json is published.";
+      elCountTag.textContent = "0 sessions";
+    }
+  };
+
+  elQ.addEventListener("input", () => {
+    query = norm(elQ.value).toLowerCase();
+    renderFamilies();
+    renderCourses();
+  });
+
+  boot();
+})();
+</script>
 </body>
 </html>
