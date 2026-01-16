@@ -217,12 +217,22 @@ def html_to_schedule_rows(html_text: str):
         else:
             cid = course_index[course_name]
 
-        # Try to find course_number (#ct#######) in any href in the panel
+        # Try to find course_number (ct######) from the panel's anchor:
+        # Enrollware uses: <a name='ct209806'></a>
         course_number = None
-        for a in panel.find_all("a", href=True):
-            course_number = extract_course_number_from_text(a["href"])
-            if course_number:
-                break
+
+        a_ct = panel.select_one("a[name^='ct']")
+        if a_ct and a_ct.get("name"):
+            nm = a_ct.get("name").strip()  # e.g. "ct209806"
+            if nm.lower().startswith("ct") and nm[2:].isdigit():
+                course_number = nm[2:]
+
+        # Fallback: if not found, try to find #ct####### in any href
+        if not course_number:
+            for a in panel.find_all("a", href=True):
+                course_number = extract_course_number_from_text(a["href"])
+                if course_number:
+                    break
 
         schedule_url = build_schedule_url(course_number)
 

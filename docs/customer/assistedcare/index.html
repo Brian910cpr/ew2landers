@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AssistedCare Classes | 910CPR</title>
+  <meta name="description" content="AssistedCare partner programs — upcoming dates with invoicing via promo code." />
+  <style>
+    :root{
+      --blue:#1b66c9; --dark:#102a43; --muted:#5b6b7a;
+      --bg1:#ffffff; --bg2:#eef6ff; --card:#ffffff; --border:#d9e2ec;
+      --shadow:0 10px 24px rgba(16,42,67,.08);
+      --warnbg:#fff7e6; --warnbd:#ffd8a8;
+    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--dark);
+      background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 100%);}
+    .wrap{max-width:1100px;margin:0 auto;padding:26px 16px 44px;}
+    header{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:flex-start;}
+    h1{margin:0;font-size:1.55rem}
+    .sub{margin-top:6px;color:var(--muted)}
+    .pill{display:inline-block;background:#e9f2ff;color:var(--blue);border:1px solid #cfe3ff;padding:8px 12px;border-radius:999px;font-weight:800}
+    code{background:#f3f5f7;border:1px solid #e6e9ef;padding:2px 6px;border-radius:8px;font-weight:800}
+    .notice{background:var(--warnbg);border:1px solid var(--warnbd);padding:14px;border-radius:14px;box-shadow:var(--shadow);margin:16px 0;line-height:1.45}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    @media (max-width:880px){.grid{grid-template-columns:1fr}}
+    .list{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+    .row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1px solid var(--border);border-radius:14px;padding:10px 12px;background:#fff}
+    .when{font-weight:900}
+    .loc{color:var(--muted);font-size:.92rem;margin-top:2px}
+    .btn{display:inline-block;text-decoration:none;background:var(--blue);color:#fff;padding:9px 12px;border-radius:12px;font-weight:900;white-space:nowrap}
+    .btn.secondary{background:#fff;color:var(--blue);border:1px solid #cfe3ff}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .status{margin-top:10px;color:var(--muted)}
+    .footer{margin-top:24px;color:var(--muted);font-size:.92rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div>
+        <h1>AssistedCare Partner Registration</h1>
+        <div class="sub">Only your programs — with live upcoming dates.</div>
+      </div>
+      <div class="pill">Promo Code: <code>assistedcare</code></div>
+    </header>
+
+    <section class="notice">
+      <b>Billing / invoicing:</b> Enter promo code <code>assistedcare</code> during checkout to defer tuition and trigger an invoice.
+      <br><b>Add-ons are not deferred.</b> If you need add-ons, register without them and list your needs in the <b>Comments</b> box on the next page.
+    </section>
+
+    <section class="grid">
+      <article class="card" id="card-209806">
+        <h2>Program (ct209806)</h2>
+        <div class="status" data-status>Loading dates…</div>
+        <div class="list" data-list></div>
+        <div class="actions">
+          <a class="btn secondary" href="https://coastalcprtraining.enrollware.com/schedule#ct209806" target="_blank" rel="noopener">Full schedule</a>
+        </div>
+      </article>
+
+      <article class="card" id="card-209809">
+        <h2>Program (ct209809)</h2>
+        <div class="status" data-status>Loading dates…</div>
+        <div class="list" data-list></div>
+        <div class="actions">
+          <a class="btn secondary" href="https://coastalcprtraining.enrollware.com/schedule#ct209809" target="_blank" rel="noopener">Full schedule</a>
+        </div>
+      </article>
+    </section>
+
+    <div class="footer">
+      <div><b>910CPR</b> · Questions? Call/text <a href="tel:+19103955193">(910) 395-5193</a></div>
+      <div id="updated"></div>
+    </div>
+  </main>
+
+<script>
+  // ✅ Set this to your Worker route base (no trailing slash)
+  const API_BASE = "https://YOUR-WORKER-ROUTE-DOMAIN";
+
+  const CTS = ["209806","209809"];
+  const LIMIT = 12;
+
+  function el(tag, attrs={}, children=[]) {
+    const n = document.createElement(tag);
+    for (const [k,v] of Object.entries(attrs)) {
+      if (k === "class") n.className = v;
+      else n.setAttribute(k, v);
+    }
+    for (const c of (Array.isArray(children) ? children : [children])) {
+      if (c == null) continue;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    }
+    return n;
+  }
+
+  function render(ct, items) {
+    const card = document.getElementById("card-" + ct);
+    const status = card.querySelector("[data-status]");
+    const list = card.querySelector("[data-list]");
+    list.innerHTML = "";
+
+    if (!items || !items.length) {
+      status.textContent = "No upcoming dates found.";
+      return;
+    }
+
+    status.textContent = "";
+
+    for (const it of items) {
+      const left = el("div", {}, [
+        el("div", { class: "when" }, it.date || "Date/time unavailable"),
+        it.location ? el("div", { class: "loc" }, it.location) : null
+      ]);
+
+      const right = el("a", {
+        class: "btn",
+        href: it.register_url,
+        target: "_blank",
+        rel: "noopener"
+      }, "Register");
+
+      list.appendChild(el("div", { class: "row" }, [left, right]));
+    }
+  }
+
+  async function load() {
+    const qs = new URLSearchParams();
+    CTS.forEach(ct => qs.append("ct", ct));
+    qs.set("limit", String(LIMIT));
+
+    const url = API_BASE + "/partner?" + qs.toString();
+
+    try {
+      const r = await fetch(url, { cache: "no-store" });
+      const j = await r.json();
+
+      const all = Array.isArray(j.items) ? j.items : [];
+      for (const ct of CTS) {
+        render(ct, all.filter(x => String(x.course_number) === ct));
+      }
+
+      document.getElementById("updated").textContent = "Updated: " + new Date().toLocaleString();
+    } catch (e) {
+      for (const ct of CTS) render(ct, []);
+      document.getElementById("updated").textContent = "Could not update right now.";
+    }
+  }
+
+  load();
+</script>
+</body>
+</html>
