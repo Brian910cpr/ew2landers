@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AHA BLS Schedule – 910CPR</title>
+  <meta name="description" content="Book AHA BLS CPR certification with 910CPR. Choose In-Person or Online, then pick your location and register." />
+
+  <style>
+    :root{
+      --brand:#0b5fa5;
+      --brand2:#083d6b;
+      --bg1:#ffffff;
+      --bg2:#eef6ff;
+      --text:#0b1220;
+      --muted:#5b677a;
+      --card:#ffffff;
+      --border:#d7e4f5;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px 16px 48px;
+    }
+    header{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom: 18px;
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:44px;height:44px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 30%, #2aa7ff, var(--brand2));
+      box-shadow: var(--shadow);
+    }
+    .titleblock h1{
+      font-size: 1.35rem;
+      margin:0;
+      line-height:1.15;
+    }
+    .titleblock .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:.98rem;
+    }
+    .call{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,.8);
+      text-decoration:none;
+      color: var(--text);
+      box-shadow: 0 6px 18px rgba(0,0,0,.05);
+    }
+    .pill strong{color:var(--brand2)}
+    .card{
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-top: 14px;
+    }
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+      align-items:start;
+    }
+    @media (max-width: 860px){
+      .hero{grid-template-columns: 1fr}
+    }
+    .hero h2{
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+    }
+    .hero p{
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height:1.4;
+    }
+    .btnGrid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+    @media (max-width: 620px){
+      .btnGrid{grid-template-columns: 1fr}
+    }
+    .bigBtn{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding: 18px 16px;
+      border-radius: 18px;
+      border: 2px solid rgba(11,95,165,.25);
+      background: linear-gradient(180deg, rgba(11,95,165,.08), rgba(11,95,165,.03));
+      text-decoration:none;
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .08s ease, border-color .15s ease, background .15s ease;
+      min-height: 86px;
+    }
+    .bigBtn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(11,95,165,.55);
+      background: linear-gradient(180deg, rgba(11,95,165,.12), rgba(11,95,165,.04));
+    }
+    .bigBtn .kicker{
+      color: var(--brand2);
+      font-weight: 800;
+      letter-spacing: .2px;
+      font-size: 1.05rem;
+    }
+    .bigBtn .desc{
+      color: var(--muted);
+      font-size: .95rem;
+      line-height:1.35;
+    }
+    .stepTitle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:0 0 10px;
+      font-size: 1.05rem;
+    }
+    .badge{
+      width:28px;height:28px;
+      border-radius: 10px;
+      background: rgba(11,95,165,.12);
+      display:grid;
+      place-items:center;
+      color: var(--brand2);
+      font-weight: 900;
+    }
+    .locations{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    @media (max-width: 720px){
+      .locations{grid-template-columns: 1fr}
+    }
+    .locBtn{
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor:pointer;
+      text-align:left;
+      box-shadow: 0 6px 16px rgba(0,0,0,.05);
+      transition: transform .08s ease, border-color .15s ease;
+    }
+    .locBtn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(11,95,165,.55);
+    }
+    .locBtn .locName{font-weight: 800}
+    .locBtn .locMeta{color:var(--muted); font-size:.92rem; margin-top:4px}
+    .muted{
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .divider{
+      height:1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+    footer{
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height:1.4;
+    }
+    code.inline{
+      background: rgba(0,0,0,.04);
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="titleblock">
+          <h1>AHA BLS Schedule</h1>
+          <div class="sub">Pick your format → pick your location → book on Enrollware</div>
+        </div>
+      </div>
+      <div class="call">
+        <a class="pill" href="tel:+19103955193"><strong>Call</strong> (910) 395-5193</a>
+        <a class="pill" href="https://coastalcprtraining.enrollware.com/schedule"><strong>All Dates</strong> Enrollware Schedule</a>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="hero">
+        <div>
+          <h2>Choose your BLS option</h2>
+          <p>
+            This page is designed for fast routing. If you’re on the phone with us, just pick the button that matches
+            what you need and you’ll land on the correct Enrollware schedule filter.
+          </p>
+
+          <div class="btnGrid" id="formatButtons"></div>
+
+          <div class="divider"></div>
+
+          <div id="locationStep" style="display:none;">
+            <div class="stepTitle"><span class="badge">2</span> Where do you want to take it?</div>
+            <div class="locations" id="locationButtons"></div>
+            <p class="muted" style="margin-top:10px;">
+              You can bookmark this page. We can also text you the correct link while you’re on the phone.
+            </p>
+          </div>
+
+          <div id="directLinkHint" class="muted" style="display:none;">
+            If only one location is available, we’ll send you straight to the schedule.
+          </div>
+        </div>
+
+        <div>
+          <h2>What is this?</h2>
+          <p class="muted">
+            A branded “router page” that keeps your call scripts simple:
+            <br><br>
+            Say: “Go to <code class="inline">ahabls.910cpr.com</code>”
+            <br>
+            Then: “Choose In-Person or Online.”
+          </p>
+          <div class="divider"></div>
+          <p class="muted">
+            Example filtered URL format:
+            <br>
+            <code class="inline">https://coastalcprtraining.enrollware.com/schedule?location=101560&amp;course=209806</code>
+          </p>
+        </div>
+      </div>
+
+      <footer>
+        910CPR • AHA training routes to Enrollware for inventory + checkout.<br>
+        If a link ever looks wrong, call (910) 395-5193 and we’ll get you scheduled fast.
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * CONFIG (BLS example)
+     * - Replace IDs as needed
+     * - Add/remove locations without changing the UI logic
+     *
+     * If you later want ahabls.910cpr.com to ALSO offer “skills-only” variants, you add another format card below.
+     */
+    const CONFIGCONFIG = {
+      title: "AHA BLS Schedule",
+      enrollwareBase: "https://coastalcprtraining.enrollware.com/schedule",
+      formats: [
+        {
+          key: "inperson",
+          label: "In-Person (Instructor-Led)",
+          desc: "Full classroom BLS Provider. Great for healthcare, nursing programs, and employers.",
+          // your example:
+          // https://coastalcprtraining.enrollware.com/schedule?location=101560&course=209806
+          courseByLocation: {
+            // locationId: courseId
+            "101560": "209806" // Wilmington example (replace/extend as needed)
+          }
+        },
+        {
+          key: "online",
+          label: "Online + Skills (Blended)",
+          desc: "Do the online portion first, then come in for a short hands-on skills session.",
+          // Put the REAL Enrollware course ID(s) here once confirmed
+          courseByLocation: {
+            // Example placeholder IDs — REPLACE with your actual HeartCode/online schedule course IDs per location
+            "101560": "BLS_ONLINE_COURSE_ID_HERE"
+          }
+        }
+      ],
+      locations: {
+        "101560": { name: "Wilmington", meta: "Main office / Shipyard area" }
+        // Add more locations when you’re ready:
+        // "HOLLYRIDGE_ID": { name:"Holly Ridge", meta:"Near Camp Lejeune / Topsail area" },
+        // "BURGaw_ID": { name:"Burgaw", meta:"New training space" }
+      }
+    };
+
+    let selectedFormat = null;
+
+    function buildUrl(locationId, courseId){
+      const u = new URL(CONFIG.enrollwareBase);
+      u.searchParams.set("location", locationId);
+      u.searchParams.set("course", courseId);
+      return u.toString();
+    }
+
+    function renderFormats(){
+      const box = document.getElementById("formatButtons");
+      box.innerHTML = "";
+
+      CONFIG.formats.forEach(fmt => {
+        const a = document.createElement("button");
+        a.className = "bigBtn";
+        a.type = "button";
+        a.innerHTML = `
+          <div class="kicker">${escapeHtml(fmt.label)}</div>
+          <div class="desc">${escapeHtml(fmt.desc)}</div>
+        `;
+        a.addEventListener("click", () => onPickFormat(fmt));
+        box.appendChild(a);
+      });
+    }
+
+    function onPickFormat(fmt){
+      selectedFormat = fmt;
+
+      const availableLocationIds = Object.keys(fmt.courseByLocation || {})
+        .filter(locId => CONFIG.locations[locId] && fmt.courseByLocation[locId]);
+
+      // If only one location is available for this format, go straight there.
+      if(availableLocationIds.length === 1){
+        const locId = availableLocationIds[0];
+        const courseId = fmt.courseByLocation[locId];
+        const url = buildUrl(locId, courseId);
+        window.location.href = url;
+        return;
+      }
+
+      // Otherwise show "Where do you want to take it?"
+      document.getElementById("locationStep").style.display = "block";
+      document.getElementById("directLinkHint").style.display = "none";
+      renderLocations(availableLocationIds);
+    }
+
+    function renderLocations(locationIds){
+      const box = document.getElementById("locationButtons");
+      box.innerHTML = "";
+
+      locationIds.forEach(locId => {
+        const loc = CONFIG.locations[locId];
+        const courseId = selectedFormat.courseByLocation[locId];
+        const url = buildUrl(locId, courseId);
+
+        const btn = document.createElement("button");
+        btn.className = "locBtn";
+        btn.type = "button";
+        btn.innerHTML = `
+          <div class="locName">${escapeHtml(loc.name)}</div>
+          <div class="locMeta">${escapeHtml(loc.meta || "")}</div>
+        `;
+        btn.addEventListener("click", () => window.location.href = url);
+        box.appendChild(btn);
+      });
+    }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll("\"","&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // Fix typo from earlier: CONFIG var
+    const CONFIG = RCONFIG; // <- we’ll set it correctly below
+  </script>
+
+  <script>
+    // Correct the config binding (keeps everything in one file)
+    const RCONFIG = window.RCONFIG || null;
+  </script>
+
+  <script>
+    // Replace the previous binding cleanly (no build tools needed)
+    // (We keep it dead-simple for deployment)
+    window.RCONFIG = undefined;
+
+    // Re-declare CONFIG from the earlier block:
+    // The easiest “no tooling” method is to copy/paste and keep it single-source.
+  </script>
+
+  <script>
+    // FINAL: define CONFIG properly (single source of truth)
+    const CONFIG = {
+      title: "AHA BLS Schedule",
+      enrollwareBase: "https://coastalcprtraining.enrollware.com/schedule",
+      formats: [
+        {
+          key: "inperson",
+          label: "In-Person (Instructor-Led)",
+          desc: "Full classroom BLS Provider. Great for healthcare, nursing programs, and employers.",
+          courseByLocation: {
+            "101560": "209806"
+          }
+        },
+        {
+          key: "online",
+          label: "Online + Skills (Blended)",
+          desc: "Do the online portion first, then come in for a short hands-on skills session.",
+          courseByLocation: {
+            "101560": "BLS_ONLINE_COURSE_ID_HERE"
+          }
+        }
+      ],
+      locations: {
+        "101560": { name: "Wilmington", meta: "Main office / Shipyard area" }
+      }
+    };
+
+    // boot
+    renderFormats();
+  </script>
+</body>
+</html>
